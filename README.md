@@ -73,6 +73,16 @@ npx serve .
 ```
 Then open [http://localhost:8000](http://localhost:8000) in your browser.
 
+### 🛡️ 3. Activate Automated Slide Protection (Git Hooks)
+To guarantee that you never accidentally break the HTML structure or introduce JavaScript syntax errors while editing the slides, this repository is equipped with an automated pre-commit validation suite.
+
+To activate these hooks on your local machine, run the following one-click setup script:
+```bash
+chmod +x setup_hooks.sh && ./setup_hooks.sh
+```
+
+Once activated, Git will automatically run the structural and compilation validators every time you run `git commit`. If there are any errors, the commit will be blocked and you will receive a detailed report, ensuring the live website is always 100% stable and correct!
+
 ---
 
 ## 🌐 Technical Architecture
