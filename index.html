@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Outreach Workshop Portal</title>
+    <!-- Tailwind CSS for modern structure -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Outfit (Display) & Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for gorgeous icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712; /* Extreme dark */
+        }
+        .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #a5b4fc, #c084fc, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hover-glow:hover {
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="h-full text-slate-300 flex flex-col justify-between selection:bg-indigo-500/30 selection:text-indigo-200">
+
+    <!-- Decorative Top Glow -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[350px] bg-gradient-to-b from-indigo-900/10 via-purple-900/5 to-transparent blur-3xl pointer-events-none z-0"></div>
+
+    <main class="relative flex-grow flex items-center z-10 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto w-full space-y-12">
+            
+            <!-- Portal Header -->
+            <div class="text-center space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-mono font-semibold uppercase tracking-wider mb-2">
+                    <i class="fa-solid fa-graduation-cap"></i> Student & Instructor Portal
+                </div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold font-display tracking-tight text-white leading-none">
+                    Machine Learning <span class="gradient-text">Outreach Workshop</span>
+                </h1>
+                <p class="text-slate-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-light">
+                    Your interactive launchpad from understanding core data concepts to thinking like a professional Machine Learning practitioner.
+                </p>
+            </div>
+
+            <!-- Workshop Sessions Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                
+                <!-- Card 1: Part 1 Foundations -->
+                <div class="glass-panel hover-glow p-8 rounded-3xl flex flex-col justify-between space-y-6 transition-all duration-355 group hover:scale-[1.01]">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center justify-center text-xl group-hover:scale-105 transition-transform duration-300">
+                                <i class="fa-solid fa-cubes"></i>
+                            </div>
+                            <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-500 rounded-lg text-[10px] font-mono uppercase font-bold tracking-wider">Session 1 / Part 1</span>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <h2 class="text-xl font-bold font-display text-white group-hover:text-indigo-300 transition-colors duration-300">Part 1: ML Foundations & Regressions</h2>
+                            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-light">
+                                Demystify how computers learn. Explore telemetry data, training versus prediction loops, and interactive regression boundaries.
+                            </p>
+                        </div>
+
+                        <!-- Topics Checklist -->
+                        <div class="pt-2 border-t border-slate-850/40 space-y-2 text-xs text-slate-400">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-indigo-400 text-[10px]"></i>
+                                <span>Understanding Telemetry & Features</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-indigo-400 text-[10px]"></i>
+                                <span>Continuous vs. Discrete Prediction</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-indigo-400 text-[10px]"></i>
+                                <span>Interactive Decision Boundary Adjuster</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="day1_session2_1.html" class="w-full py-3.5 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-center text-sm transition-all duration-300 shadow-lg shadow-indigo-600/20 hover:shadow-indigo-500/30 flex items-center justify-center gap-2 group-hover:translate-y-[-2px]">
+                        Launch Part 1 Presentation <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </a>
+                </div>
+
+                <!-- Card 2: Part 2 NLP & Careers -->
+                <div class="glass-panel hover-glow p-8 rounded-3xl flex flex-col justify-between space-y-6 transition-all duration-355 group hover:scale-[1.01]">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-pink-500/10 border border-pink-500/30 text-pink-400 flex items-center justify-center text-xl group-hover:scale-105 transition-transform duration-300">
+                                <i class="fa-solid fa-comments"></i>
+                            </div>
+                            <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-500 rounded-lg text-[10px] font-mono uppercase font-bold tracking-wider">Session 1 / Part 2</span>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <h2 class="text-xl font-bold font-display text-white group-hover:text-pink-300 transition-colors duration-300">Part 2: NLP, Careers & Mindsets</h2>
+                            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-light">
+                                Dive into Natural Language Processing, text representations, and explore interactive AI career paths and core human superpowers.
+                            </p>
+                        </div>
+
+                        <!-- Topics Checklist -->
+                        <div class="pt-2 border-t border-slate-850/40 space-y-2 text-xs text-slate-400">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-pink-400 text-[10px]"></i>
+                                <span>Bag-of-Words & Sentiment Extraction</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-pink-400 text-[10px]"></i>
+                                <span>Interactive AI Career Explorer Dashboard</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-pink-400 text-[10px]"></i>
+                                <span>The 3 Human ML Superpowers Mindset</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="day1_session2_2.html" class="w-full py-3.5 px-6 rounded-2xl bg-pink-600 hover:bg-pink-500 text-white font-semibold text-center text-sm transition-all duration-300 shadow-lg shadow-pink-600/20 hover:shadow-pink-500/30 flex items-center justify-center gap-2 group-hover:translate-y-[-2px]">
+                        Launch Part 2 Presentation <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Bottom Support / Resources Banner -->
+            <div class="glass-panel p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 flex items-center justify-center text-base shrink-0">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+                    <div class="space-y-0.5">
+                        <h4 class="text-sm font-semibold text-white">Need help getting started?</h4>
+                        <p class="text-[11px] text-slate-500 leading-relaxed font-light">Double-click or press <kbd class="px-1 py-0.5 bg-slate-900 border border-slate-800 rounded text-[9px] text-slate-400 font-mono">F</kbd> inside the presentations to toggle full-screen classroom projector mode.</p>
+                    </div>
+                </div>
+                <span class="text-xs font-mono text-slate-550 shrink-0">Ready to Build with AI © 2026</span>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 border-t border-slate-900 text-center text-xs text-slate-600 z-10">
+        Powered by <a href="https://pages.github.com/" class="hover:text-slate-400 underline transition-colors">GitHub Pages</a> · Built for Educational Outreach
+    </footer>
+
+</body>
+</html>
