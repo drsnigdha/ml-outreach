@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2: AI in the Real World</title>
+    <!-- Tailwind CSS for rich utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter font and FontAwesome for premium iconography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 50% 50%, #0f1123 0%, #080a14 100%);
+            overflow-x: hidden;
+        }
+        /* Custom scrollbar for slide list drawer */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 3px;
+        }
+        /* Page-transition animations */
+        .slide-enter {
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(25px) scale(0.99);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        /* Pulse for glowing animations */
+        .glow-pulse {
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+            to { box-shadow: 0 0 25px rgba(59, 130, 246, 0.8); }
+        }
+        .fade-in {
+            animation: fadeInEffect 0.4s ease-out forwards;
+        }
+        @keyframes fadeInEffect {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col justify-between">
+
+    <header class="w-full px-6 py-4 flex justify-between items-center bg-slate-950/60 border-b border-slate-900 backdrop-blur-md z-40">
+        <div class="flex items-center gap-3">
+            <span class="bg-indigo-600 text-xs uppercase tracking-widest font-extrabold px-3 py-1 rounded-full">Module 2</span>
+            <h2 class="text-sm md:text-base font-semibold text-slate-300">AI in the Real World</h2>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="toggleIndexDrawer()" class="text-slate-300 hover:text-white transition p-2 bg-slate-900/80 rounded-lg border border-slate-800" title="Slide Index">
+                <i class="fa-solid fa-list-ul"></i> <span class="hidden md:inline ml-1 text-sm">Slides</span>
+            </button>
+            <button onclick="toggleHelpModal()" class="text-slate-300 hover:text-white transition p-2 bg-slate-900/80 rounded-lg border border-slate-800" title="Navigation Help">
+                <i class="fa-solid fa-circle-question"></i>
+            </button>
+            <button onclick="toggleFullscreen()" class="text-slate-300 hover:text-white transition p-2 bg-slate-900/80 rounded-lg border border-slate-800" title="Fullscreen Mode">
+                <i id="fullscreen-icon" class="fa-solid fa-expand"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Progress Indicator -->
+    <div class="w-full bg-slate-950 h-1.5 relative">
+        <div id="progress-bar" class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 transition-all duration-300" style="width: 4%"></div>
+    </div>
+
+    <main class="flex-grow flex items-center justify-center p-4 md:p-8 relative">
+        <div id="slide-viewport" class="w-full max-w-6xl bg-slate-900/20 border border-slate-800/80 rounded-3xl p-6 md:p-12 shadow-2xl backdrop-blur-lg slide-enter min-h-[550px] flex flex-col justify-between">
+            <!-- Dynamically Rendered Slide Content -->
+            <div id="slide-body" class="w-full"></div>
+        </div>
+    </main>
+
+    <!-- Slide Index Navigation Drawer -->
+    <div id="index-drawer" class="fixed right-0 top-0 h-full w-80 bg-slate-950/95 border-l border-slate-900 z-50 transform translate-x-full transition-transform duration-300 backdrop-blur-xl flex flex-col">
+        <div class="p-6 border-b border-slate-900 flex justify-between items-center">
+            <h3 class="text-lg font-bold text-slate-200"><i class="fa-solid fa-compass text-indigo-500 mr-2"></i>Navigation Hub</h3>
+            <button onclick="toggleIndexDrawer()" class="text-slate-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="flex-grow overflow-y-auto p-4 space-y-2" id="slide-list-links">
+            <!-- Injected by JavaScript -->
+        </div>
+        <div class="p-4 border-t border-slate-900 bg-slate-950">
+            <p class="text-xs text-slate-500 text-center">Tip: Use Arrow Keys or Swipe left/right</p>
+        </div>
+    </div>
+
+    <!-- Help Modal Panel -->
+    <div id="help-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 text-center">
+            <h3 class="text-xl font-bold mb-4 text-indigo-400"><i class="fa-solid fa-keyboard mr-2"></i>How to Navigate</h3>
+            <div class="text-left space-y-3 text-slate-300 mb-6">
+                <div class="flex items-center gap-3"><kbd class="bg-slate-800 px-3 py-1 rounded border border-slate-700 text-sm font-semibold text-slate-100">Right Arrow</kbd> <span>Next slide / interaction step</span></div>
+                <div class="flex items-center gap-3"><kbd class="bg-slate-800 px-3 py-1 rounded border border-slate-700 text-sm font-semibold text-slate-100">Left Arrow</kbd> <span>Previous slide</span></div>
+                <div class="flex items-center gap-3"><kbd class="bg-slate-800 px-3 py-1 rounded border border-slate-700 text-sm font-semibold text-slate-100">Spacebar</kbd> <span>Next slide</span></div>
+                <div class="flex items-center gap-3"><i class="fa-solid fa-hand-pointer text-indigo-400 w-5 text-center"></i> <span>Interactive widgets click to explore</span></div>
+                <div class="flex items-center gap-3"><i class="fa-solid fa-arrows-left-right text-indigo-400 w-5 text-center"></i> <span>Swipe left/right on touch screens</span></div>
+            </div>
+            <button onclick="toggleHelpModal()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 rounded-xl transition">Got it!</button>
+        </div>
+    </div>
+
+    <footer class="w-full px-6 py-4 bg-slate-950/80 border-t border-slate-900 flex justify-between items-center z-40 backdrop-blur-md">
+        <button onclick="prevSlide()" id="prev-btn" class="px-5 py-2.5 bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-800 rounded-xl transition text-sm flex items-center gap-2">
+            <i class="fa-solid fa-chevron-left"></i> Previous
+        </button>
+        
+        <div class="text-center">
+            <span id="slide-counter" class="text-xs tracking-wider bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700 font-bold text-indigo-400">
+                1 / 25
+            </span>
+        </div>
+
+        <button onclick="nextSlide()" id="next-btn" class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl shadow-lg shadow-indigo-900/30 font-semibold transition text-sm flex items-center gap-2">
+            Next <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </footer>
+
+    <script>
+        // Slides data containing structured parameters for all 25 slides
+        const slidesData = [
+            {
+                index: 1,
+                title: "AI Around Us",
+                subtitle: "Applications, Learning Systems, and Real-World Impact",
+                type: "hero",
+                content: "Artificial Intelligence has moved from sci-fi into standard everyday utility. Today, we stand at the threshold of custom systems adapting directly to our individual healthcare, education, connectivity, and commercial environments.",
+                image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80",
+                fallbackImage: "AI Everywhere Hub",
+                question: "How many AI systems do you think you interact with every day?"
+            },
+            {
+                index: 2,
+                title: "AI Is Everywhere",
+                subtitle: "Count Your AI Interactions Today",
+                type: "interactive-checklist",
+                content: "Many core services are driven by background AI algorithms. Check off which ones you've used today to estimate your daily automation tally!",
+                image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
+                checklistItems: [
+                    { name: "Face Unlock / Biometrics", description: "Deep learning scanning facial geometry nodes." },
+                    { name: "Google Maps / Traffic routing", description: "Real-time crowdsourced path prediction engines." },
+                    { name: "YouTube / Recommendation Feed", description: "Engagement maximizing learning models." },
+                    { name: "Instagram / TikTok Feed", description: "Personalized visual preference ranking algorithms." },
+                    { name: "Amazon Recommended Products", description: "Collaborative filtering matrix models." },
+                    { name: "ChatGPT / Generative AI Helper", description: "Large Language Models interpreting context prompts." },
+                    { name: "Spotify smart discovery playlists", description: "Acoustic modeling and user taste clustering." },
+                    { name: "Google Search queries", description: "RankBrain context parsing semantic search engines." }
+                ],
+                activity: "Ask students to count how many AI-powered services they used before attending class."
+            },
+            {
+                index: 3,
+                title: "AI from Morning to Night",
+                subtitle: "A Typical Day with AI",
+                type: "timeline-day",
+                image: "https://images.unsplash.com/photo-1508962914676-134849a727f0?auto=format&fit=crop&w=800&q=80",
+                timeline: [
+                    { time: "Morning", title: "Smart Alarm & Phone Wake", desc: "Dynamic wake adjustments and biometric facial authentication.", icon: "fa-sun" },
+                    { time: "Travel", title: "Google Maps Navigation", desc: "Adaptive route optimization, predicting delays before they happen.", icon: "fa-route" },
+                    { time: "Learning", title: "ChatGPT Exploration", desc: "Deconstructing complex curriculum subjects dynamically.", icon: "fa-brain" },
+                    { time: "Shopping", title: "Amazon Recommendations", desc: "Tailoring product highlights based on aggregate global consumer models.", icon: "fa-cart-shopping" },
+                    { time: "Entertainment", title: "Netflix & YouTube recommendations", desc: "Auto-generating recommendations that match micro-mood styles.", icon: "fa-tv" },
+                    { time: "Night", title: "Smartphone Camera AI", desc: "Computational night-mode denoising and sensor adjustments.", icon: "fa-moon" }
+                ],
+                discussion: "Can you identify any other AI applications?"
+            },
+            {
+                index: 4,
+                title: "Recent AI Revolution",
+                subtitle: "What Changed in the Last Few Years?",
+                type: "history-revolution",
+                image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80",
+                content: "Artificial Intelligence shifted from predictive models (sorting existing content) to generative models (producing entirely new information). Discover the explosive momentum:",
+                milestones: [
+                    { year: "2020", title: "GPT-3 Released", desc: "Demonstrated broad semantic understanding with billions of weights." },
+                    { year: "2022", title: "ChatGPT Launch", desc: "The fastest-adopted consumer application in history, democratizing conversational AI." },
+                    { year: "2023", title: "Generative AI Explosion", desc: "Mass proliferation of image, sound, and multi-modal models worldwide." },
+                    { year: "2024–2026", title: "AI Agent Ecosystems", desc: "Evolution from chat interfaces to task-executing autonomous digital assistants." }
+                ],
+                question: "Why has AI suddenly become so popular?"
+            },
+            {
+                index: 5,
+                title: "Generative AI",
+                subtitle: "AI That Creates Content",
+                type: "generative-cards",
+                content: "Generative AI systems process immense datasets to represent concepts mathematically, enabling them to generate novel, structured outputs from basic instructions. Click on any capability to see the app logos and live demo details update dynamically!",
+                capabilities: [
+                    { 
+                        type: "Text Gen", 
+                        desc: "ChatGPT, Claude text layout interface", 
+                        icon: "fa-file-lines", 
+                        color: "from-blue-500 to-indigo-500", 
+                        appName: "ChatGPT", 
+                        appDescription: "The state-of-the-art Large Language Model trained to process instructions, hold conversations, and generate articulate responses.", 
+                        appFeature: "Generating interactive summary structures, essays, and translations." 
+                    },
+                    { 
+                        type: "Image Gen", 
+                        desc: "Midjourney, DALL-E pixel designer workspace", 
+                        icon: "fa-image", 
+                        color: "from-violet-500 to-fuchsia-500", 
+                        appName: "Midjourney", 
+                        appDescription: "A generative AI program that translates sophisticated text descriptions into photorealistic master artwork concepts.", 
+                        appFeature: "Translating text prompts into high-fidelity image dimensions." 
+                    },
+                    { 
+                        type: "Video Creation", 
+                        desc: "Sora cinematic visual timelines renderer", 
+                        icon: "fa-video", 
+                        color: "from-pink-500 to-rose-500", 
+                        appName: "Sora (OpenAI)", 
+                        appDescription: "An advanced AI model capable of creating realistic and highly imaginative 60-second video scenes from text instructions.", 
+                        appFeature: "Simulating physical world camera tracking motions." 
+                    },
+                    { 
+                        type: "Music & Audio", 
+                        desc: "Suno neural waveform audio generation editor", 
+                        icon: "fa-music", 
+                        color: "from-amber-500 to-orange-500", 
+                        appName: "Suno AI", 
+                        appDescription: "A generative artificial intelligence platform designed to generate realistic songs combining vocals and instrumentation.", 
+                        appFeature: "Synthesizing full instrumental and harmonious lyrics tracks." 
+                    },
+                    { 
+                        type: "Computer Code", 
+                        desc: "GitHub Copilot developer IDE autocomplete", 
+                        icon: "fa-code", 
+                        color: "from-emerald-500 to-teal-500", 
+                        appName: "GitHub Copilot", 
+                        appDescription: "An AI pair programmer that helps write code faster by autocompleting lines and entire blocks of code inside your editor.", 
+                        appFeature: "Providing context-aware IDE code completions." 
+                    }
+                ],
+                examples: ["ChatGPT", "Gemini", "Claude", "GitHub Copilot"],
+                activity: "Ask students what they would create if they had an AI assistant."
+            },
+            {
+                index: 6,
+                title: "AI Use Case – ChatGPT",
+                subtitle: "How Students Use AI",
+                type: "usecase-cards",
+                image: "https://images.unsplash.com/photo-1679083216051-aa510a1a2c0e?auto=format&fit=crop&w=800&q=80",
+                useCases: [
+                    { title: "Homework Assistance", desc: "Deconstructs math derivations step-by-step for clear comprehension.", icon: "fa-book" },
+                    { title: "Programming Help", desc: "Spots logic bugs and explains object-oriented programming methodologies.", icon: "fa-laptop-code" },
+                    { title: "Language Learning", desc: "Acts as an infinitely patient native language conversational peer.", icon: "fa-language" },
+                    { title: "Summarization", desc: "Compresses massive 50-page PDFs into accessible, high-yield bullet points.", icon: "fa-compress" },
+                    { title: "Brainstorming Ideas", desc: "Bypasses writer's block by proposing hundreds of presentation concepts.", icon: "fa-lightbulb" }
+                ],
+                discussion: "Can AI replace teachers? Why or why not?"
+            },
+            {
+                index: 7,
+            title: "AI Use Case – Image Generation",
+                subtitle: "Creating Images from Text",
+                type: "interactive-image-gen",
+                promptsList: [
+                    {
+                        title: "Robot Classroom",
+                        prompt: "A robot teaching students in a futuristic classroom, warm volumetric lighting, digital holograms, highly detailed, 8k resolution.",
+                        img: "assets/robot_classroom.png"
+                    },
+                    {
+                        title: "Cyberpunk Cityscape",
+                        prompt: "Cyberpunk urban cityscape at night, flying vehicles hovering between neon-lit skyscrapers, rainy streets reflecting holographic signs.",
+                        img: "assets/cyberpunk_cityscape.png"
+                    },
+                    {
+                        title: "Bioluminescent Forest",
+                        prompt: "A serene bioluminescent forest, glowing mushrooms, majestic deer with glowing antlers walking on a mossy path, unreal engine render.",
+                        img: "assets/bioluminescent_forest.png"
+                    }
+                ],
+                applications: [
+                    { name: "Advertising", desc: "Generating instant layout mockups." },
+                    { name: "Design", desc: "Fast drafting of architectural environments." },
+                    { name: "Education", desc: "Custom visual illustrations." },
+                    { name: "Gaming", desc: "Endless modular graphic asset iteration." },
+                    { name: "Film Production", desc: "Quick-frame storyboard visual layouts." }
+                ]
+            },
+            {
+                index: 8,
+                title: "AI Use Case – Smart Assistants",
+                subtitle: "Siri, Alexa, and Google Assistant",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1543512214-318c7553f230?auto=format&fit=crop&w=800&q=80",
+                capabilities: [
+                    { label: "Voice Recognition", desc: "Translating messy vocal acoustic waves into written text vectors instantly." },
+                    { label: "Question Answering", desc: "Querying dense knowledge graphs to find factual matches." },
+                    { label: "Task Automation", desc: "Setting alarms, calendar bookings, and composing context emails." },
+                    { label: "Smart Home Control", desc: "Interfacing with disparate IoT APIs seamlessly." }
+                ],
+                question: "What makes these assistants seem intelligent?"
+            },
+            {
+                index: 9,
+                title: "AI Applications Across Industries",
+                subtitle: "AI Is Transforming Every Sector",
+                type: "interactive-wheel",
+                image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+                sectors: [
+                    { name: "Healthcare", desc: "Early diagnostic scans, robotic micro-surgeries, and automated target chemical molecule identification.", icon: "fa-heart-pulse", color: "text-rose-400" },
+                    { name: "Education", desc: "Personalized curations, predictive weakness diagnostic sweeps, and intelligent auto-assessments.", icon: "fa-graduation-cap", color: "text-blue-400" },
+                    { name: "Agriculture", desc: "UAV thermal crop stress diagnostic tracking and computer-vision micro-targeted pesticide applicators.", icon: "fa-wheat-awn", color: "text-emerald-400" },
+                    { name: "Banking", desc: "Instant pattern fraud detections, sub-second algorithmic credit scorings, and portfolio adjustments.", icon: "fa-building-columns", color: "text-amber-400" },
+                    { name: "Transportation", desc: "Autonomous self-driving neural configurations and real-world municipal grid traffic control.", icon: "fa-car", color: "text-cyan-400" },
+                    { name: "Manufacturing", desc: "Predictive physical wear maintenance signals and robotic visual QA assembly inspections.", icon: "fa-industry", color: "text-indigo-400" },
+                    { name: "Entertainment", desc: "Acoustic audio matching curations and complex computer-vision procedural rendering pipelines.", icon: "fa-gamepad", color: "text-violet-400" },
+                    { name: "Cybersecurity", desc: "Dynamic continuous firewall breach detection sweeps and synthetic automated patch systems.", icon: "fa-shield-halved", color: "text-teal-400" }
+                ],
+                instruction: "Click on any sector in the grid to explore how AI acts as an accelerator!"
+            },
+            {
+                index: 10,
+                title: "AI in Healthcare",
+                subtitle: "Saving Lives with AI",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "Disease Detection", desc: "Identifying deep cellular irregularities before standard physical symptoms manifest." },
+                    { title: "Medical Imaging", desc: "Computer vision engines parsing MRI/CT scans with pixel-precision." },
+                    { title: "Drug Discovery", desc: "Mapping protein configurations to shorten decades of pipeline research." },
+                    { title: "Patient Monitoring", desc: "Predictive wearables forecasting changes in vital stats." }
+                ],
+                example: "AI can spot oncological anomalies in scans with accuracy that rivals senior radiologists.",
+                question: "Would you trust an AI doctor's diagnosis?"
+            },
+            {
+                index: 11,
+                title: "AI in Education",
+                subtitle: "Personalized Learning",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "Adaptive Learning", desc: "Varying study progression pathways dynamically based on student response times." },
+                    { title: "Automated Assessment", desc: "Delivering detailed constructive structural feedback on written drafts instantly." },
+                    { title: "AI Tutors", desc: "Providing 24/7 concept breakdown and reinforcement." },
+                    { title: "Learning Analytics", desc: "Surfacing comprehension trends across entire classrooms for teachers." }
+                ],
+                example: "Students struggling with algebra receive targeted foundation puzzles instead of standard repetitive failures."
+            },
+            {
+                index: 12,
+                title: "AI in Agriculture",
+                subtitle: "Smart Farming",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "Crop Disease Detection", desc: "Classifying visual evidence of plant pests and fungi via mobile images." },
+                    { title: "Smart Irrigation", desc: "Analyzing soil moisture levels to conserve water resources." },
+                    { title: "Yield Prediction", desc: "Analyzing multispectral imagery and historical data for harvest timing." },
+                    { title: "Drone-Based Monitoring", desc: "Autonomous flights mapping moisture, weeds, and field health." }
+                ],
+                question: "Why is AI important for feeding a growing population?"
+            },
+            {
+                index: 13,
+                title: "AI in Transportation",
+                subtitle: "Smarter Mobility",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "Google Maps Route-planning", desc: "Synthesizing live coordinates from millions of devices to optimize travel times." },
+                    { title: "Traffic Prediction", desc: "Predictive forecasting modeling historical blockages at specific hours." },
+                    { title: "Self-Driving Vehicles", desc: "Processing visual data through neural networks to steer, brake, and navigate safely." },
+                    { title: "Public Transport Planning", desc: "Matching dispatch schedules directly with real-time transit demand spikes." }
+                ],
+                activity: "Ask students how Google Maps predicts traffic congestion."
+            },
+            {
+                index: 14,
+                title: "AI in Banking",
+                subtitle: "Fighting Fraud",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "Credit Scoring", desc: "Analyzing alternative financial data trends to evaluate risk profiles fairly." },
+                    { title: "Fraud Detection", desc: "Monitoring thousands of data points on transactions to flag anomalies in milliseconds." },
+                    { title: "Risk Assessment", desc: "Running predictive stress simulations to shield banking ecosystems from systemic shocks." },
+                    { title: "Customer Support Chatbots", desc: "Resolving routine service questions immediately." }
+                ],
+                example: "AI detects and declines a checkout attempt in Tokyo on a card used in New York just minutes before."
+            },
+            {
+                index: 15,
+                title: "What Is a Learning System?",
+                subtitle: "The Heart of AI",
+                type: "concept-learning-system",
+                image: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=800&q=80",
+                content: "Unlike static programs that follow strict, unchanging rules (like a calculator), a learning system analyzes data, adjusts its internal parameters, and updates its behavior based on feedback.",
+                features: [
+                    { title: "Receives Information", desc: "Consistently absorbs structured or unstructured input data feeds.", icon: "fa-arrow-down-wide-short" },
+                    { title: "Learns Patterns", desc: "Identifies mathematical correlations and trends.", icon: "fa-arrows-split-up-and-left" },
+                    { title: "Makes Decisions", desc: "Applies insights to novel situations to select actions.", icon: "fa-gavel" },
+                    { title: "Improves Over Time", desc: "Refines its model using performance feedback.", icon: "fa-chart-line" }
+                ],
+                examples: ["Netflix Recommendations", "YouTube Suggestion Algorithms", "Instagram Feed Engines", "ChatGPT Conversational Fine-Tuning"]
+            },
+            {
+                index: 16,
+                title: "How Learning Systems Work",
+                subtitle: "Four Basic Components",
+                type: "interactive-flow",
+                steps: [
+                    { name: "1. Input Data", role: "Sensor readouts, user text prompts, history streams, or pixels.", icon: "fa-database", img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80" },
+                    { name: "2. Learning Algorithm", role: "Mathematical optimizer that tunes the system parameters.", icon: "fa-gears", img: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=800&q=80" },
+                    { name: "3. Knowledge Model", role: "The stored network of patterns and predictions.", icon: "fa-network-wired", img: "https://images.unsplash.com/photo-1527474305487-b87b222841cc?auto=format&fit=crop&w=800&q=80" },
+                    { name: "4. Prediction or Decision", role: "The final output action—recommending a movie, identifying a disease, or generating a line of code.", icon: "fa-circle-check", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" }
+                ],
+                instruction: "Click 'Run System Flow' or select individual steps to see the architecture and images transition dynamically!"
+            },
+            {
+                index: 17,
+                title: "YouTube as a Learning System",
+                subtitle: "Why Does YouTube Know What You Like?",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "What It Monitors", desc: "Exact watch durations, skips, searches, and device configurations." },
+                    { title: "Negative Signals", desc: "If you scroll past a thumbnail or click 'Not Interested', it adapts immediately." },
+                    { title: "Collaborative Filtering", desc: "Recommending videos watched by users with similar watch habits." }
+                ],
+                result: "A highly personalized feed engineered to maximize watch time.",
+                question: "Is this dynamic recommendation helpful or dangerous?"
+            },
+            {
+                index: 18,
+                title: "Netflix Recommendation System",
+                subtitle: "Learning User Preferences",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "The Problem", desc: "Overwhelming choices cause 'decision fatigue' for users." },
+                    { title: "The Solution", desc: "Continuous deep analysis of genre, cast, viewing habits, and time of day." },
+                    { title: "Artwork Personalization", desc: "Varying show thumbnails dynamically based on what you click." }
+                ],
+                question: "Would Netflix be useful without recommendations?"
+            },
+            {
+                index: 19,
+                title: "Why Data Matters",
+                subtitle: "Data Is the Fuel of AI",
+                type: "data-pipeline",
+                image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+                formula: ["No Data", "No Learning", "No AI"],
+                content: "An AI system is only as capable as its dataset. Without large, high-quality datasets, algorithms cannot spot patterns or generalize to new scenarios.",
+                examples: [
+                    { label: "Computer Vision", type: "Millions of tagged scans, object outlines, and street photos." },
+                    { label: "Natural Language", desc: "Trillions of paragraphs from high-quality web text, articles, books." },
+                    { label: "Autonomous Drive", desc: "Years of GPS mapping telemetry and sensor recordings." }
+                ]
+            },
+            {
+                index: 20,
+                title: "Role of Data Analysis in AI",
+                subtitle: "Before AI Can Learn",
+                type: "interactive-steps",
+                image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+                steps: [
+                    { step: "Step 1: Collect Data", desc: "Gathering sensor readouts, user text records, or telemetry maps." },
+                    { step: "Step 2: Clean Data", desc: "Striking out system errors, empty values, and corrupted data." },
+                    { step: "Step 3: Analyze Data", desc: "Identifying early correlations, averages, and data distribution shapes." },
+                    { step: "Step 4: Train AI", desc: "Feeding clean data into neural configurations to adjust weights." },
+                    { step: "Step 5: Generate Insights", desc: "Running predictive queries on live, unseen operational data." }
+                ],
+                keyMessage: "Good AI starts with good data."
+            },
+            {
+                index: 21,
+                title: "Example – Student Performance Prediction",
+                subtitle: "Real Data Analysis Example",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "Features / Input Data", desc: "Class attendance, assignment grades, and study hours." },
+                    { title: "Pattern Spotting", desc: "Identifying correlations between early prep scores and success." },
+                    { title: "Predictive Target", desc: "Proactively flagging students who may need additional support." }
+                ],
+                question: "Should AI systems predict student success? What are the potential biases?"
+            },
+            {
+                index: 22,
+                title: "Case Study 1 – Google Maps",
+                subtitle: "How Google Maps Uses AI",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "Data Harvesting", desc: "Processing real-time GPS signals, speed readouts, and construction reports." },
+                    { title: "Algorithmic Routing", desc: "Running graph traversal algorithms modified by real-time speed predictions." },
+                    { title: "Traffic Modeling", desc: "Analyzing historical patterns to predict slowdowns on your route." }
+                ],
+                impact: "Millions of drivers save hours of travel time every day."
+            },
+            {
+                index: 23,
+                title: "Case Study 2 – Healthcare AI",
+                subtitle: "Detecting Disease Early",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "The Problem", desc: "Overworked medical staffs reviewing thousands of diagnostic scans." },
+                    { title: "The AI Solution", desc: "A computer vision model pre-trained on millions of labeled clinical images." },
+                    { title: "Key Benefits", desc: "Identifies hard-to-spot patterns, reducing processing times from days to seconds." }
+                ],
+                impact: "Earlier treatments lead to significantly improved patient outcomes."
+            },
+            {
+                index: 24,
+                title: "Case Study 3 – ChatGPT",
+                subtitle: "The Generative AI Revolution",
+                type: "visual-grid",
+                image: "https://images.unsplash.com/photo-1679083216051-aa510a1a2c0e?auto=format&fit=crop&w=800&q=80",
+                points: [
+                    { title: "Dataset Scale", desc: "Trained on hundreds of billions of web pages, documents, and books." },
+                    { title: "Core Method", desc: "Predicting the most likely next word based on surrounding context." },
+                    { title: "Instruction Tuning", desc: "Human feedback helps align outputs to be helpful, accurate, and safe." }
+                ],
+                question: "What are ChatGPT's main strengths and limitations?"
+            },
+            {
+                index: 25,
+                title: "Looking Ahead",
+                subtitle: "The Future Belongs to AI Creators",
+                type: "careers-showcase",
+                image: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80",
+                careers: [
+                    { title: "AI Engineer", desc: "Deploys, scales, and fine-tunes deep learning models.", icon: "fa-robot" },
+                    { title: "Data Scientist", desc: "Analyzes datasets to identify hidden patterns.", icon: "fa-magnifying-glass-chart" },
+                    { title: "Prompt Engineer", desc: "Designs prompts to get the best outputs from AI models.", icon: "fa-wand-magic-sparkles" },
+                    { title: "AI Entrepreneur", desc: "Builds innovative startups powered by machine learning.", icon: "fa-lightbulb" },
+                    { title: "Product Designer", desc: "Constructs accessible user experiences for complex AI configurations.", icon: "fa-compass-drafting" },
+                    { title: "Research Scientist", desc: "Invents advanced mathematical architectures and model pathways.", icon: "fa-flask" }
+                ],
+                takeaways: [
+                    "AI is already integrated into everyday life.",
+                    "Learning systems continuously improve using data.",
+                    "Structured data analysis is the foundation of AI.",
+                    "Real-world AI systems solve meaningful problems."
+                ],
+                finalReflection: "If you could solve one global problem using AI, what would it be?"
+            }
+        ];
+
+        let currentSlideIndex = 0;
+        const checklistSelections = {}; // Persistent checklist selections
+        let activeGenCapabilityIdx = 0;  // Slide 5 active capability select
+        let activeSlide7PromptIdx = 0;   // Slide 7 active prompt select
+        let activeFlowStepIdx = null;    // Slide 16 active step select
+
+        function getAppLogoSVG(type) {
+            switch(type) {
+                case "Text Gen":
+                    return `
+                        <svg class="w-24 h-24 text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.4)]" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21.74 11.23a4.57 4.57 0 0 0-.21-2.18 4.7 4.7 0 0 0-1.37-1.89 4.67 4.67 0 0 0-2.12-.91 4.77 4.77 0 0 0-3.32.48A4.6 4.6 0 0 0 13 4.88a4.72 4.72 0 0 0-2-.84 4.73 4.73 0 0 0-2.48.16A4.66 4.66 0 0 0 6.64 5.7a4.61 4.61 0 0 0-.85 2 4.73 4.73 0 0 0-.91 2.12 4.75 4.75 0 0 0 .48 3.32 4.6 4.6 0 0 0 1.85 1.77 4.72 4.72 0 0 0 .84 2 4.73 4.73 0 0 0 2.48.24 4.66 4.66 0 0 0 1.88-1.48 4.62 4.62 0 0 0 .85-2c.1.02.21.03.32.03a4.73 4.73 0 0 0 2.12-.91 4.75 4.75 0 0 0 .91-2.12c.02-.11.03-.22.03-.33c.3.15.63.22.96.22h.02a4.7 4.7 0 0 0 2.18-.21c.71-.31 1.33-.8 1.81-1.39a4.67 4.67 0 0 0 .47-2.15z"/>
+                        </svg>
+                    `;
+                case "Image Gen":
+                    return `
+                        <svg class="w-24 h-24 text-indigo-400 drop-shadow-[0_0_15px_rgba(129,140,248,0.4)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 17H2c0-3.37 2.3-6.2 5.5-6.85C9.35 9.8 12 7.5 12 2c0 5.5 2.65 7.8 4.5 8.15 3.2.65 5.5 3.48 5.5 6.85z"/>
+                            <path d="M6 17c0 2 2 3 6 3s6-1 6-3"/>
+                            <circle cx="12" cy="11" r="1.5" fill="currentColor"/>
+                        </svg>
+                    `;
+                case "Video Creation":
+                    return `
+                        <svg class="w-24 h-24 text-rose-400 drop-shadow-[0_0_15px_rgba(251,113,133,0.4)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                            <path d="M8 21h8" />
+                            <path d="M12 17v4" />
+                            <polygon points="10 8 16 11 10 14 10 8" fill="currentColor"/>
+                        </svg>
+                    `;
+                case "Music & Audio":
+                    return `
+                        <svg class="w-24 h-24 text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.4)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M3 10v4M6 6v12M9 3v18M12 8v8M15 5v14M18 9v6M21 11v2"/>
+                            <circle cx="12" cy="12" r="9" stroke-dasharray="2 4" stroke-width="1"/>
+                        </svg>
+                    `;
+                case "Computer Code":
+                    return `
+                        <svg class="w-24 h-24 text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.4)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a10 10 0 0 0-10 10c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                        </svg>
+                    `;
+                default:
+                    return '';
+            }
+        }
+
+        // Dynamic, responsive uncropped background image rendering generator
+        function getUncroppedImageHTML(imageUrl, titleStr, customId = "") {
+            const finalId = customId ? `id="${customId}"` : '';
+            return `
+                <div class="relative w-full h-[320px] lg:h-[450px] rounded-3xl overflow-hidden border border-slate-800/80 shadow-2xl bg-slate-950 flex items-center justify-center">
+                    <!-- Blur backdrop layer (Stretched and blurred background) -->
+                    <div ${finalId ? `id="${customId}-bg"` : ''} class="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-110 pointer-events-none transition-all duration-500" style="background-image: url('${imageUrl}');"></div>
+                    <!-- Pristine uncropped foreground image -->
+                    <img ${finalId} src="${imageUrl}" alt="${titleStr}" class="relative z-10 max-w-full max-h-full object-contain pointer-events-none transition-all duration-500" />
+                </div>
+            `;
+        }
+
+        let flowTimer = null;
+        let generationTimer = null;
+
+        function clearActiveTimers() {
+            if (flowTimer) {
+                clearInterval(flowTimer);
+                flowTimer = null;
+            }
+            if (generationTimer) {
+                clearInterval(generationTimer);
+                generationTimer = null;
+            }
+        }
+
+        function renderActiveSlide() {
+            clearActiveTimers(); // Secure no leaking timers across runs
+            
+            const slide = slidesData[currentSlideIndex];
+            const container = document.getElementById('slide-body');
+            
+            // Re-apply viewport slide entry transition
+            const viewport = document.getElementById('slide-viewport');
+            viewport.classList.remove('slide-enter');
+            void viewport.offsetWidth; // Force CSS Reflow
+            viewport.classList.add('slide-enter');
+
+            let htmlContent = "";
+
+            if (slide.type === "hero") {
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-7 space-y-6">
+                            <span class="text-xs uppercase font-extrabold tracking-widest text-indigo-400 bg-indigo-950/80 px-3 py-1.5 rounded-full border border-indigo-900/50"><i class="fa-solid fa-star mr-1"></i> Interactive Presentation</span>
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent leading-none">
+                                ${slide.title}
+                            </h1>
+                            <p class="text-lg md:text-xl text-indigo-200/90 font-medium">${slide.subtitle}</p>
+                            <p class="text-slate-400 leading-relaxed text-base md:text-lg">${slide.content}</p>
+                            
+                            <div class="p-5 bg-gradient-to-r from-indigo-950/60 to-slate-900/60 rounded-2xl border border-indigo-500/20 shadow-inner">
+                                <span class="text-indigo-400 text-xs font-bold uppercase tracking-wider block mb-2"><i class="fa-regular fa-comments mr-1.5"></i> Opening Question</span>
+                                <p class="text-lg text-indigo-100 font-semibold leading-relaxed">"${slide.question}"</p>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5">
+                            ${getUncroppedImageHTML(slide.image, slide.fallbackImage)}
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "interactive-checklist") {
+                // Persistent dynamic tally calculating percentage on demand
+                const checkedCount = Object.values(checklistSelections).filter(Boolean).length;
+                const totalItems = slide.checklistItems.length;
+                const percentScore = totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
+
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-7 space-y-5">
+                            <div class="border-b border-slate-800 pb-3">
+                                <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                                <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                            </div>
+                            <p class="text-slate-300 text-xs leading-relaxed mb-2">${slide.content}</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                                ${slide.checklistItems.map((item, idx) => {
+                                    const isChecked = !!checklistSelections[idx];
+                                    return `
+                                        <div onclick="toggleCheck(${idx})" id="check-card-${idx}" class="p-3 bg-slate-900/80 border ${isChecked ? 'border-indigo-500 bg-indigo-950/20' : 'border-slate-800'} rounded-xl flex items-center gap-3 cursor-pointer hover:border-indigo-500/50 transition duration-200">
+                                            <div id="check-box-${idx}" class="w-5 h-5 rounded-md border ${isChecked ? 'bg-indigo-600 border-indigo-500' : 'border-slate-700'} flex items-center justify-center text-xs">
+                                                ${isChecked ? '<i class="fa-solid fa-check text-white"></i>' : ''}
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-slate-200 text-xs leading-tight">${item.name}</h4>
+                                                <p class="text-[9px] text-slate-400 mt-0.5 leading-tight">${item.description}</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-900">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Your Daily Automation Quotient:</span>
+                                    <span id="checklist-score" class="text-indigo-400 font-extrabold text-lg">${percentScore}%</span>
+                                </div>
+                                <div class="text-[10px] text-emerald-400 bg-emerald-950/40 border border-emerald-900/40 px-3 py-1.5 rounded-lg text-right max-w-xs leading-tight">
+                                    <span class="font-bold uppercase block mb-0.5">Interaction Prompt</span>
+                                    <p class="text-emerald-100">${slide.activity}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5">
+                            ${getUncroppedImageHTML(slide.image, slide.title)}
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "timeline-day") {
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-8 space-y-6">
+                            <div class="border-b border-slate-800 pb-3">
+                                <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                                <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                            </div>
+
+                            <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
+                                ${slide.timeline.map(item => `
+                                    <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3 flex flex-col justify-between h-[155px]">
+                                        <div>
+                                            <span class="text-[9px] font-extrabold tracking-widest text-indigo-400 uppercase block mb-1">${item.time}</span>
+                                            <h4 class="font-bold text-slate-200 text-xs leading-tight">${item.title}</h4>
+                                        </div>
+                                        <div class="space-y-2 mt-2">
+                                            <p class="text-[8px] text-slate-400 leading-tight">${item.desc}</p>
+                                            <div class="text-slate-500 text-xs"><i class="fa-solid ${item.icon}"></i></div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div class="p-4 bg-indigo-950/40 border border-indigo-900/30 rounded-xl flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-indigo-900 flex items-center justify-center text-indigo-300 text-xs"><i class="fa-regular fa-comments"></i></div>
+                                <div>
+                                    <h5 class="text-[10px] font-bold uppercase tracking-wider text-indigo-400">Class Discussion Point</h5>
+                                    <p class="text-slate-200 italic font-medium text-xs">"${slide.discussion}"</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-4">
+                            ${getUncroppedImageHTML(slide.image, slide.title)}
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "history-revolution") {
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-7 space-y-5">
+                            <div class="border-b border-slate-800 pb-3">
+                                <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                                <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                            </div>
+                            <p class="text-slate-300 text-xs leading-relaxed">${slide.content}</p>
+
+                            <div class="space-y-2.5">
+                                ${slide.milestones.map(m => `
+                                    <div class="bg-slate-900/80 border border-slate-800 p-3.5 rounded-xl flex gap-4 items-center">
+                                        <div class="bg-indigo-950 border border-indigo-900 text-indigo-400 font-extrabold px-3 py-1.5 rounded-lg text-sm tracking-wider w-16 text-center">
+                                            ${m.year}
+                                        </div>
+                                        <div>
+                                            <h4 class="font-extrabold text-slate-200 text-xs">${m.title}</h4>
+                                            <p class="text-[10px] text-slate-400 leading-snug mt-0.5">${m.desc}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div class="p-4 bg-indigo-950/40 border border-indigo-900/30 rounded-xl flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-indigo-900 flex items-center justify-center text-indigo-300 text-xs"><i class="fa-regular fa-comments"></i></div>
+                                <div>
+                                    <h5 class="text-[10px] font-bold uppercase tracking-wider text-indigo-400">Collaborative Debating</h5>
+                                    <p class="text-slate-200 italic font-medium text-xs">"${slide.question}"</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5">
+                            ${getUncroppedImageHTML(slide.image, slide.title)}
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "generative-cards") {
+                const currentCap = slide.capabilities[activeGenCapabilityIdx];
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-7 space-y-5">
+                            <div class="border-b border-slate-800 pb-3">
+                                <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                                <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                            </div>
+                            <p class="text-slate-300 text-xs leading-relaxed mb-2">${slide.content}</p>
+
+                            <div class="grid grid-cols-3 md:grid-cols-5 gap-2.5">
+                                ${slide.capabilities.map((c, idx) => {
+                                    const isActive = idx === activeGenCapabilityIdx;
+                                    return `
+                                        <div onclick="selectGenCapability(${idx})" id="gen-cap-card-${idx}" class="p-3 bg-slate-900/80 border ${isActive ? 'border-indigo-500 bg-indigo-950/20 shadow-lg shadow-indigo-950/40 scale-105' : 'border-slate-800'} rounded-xl flex flex-col justify-between items-center text-center cursor-pointer hover:scale-[1.03] hover:border-indigo-500/50 transition duration-300">
+                                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br ${c.color} flex items-center justify-center text-white text-xs shadow-lg">
+                                                <i class="fa-solid ${c.icon}"></i>
+                                            </div>
+                                            <div class="mt-2.5">
+                                                <h4 class="font-extrabold text-slate-100 text-[10px] leading-tight">${c.type}</h4>
+                                                <p class="text-[8px] text-slate-400 mt-1 leading-tight">${c.desc}</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <div class="flex flex-col md:flex-row gap-3 justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-900">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Top Systems:</span>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        ${slide.examples.map(ex => `
+                                            <span class="bg-slate-900 border border-slate-800 text-[10px] px-2 py-0.5 rounded text-indigo-400 font-semibold">${ex}</span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div class="text-[10px] text-emerald-400 bg-emerald-950/40 border border-emerald-900/40 px-3 py-1.5 rounded-lg text-center md:text-right w-full md:w-auto">
+                                    <span class="font-bold uppercase block mb-0.5">Interactive Challenge</span>
+                                    <p class="text-emerald-100">${slide.activity}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5">
+                            <div id="slide-5-preview-container" class="relative w-full h-[320px] lg:h-[450px] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+                                <div class="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950"></div>
+                                <div class="relative z-10 flex flex-col items-center justify-center space-y-4 w-full h-full">
+                                    <div id="slide-5-logo-wrap" class="p-5 bg-slate-900/60 rounded-3xl border border-slate-800/80 flex items-center justify-center shadow-inner">
+                                        ${getAppLogoSVG(currentCap.type)}
+                                    </div>
+                                    <div>
+                                        <h3 id="slide-5-app-title" class="text-xl font-extrabold text-white mt-2">${currentCap.appName}</h3>
+                                        <p id="slide-5-app-desc" class="text-xs text-slate-400 max-w-xs mt-1 leading-relaxed">${currentCap.appDescription}</p>
+                                    </div>
+                                    <div class="bg-slate-900/80 border border-slate-850 px-4 py-2.5 rounded-2xl w-full max-w-xs text-left">
+                                        <div class="flex items-center gap-2 mb-1.5">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                            <span class="text-[9px] uppercase font-bold text-slate-400">Live Application Mockup</span>
+                                        </div>
+                                        <p id="slide-5-app-feature" class="text-[11px] text-indigo-300 font-semibold italic">${currentCap.appFeature}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "usecase-cards") {
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-8 space-y-6">
+                            <div class="border-b border-slate-800 pb-3">
+                                <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                                <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                                ${slide.useCases.map((uc, idx) => `
+                                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-indigo-500/50 transition flex flex-col justify-between">
+                                        <div>
+                                            <div class="w-8 h-8 rounded-lg bg-indigo-950 border border-indigo-900 flex items-center justify-center text-indigo-400 text-sm mb-3">
+                                                <i class="fa-solid ${uc.icon}"></i>
+                                            </div>
+                                            <h4 class="font-extrabold text-slate-100 text-xs mb-1">${uc.title}</h4>
+                                        </div>
+                                        <p class="text-[10px] text-slate-400 leading-relaxed mt-2">${uc.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div class="p-4 bg-indigo-950/40 border border-indigo-900/30 rounded-xl flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-indigo-900 flex items-center justify-center text-indigo-300 text-xs"><i class="fa-regular fa-lightbulb"></i></div>
+                                <div>
+                                    <h5 class="text-[10px] font-bold uppercase tracking-wider text-indigo-400">Class Debate</h5>
+                                    <p class="text-slate-200 italic font-medium text-xs">"${slide.discussion}"</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-4">
+                            ${getUncroppedImageHTML(slide.image, slide.title)}
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "interactive-image-gen") {
+                const initialActivePromptObj = slide.promptsList[activeSlide7PromptIdx];
+                htmlContent = `
+                    <div class="space-y-6">
+                        <div class="border-b border-slate-800 pb-4">
+                            <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                            <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7 space-y-5">
+                                <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-900">
+                                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-indigo-400 px-2 block">Choose Prompt:</span>
+                                    <div class="flex gap-2 flex-grow" id="slide-7-button-container">
+                                        ${slide.promptsList.map((item, idx) => `
+                                            <button id="prompt-select-btn-${idx}" onclick="selectSlide7Prompt(${idx})" class="text-xs font-semibold px-3 py-1.5 rounded-lg border transition ${idx === activeSlide7PromptIdx ? 'bg-indigo-600 border-indigo-500 text-white shadow-md' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'}">
+                                                ${item.title}
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 relative overflow-hidden">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-[10px] uppercase tracking-widest text-indigo-400 font-extrabold"><i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> Text Prompt Input</span>
+                                        <span class="text-[10px] text-slate-500 font-mono" id="slide-7-status">Status: Ready</span>
+                                    </div>
+                                    <p id="slide-7-prompt-box" class="text-slate-200 text-sm italic font-mono leading-relaxed bg-slate-900/80 p-3.5 rounded-xl border border-slate-800/80">"${initialActivePromptObj.prompt}"</p>
+                                    <button onclick="triggerImageGenerationDemo()" id="gen-demo-btn" class="mt-4 w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold py-2.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm">
+                                        <i class="fa-solid fa-arrows-spin" id="spinner-icon"></i> Simulate Image Render
+                                    </button>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <h4 class="text-xs uppercase tracking-wider font-extrabold text-slate-400">Key Creative Industries:</h4>
+                                    <div class="grid grid-cols-2 md:grid-cols-5 gap-2.5">
+                                        ${slide.applications.map(app => `
+                                            <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3">
+                                                <h5 class="text-xs font-bold text-slate-200">${app.name}</h5>
+                                                <p class="text-[9px] text-slate-400 mt-0.5 leading-snug">${app.desc}</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="lg:col-span-5 relative flex justify-center">
+                                <div id="gen-image-frame" class="w-full h-[320px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-950 flex flex-col justify-center items-center p-4">
+                                    <i class="fa-solid fa-image text-slate-700 text-4xl mb-3" id="fallback-icon"></i>
+                                    <p class="text-slate-400 text-xs text-center" id="fallback-text">Select a prompt above and click 'Simulate Image Render' to compile procedural visual output.</p>
+                                    <div id="demo-output-container" class="hidden w-full h-full relative">
+                                        <div id="slide-7-backdrop" class="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-110 pointer-events-none" style="background-image: url('${initialActivePromptObj.img}');"></div>
+                                        <img id="demo-output-img" src="${initialActivePromptObj.img}" alt="AI Gen Example" class="relative z-10 w-full h-full object-contain rounded-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "visual-grid") {
+                htmlContent = `
+                    <div class="space-y-6">
+                        <div class="border-b border-slate-800 pb-4">
+                            <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                            <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7 space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    ${(slide.points || slide.capabilities || []).map(p => `
+                                        <div class="bg-slate-900/60 border border-slate-800/85 p-4 rounded-xl hover:border-indigo-500/30 transition">
+                                            <span class="text-indigo-400 text-xs font-bold uppercase tracking-wider block mb-1">${p.title || p.label}</span>
+                                            <p class="text-xs text-slate-300 leading-relaxed">${p.desc}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+
+                                ${slide.example ? `
+                                    <div class="p-4 bg-slate-950 border border-slate-850 rounded-xl flex items-start gap-3">
+                                        <div class="text-emerald-400 text-sm mt-0.5"><i class="fa-solid fa-circle-check"></i></div>
+                                        <div>
+                                            <h6 class="text-xs font-bold text-slate-300">Real-World Case Example:</h6>
+                                            <p class="text-xs text-slate-400 mt-0.5 leading-relaxed">${slide.example}</p>
+                                        </div>
+                                    </div>
+                                ` : ''}
+
+                                ${slide.impact ? `
+                                    <div class="p-4 bg-emerald-950/20 border border-emerald-900/40 rounded-xl flex items-start gap-3">
+                                        <div class="text-emerald-400 text-sm mt-0.5"><i class="fa-solid fa-bolt"></i></div>
+                                        <div>
+                                            <h6 class="text-xs font-bold text-emerald-400">Broad Impact:</h6>
+                                            <p class="text-xs text-slate-300 mt-0.5 leading-relaxed">${slide.impact}</p>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <div class="lg:col-span-5 relative">
+                                ${getUncroppedImageHTML(slide.image, slide.title)}
+                                
+                                ${slide.question ? `
+                                    <div class="absolute bottom-4 left-4 right-4 bg-slate-950/90 backdrop-blur border border-slate-800 p-4 rounded-xl shadow-lg z-20">
+                                        <span class="text-blue-400 text-[10px] uppercase font-bold tracking-widest block mb-1">Class Question</span>
+                                        <p class="text-xs text-slate-200 font-medium">"${slide.question}"</p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "interactive-wheel") {
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-8 space-y-4">
+                            <div class="border-b border-slate-800 pb-3">
+                                <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                                <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                            </div>
+                            <p class="text-slate-300 text-xs">${slide.instruction}</p>
+
+                            <div class="grid grid-cols-4 gap-2.5">
+                                ${slide.sectors.map((sec, idx) => `
+                                    <div onclick="selectSector(${idx})" id="sec-card-${idx}" class="p-2.5 bg-slate-900/60 border border-slate-800 rounded-xl cursor-pointer hover:border-indigo-500/50 hover:bg-slate-800/40 transition flex flex-col items-center text-center gap-1.5">
+                                        <div class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-sm ${sec.color}">
+                                            <i class="fa-solid ${sec.icon}"></i>
+                                        </div>
+                                        <h4 class="font-bold text-slate-200 text-[11px] leading-tight">${sec.name}</h4>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div id="sector-detail-panel" class="p-4 bg-slate-950 border border-slate-800 rounded-xl flex items-start gap-3 transition duration-300 opacity-60">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 text-xs" id="detail-icon">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400" id="detail-title">Selected Sector Impact</h5>
+                                    <p class="text-xs text-slate-300 mt-1 leading-relaxed" id="detail-desc">Click any sector above to see a detailed explanation of how AI is reforming operations!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-4">
+                            ${getUncroppedImageHTML(slide.image, slide.title)}
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "concept-learning-system") {
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-8 space-y-5">
+                            <div class="border-b border-slate-800 pb-3">
+                                <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                                <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed">${slide.content}</p>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                ${slide.features.map((feat, idx) => `
+                                    <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 relative">
+                                        <div class="w-8 h-8 rounded-lg bg-indigo-950 border border-indigo-900 flex items-center justify-center text-indigo-400 text-sm mb-3">
+                                            <i class="fa-solid ${feat.icon}"></i>
+                                        </div>
+                                        <h4 class="font-extrabold text-slate-100 text-xs mb-1">${feat.title}</h4>
+                                        <p class="text-[10px] text-slate-400 leading-relaxed">${feat.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-2 p-3 bg-slate-950 border border-slate-850 rounded-xl">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Prime Case Examples:</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${slide.examples.map(ex => `
+                                        <span class="bg-slate-900 border border-slate-800 text-[10px] px-2 py-0.5 rounded text-indigo-300 font-semibold">${ex}</span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-4">
+                            ${getUncroppedImageHTML(slide.image, slide.title)}
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "interactive-flow") {
+                const initialActiveStepImg = activeFlowStepIdx !== null ? slide.steps[activeFlowStepIdx].img : slide.steps[0].img;
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-7 space-y-5">
+                            <div class="border-b border-slate-800 pb-3">
+                                <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                                <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                            </div>
+                            <p class="text-slate-300 text-xs leading-relaxed mb-3">${slide.instruction}</p>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 relative">
+                                ${slide.steps.map((st, idx) => {
+                                    const isHighlighted = activeFlowStepIdx === idx;
+                                    return `
+                                        <div id="flow-node-${idx}" onclick="selectSlide16Step(${idx})" class="cursor-pointer bg-slate-900/60 border ${isHighlighted ? 'border-indigo-500 bg-indigo-950/20 shadow-lg shadow-indigo-950/40 scale-105' : 'border-slate-800'} rounded-xl p-4 relative flex flex-col justify-between items-center text-center transition duration-300">
+                                            <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center ${isHighlighted ? 'text-indigo-400' : 'text-slate-300'} text-sm mb-3" id="flow-icon-${idx}">
+                                                <i class="fa-solid ${st.icon}"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-extrabold text-slate-200 text-xs mb-1">${st.name}</h4>
+                                                <p class="text-[9px] text-slate-400 leading-relaxed">${st.role || st.desc}</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <div class="flex items-center justify-center p-2">
+                                <button onclick="triggerFlowSimulation()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-2 px-5 rounded-xl shadow-lg transition flex items-center gap-2 text-xs">
+                                    <i class="fa-solid fa-play" id="flow-trigger-icon"></i> Run System Flow
+                                </button>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5">
+                            ${getUncroppedImageHTML(initialActiveStepImg, "Flow Dynamic Progress Visual", "slide-16-preview")}
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "data-pipeline") {
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-8 space-y-5">
+                            <div class="border-b border-slate-800 pb-3">
+                                <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                                <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                            </div>
+
+                            <div class="flex justify-center items-center gap-2.5 py-3 bg-slate-950 rounded-xl border border-slate-900">
+                                ${slide.formula.map((node, idx) => `
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg text-center">
+                                            <span class="text-[9px] uppercase tracking-wider font-extrabold text-slate-500 block">State</span>
+                                            <h4 class="text-xs font-bold text-rose-400 mt-0.5">${node}</h4>
+                                        </div>
+                                        ${idx < 2 ? `<div class="text-slate-600 font-bold text-sm"><i class="fa-solid fa-arrow-right"></i></div>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                ${slide.examples.map(ex => `
+                                    <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
+                                        <span class="text-indigo-400 text-xs font-bold uppercase tracking-wider block mb-1.5">${ex.label}</span>
+                                        <p class="text-[10px] text-slate-300 leading-relaxed">${ex.type || ex.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="lg:col-span-4">
+                            ${getUncroppedImageHTML(slide.image, slide.title)}
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "interactive-steps") {
+                htmlContent = `
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-8 space-y-5">
+                            <div class="border-b border-slate-800 pb-3">
+                                <h1 class="text-3xl md:text-4xl font-extrabold text-white">${slide.title}</h1>
+                                <p class="text-slate-400 mt-1">${slide.subtitle}</p>
+                            </div>
+
+                            <div class="grid grid-cols-5 gap-2">
+                                ${slide.steps.map((st, idx) => `
+                                    <div onclick="selectStep(${idx})" id="step-card-${idx}" class="p-3 bg-slate-900/60 border border-slate-800 rounded-xl cursor-pointer hover:border-indigo-500/50 hover:bg-slate-800/40 transition flex flex-col justify-between h-[125px]">
+                                        <span class="w-6 h-6 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[10px] text-indigo-400 font-bold" id="step-num-${idx}">${idx + 1}</span>
+                                        <div>
+                                            <h4 class="font-bold text-slate-200 text-[10px] leading-tight mt-1.5">${st.step}</h4>
+                                            <p class="text-[9px] text-slate-400 leading-tight mt-0.5">${st.desc}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <div class="p-4 bg-indigo-950/40 border border-indigo-900/30 rounded-xl flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-indigo-900 flex items-center justify-center text-indigo-300 text-xs"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                                <div>
+                                    <h5 class="text-[10px] font-bold uppercase tracking-wider text-indigo-400">Core Axiom</h5>
+                                    <p class="text-slate-100 font-bold text-sm mt-0.5">"${slide.keyMessage}"</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-4">
+                            ${getUncroppedImageHTML(slide.image, slide.title)}
+                        </div>
+                    </div>
+                `;
+            } else if (slide.type === "careers-showcase") {
+                htmlContent = `
+                    <div class="space-y-6">
+                        <div class="border-b border-slate-800 pb-4">
+                            <h1 class="text-3xl md:text-4xl font-extrabold text-white text-center">${slide.title}</h1>
+                            <p class="text-slate-400 mt-1 text-center">${slide.subtitle}</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                            <div class="lg:col-span-7 space-y-4">
+                                <h4 class="text-xs uppercase tracking-wider font-extrabold text-slate-400">Key Takeaways Summary:</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    ${slide.takeaways.map(take => `
+                                        <div class="bg-slate-900/60 border border-slate-850 p-3.5 rounded-xl flex items-start gap-3">
+                                            <div class="text-indigo-400 text-sm mt-0.5"><i class="fa-solid fa-circle-check"></i></div>
+                                            <p class="text-xs text-slate-300 leading-relaxed font-semibold">${take}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+
+                                <div class="p-5 bg-gradient-to-r from-violet-950/60 to-slate-900/60 rounded-2xl border border-violet-500/20">
+                                    <span class="text-violet-400 text-xs font-bold uppercase tracking-wider block mb-1"><i class="fa-solid fa-seedling mr-1"></i> Final Reflective Challenge</span>
+                                    <p class="text-base text-slate-200 font-medium">"${slide.finalReflection}"</p>
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-5">
+                                ${getUncroppedImageHTML(slide.image, slide.title)}
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 pt-6 border-t border-slate-900/80 flex flex-col items-center">
+                            <h4 class="text-xs uppercase tracking-wider font-extrabold text-slate-400 text-center">Future Career Pathways:</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-6 gap-3 w-full max-w-5xl">
+                                ${slide.careers.map(car => `
+                                    <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3 hover:border-violet-500/30 transition text-center flex flex-col items-center justify-between min-h-[140px]">
+                                        <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-indigo-400 text-xs mb-2">
+                                            <i class="fa-solid ${car.icon}"></i>
+                                        </div>
+                                        <div class="flex-grow flex flex-col justify-center">
+                                            <h5 class="text-[10px] font-bold text-slate-100 leading-tight mb-1">${car.title}</h5>
+                                            <p class="text-[8px] text-slate-400 leading-relaxed">${car.desc}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="text-center pt-4">
+                            <h2 class="text-3xl font-extrabold text-transparent bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text">Thank You!</h2>
+                            <p class="text-xs text-slate-400 mt-1">Questions & Collaborative Discussion Board open.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = htmlContent;
+
+            // Update footer indices parameters
+            document.getElementById('slide-counter').innerText = `${slide.index} / ${slidesData.length}`;
+            document.getElementById('progress-bar').style.width = `${(slide.index / slidesData.length) * 100}%`;
+
+            // Enable or disable page slide navigators based on index constraints
+            document.getElementById('prev-btn').disabled = (currentSlideIndex === 0);
+            document.getElementById('prev-btn').style.opacity = (currentSlideIndex === 0) ? "0.5" : "1";
+            document.getElementById('next-btn').innerHTML = (currentSlideIndex === slidesData.length - 1) ? `Finish <i class="fa-solid fa-check"></i>` : `Next <i class="fa-solid fa-chevron-right"></i>`;
+        }
+
+
+        function toggleCheck(idx) {
+            const checked = checklistSelections[idx] = !checklistSelections[idx];
+            const card = document.getElementById(`check-card-${idx}`);
+            const box = document.getElementById(`check-box-${idx}`);
+            
+            if (card && box) {
+                if (checked) {
+                    card.classList.add('border-indigo-500', 'bg-indigo-950/20');
+                    box.innerHTML = `<i class="fa-solid fa-check text-white"></i>`;
+                    box.classList.add('bg-indigo-600', 'border-indigo-500');
+                } else {
+                    card.classList.remove('border-indigo-500', 'bg-indigo-950/20');
+                    box.innerHTML = '';
+                    box.classList.remove('bg-indigo-600', 'border-indigo-500');
+                }
+            }
+
+            // Calculate percentage score dynamically
+            const checkedCount = Object.values(checklistSelections).filter(Boolean).length;
+            const totalItems = slidesData[1].checklistItems.length;
+            const percentage = Math.round((checkedCount / totalItems) * 100);
+            const scoreLabel = document.getElementById('checklist-score');
+            if (scoreLabel) {
+                scoreLabel.innerText = percentage + "%";
+            }
+        }
+
+        // Slide 5 Interactive Capability click handler
+        function selectGenCapability(idx) {
+            activeGenCapabilityIdx = idx;
+            const slide = slidesData[currentSlideIndex];
+            const activeCapabilityObj = slide.capabilities[idx];
+
+            // Reset selection styling across capability cards
+            slide.capabilities.forEach((_, i) => {
+                const card = document.getElementById(`gen-cap-card-${i}`);
+                if (card) {
+                    card.className = "p-3 bg-slate-900/80 border border-slate-800 rounded-xl flex flex-col justify-between items-center text-center cursor-pointer hover:scale-[1.03] hover:border-indigo-500/50 transition duration-300";
+                }
+            });
+
+            // Highlight selected capability card
+            const selectedCard = document.getElementById(`gen-cap-card-${idx}`);
+            if (selectedCard) {
+                selectedCard.className = "p-3 bg-slate-900/80 border border-indigo-500 bg-indigo-950/20 shadow-lg shadow-indigo-950/40 scale-105 rounded-xl flex flex-col justify-between items-center text-center cursor-pointer hover:scale-[1.03] hover:border-indigo-500/50 transition duration-300";
+            }
+
+            // Dynamically update Slide 5 custom mock logo wrapper contents
+            const logoWrap = document.getElementById('slide-5-logo-wrap');
+            const appTitle = document.getElementById('slide-5-app-title');
+            const appDesc = document.getElementById('slide-5-app-desc');
+            const appFeature = document.getElementById('slide-5-app-feature');
+
+            if (logoWrap && appTitle && appDesc && appFeature) {
+                logoWrap.innerHTML = getAppLogoSVG(activeCapabilityObj.type);
+                appTitle.innerText = activeCapabilityObj.appName;
+                appDesc.innerText = activeCapabilityObj.appDescription;
+                appFeature.innerText = activeCapabilityObj.appFeature;
+            }
+        }
+
+        function selectSlide7Prompt(idx) {
+            if (generationTimer) return; // Prevent selection changes during generation simulation
+            activeSlide7PromptIdx = idx;
+            renderActiveSlide();
+        }
+
+        function triggerImageGenerationDemo() {
+            if (generationTimer) return;
+            const slide = slidesData[currentSlideIndex];
+            const targetPromptObj = slide.promptsList[activeSlide7PromptIdx];
+
+            const btn = document.getElementById('gen-demo-btn');
+            const spinner = document.getElementById('spinner-icon');
+            const statusText = document.getElementById('slide-7-status');
+            const fbIcon = document.getElementById('fallback-icon');
+            const fbText = document.getElementById('fallback-text');
+            const outputContainer = document.getElementById('demo-output-container');
+            const outputImg = document.getElementById('demo-output-img');
+            const backdropBg = document.getElementById('slide-7-backdrop');
+
+            // Disable selection buttons during render to protect state
+            const buttonWrap = document.getElementById('slide-7-button-container');
+            if (buttonWrap) {
+                const buttons = buttonWrap.getElementsByTagName('button');
+                for (let b of buttons) { b.disabled = true; b.style.opacity = "0.5"; }
+            }
+
+            if (btn) btn.disabled = true;
+            if (spinner) spinner.classList.add('fa-spin');
+            if (fbIcon) fbIcon.style.opacity = '0.3';
+            if (statusText) statusText.innerText = "Status: Synthesizing [0%]";
+            if (fbText) fbText.innerText = "Running visual diffusion step optimization... [0%]";
+
+            let percentage = 0;
+            generationTimer = setInterval(() => {
+                percentage += 20;
+                if (statusText) statusText.innerText = `Status: Synthesizing [${percentage}%]`;
+                if (fbText) fbText.innerText = `Running visual diffusion step optimization... [${percentage}%]`;
+                
+                if (percentage >= 100) {
+                    clearInterval(generationTimer);
+                    generationTimer = null;
+                    
+                    if (btn) btn.disabled = false;
+                    if (spinner) spinner.classList.remove('fa-spin');
+                    if (statusText) statusText.innerText = "Status: Success";
+
+                    // Restore prompt select buttons
+                    if (buttonWrap) {
+                        const buttons = buttonWrap.getElementsByTagName('button');
+                        for (let b of buttons) { b.disabled = false; b.style.opacity = "1"; }
+                    }
+
+                    // Reveal output visual layout
+                    if (fbIcon) fbIcon.classList.add('hidden');
+                    if (fbText) fbText.classList.add('hidden');
+                    
+                    if (outputContainer && outputImg && backdropBg) {
+                        outputImg.src = targetPromptObj.img;
+                        backdropBg.style.backgroundImage = `url('${targetPromptObj.img}')`;
+                        outputContainer.classList.remove('hidden');
+                        outputContainer.classList.add('fade-in');
+                    }
+                }
+            }, 300);
+        }
+
+        // Slide 9 Wheel diagram details selection
+        function selectSector(idx) {
+            const slide = slidesData[currentSlideIndex];
+            const sec = slide.sectors[idx];
+
+            // Reset borders of all cards
+            slide.sectors.forEach((_, i) => {
+                const card = document.getElementById(`sec-card-${i}`);
+                if (card) {
+                    card.classList.remove('border-indigo-500', 'bg-indigo-950/20');
+                }
+            });
+
+            // Highlight selected sector card
+            const selectedCard = document.getElementById(`sec-card-${idx}`);
+            if (selectedCard) {
+                selectedCard.classList.add('border-indigo-500', 'bg-indigo-950/20');
+            }
+
+            // Update details preview frame panel
+            const panel = document.getElementById('sector-detail-panel');
+            const dTitle = document.getElementById('detail-title');
+            const dDesc = document.getElementById('detail-desc');
+            const dIcon = document.getElementById('detail-icon');
+
+            panel.classList.remove('opacity-60');
+            panel.classList.add('border-indigo-500/40', 'bg-slate-900/80');
+            dTitle.innerText = `${sec.name} Transformation`;
+            dTitle.className = `text-sm font-bold uppercase tracking-wider ${sec.color}`;
+            dDesc.innerText = sec.desc;
+            dIcon.innerHTML = `<i class="fa-solid ${sec.icon} ${sec.color}"></i>`;
+        }
+
+        function selectSlide16Step(idx) {
+            activeFlowStepIdx = idx;
+            const slide = slidesData[currentSlideIndex];
+            const selectedStepObj = slide.steps[idx];
+
+            // Reset node active visual borders and highlights
+            slide.steps.forEach((_, i) => {
+                const node = document.getElementById(`flow-node-${i}`);
+                const icon = document.getElementById(`flow-icon-${i}`);
+                if (node) {
+                    node.className = "cursor-pointer bg-slate-900/60 border border-slate-800 rounded-xl p-4 relative flex flex-col justify-between items-center text-center transition duration-300";
+                }
+                if (icon) {
+                    icon.classList.remove('text-indigo-400');
+                    icon.classList.add('text-slate-300');
+                }
+            });
+
+            // Highlight selected step node
+            const selectedNode = document.getElementById(`flow-node-${idx}`);
+            const selectedIcon = document.getElementById(`flow-icon-${idx}`);
+            if (selectedNode) {
+                selectedNode.className = "cursor-pointer bg-indigo-950/60 border border-indigo-500 shadow-lg shadow-indigo-950/40 scale-105 rounded-xl p-4 relative flex flex-col justify-between items-center text-center transition duration-300 z-20";
+            }
+            if (selectedIcon) {
+                selectedIcon.classList.remove('text-slate-300');
+                selectedIcon.classList.add('text-indigo-400');
+            }
+
+            // Update uncropped image to correspond with selected step
+            const imgPreview = document.getElementById('slide-16-preview');
+            const bgPreview = document.getElementById('slide-16-preview-bg');
+            if (imgPreview && bgPreview) {
+                imgPreview.src = selectedStepObj.img;
+                bgPreview.style.backgroundImage = `url('${selectedStepObj.img}')`;
+            }
+        }
+
+        // Slide 16 Systems Flow simulator trigger
+        function triggerFlowSimulation() {
+            if (flowTimer) return;
+            const btn = document.getElementById('flow-trigger-icon');
+            if (btn) btn.className = "fa-solid fa-arrows-spin fa-spin";
+
+            let stepIdx = 0;
+            const slide = slidesData[currentSlideIndex];
+
+            // Clear previous step highlight
+            slide.steps.forEach((_, i) => {
+                const node = document.getElementById(`flow-node-${i}`);
+                const icon = document.getElementById(`flow-icon-${i}`);
+                if (node) {
+                    node.className = "cursor-pointer bg-slate-900/60 border border-slate-800 rounded-xl p-4 relative flex flex-col justify-between items-center text-center transition duration-300";
+                }
+                if (icon) {
+                    icon.classList.remove('text-indigo-400');
+                    icon.classList.add('text-slate-300');
+                }
+            });
+
+            // Sequential step highlight and image swap
+            flowTimer = setInterval(() => {
+                activeFlowStepIdx = stepIdx;
+                const node = document.getElementById(`flow-node-${stepIdx}`);
+                const icon = document.getElementById(`flow-icon-${stepIdx}`);
+                const imgPreview = document.getElementById('slide-16-preview');
+                const bgPreview = document.getElementById('slide-16-preview-bg');
+
+                if (node && icon) {
+                    node.className = "cursor-pointer bg-indigo-950/60 border border-indigo-500 rounded-xl p-4 relative flex flex-col justify-between items-center text-center transition duration-300 glow-pulse scale-105 z-20";
+                    icon.classList.remove('text-slate-300');
+                    icon.classList.add('text-indigo-400');
+                }
+
+                // Update uncropped graphics display per flow iteration step
+                const currentStepObj = slide.steps[stepIdx];
+                if (imgPreview && bgPreview && currentStepObj) {
+                    imgPreview.src = currentStepObj.img;
+                    bgPreview.style.backgroundImage = `url('${currentStepObj.img}')`;
+                }
+
+                stepIdx++;
+                if (stepIdx >= 4) {
+                    clearInterval(flowTimer);
+                    flowTimer = null;
+                    if (btn) btn.className = "fa-solid fa-play";
+                }
+            }, 1200);
+        }
+
+        // Slide 20 Steps visual selector
+        function selectStep(idx) {
+            const card = document.getElementById(`step-card-${idx}`);
+            const num = document.getElementById(`step-num-${idx}`);
+            if (card && num) {
+                if (card.classList.contains('border-indigo-500')) {
+                    card.classList.remove('border-indigo-500', 'bg-indigo-950/20');
+                    num.classList.replace('bg-indigo-600', 'bg-slate-800');
+                } else {
+                    card.classList.add('border-indigo-500', 'bg-indigo-950/20');
+                    num.classList.replace('bg-slate-800', 'bg-indigo-600');
+                }
+            }
+        }
+
+
+        function nextSlide() {
+            if (currentSlideIndex < slidesData.length - 1) {
+                currentSlideIndex++;
+                renderActiveSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                renderActiveSlide();
+            }
+        }
+
+        // Navigation drawer controls
+        function toggleIndexDrawer() {
+            const drawer = document.getElementById('index-drawer');
+            if (drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full');
+            } else {
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        function toggleHelpModal() {
+            const modal = document.getElementById('help-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function buildSlideIndexList() {
+            const container = document.getElementById('slide-list-links');
+            container.innerHTML = slidesData.map((s, idx) => `
+                <button onclick="jumpToSlide(${idx})" class="w-full text-left px-3.5 py-2 rounded-xl text-xs transition border flex items-center justify-between ${idx === currentSlideIndex ? 'bg-indigo-600 border-indigo-500 text-white font-bold' : 'bg-slate-900 border-slate-800 hover:bg-slate-800 text-slate-300'}">
+                    <span>${s.index}. ${s.title}</span>
+                    <i class="fa-solid fa-chevron-right text-[9px] opacity-60"></i>
+                </button>
+            `).join('');
+        }
+
+        function jumpToSlide(idx) {
+            currentSlideIndex = idx;
+            renderActiveSlide();
+            toggleIndexDrawer();
+            buildSlideIndexList();
+        }
+
+        // Fullscreen browser viewport activation toggle
+        function toggleFullscreen() {
+            const icon = document.getElementById('fullscreen-icon');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    icon.className = "fa-solid fa-compress";
+                }).catch(err => {
+                    console.log("Fullscreen request declined or blocked:", err);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().then(() => {
+                        icon.className = "fa-solid fa-expand";
+                    });
+                }
+            }
+        }
+
+        // Bind keyboard arrow and space key listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // SWIPE GESTURES FOR MOBILE SCREEN ADAPTIVITY
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchendX < touchstartX - 60) {
+                nextSlide(); // Swipe Left -> Load Next Slide
+            }
+            if (touchendX > touchstartX + 60) {
+                prevSlide(); // Swipe Right -> Load Prev Slide
+            }
+        }
+
+        window.onload = function () {
+            renderActiveSlide();
+            buildSlideIndexList();
+        };
+    </script>
+</body>
+</html>

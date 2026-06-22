@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1: Interactive Presentation - AI Foundations</title>
+    <!-- Tailwind CSS for high fidelity design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Premium Vector Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans (Headers) and Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050811;
+            overflow: hidden;
+            user-select: none;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        /* Aspect Ratio Container (Strict 16:9 1280x720 scaled container) */
+        #presentation-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        #presentation-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #f8fafc;
+            color: #0f172a;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 70px -10px rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            transform-origin: center center;
+            transition: transform 0.2s ease-out;
+        }
+        /* Slide States */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 55px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(100px);
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #f8fafc;
+        }
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+        .slide.previous {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-100px);
+        }
+        /* Dark Slide Variant - Enhanced with absolute specificity overrides */
+        .slide.dark-slide {
+            background-color: #0b1329 !important;
+            color: #f8fafc !important;
+        }
+        /* Glassmorphism details */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .light-glass-card {
+            background: rgba(15, 23, 42, 0.02);
+            border: 1px solid rgba(15, 23, 42, 0.05);
+        }
+        /* Dynamic scale buttons */
+        .btn-interactive {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-interactive:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+        /* Interactive Card Flipping */
+        .flip-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card-flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PRESENTATION VIEWPORT WRAPPER -->
+    <div id="presentation-wrapper" class="w-full h-screen">
+        
+        <!-- PRESENTATION CONTAINER (Auto-scaled to fit viewport seamlessly) -->
+        <div id="presentation-container" class="relative">
+
+            <!-- Background neural network graphics for Dark slides (Rendered on a persistent canvas layer) -->
+            <canvas id="neural-canvas" class="absolute inset-0 pointer-events-none opacity-30 z-0"></canvas>
+
+            <!-- Slide 1: Title Slide (Premium Midnight Theme) -->
+            <div class="slide dark-slide active" id="slide-1" data-slide-index="1">
+                <div class="flex justify-between items-center z-10">
+                    <div class="text-sky-400 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap"></i> Module 1: Lecture Series
+                    </div>
+                    <div class="text-xs text-slate-400 font-medium">Delhi Technological University (DTU)</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 items-center my-auto z-10">
+                    <div class="col-span-7 flex flex-col justify-center">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-full w-fit text-xs font-semibold mb-6 uppercase tracking-wider">
+                            <i class="fa-solid fa-microchip"></i> Academic Foundation
+                        </span>
+                        <h1 class="text-5xl font-extrabold tracking-tight leading-tight mb-4 text-white">
+                            Artificial Intelligence:<br>
+                            <span class="bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">Making Machines Learn & Think</span>
+                        </h1>
+                        <p class="text-base text-slate-400 mb-8 max-w-lg leading-relaxed">
+                            A highly interactive introductory journey into Artificial Intelligence, Machine Learning paradigms, and foundational Intelligent Systems architectures.
+                        </p>
+                        <!-- Speaker Details Card -->
+                        <div class="flex items-center gap-4 pt-6 border-t border-slate-800">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-sky-400 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">SA</div>
+                            <div>
+                                <div class="font-bold text-sm text-white">Dr. Snigdha Agrawal</div>
+                                <div class="text-xs text-slate-400">Assistant Professor • Department of CSE • DTU Delhi</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-5 relative">
+                        <div class="rounded-2xl overflow-hidden shadow-2xl border border-slate-800 aspect-video h-[320px] bg-slate-900 flex items-center justify-center relative">
+                            <img src="https://images.stockcake.com/public/e/8/4/e843114c-030d-4767-a5a4-716bbf0e4f6d_medium/neon-neural-network-stockcake.jpg" alt="Neural Network Structure" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0b1329] via-transparent to-transparent opacity-60"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-400 text-xs border-t border-slate-800/60 pt-4 z-10">
+                    <div>Lecture 1: General Core Overview</div>
+                    <div class="px-3 py-1 bg-slate-800 rounded-full font-bold">Slide 1 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Quick Poll (Interactive light theme) -->
+            <div class="slide" id="slide-2" data-slide-index="2">
+                <div class="flex justify-between items-center">
+                    <div class="text-blue-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-chart-bar"></i> Dynamic Icebreaker
+                    </div>
+                    <div class="text-xs text-slate-500">How AI touches daily patterns</div>
+                </div>
+                <div class="my-auto">
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Have You Used AI Today?</h2>
+                        <p class="text-slate-500 text-sm">Interactive Live Survey: Select the platforms you have checked in the past 24 hours.</p>
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 mb-6">
+                        <!-- Clickable checkbox blocks -->
+                        <div onclick="togglePollItem(this, 'poll-google')" id="poll-card-google" class="btn-interactive border border-slate-200 bg-white hover:border-blue-300 p-4 rounded-xl cursor-pointer flex flex-col justify-between h-[120px]">
+                            <div class="flex justify-between items-start">
+                                <span class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                <input type="checkbox" id="poll-google" class="hidden">
+                                <div class="checkbox-indicator w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <div class="font-bold text-sm text-slate-800">Google Search</div>
+                        </div>
+                        <div onclick="togglePollItem(this, 'poll-youtube')" id="poll-card-youtube" class="btn-interactive border border-slate-200 bg-white hover:border-red-300 p-4 rounded-xl cursor-pointer flex flex-col justify-between h-[120px]">
+                            <div class="flex justify-between items-start">
+                                <span class="p-2 bg-red-50 text-red-600 rounded-lg"><i class="fa-brands fa-youtube"></i></span>
+                                <input type="checkbox" id="poll-youtube" class="hidden">
+                                <div class="checkbox-indicator w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <div class="font-bold text-sm text-slate-800">YouTube Recommendation</div>
+                        </div>
+                        <div onclick="togglePollItem(this, 'poll-instagram')" id="poll-card-instagram" class="btn-interactive border border-slate-200 bg-white hover:border-pink-300 p-4 rounded-xl cursor-pointer flex flex-col justify-between h-[120px]">
+                            <div class="flex justify-between items-start">
+                                <span class="p-2 bg-pink-50 text-pink-600 rounded-lg"><i class="fa-brands fa-instagram"></i></span>
+                                <input type="checkbox" id="poll-instagram" class="hidden">
+                                <div class="checkbox-indicator w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <div class="font-bold text-sm text-slate-800">Instagram Reels</div>
+                        </div>
+                        <div onclick="togglePollItem(this, 'poll-maps')" id="poll-card-maps" class="btn-interactive border border-slate-200 bg-white hover:border-green-300 p-4 rounded-xl cursor-pointer flex flex-col justify-between h-[120px]">
+                            <div class="flex justify-between items-start">
+                                <span class="p-2 bg-green-50 text-green-600 rounded-lg"><i class="fa-solid fa-map-location-dot"></i></span>
+                                <input type="checkbox" id="poll-maps" class="hidden">
+                                <div class="checkbox-indicator w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></div>
+                            </div>
+                            <div class="font-bold text-sm text-slate-800">Google Maps Routing</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-12 gap-6 items-center">
+                        <div class="col-span-8 bg-blue-50/60 border border-blue-100 rounded-xl p-4 flex items-center gap-4">
+                            <span class="text-3xl text-blue-600 animate-pulse"><i class="fa-solid fa-lightbulb"></i></span>
+                            <div>
+                                <h4 class="font-bold text-sm text-blue-950">The Unifying Blueprint</h4>
+                                <p class="text-xs text-blue-800 leading-relaxed">Click items above. Every checkbox triggers a personalized pipeline. What makes them adapt?</p>
+                            </div>
+                        </div>
+                        <!-- Dynamic Trigger Action -->
+                        <div class="col-span-4">
+                            <button onclick="revealSlide2Link()" class="btn-interactive w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Reveal Common Link
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Secret Reveal Overlay -->
+                    <div id="slide-2-reveal-box" class="hidden mt-4 text-center py-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-white font-bold text-lg animate-bounce shadow-md">
+                        💥 They all utilize active Artificial Intelligence!
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 2: Student Interactive Poll</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 2 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 3: AI Around You (Dynamic Timeline Landscape) -->
+            <div class="slide" id="slide-3" data-slide-index="3">
+                <div class="flex justify-between items-center">
+                    <div class="text-emerald-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-clock"></i> Timeline Tracking
+                    </div>
+                    <div class="text-xs text-slate-500">Everyday Routine Context</div>
+                </div>
+                <div class="my-auto">
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Your 24-Hour Routine with AI</h2>
+                        <p class="text-slate-500 text-sm">Trace how intelligent computation interfaces with six discrete stages of your day.</p>
+                    </div>
+                    <!-- Timeline flow -->
+                    <div class="relative flex justify-between items-center w-full my-6">
+                        <div class="absolute h-1 bg-gradient-to-r from-blue-200 to-indigo-500 top-1/2 left-0 right-0 -translate-y-1/2 z-0"></div>
+                        
+                        <div class="z-10 bg-white border border-slate-200 shadow-md p-3 rounded-xl flex flex-col items-center w-[15%] text-center btn-interactive hover:border-blue-500">
+                            <span class="text-lg text-amber-500 mb-2"><i class="fa-solid fa-sun animate-spin-slow"></i></span>
+                            <h4 class="font-bold text-xs text-slate-800">Morning</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Smart Alarm adjusts cycles</p>
+                        </div>
+                        <div class="z-10 bg-white border border-slate-200 shadow-md p-3 rounded-xl flex flex-col items-center w-[15%] text-center btn-interactive hover:border-blue-500">
+                            <span class="text-lg text-blue-500 mb-2"><i class="fa-solid fa-route"></i></span>
+                            <h4 class="font-bold text-xs text-slate-800">Travel</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Google Maps avoids congestion</p>
+                        </div>
+                        <div class="z-10 bg-white border border-slate-200 shadow-md p-3 rounded-xl flex flex-col items-center w-[15%] text-center btn-interactive hover:border-blue-500">
+                            <span class="text-lg text-green-500 mb-2"><i class="fa-solid fa-graduation-cap"></i></span>
+                            <h4 class="font-bold text-xs text-slate-800">Learning</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">ChatGPT refines explanations</p>
+                        </div>
+                        <div class="z-10 bg-white border border-slate-200 shadow-md p-3 rounded-xl flex flex-col items-center w-[15%] text-center btn-interactive hover:border-blue-500">
+                            <span class="text-lg text-indigo-500 mb-2"><i class="fa-solid fa-bag-shopping"></i></span>
+                            <h4 class="font-bold text-xs text-slate-800">Shopping</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Amazon curates priority lists</p>
+                        </div>
+                        <div class="z-10 bg-white border border-slate-200 shadow-md p-3 rounded-xl flex flex-col items-center w-[15%] text-center btn-interactive hover:border-blue-500">
+                            <span class="text-lg text-rose-500 mb-2"><i class="fa-solid fa-film"></i></span>
+                            <h4 class="font-bold text-xs text-slate-800">Unwind</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Netflix selects target thumbnails</p>
+                        </div>
+                        <div class="z-10 bg-white border border-slate-200 shadow-md p-3 rounded-xl flex flex-col items-center w-[15%] text-center btn-interactive hover:border-blue-500">
+                            <span class="text-lg text-purple-500 mb-2"><i class="fa-solid fa-moon"></i></span>
+                            <h4 class="font-bold text-xs text-slate-800">Night</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Face Unlock secure routines</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-4 bg-emerald-50 border border-emerald-100 rounded-xl text-center">
+                        <span class="text-xs font-bold text-emerald-800 uppercase tracking-widest"><i class="fa-solid fa-circle-question"></i> Active Prompt:</span>
+                        <span class="text-xs text-emerald-900 ml-2">Identify one additional AI program you have encountered today. How does it simplify your actions?</span>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 3: User Journey Landscape</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 3 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 4: What Is Intelligence? (Cognitive Features) -->
+            <div class="slide" id="slide-4" data-slide-index="4">
+                <div class="flex justify-between items-center">
+                    <div class="text-purple-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-brain"></i> Human Cognition
+                    </div>
+                    <div class="text-xs text-slate-500">The Natural Intelligence Baseline</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-7">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">What Makes Humans Intelligent?</h2>
+                        <p class="text-slate-500 text-sm mb-6">Before attempting to code artificial cognitive behaviors, we have to isolate the attributes of biological intellect.</p>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-purple-300 btn-interactive">
+                                <span class="p-2 bg-purple-50 text-purple-600 rounded-lg text-xs"><i class="fa-solid fa-graduation-cap"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800">Learn From Errors</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Abstracting concept structures (e.g. balancing on a bicycle).</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-purple-300 btn-interactive">
+                                <span class="p-2 bg-blue-50 text-blue-600 rounded-lg text-xs"><i class="fa-solid fa-scale-balanced"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800">Logic & Reason</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Analyzing constraints to pick ideal solutions.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-purple-300 btn-interactive">
+                                <span class="p-2 bg-emerald-50 text-emerald-600 rounded-lg text-xs"><i class="fa-solid fa-screwdriver-wrench"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800">Solve Anomalies</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Formulating spontaneous manual fixes for broken elements.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-purple-300 btn-interactive">
+                                <span class="p-2 bg-amber-50 text-amber-600 rounded-lg text-xs"><i class="fa-solid fa-eye"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800">Map Patterns</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Spotting coordinates or distinct faces in crowded settings.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-5 flex flex-col justify-center items-center">
+                        <div class="rounded-2xl border border-slate-200 overflow-hidden shadow-lg h-[260px] bg-slate-100 flex items-center justify-center relative w-full mb-4">
+                            <img src="https://edcircuit.com/wp-content/uploads/2018/08/associative_mind_imagination.jpg" alt="Mind/Cognitive Concept" class="w-full h-full object-cover">
+                        </div>
+                        <div class="text-center font-bold text-slate-700 text-xs">Can a computer structure replicate these features?</div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 4: Human Intellectual Taxonomy</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 4 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 5: What Is Artificial Intelligence? (Definitions) -->
+            <div class="slide" id="slide-5" data-slide-index="5">
+                <div class="flex justify-between items-center">
+                    <div class="text-blue-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-circle-nodes"></i> Core Science definition
+                    </div>
+                    <div class="text-xs text-slate-500">Foundational Equivalence Systems</div>
+                </div>
+                <div class="my-auto">
+                    <div class="mb-4">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">What Is Artificial Intelligence?</h2>
+                        <p class="text-slate-500 text-xs">AI is the branch of computer science that builds computational models capable of replicating human-like cognitive acts.</p>
+                    </div>
+                    
+                    <div class="overflow-hidden border border-slate-200 rounded-xl shadow-sm bg-white mb-4">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-blue-600 text-white font-bold">
+                                <tr>
+                                    <th class="p-3">Human Cognitive Skill</th>
+                                    <th class="p-3">Equated AI Domain</th>
+                                    <th class="p-3">Active Real-World Implementation</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700">
+                                <tr class="hover:bg-blue-50/40">
+                                    <td class="p-3 font-semibold text-slate-900">Seeing / Visual Understanding</td>
+                                    <td class="p-3 text-blue-600 font-semibold">Computer Vision (CV)</td>
+                                    <td class="p-3">Automatic tumor detection in MRI, autonomous lane navigation</td>
+                                </tr>
+                                <tr class="hover:bg-blue-50/40">
+                                    <td class="p-3 font-semibold text-slate-900">Speaking / Vocal Conversion</td>
+                                    <td class="p-3 text-blue-600 font-semibold">Speech Recognition</td>
+                                    <td class="p-3">Siri vocal trigger translation, instant live subtitles</td>
+                                </tr>
+                                <tr class="hover:bg-blue-50/40">
+                                    <td class="p-3 font-semibold text-slate-900">Reading / Structural Writing</td>
+                                    <td class="p-3 text-blue-600 font-semibold">Natural Language Processing (NLP)</td>
+                                    <td class="p-3">Dynamic chatbots (ChatGPT, Gemini), contextual email replies</td>
+                                </tr>
+                                <tr class="hover:bg-blue-50/40">
+                                    <td class="p-3 font-semibold text-slate-900">Concept Generalization</td>
+                                    <td class="p-3 text-blue-600 font-semibold">Machine Learning (ML)</td>
+                                    <td class="p-3">Collaborative consumer recommendations, credit default scoring</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-3 bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-100 rounded-xl text-center text-xs text-teal-800">
+                        <i class="fa-solid fa-quote-left text-teal-500 text-base align-middle mr-2"></i>
+                        <strong>Key Synthesis:</strong> "AI is the capacity of artificial constructs to learn patterns, process unstructured data, and formulate high-probability actions like a human."
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 5: Mapping Cognitive Replacements</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 5 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 6: AI or Not AI? (Fun Quiz Flip Interactive Layout) -->
+            <div class="slide dark-slide" id="slide-6" data-slide-index="6">
+                <div class="flex justify-between items-center">
+                    <div class="text-sky-400 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-gamepad"></i> Knowledge Quiz
+                    </div>
+                    <div class="text-xs text-slate-400">Classifying Software Logic</div>
+                </div>
+                <div class="my-auto">
+                    <div class="mb-4">
+                        <h2 class="text-3xl font-extrabold text-white tracking-tight">Interactive Quiz: AI or Not AI?</h2>
+                        <p class="text-slate-400 text-xs">Evaluate the functional mechanisms behind these tools. Click each card to reveal the classification!</p>
+                    </div>
+
+                    <!-- Flip Card Grid -->
+                    <div class="grid grid-cols-3 gap-4">
+                        
+                        <!-- Card 1 -->
+                        <div onclick="flipQuizCard(this)" class="group cursor-pointer perspective-1000 h-[105px]">
+                            <div class="flip-card-inner relative w-full h-full text-center duration-500 rounded-xl bg-slate-800 border border-slate-700 p-4 flex flex-col items-center justify-center">
+                                <div class="flip-card-front absolute flex flex-col items-center gap-1">
+                                    <span class="text-rose-400 text-lg"><i class="fa-solid fa-calculator"></i></span>
+                                    <h4 class="font-bold text-xs text-white">Digital Calculator</h4>
+                                    <p class="text-[9px] text-slate-400">Runs rigid hardcoded math inputs.</p>
+                                </div>
+                                <div class="flip-card-back absolute inset-0 bg-rose-950/90 rounded-xl p-3 flex flex-col items-center justify-center text-center">
+                                    <h5 class="text-xs font-bold text-rose-300 uppercase tracking-widest"><i class="fa-solid fa-circle-xmark"></i> Not AI</h5>
+                                    <p class="text-[9px] text-rose-100 mt-1">Runs strict deterministic code loops with zero variance.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div onclick="flipQuizCard(this)" class="group cursor-pointer perspective-1000 h-[105px]">
+                            <div class="flip-card-inner relative w-full h-full text-center duration-500 rounded-xl bg-slate-800 border border-slate-700 p-4 flex flex-col items-center justify-center">
+                                <div class="flip-card-front absolute flex flex-col items-center gap-1">
+                                    <span class="text-emerald-400 text-lg"><i class="fa-solid fa-chess-knight"></i></span>
+                                    <h4 class="font-bold text-xs text-white">Modern Chess Engine</h4>
+                                    <p class="text-[9px] text-slate-400">Heuristically tracks game arrays.</p>
+                                </div>
+                                <div class="flip-card-back absolute inset-0 bg-emerald-950/90 rounded-xl p-3 flex flex-col items-center justify-center text-center">
+                                    <h5 class="text-xs font-bold text-emerald-300 uppercase tracking-widest"><i class="fa-solid fa-circle-check"></i> Genuine AI</h5>
+                                    <p class="text-[9px] text-emerald-100 mt-1">Estimates probability branches to choose optimal actions.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div onclick="flipQuizCard(this)" class="group cursor-pointer perspective-1000 h-[105px]">
+                            <div class="flip-card-inner relative w-full h-full text-center duration-500 rounded-xl bg-slate-800 border border-slate-700 p-4 flex flex-col items-center justify-center">
+                                <div class="flip-card-front absolute flex flex-col items-center gap-1">
+                                    <span class="text-emerald-400 text-lg"><i class="fa-solid fa-message"></i></span>
+                                    <h4 class="font-bold text-xs text-white">ChatGPT LLM</h4>
+                                    <p class="text-[9px] text-slate-400">Generates text patterns from parameters.</p>
+                                </div>
+                                <div class="flip-card-back absolute inset-0 bg-emerald-950/90 rounded-xl p-3 flex flex-col items-center justify-center text-center">
+                                    <h5 class="text-xs font-bold text-emerald-300 uppercase tracking-widest"><i class="fa-solid fa-circle-check"></i> Genuine AI</h5>
+                                    <p class="text-[9px] text-emerald-100 mt-1">Predicts high-probability word structures using transformer weights.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div onclick="flipQuizCard(this)" class="group cursor-pointer perspective-1000 h-[105px]">
+                            <div class="flip-card-inner relative w-full h-full text-center duration-500 rounded-xl bg-slate-800 border border-slate-700 p-4 flex flex-col items-center justify-center">
+                                <div class="flip-card-front absolute flex flex-col items-center gap-1">
+                                    <span class="text-emerald-400 text-lg"><i class="fa-solid fa-user-shield"></i></span>
+                                    <h4 class="font-bold text-xs text-white">Mobile Face Unlock</h4>
+                                    <p class="text-[9px] text-slate-400">Maps dimensional facial models.</p>
+                                </div>
+                                <div class="flip-card-back absolute inset-0 bg-emerald-950/90 rounded-xl p-3 flex flex-col items-center justify-center text-center">
+                                    <h5 class="text-xs font-bold text-emerald-300 uppercase tracking-widest"><i class="fa-solid fa-circle-check"></i> Genuine AI</h5>
+                                    <p class="text-[9px] text-emerald-100 mt-1">Analyzes coordinates under changing light conditions.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div onclick="flipQuizCard(this)" class="group cursor-pointer perspective-1000 h-[105px]">
+                            <div class="flip-card-inner relative w-full h-full text-center duration-500 rounded-xl bg-slate-800 border border-slate-700 p-4 flex flex-col items-center justify-center">
+                                <div class="flip-card-front absolute flex flex-col items-center gap-1">
+                                    <span class="text-rose-400 text-lg"><i class="fa-solid fa-traffic-light"></i></span>
+                                    <h4 class="font-bold text-xs text-white">Traffic Timer Signal</h4>
+                                    <p class="text-[9px] text-slate-400">Loops set static timers.</p>
+                                </div>
+                                <div class="flip-card-back absolute inset-0 bg-rose-950/90 rounded-xl p-3 flex flex-col items-center justify-center text-center">
+                                    <h5 class="text-xs font-bold text-rose-300 uppercase tracking-widest"><i class="fa-solid fa-circle-xmark"></i> Not AI</h5>
+                                    <p class="text-[9px] text-rose-100 mt-1">Loops predefined timers without processing traffic variables.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 6 -->
+                        <div onclick="flipQuizCard(this)" class="group cursor-pointer perspective-1000 h-[105px]">
+                            <div class="flip-card-inner relative w-full h-full text-center duration-500 rounded-xl bg-slate-800 border border-slate-700 p-4 flex flex-col items-center justify-center">
+                                <div class="flip-card-front absolute flex flex-col items-center gap-1">
+                                    <span class="text-emerald-400 text-lg"><i class="fa-solid fa-music"></i></span>
+                                    <h4 class="font-bold text-xs text-white">Spotify Playlists</h4>
+                                    <p class="text-[9px] text-slate-400">Clusters listening history metrics.</p>
+                                </div>
+                                <div class="flip-card-back absolute inset-0 bg-emerald-950/90 rounded-xl p-3 flex flex-col items-center justify-center text-center">
+                                    <h5 class="text-xs font-bold text-emerald-300 uppercase tracking-widest"><i class="fa-solid fa-circle-check"></i> Genuine AI</h5>
+                                    <p class="text-[9px] text-emerald-100 mt-1">Recommends artists based on user-taste coordinate metrics.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-400 text-xs border-t border-slate-800/60 pt-4">
+                    <div>Slide 6: Algorithmic Classification Quiz</div>
+                    <div class="px-3 py-1 bg-slate-800 rounded-full font-bold">Slide 6 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 7: Why Do We Need AI? (Traditional Limits) -->
+            <div class="slide" id="slide-7" data-slide-index="7">
+                <div class="flex justify-between items-center">
+                    <div class="text-rose-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-terminal"></i> Limits of Classical Logic
+                    </div>
+                    <div class="text-xs text-slate-500">The Problem with Exploding Rule Trees</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-7">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">Traditional Coding Has Limits</h2>
+                        <p class="text-slate-500 text-sm mb-6">Humans complete complex tasks naturally without thinking, but programming rigid logical rules for them is practically impossible.</p>
+                        <div class="space-y-3">
+                            <div class="flex gap-3 items-center text-slate-700 text-xs font-semibold">
+                                <span class="p-1.5 bg-rose-50 text-rose-600 rounded-full"><i class="fa-solid fa-xmark"></i></span>
+                                <div>Mapping faces dynamically across endless camera angles and lighting conditions.</div>
+                            </div>
+                            <div class="flex gap-3 items-center text-slate-700 text-xs font-semibold">
+                                <span class="p-1.5 bg-rose-50 text-rose-600 rounded-full"><i class="fa-solid fa-xmark"></i></span>
+                                <div>Deciphering colloquial structures, sarcasm, and open cultural context.</div>
+                            </div>
+                            <div class="flex gap-3 items-center text-slate-700 text-xs font-semibold">
+                                <span class="p-1.5 bg-rose-50 text-rose-600 rounded-full"><i class="fa-solid fa-xmark"></i></span>
+                                <div>Extracting speaker emotion from tiny vocal adjustments.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-5 bg-rose-50/70 border border-rose-100 rounded-2xl p-6 shadow-md">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-[10px] font-bold uppercase mb-4">
+                            <i class="fa-solid fa-infinity"></i> The Rule Explosion Problem
+                        </span>
+                        <p class="text-xs text-rose-950 leading-relaxed font-medium mb-3">
+                            Writing unique nested <code class="bg-rose-200/50 px-1.5 py-0.5 rounded text-rose-900">if / else</code> conditions for every potential facial coordinate shadow or vocal tone pitch would take infinite lines of code.
+                        </p>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>AI Solution:</strong> Instead of writing explicit logical rules, we let algorithms analyze patterns and learn the classification rules themselves.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 7: Defining the Need for AI</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 7 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 8: How Does AI Learn? (The Child Analogy) -->
+            <div class="slide" id="slide-8" data-slide-index="8">
+                <div class="flex justify-between items-center">
+                    <div class="text-blue-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-children"></i> Conceptual Analogies
+                    </div>
+                    <div class="text-xs text-slate-500">Learning Through Example Sets</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-7 flex flex-col justify-center">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">Learning Like a Child</h2>
+                        <p class="text-slate-500 text-sm mb-6">Humans and computer algorithms learn concepts using a similar process of observation and reinforcement.</p>
+                        
+                        <!-- Visual Step Flow -->
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">1</span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800">Observation (Training Phase)</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">A child sees 20 different dogs in various colors, shapes, and environments.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">2</span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800">Concept Induction (Internal Feature Extraction)</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">The mind isolates consistent characteristics (four legs, wagging tail, barking sounds).</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">3</span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800">Prediction (Out-of-Sample Classification)</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">When shown an unfamiliar breed, the child instantly classifies it as a "Dog".</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-5 flex flex-col justify-center">
+                        <div class="rounded-2xl border border-slate-200 overflow-hidden shadow-lg h-[260px] bg-slate-100 flex items-center justify-center w-full">
+                            <img src="https://media.istockphoto.com/id/182784565/photo/happy-golden-retriever-puppy-sitting-on-hardwood-floor.jpg?s=612x612&w=0&k=20&c=FP1NedEdASrQ5aNUkpV8P0uQ5uBZoT-gI4-Mf6e3P9o=" alt="Cute Dog Analogy" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 8: Natural Concept Formations</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 8 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 9: The AI Learning Cycle (Interactive Phase Reveal) -->
+            <div class="slide" id="slide-9" data-slide-index="9">
+                <div class="flex justify-between items-center">
+                    <div class="text-indigo-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-arrows-spin"></i> Lifecycle Pipelines
+                    </div>
+                    <div class="text-xs text-slate-500">Step-by-Step Model Operations</div>
+                </div>
+                <div class="my-auto">
+                    <div class="mb-4">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">The AI Learning Cycle</h2>
+                        <p class="text-slate-500 text-sm">A machine learning model undergoes an iterative, closed-loop development cycle. Click each step below to learn more!</p>
+                    </div>
+
+                    <!-- Steps Timeline -->
+                    <div class="grid grid-cols-6 gap-3 mb-6 relative">
+                        <div onclick="selectCycleStep(1, 'Raw datasets are collected from databases, sensory logs, or scraping tools.')" id="cycle-step-1" class="btn-interactive border-2 border-indigo-500 bg-indigo-50 p-3 rounded-xl cursor-pointer text-center">
+                            <span class="text-indigo-600 text-lg mb-1 block"><i class="fa-solid fa-database"></i></span>
+                            <h4 class="font-bold text-xs text-slate-900">1. Collect</h4>
+                        </div>
+                        <div onclick="selectCycleStep(2, 'The data is cleaned, normalized, and labeled to make it readable for the algorithm.')" id="cycle-step-2" class="btn-interactive border-2 border-slate-200 hover:border-indigo-300 bg-white p-3 rounded-xl cursor-pointer text-center">
+                            <span class="text-slate-500 text-lg mb-1 block"><i class="fa-solid fa-broom"></i></span>
+                            <h4 class="font-bold text-xs text-slate-900">2. Prepare</h4>
+                        </div>
+                        <div onclick="selectCycleStep(3, 'The algorithm processes the training dataset to adjust its mathematical parameters.')" id="cycle-step-3" class="btn-interactive border-2 border-slate-200 hover:border-indigo-300 bg-white p-3 rounded-xl cursor-pointer text-center">
+                            <span class="text-slate-500 text-lg mb-1 block"><i class="fa-solid fa-gears"></i></span>
+                            <h4 class="font-bold text-xs text-slate-900">3. Train</h4>
+                        </div>
+                        <div onclick="selectCycleStep(4, 'The model is evaluated using a separate test dataset to check for accuracy.')" id="cycle-step-4" class="btn-interactive border-2 border-slate-200 hover:border-indigo-300 bg-white p-3 rounded-xl cursor-pointer text-center">
+                            <span class="text-slate-500 text-lg mb-1 block"><i class="fa-solid fa-vial"></i></span>
+                            <h4 class="font-bold text-xs text-slate-900">4. Test</h4>
+                        </div>
+                        <div onclick="selectCycleStep(5, 'The finished model processes new, unseen real-world data inputs to make predictions.')" id="cycle-step-5" class="btn-interactive border-2 border-slate-200 hover:border-indigo-300 bg-white p-3 rounded-xl cursor-pointer text-center">
+                            <span class="text-slate-500 text-lg mb-1 block"><i class="fa-solid fa-chart-line"></i></span>
+                            <h4 class="font-bold text-xs text-slate-900">5. Predict</h4>
+                        </div>
+                        <div onclick="selectCycleStep(6, 'User feedback is used to retrain the model and continuously improve its parameters.')" id="cycle-step-6" class="btn-interactive border-2 border-slate-200 hover:border-indigo-300 bg-white p-3 rounded-xl cursor-pointer text-center">
+                            <span class="text-slate-500 text-lg mb-1 block"><i class="fa-solid fa-chart-simple"></i></span>
+                            <h4 class="font-bold text-xs text-slate-900">6. Improve</h4>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Details Panel -->
+                    <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
+                        <h4 class="font-bold text-xs text-indigo-950 uppercase tracking-widest mb-1"><i class="fa-solid fa-magnifying-glass"></i> Step Details:</h4>
+                        <p id="cycle-step-details" class="text-xs text-indigo-900 leading-relaxed font-semibold">
+                            Raw datasets are collected from databases, sensory logs, or scraping tools.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 9: Pipeline Lifecycle Operations</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 9 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 10: Data - The Fuel of AI (Critical Importance) -->
+            <div class="slide" id="slide-10" data-slide-index="10">
+                <div class="flex justify-between items-center">
+                    <div class="text-amber-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-gas-pump"></i> Essential Resources
+                    </div>
+                    <div class="text-xs text-slate-500">Resource Inter-Dependency Metrics</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-6">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">Data: The Fuel of AI</h2>
+                        <p class="text-slate-500 text-sm mb-6">Without fuel, a car cannot run. Similarly, without datasets, an AI algorithm is just an empty software shell unable to extract meaningful rules.</p>
+                        
+                        <div class="bg-amber-50 border border-amber-100 rounded-xl p-4 flex gap-4 items-center">
+                            <span class="text-4xl text-amber-500 animate-bounce"><i class="fa-solid fa-quote-left"></i></span>
+                            <div class="font-extrabold text-amber-950 text-sm italic">"No data, no AI."</div>
+                        </div>
+                    </div>
+                    <div class="col-span-6 space-y-3">
+                        <h3 class="font-extrabold text-slate-800 text-sm mb-2"><i class="fa-solid fa-folder-open text-amber-600 mr-2"></i> Common AI Dataset Formats:</h3>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-3 bg-white border border-slate-200 rounded-xl flex items-center gap-3 text-xs font-semibold text-slate-800">
+                                <span class="text-blue-500 text-base"><i class="fa-solid fa-image"></i></span> Photos & Videos
+                            </div>
+                            <div class="p-3 bg-white border border-slate-200 rounded-xl flex items-center gap-3 text-xs font-semibold text-slate-800">
+                                <span class="text-amber-500 text-base"><i class="fa-solid fa-file-invoice"></i></span> Logs & Text Files
+                            </div>
+                            <div class="p-3 bg-white border border-slate-200 rounded-xl flex items-center gap-3 text-xs font-semibold text-slate-800">
+                                <span class="text-rose-500 text-base"><i class="fa-solid fa-heart-pulse"></i></span> Health Diagnostics
+                            </div>
+                            <div class="p-3 bg-white border border-slate-200 rounded-xl flex items-center gap-3 text-xs font-semibold text-slate-800">
+                                <span class="text-green-500 text-base"><i class="fa-solid fa-tower-broadcast"></i></span> Telemetry Logs
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 10: Algorithmic Fuel Metrics</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 10 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 11: Activity - Train an AI (Interactive Slider Simulator) -->
+            <div class="slide" id="slide-11" data-slide-index="11">
+                <div class="flex justify-between items-center">
+                    <div class="text-teal-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-sliders"></i> Training Simulator
+                    </div>
+                    <div class="text-xs text-slate-500">Dataset Volume vs. Prediction Accuracy</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-6">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">Interactive: Train an AI</h2>
+                        <p class="text-slate-500 text-sm mb-6">Computers require thousands of labeled examples to map statistical borders. Drag the slider to simulate training a model!</p>
+                        
+                        <!-- Labeled Slider -->
+                        <div class="mb-6 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                            <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-widest mb-3">Number of Training Images:</label>
+                            <input oninput="simulateTrainingVolume(this.value)" type="range" min="10" max="100000" step="50" value="10" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600">
+                            <div class="flex justify-between text-[10px] text-slate-500 font-bold mt-2">
+                                <span>10 Images</span>
+                                <span>1,000</span>
+                                <span>10,000</span>
+                                <span>100,000 Images</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-6 space-y-4">
+                        <div class="bg-white border border-slate-200 shadow-md p-5 rounded-2xl flex flex-col justify-between h-[180px]">
+                            <div class="flex justify-between items-center">
+                                <span class="px-3 py-1 bg-teal-50 text-teal-700 border border-teal-100 rounded-full text-[10px] font-bold uppercase">Dynamic Output metrics</span>
+                                <span id="simulator-accuracy-badge" class="text-xs font-extrabold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full">Low Accuracy</span>
+                            </div>
+                            <div class="my-3">
+                                <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                    <span>Model Classification Accuracy:</span>
+                                    <span id="simulator-accuracy-text">12%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-slate-200">
+                                    <div id="simulator-accuracy-bar" class="bg-rose-500 h-full transition-all duration-300" style="width: 12%"></div>
+                                </div>
+                            </div>
+                            <p id="simulator-commentary" class="text-[10px] text-slate-500 leading-relaxed italic">
+                                Showed 10 images. The model does not have enough context and will misclassify unseen examples.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 11: Dataset Volume Simulator</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 11 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 12: AI in Action (Visual grid) -->
+            <div class="slide" id="slide-12" data-slide-index="12">
+                <div class="flex justify-between items-center">
+                    <div class="text-blue-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-globe"></i> Active Deployment
+                    </div>
+                    <div class="text-xs text-slate-500">Reshaping Global Industries</div>
+                </div>
+                <div class="my-auto">
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Artificial Intelligence in Action</h2>
+                        <p class="text-slate-500 text-sm">Industrial sectors deploying machine learning models to optimize core operational processes.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-5 gap-4">
+                        <div class="bg-white border border-slate-200 shadow-sm p-4 rounded-xl flex flex-col justify-between btn-interactive hover:border-blue-500 h-[170px]">
+                            <div>
+                                <span class="p-2.5 bg-blue-50 text-blue-600 rounded-lg text-sm inline-block"><i class="fa-solid fa-heart-pulse"></i></span>
+                                <h4 class="font-extrabold text-xs text-slate-900 mt-3">Healthcare</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 leading-normal">Spotting anomalies in diagnostic imagery.</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 shadow-sm p-4 rounded-xl flex flex-col justify-between btn-interactive hover:border-emerald-500 h-[170px]">
+                            <div>
+                                <span class="p-2.5 bg-emerald-50 text-emerald-600 rounded-lg text-sm inline-block"><i class="fa-solid fa-seedling"></i></span>
+                                <h4 class="font-extrabold text-xs text-slate-900 mt-3">Agriculture</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 leading-normal">Using drone sensors to monitor crop health.</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 shadow-sm p-4 rounded-xl flex flex-col justify-between btn-interactive hover:border-amber-500 h-[170px]">
+                            <div>
+                                <span class="p-2.5 bg-amber-50 text-amber-600 rounded-lg text-sm inline-block"><i class="fa-solid fa-wallet"></i></span>
+                                <h4 class="font-extrabold text-xs text-slate-900 mt-3">Banking</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 leading-normal">Detecting fraud and predicting credit risks.</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 shadow-sm p-4 rounded-xl flex flex-col justify-between btn-interactive hover:border-purple-500 h-[170px]">
+                            <div>
+                                <span class="p-2.5 bg-purple-50 text-purple-600 rounded-lg text-sm inline-block"><i class="fa-solid fa-graduation-cap"></i></span>
+                                <h4 class="font-extrabold text-xs text-slate-900 mt-3">Education</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 leading-normal">Personalizing learning paths for student needs.</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 shadow-sm p-4 rounded-xl flex flex-col justify-between btn-interactive hover:border-rose-500 h-[170px]">
+                            <div>
+                                <span class="p-2.5 bg-rose-50 text-rose-600 rounded-lg text-sm inline-block"><i class="fa-solid fa-car"></i></span>
+                                <h4 class="font-extrabold text-xs text-slate-900 mt-3">Transportation</h4>
+                            </div>
+                            <p class="text-[10px] text-slate-500 leading-normal">Navigating autonomous vehicles in traffic.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 12: Real World Business Integration</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 12 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 13: Introducing Machine Learning (Thematic Dark Slide) -->
+            <div class="slide dark-slide" id="slide-13" data-slide-index="13">
+                <div class="flex justify-between items-center z-10">
+                    <div class="text-sky-400 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-diagram-project"></i> Machine Learning
+                    </div>
+                    <div class="text-xs text-slate-400 font-medium">Core Subfield Paradigms</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center z-10">
+                    <div class="col-span-7 flex flex-col justify-center">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-full w-fit text-[10px] font-bold uppercase mb-4">
+                            <i class="fa-solid fa-gears"></i> Core Subfield
+                        </span>
+                        <h2 class="text-4xl font-extrabold text-white tracking-tight mb-4">Introducing Machine Learning</h2>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            <strong>Machine Learning (ML)</strong> is the specialized subfield of AI that builds algorithmic models. Instead of receiving programmed rules, these models learn directly from training data.
+                        </p>
+                    </div>
+                    <div class="col-span-5">
+                        <div class="p-6 bg-slate-800/80 border border-slate-700/80 rounded-2xl shadow-xl flex flex-col items-center text-center">
+                            <span class="text-sky-400 text-3xl mb-3"><i class="fa-solid fa-calculator animate-pulse"></i></span>
+                            <h4 class="font-extrabold text-xs text-sky-300 uppercase tracking-widest mb-4">Foundational Equation</h4>
+                            <!-- Native HTML and Tailwind based equation display (Avoids layout-breaking MathML) -->
+                            <div class="p-4 bg-slate-950/80 rounded-xl w-full border border-slate-800/80 shadow-inner flex items-center justify-center gap-2">
+                                <span class="text-emerald-400 font-extrabold tracking-wide px-2 py-1 bg-emerald-500/10 rounded-lg border border-emerald-500/20 text-[11px]">Data</span>
+                                <span class="text-slate-500 font-bold text-sm">+</span>
+                                <span class="text-sky-400 font-extrabold tracking-wide px-2 py-1 bg-sky-500/10 rounded-lg border border-sky-500/20 text-[11px]">Experience</span>
+                                <span class="text-slate-500 font-bold text-sm">=</span>
+                                <span class="text-indigo-400 font-extrabold tracking-wide px-2 py-1 bg-indigo-500/10 rounded-lg border border-indigo-500/20 text-[11px]">Predictions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-400 text-xs border-t border-slate-800/60 pt-4 z-10">
+                    <div>Slide 13: Core Computational Paradigms</div>
+                    <div class="px-3 py-1 bg-slate-800 rounded-full font-bold">Slide 13 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 14: AI vs Machine Learning (Venn / Hierarchy representation) -->
+            <div class="slide" id="slide-14" data-slide-index="14">
+                <div class="flex justify-between items-center">
+                    <div class="text-indigo-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-circle-nodes"></i> Structural Hierarchies
+                    </div>
+                    <div class="text-xs text-slate-500">Mapping Subfield Boundaries</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-6 flex flex-col justify-center">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">Are AI and ML the Same?</h2>
+                        <p class="text-slate-500 text-sm mb-6">No. AI is the broad vision of replicating human intellect, while ML refers to the statistical tools used to achieve it.</p>
+                        
+                        <div class="space-y-3">
+                            <div class="p-3 bg-slate-50 border-l-4 border-slate-900 rounded-r-xl">
+                                <h4 class="font-bold text-xs text-slate-900">Artificial Intelligence (Broad Scope)</h4>
+                                <p class="text-[10px] text-slate-500 mt-0.5">The overarching target of building smart, human-like machines.</p>
+                            </div>
+                            <div class="p-3 bg-indigo-50 border-l-4 border-indigo-600 rounded-r-xl">
+                                <h4 class="font-bold text-xs text-indigo-900">Machine Learning (Subset Method)</h4>
+                                <p class="text-[10px] text-slate-500 mt-0.5">A statistical subset where models learn directly from training data.</p>
+                            </div>
+                            <div class="p-3 bg-teal-50 border-l-4 border-teal-500 rounded-r-xl">
+                                <h4 class="font-bold text-xs text-teal-950">Deep Learning (Inner Core)</h4>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Neural networks with many layers that process unstructured inputs.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-6 flex items-center justify-center">
+                        <!-- Concentric Circles Diagram -->
+                        <div class="relative w-[280px] h-[280px] rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center bg-slate-50">
+                            <div class="absolute top-2 text-[9px] font-extrabold text-slate-400 uppercase">1. Broad AI Field</div>
+                            
+                            <div class="w-[200px] h-[200px] rounded-full border-2 border-indigo-500 flex items-center justify-center bg-indigo-50/50">
+                                <div class="absolute top-[48px] text-[8px] font-extrabold text-indigo-500 uppercase">2. Machine Learning</div>
+                                
+                                <div class="w-[110px] h-[110px] rounded-full bg-teal-500 flex flex-col items-center justify-center text-center text-white p-2 shadow-md">
+                                    <h4 class="font-bold text-[10px]">3. Deep Learning</h4>
+                                    <p class="text-[7px] text-teal-100 mt-1">Multi-layered Neural Nets</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 14: Structural Subfield Hierarchies</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 14 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 15: Case comparison (Practical Project Design Brief) -->
+            <div class="slide" id="slide-15" data-slide-index="15">
+                <div class="flex justify-between items-center">
+                    <div class="text-blue-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-bezier-curve"></i> Case Comparisons
+                    </div>
+                    <div class="text-xs text-slate-500">Goal vs. Implementation Method</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-12">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Practical Case: AI vs ML In Action</h2>
+                        <p class="text-slate-500 text-sm mb-6">Building a movie recommendation system illustrates how AI goals and ML methods work together.</p>
+                    </div>
+                    <div class="col-span-6">
+                        <div class="bg-white border border-slate-200 shadow-md p-6 rounded-2xl border-t-4 border-t-slate-900 h-[220px] flex flex-col justify-between">
+                            <div>
+                                <span class="px-3 py-1 bg-slate-100 text-slate-800 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-bullseye"></i> The Overarching Goal</span>
+                                <h3 class="font-extrabold text-base text-slate-900 mt-3">The AI Objective</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed mt-2">
+                                    Develop a system that acts like a human critic, predicting what users like to keep them active on the platform.
+                                </p>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-bold italic">AI represents the target user experience.</span>
+                        </div>
+                    </div>
+                    <div class="col-span-6">
+                        <div class="bg-white border border-slate-200 shadow-md p-6 rounded-2xl border-t-4 border-t-blue-600 h-[220px] flex flex-col justify-between">
+                            <div>
+                                <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-microchip"></i> The Specific Method</span>
+                                <h3 class="font-extrabold text-base text-slate-900 mt-3">The ML Process</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed mt-2">
+                                    Analyze watch history to cluster users and match recommendations to taste coordinates.
+                                </p>
+                            </div>
+                            <span class="text-[10px] text-blue-500 font-bold italic">ML is the technical path used to reach the goal.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 15: Designing Recommendations</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 15 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 16: Corporate Case Study (Netflix Implementations) -->
+            <div class="slide" id="slide-16" data-slide-index="16">
+                <div class="flex justify-between items-center">
+                    <div class="text-rose-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-tv"></i> Industry Case Study
+                    </div>
+                    <div class="text-xs text-slate-500">Netflix Personalization Architecture</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-7">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">How Netflix Deploys ML</h2>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                            <strong>The Problem:</strong> Recommending movies to hundreds of millions of users with different tastes is impossible to do manually.
+                        </p>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                            <strong>The Solution:</strong> Netflix algorithms analyze viewing habits to customize artwork and prioritize recommendations dynamically.
+                        </p>
+                        
+                        <div class="p-4 bg-rose-50 border-l-4 border-rose-500 rounded-r-xl">
+                            <h4 class="font-extrabold text-xs text-rose-950"><i class="fa-solid fa-circle-question"></i> Discussion Point:</h4>
+                            <p class="text-[11px] text-rose-900 mt-1">
+                                What would happen to platform traffic and user retention if every subscriber received the same homepage?
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-span-5 flex flex-col justify-center">
+                        <div class="rounded-2xl border border-slate-200 overflow-hidden shadow-lg h-[260px] bg-slate-100">
+                            <img src="https://cdn.dribbble.com/userupload/46282417/file/7c76ce1ea4934593f57ca8034a6ca146.png?resize=752x&vertical=center" alt="Netflix Dashboard Interface" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 16: Scaled Corporate Case Study</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 16 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 17: Traditional Programming Paradigm -->
+            <div class="slide" id="slide-17" data-slide-index="17">
+                <div class="flex justify-between items-center">
+                    <div class="text-slate-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-terminal"></i> Software Logic
+                    </div>
+                    <div class="text-xs text-slate-500">The Classical Coding Approach</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-7 flex flex-col justify-center">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-800 rounded-full w-fit text-[10px] font-bold uppercase mb-4">
+                            <i class="fa-solid fa-user-gear"></i> Developer-Defined
+                        </span>
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">Traditional Software Logic</h2>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                            In traditional programming, software engineers manually write down all logical rules and conditions. The computer follows these instructions exactly, with zero flexibility or adaptation.
+                        </p>
+                        <div class="p-4 bg-slate-100 border border-slate-200 rounded-xl font-mono text-xs">
+                            <strong>Logic Statement:</strong><br>
+                            if (student_marks &gt; 90) {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;return "Grade A";<br>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-span-5">
+                        <div class="p-6 bg-white border border-slate-200 shadow-md rounded-2xl flex flex-col items-center justify-between h-[240px]">
+                            <div class="w-full text-center bg-slate-50 p-2 border border-slate-200 rounded-lg text-xs font-bold">Input + Rules</div>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-arrow-down-long"></i></span>
+                            <div class="w-full text-center bg-blue-600 p-3 text-white border border-blue-700 rounded-lg text-xs font-bold shadow-sm">Computer Runs Rule Code</div>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-arrow-down-long"></i></span>
+                            <div class="w-full text-center bg-emerald-500 p-2 text-white border border-emerald-600 rounded-lg text-xs font-bold">Static Output</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 17: Classical Software Framework</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 17 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 18: Machine Learning Paradigm Approach -->
+            <div class="slide" id="slide-18" data-slide-index="18">
+                <div class="flex justify-between items-center">
+                    <div class="text-indigo-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-network-wired"></i> Paradigm Shifts
+                    </div>
+                    <div class="text-xs text-slate-500">The New Data-Driven Approach</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-5">
+                        <div class="p-6 bg-white border border-slate-200 shadow-md rounded-2xl flex flex-col items-center justify-between h-[240px]">
+                            <div class="w-full text-center bg-indigo-50 p-2 border border-indigo-200 rounded-lg text-xs font-bold text-indigo-900">Input + Output Examples</div>
+                            <span class="text-indigo-400 text-sm"><i class="fa-solid fa-arrow-down-long animate-pulse"></i></span>
+                            <div class="w-full text-center bg-emerald-500 p-3 text-white border border-emerald-600 rounded-lg text-xs font-bold shadow-sm">Machine Extracts Rules</div>
+                            <span class="text-indigo-400 text-sm"><i class="fa-solid fa-arrow-down-long"></i></span>
+                            <div class="w-full text-center bg-indigo-600 p-2 text-white border border-indigo-700 rounded-lg text-xs font-bold">Dynamic Prediction Model</div>
+                        </div>
+                    </div>
+                    <div class="col-span-7 flex flex-col justify-center">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full w-fit text-[10px] font-bold uppercase mb-4">
+                            <i class="fa-solid fa-database"></i> Data Driven
+                        </span>
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">Machine Learning Paradigm</h2>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                            Instead of writing rules, we provide the computer with thousands of input examples and their correct outputs. The algorithm processes this data to discover the underlying rules itself.
+                        </p>
+                        <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-xl font-mono text-xs">
+                            <strong>Machine Learning logic:</strong><br>
+                            <strong>Input:</strong> 50,000 credit records + default histories<br>
+                            <strong>Process:</strong> Neural network extracts correlation weights<br>
+                            <strong>Output:</strong> Predicts risk of default for new borrowers
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 18: Data-Driven Paradigms</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 18 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 19: Hard Computing Paradigm -->
+            <div class="slide" id="slide-19" data-slide-index="19">
+                <div class="flex justify-between items-center">
+                    <div class="text-blue-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-calculator"></i> Computing Models
+                    </div>
+                    <div class="text-xs text-slate-500">Hard Computing Specifications</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-7">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">What Is Hard Computing?</h2>
+                        <p class="text-slate-500 text-sm mb-6">Hard computing requires completely exact inputs and rules to produce precise, deterministic mathematical outputs.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <span class="p-1 bg-blue-50 text-blue-600 rounded-full text-xs"><i class="fa-solid fa-circle-check"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-900">Absolute Precision</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Demands 100% exact answers; even tiny input errors will break execution.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="p-1 bg-blue-50 text-blue-600 rounded-full text-xs"><i class="fa-solid fa-circle-check"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-900">Deterministic Behavior</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Processing the same input through the code will always produce the identical output.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="p-1 bg-blue-50 text-blue-600 rounded-full text-xs"><i class="fa-solid fa-circle-check"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-900">Zero Self-Learning</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Systems follow static rules and cannot adapt to new conditions without manual code updates.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-5 space-y-3">
+                        <h3 class="font-extrabold text-slate-800 text-xs mb-2"><i class="fa-solid fa-code text-blue-600 mr-2"></i> Standard Applications:</h3>
+                        <div class="p-3 bg-white border border-slate-200 rounded-xl">
+                            <h4 class="font-bold text-xs text-slate-800">1. Digital Calculators</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Multiplication and arithmetic operations require absolute mathematical accuracy.</p>
+                        </div>
+                        <div class="p-3 bg-white border border-slate-200 rounded-xl">
+                            <h4 class="font-bold text-xs text-slate-800">2. ATM PIN Validation</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Access is granted based on an exact matching string, with no tolerance for variations.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 19: Classical Hard Computing</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 19 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 20: Soft Computing Paradigm -->
+            <div class="slide" id="slide-20" data-slide-index="20">
+                <div class="flex justify-between items-center">
+                    <div class="text-teal-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-snowflake"></i> Computing Models
+                    </div>
+                    <div class="text-xs text-slate-500">Soft Computing Specifications</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-5 space-y-3">
+                        <h3 class="font-extrabold text-slate-800 text-xs mb-2"><i class="fa-solid fa-circle-check text-teal-600 mr-2"></i> Standard Applications:</h3>
+                        <div class="p-3 bg-white border border-slate-200 rounded-xl">
+                            <h4 class="font-bold text-xs text-slate-800">1. Conversational Large Language Models</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Chatbots generate paragraphs organically; there is no single "perfect" response.</p>
+                        </div>
+                        <div class="p-3 bg-white border border-slate-200 rounded-xl">
+                            <h4 class="font-bold text-xs text-slate-800">2. Face Identification</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Algorithms identify key structural landmarks despite changing light or angles.</p>
+                        </div>
+                    </div>
+                    <div class="col-span-7">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">What Is Soft Computing?</h2>
+                        <p class="text-slate-500 text-sm mb-6">Soft computing tolerates approximate values and uncertainty, allowing systems to solve complex, unpredictable problems.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <span class="p-1 bg-teal-50 text-teal-600 rounded-full text-xs"><i class="fa-solid fa-circle-check"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-900">Approximate Answers</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Focuses on generating high-probability solutions rather than 100% exact values.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="p-1 bg-teal-50 text-teal-600 rounded-full text-xs"><i class="fa-solid fa-circle-check"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-900">Adaptive Feedback Learning</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Models adjust their weights based on feedback loops to improve predictions over time.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="p-1 bg-teal-50 text-teal-600 rounded-full text-xs"><i class="fa-solid fa-circle-check"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-900">Resilience to Noise</h4>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Successfully processes noisy, incomplete, or distorted real-world datasets.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 20: Cognitive Soft Computing</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 20 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 21: Hard vs Soft Computing (Interactive Sorting Game) -->
+            <div class="slide" id="slide-21" data-slide-index="21">
+                <div class="flex justify-between items-center">
+                    <div class="text-blue-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-gamepad"></i> Sorting Challenge
+                    </div>
+                    <div class="text-xs text-slate-500">Interactive: Classify Computing Paradigms</div>
+                </div>
+                <div class="my-auto">
+                    <div class="mb-4">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Hard vs. Soft Computing</h2>
+                        <p class="text-slate-500 text-sm">Challenge: Sort the computing tasks below by clicking on the correct classification bin!</p>
+                    </div>
+
+                    <div class="grid grid-cols-12 gap-6">
+                        <!-- Left Side: Task Card -->
+                        <div class="col-span-6 flex flex-col justify-center">
+                            <div class="bg-white border-2 border-dashed border-slate-300 p-6 rounded-2xl shadow-sm text-center relative min-h-[140px] flex flex-col justify-center items-center">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Active Task to Classify</span>
+                                <h3 id="sorting-task-title" class="font-extrabold text-lg text-blue-600">Sorting 10,000 Numbers</h3>
+                                <p id="sorting-task-description" class="text-xs text-slate-500 mt-1 max-w-sm">Arranging numerical values in exact ascending order using comparison logic.</p>
+                            </div>
+                            <div id="sorting-feedback" class="text-center mt-3 font-bold text-xs h-4"></div>
+                        </div>
+
+                        <!-- Right Side: Interactive Selection Bins -->
+                        <div class="col-span-6 flex flex-col gap-3 justify-center">
+                            <button onclick="submitSortingClassification('hard')" class="btn-interactive w-full bg-blue-600 hover:bg-blue-700 text-white font-bold p-4 rounded-xl flex items-center justify-between shadow-sm">
+                                <div class="text-left">
+                                    <h4 class="text-sm font-extrabold">Hard Computing</h4>
+                                    <p class="text-[10px] text-blue-100 mt-0.5">Precise, rule-based, and deterministic.</p>
+                                </div>
+                                <span class="text-xl"><i class="fa-solid fa-calculator"></i></span>
+                            </button>
+                            <button onclick="submitSortingClassification('soft')" class="btn-interactive w-full bg-teal-500 hover:bg-teal-600 text-white font-bold p-4 rounded-xl flex items-center justify-between shadow-sm">
+                                <div class="text-left">
+                                    <h4 class="text-sm font-extrabold">Soft Computing</h4>
+                                    <p class="text-[10px] text-teal-100 mt-0.5">Approximate, data-driven, and adaptive.</p>
+                                </div>
+                                <span class="text-xl"><i class="fa-solid fa-brain"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 21: Computing Comparison Challenge</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 21 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 22: Calculator vs ChatGPT (Direct head-to-head comparison) -->
+            <div class="slide" id="slide-22" data-slide-index="22">
+                <div class="flex justify-between items-center">
+                    <div class="text-indigo-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-code-compare"></i> Paradigm Comparisons
+                    </div>
+                    <div class="text-xs text-slate-500">Calculator vs. ChatGPT</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-12">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Calculator vs. ChatGPT: Who Is Smarter?</h2>
+                        <p class="text-slate-500 text-sm mb-6">Comparing a calculator to ChatGPT highlights the core trade-offs of different computing models.</p>
+                    </div>
+                    <div class="col-span-6">
+                        <div class="bg-white border border-slate-200 shadow-md p-6 rounded-2xl border-t-4 border-t-blue-600 h-[220px] flex flex-col justify-between">
+                            <div>
+                                <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-square-poll-vertical"></i> Hard Computing Classic</span>
+                                <h3 class="font-extrabold text-base text-slate-900 mt-3">The Digital Calculator</h3>
+                                <ul class="text-xs text-slate-500 space-y-1.5 mt-2">
+                                    <li><i class="fa-solid fa-circle-check text-green-500 mr-2"></i> Always delivers 100% exact numerical calculations.</li>
+                                    <li><i class="fa-solid fa-circle-xmark text-rose-500 mr-2"></i> Cannot recognize patterns or learn from experience.</li>
+                                </ul>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-bold italic">Reliable, precise, and deterministic.</span>
+                        </div>
+                    </div>
+                    <div class="col-span-6">
+                        <div class="bg-white border border-slate-200 shadow-md p-6 rounded-2xl border-t-4 border-t-teal-500 h-[220px] flex flex-col justify-between">
+                            <div>
+                                <span class="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-brain"></i> Soft Computing Modern</span>
+                                <h3 class="font-extrabold text-base text-slate-900 mt-3">Generative LLM (ChatGPT)</h3>
+                                <ul class="text-xs text-slate-500 space-y-1.5 mt-2">
+                                    <li><i class="fa-solid fa-circle-check text-green-500 mr-2"></i> Maps complex patterns, context, and open language.</li>
+                                    <li><i class="fa-solid fa-circle-xmark text-rose-500 mr-2"></i> Can hallucinates or make basic math errors.</li>
+                                </ul>
+                            </div>
+                            <span class="text-[10px] text-teal-500 font-bold italic">Adaptive, flexible, and probabilistic.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 22: Comparing Practical Tools</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 22 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 23: The Future of AI (Horizons) -->
+            <div class="slide" id="slide-23" data-slide-index="23">
+                <div class="flex justify-between items-center">
+                    <div class="text-emerald-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-eye"></i> Looking Forward
+                    </div>
+                    <div class="text-xs text-slate-500">Upcoming Technological Horizons</div>
+                </div>
+                <div class="my-auto">
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Where Is AI Heading?</h2>
+                        <p class="text-slate-500 text-sm">Key areas of research and innovation currently driving the future of Artificial Intelligence.</p>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-white border border-slate-200 p-4 rounded-xl flex items-start gap-3 btn-interactive hover:border-emerald-500">
+                            <span class="p-2.5 bg-emerald-50 text-emerald-600 rounded-lg text-sm"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                            <div>
+                                <h4 class="font-extrabold text-xs text-slate-900">Generative AI</h4>
+                                <p class="text-[10px] text-slate-500 mt-1">Generating complex code, videos, and artwork from plain text prompts.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-4 rounded-xl flex items-start gap-3 btn-interactive hover:border-emerald-500">
+                            <span class="p-2.5 bg-blue-50 text-blue-600 rounded-lg text-sm"><i class="fa-solid fa-robot"></i></span>
+                            <div>
+                                <h4 class="font-extrabold text-xs text-slate-900">Intelligent Robotics</h4>
+                                <p class="text-[10px] text-slate-500 mt-1">Combining mechanical systems with vision models to navigate real spaces.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-4 rounded-xl flex items-start gap-3 btn-interactive hover:border-emerald-500">
+                            <span class="p-2.5 bg-amber-50 text-amber-600 rounded-lg text-sm"><i class="fa-solid fa-heart-pulse"></i></span>
+                            <div>
+                                <h4 class="font-extrabold text-xs text-slate-900">Precision Medicine</h4>
+                                <p class="text-[10px] text-slate-500 mt-1">Modeling personalized molecular compounds for targeted therapies.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-4 rounded-xl flex items-start gap-3 btn-interactive hover:border-emerald-500">
+                            <span class="p-2.5 bg-rose-50 text-rose-600 rounded-lg text-sm"><i class="fa-solid fa-car"></i></span>
+                            <div>
+                                <h4 class="font-extrabold text-xs text-slate-900">Autonomous Transit</h4>
+                                <p class="text-[10px] text-slate-500 mt-1">Developing reliable self-driving transit networks to reduce travel delays.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-4 rounded-xl flex items-start gap-3 btn-interactive hover:border-emerald-500">
+                            <span class="p-2.5 bg-purple-50 text-purple-600 rounded-lg text-sm"><i class="fa-solid fa-graduation-cap"></i></span>
+                            <div>
+                                <h4 class="font-extrabold text-xs text-slate-900">AI Tutoring Systems</h4>
+                                <p class="text-[10px] text-slate-500 mt-1">Personalizing curriculum complexity based on student capabilities.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-4 rounded-xl flex items-start gap-3 btn-interactive hover:border-emerald-500">
+                            <span class="p-2.5 bg-teal-50 text-teal-600 rounded-lg text-sm"><i class="fa-solid fa-briefcase"></i></span>
+                            <div>
+                                <h4 class="font-extrabold text-xs text-slate-900">Adaptive Startups</h4>
+                                <p class="text-[10px] text-slate-500 mt-1">Creating targeted, niche software models for specialized industries.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 23: Future Technological Horizons</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 23 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 24: Ethical AI (Responsible deployment) -->
+            <div class="slide" id="slide-24" data-slide-index="24">
+                <div class="flex justify-between items-center">
+                    <div class="text-rose-600 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i> Engineering Ethics
+                    </div>
+                    <div class="text-xs text-slate-500">Responsible System Designs</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-12">
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">AI Is Powerful, Use It Responsibly</h2>
+                        <p class="text-slate-500 text-sm mb-6">As AI systems scale, developers must design guardrails to manage risks and protect users.</p>
+                    </div>
+                    <div class="col-span-6">
+                        <div class="bg-white border border-slate-200 shadow-md p-5 rounded-2xl border-l-4 border-l-rose-500 h-[210px] flex flex-col justify-between">
+                            <div>
+                                <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-triangle-exclamation"></i> Critical Ethical Risks</span>
+                                <ul class="text-[11px] text-slate-600 space-y-1.5 mt-3">
+                                    <li><i class="fa-solid fa-circle-xmark text-rose-500 mr-2"></i> <strong>Algorithmic Bias:</strong> Models can easily replicate bias present in historical data.</li>
+                                    <li><i class="fa-solid fa-circle-xmark text-rose-500 mr-2"></i> <strong>Data Privacy Risks:</strong> Securing personal information during model training.</li>
+                                </ul>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-bold">Unchecked development can harm marginalized communities.</span>
+                        </div>
+                    </div>
+                    <div class="col-span-6">
+                        <div class="bg-white border border-slate-200 shadow-md p-5 rounded-2xl border-l-4 border-l-teal-500 h-[210px] flex flex-col justify-between">
+                            <div>
+                                <span class="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-scale-balanced"></i> Responsible AI Principles</span>
+                                <ul class="text-[11px] text-slate-600 space-y-1.5 mt-3">
+                                    <li><i class="fa-solid fa-circle-check text-teal-500 mr-2"></i> <strong>Fairness:</strong> Creating fair models that evaluate all populations equally.</li>
+                                    <li><i class="fa-solid fa-circle-check text-teal-500 mr-2"></i> <strong>Explainability:</strong> Ensuring decisions are transparent and understandable.</li>
+                                </ul>
+                            </div>
+                            <span class="text-[10px] text-teal-500 font-bold">Responsible systems protect user rights and privacy.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 text-xs border-t border-slate-200 pt-4">
+                    <div>Slide 24: Ethical Engineering Practices</div>
+                    <div class="px-3 py-1 bg-slate-200 rounded-full font-bold">Slide 24 / 25</div>
+                </div>
+            </div>
+
+            <!-- Slide 25: Lecture Summary and Outcomes -->
+            <div class="slide dark-slide" id="slide-25" data-slide-index="25">
+                <div class="flex justify-between items-center">
+                    <div class="text-sky-400 font-bold tracking-wider text-xs uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check"></i> Summary Takeaways
+                    </div>
+                    <div class="text-xs text-slate-400">Lecture Key Outlines</div>
+                </div>
+                <div class="grid grid-cols-12 gap-8 my-auto items-center">
+                    <div class="col-span-7 flex flex-col justify-center">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-full w-fit text-[10px] font-bold uppercase mb-4">
+                            <i class="fa-solid fa-flag"></i> Outlines Mastered
+                        </span>
+                        <h2 class="text-4xl font-extrabold text-white tracking-tight mb-4">Key Lecture Takeaways</h2>
+                        <ul class="text-xs text-slate-400 space-y-2 max-w-md">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-sky-400 mt-0.5"></i> AI replicates human cognitive abilities like vision and speech.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-sky-400 mt-0.5"></i> Machine Learning models learn directly from training data rather than programmed rules.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-sky-400 mt-0.5"></i> High-quality datasets are essential to train successful AI models.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-sky-400 mt-0.5"></i> Hard computing is precise and rule-based; soft computing is approximate and adaptive.</li>
+                        </ul>
+                    </div>
+                    <div class="col-span-5">
+                        <div class="p-6 bg-slate-800/80 border border-slate-700 rounded-2xl shadow-xl flex flex-col items-center text-center">
+                            <span class="text-sky-400 text-3xl mb-3"><i class="fa-solid fa-terminal animate-pulse"></i></span>
+                            <h4 class="font-extrabold text-xs text-sky-300 uppercase tracking-widest mb-3">Capstone Reflection</h4>
+                            <p class="text-sm font-bold text-white mb-4">"What AI-powered solution would you like to build?"</p>
+                            <p class="text-[10px] text-slate-400 leading-normal">
+                                AI is transforming our present. How will you use it to solve real-world problems?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-slate-400 text-xs border-t border-slate-800/60 pt-4">
+                    <div>Slide 25: Lecture Series Summary</div>
+                    <div class="px-3 py-1 bg-slate-800 rounded-full font-bold">Slide 25 / 25</div>
+                </div>
+            </div>
+
+            <!-- PERSISTENT LECTURE CONTROLS OVERLAY (Fixed on presentation container margins) -->
+            <div class="absolute bottom-5 right-[55px] flex items-center gap-3 z-50">
+                <button onclick="navigateSlide(-1)" class="w-10 h-10 rounded-full bg-slate-900/80 border border-slate-700 hover:bg-slate-800 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg"><i class="fa-solid fa-arrow-left"></i></button>
+                <button onclick="navigateSlide(1)" class="w-10 h-10 rounded-full bg-blue-600 border border-blue-700 hover:bg-blue-500 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg"><i class="fa-solid fa-arrow-right"></i></button>
+                <button onclick="togglePresenterConsole()" class="w-10 h-10 rounded-full bg-slate-900/80 border border-slate-700 hover:bg-slate-800 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg" title="Toggle Speaker Notes"><i class="fa-solid fa-file-signature"></i></button>
+            </div>
+
+        </div>
+
+        <!-- COLLAPSIBLE PRESENTER CONSOLE (Sliding right drawer) -->
+        <div id="presenter-console" class="fixed right-0 top-0 bottom-0 w-[350px] bg-slate-900 border-l border-slate-800 shadow-2xl z-[100] translate-x-full transition-transform duration-300 flex flex-col justify-between p-6 text-white">
+            <div>
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
+                    <h3 class="font-extrabold text-sm text-sky-400 uppercase tracking-widest"><i class="fa-solid fa-circle-info"></i> Presenter Console</h3>
+                    <button onclick="togglePresenterConsole()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <!-- Running Timer -->
+                <div class="p-3 bg-slate-950 rounded-xl flex justify-between items-center mb-6 border border-slate-800">
+                    <span class="text-xs text-slate-400 font-bold uppercase"><i class="fa-solid fa-clock"></i> Session Timer:</span>
+                    <span id="session-timer" class="font-mono text-sm font-extrabold text-emerald-400">00:00:00</span>
+                </div>
+                <!-- Speaker Notes -->
+                <div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Speaker Notes:</h4>
+                    <div id="speaker-notes-content" class="text-xs text-slate-300 leading-relaxed space-y-2 h-[420px] overflow-y-auto pr-2">
+                        Good morning everyone. Let's begin the session.
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-4 text-[10px] text-slate-500 flex justify-between items-center">
+                <span>Presenter View Mode Active</span>
+                <button onclick="resetPresenterTimer()" class="text-sky-500 hover:underline">Reset Timer</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Core Presentation Engine State variables
+        let currentSlide = 1;
+        const totalSlides = 25;
+        let presenterTimerInterval = null;
+        let elapsedSeconds = 0;
+
+        // Custom Speaker notes mapping corresponding to each slide (1-25)
+        const speakerNotesMap = {
+            1: "Good morning everyone. Before we begin, I would like to ask a simple question. How many of you have used Google Search today? How many have watched YouTube videos, used Instagram, Google Maps, ChatGPT, or unlocked your phone using face recognition? Most of us use Artificial Intelligence every day without even realizing it. Today, we will explore what AI is, how it works, and how it is transforming our lives.",
+            2: "AI is not just about robots. AI is already present in the apps and services we use every day. When YouTube suggests your next video, when Google Maps suggests a faster route, or when ChatGPT answers your question, AI is working behind the scenes.",
+            3: "This activity helps us realize how deeply AI is integrated into our daily lives. Most people think AI is futuristic technology, but in reality, it is already everywhere around us.",
+            4: "Intelligence is not about memorizing facts. It is the ability to learn from experience, understand situations, solve problems, and make decisions. Humans are intelligent because we continuously learn and adapt.",
+            5: "For centuries, humans believed intelligence belonged only to living beings. Today, machines can perform many tasks that once required human intelligence. Let's look at how human vision maps to computer vision, speech to speech recognition, and experience to Machine Learning.",
+            6: "Let's test our understanding with a fun quiz! Click on these items to guess if they use AI or not. Many people associate AI only with robots from movies. In reality, most AI systems are invisible software systems working behind the scenes.",
+            7: "In traditional programming, humans write all the rules. But what happens when rules explode? Think of facial recognition or parsing emotions. Writing rules for every possible situation is practically impossible.",
+            8: "How does AI actually learn? It learns similarly to a child. Show a child 20 dog pictures, and they learn the concept of a 'Dog' by identifying shared characteristics (barking, four legs, etc.). When shown a new dog, they identify it instantly. AI operates in a very similar fashion.",
+            9: "Let's look at the circular machine learning cycle. Click through each step: from collecting raw data to preparation, training parameters, testing predictions, and continuously improving.",
+            10: "No data, no AI. Just as a car cannot run without fuel, an AI algorithm cannot learn without data. Examples include photos, text, and sensor data.",
+            11: "Let's run a training simulation! Adjust the slider to see how increasing training images improves classification accuracy. Low data volumes yield low accuracy, while large volumes yield high accuracy.",
+            12: "Where can we find AI? It is transforming healthcare (disease diagnosis), agriculture (crop monitoring), banking (fraud detection), education, and transportation.",
+            13: "Let's define Machine Learning (ML). It is a technique that enables computers to learn from data without being explicitly programmed. The simple formula is: Data + Experience = Better Predictions.",
+            14: "Are AI and ML the same? No. AI is the broader field, Machine Learning is a subset of AI, and Deep Learning is the inner core. Refer to this concentric circle diagram.",
+            15: "Let's compare AI vs ML in a practical project. The AI goal is the final objective (e.g., building a recommendation system), while ML is the statistical method used to achieve it.",
+            16: "Look at Netflix: they learn viewing habits to personalize thumbnail art and recommendations. What would happen if everyone received the exact same homepage?",
+            17: "Earlier, computers worked based on traditional programming: Input + Rules = Output. All rules were written manually by humans. For example, if Marks > 90, then Grade A.",
+            18: "Machine Learning flips this paradigm: Input + Output Examples = Machine Learns Rules. This allows models to make predictions on unseen data.",
+            19: "Let's examine Hard Computing. It requires completely exact answers, fixed rules, and deterministic logic. Examples include calculators and ATM PIN validation.",
+            20: "Soft Computing tolerates approximate answers, learns from experience, and handles uncertainty. Examples include ChatGPT and facial recognition.",
+            21: "Let's try a sorting challenge! Sort these tasks into Hard or Soft computing. This will help reinforce our understanding of deterministic vs probabilistic computing.",
+            22: "Who is smarter: a calculator or ChatGPT? A calculator is 100% precise but cannot learn. ChatGPT learns patterns but can make mistakes. Both are incredibly useful tools.",
+            23: "Where is AI heading? Generative AI, robotics, smart healthcare, self-driving cars, and adaptive AI tutors are all growing rapidly.",
+            24: "AI is powerful, but it must be used responsibly. We must address challenges like bias, privacy, security, and misinformation using principles of fairness and transparency.",
+            25: "Let's summarize our takeaways: AI mimics human intelligence, learns from data, and uses soft computing to adapt. What AI-powered solution would you like to build?"
+        };
+
+        // Tasks pool for Slide 21 Sorting Game
+        const sortingTasks = [
+            { title: "Sorting 10,000 Numbers", desc: "Arranging numerical values in exact ascending order using comparison logic.", answer: "hard" },
+            { title: "ChatGPT Dialogue Writing", desc: "Generating a creative paragraph organically based on a text prompt.", answer: "soft" },
+            { title: "Face Recognition Unlock", desc: "Matching real-time camera feeds to stored facial landmarks under changing light.", answer: "soft" },
+            { title: "ATM PIN Validation", desc: "Checking if an entered 4-digit code matches an encrypted database entry exactly.", answer: "hard" },
+            { title: "Spotify Recommendation Feed", desc: "Clustering user listening histories to suggest new matching songs.", answer: "soft" }
+        ];
+        let currentSortingIndex = 0;
+
+        // Auto Scaling Viewport Logic to center and fit 1280x720 container
+        function adjustPresentationScale() {
+            const container = document.getElementById('presentation-container');
+            const wrapper = document.getElementById('presentation-wrapper');
+            const targetWidth = 1280;
+            const targetHeight = 720;
+            
+            const windowWidth = wrapper.clientWidth;
+            const windowHeight = wrapper.clientHeight;
+            
+            const scale = Math.min(windowWidth / targetWidth, windowHeight / targetHeight);
+            container.style.transform = `scale(${scale})`;
+        }
+
+        window.addEventListener('resize', adjustPresentationScale);
+        window.addEventListener('load', () => {
+            adjustPresentationScale();
+            startPresenterTimer();
+            initNeuralBackground();
+            updateSpeakerNotes(1);
+        });
+
+        // Navigation Controller
+        function navigateSlide(direction) {
+            const previousSlideElement = document.getElementById(`slide-${currentSlide}`);
+            let targetSlide = currentSlide + direction;
+            
+            if (targetSlide < 1 || targetSlide > totalSlides) return;
+            
+            previousSlideElement.classList.remove('active');
+            if (direction > 0) {
+                previousSlideElement.classList.add('previous');
+            } else {
+                previousSlideElement.classList.remove('previous');
+            }
+            
+            currentSlide = targetSlide;
+            const currentSlideElement = document.getElementById(`slide-${currentSlide}`);
+            currentSlideElement.classList.remove('previous');
+            currentSlideElement.classList.add('active');
+            
+            updateSpeakerNotes(currentSlide);
+        }
+
+        // Keyboard & Touch Gesture Controls
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                navigateSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                navigateSlide(-1);
+            }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+        window.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        window.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipeGesture();
+        });
+        function handleSwipeGesture() {
+            if (touchEndX < touchStartX - 50) {
+                navigateSlide(1); // Swiped Left -> Next Slide
+            }
+            if (touchEndX > touchStartX + 50) {
+                navigateSlide(-1); // Swiped Right -> Previous Slide
+            }
+        }
+
+        // Presenter Console Drawer & Notes
+        function togglePresenterConsole() {
+            const consoleEl = document.getElementById('presenter-console');
+            consoleEl.classList.toggle('translate-x-full');
+        }
+
+        function updateSpeakerNotes(slideNum) {
+            const notesEl = document.getElementById('speaker-notes-content');
+            notesEl.innerHTML = speakerNotesMap[slideNum] || "No notes recorded for this slide.";
+        }
+
+        function startPresenterTimer() {
+            presenterTimerInterval = setInterval(() => {
+                elapsedSeconds++;
+                const hrs = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
+                const mins = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2, '0');
+                const secs = String(elapsedSeconds % 60).padStart(2, '0');
+                document.getElementById('session-timer').textContent = `${hrs}:${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function resetPresenterTimer() {
+            elapsedSeconds = 0;
+            document.getElementById('session-timer').textContent = "00:00:00";
+        }
+
+        // Slide 2: Interactive Checkbox controller
+        function togglePollItem(cardEl, checkboxId) {
+            const checkbox = document.getElementById(checkboxId);
+            checkbox.checked = !checkbox.checked;
+            
+            // Toggle visual state classes
+            const indicator = cardEl.querySelector('.checkbox-indicator');
+            if (checkbox.checked) {
+                cardEl.classList.add('border-blue-500', 'bg-blue-50/20');
+                indicator.classList.remove('border-slate-200');
+                indicator.classList.add('bg-blue-600', 'border-blue-600');
+            } else {
+                cardEl.classList.remove('border-blue-500', 'bg-blue-50/20');
+                indicator.classList.add('border-slate-200');
+                indicator.classList.remove('bg-blue-600', 'border-blue-600');
+            }
+        }
+        function revealSlide2Link() {
+            const box = document.getElementById('slide-2-reveal-box');
+            box.classList.remove('hidden');
+        }
+
+        // Slide 6: Quiz card flip controller
+        function flipQuizCard(cardEl) {
+            cardEl.classList.toggle('flip-card-flipped');
+        }
+
+        // Slide 9: AI cycle step dynamic display
+        function selectCycleStep(stepNum, explanationText) {
+            // Reset borders on all step cards
+            for (let i = 1; i <= 6; i++) {
+                const stepCard = document.getElementById(`cycle-step-${i}`);
+                stepCard.className = "btn-interactive border-2 border-slate-200 hover:border-indigo-300 bg-white p-3 rounded-xl cursor-pointer text-center";
+                const icon = stepCard.querySelector('span');
+                icon.className = "text-slate-500 text-lg mb-1 block";
+            }
+            
+            // Highlight selected step card
+            const selected = document.getElementById(`cycle-step-${stepNum}`);
+            selected.className = "btn-interactive border-2 border-indigo-500 bg-indigo-50 p-3 rounded-xl cursor-pointer text-center";
+            const iconSelected = selected.querySelector('span');
+            iconSelected.className = "text-indigo-600 text-lg mb-1 block";
+
+            // Update explanation text
+            document.getElementById('cycle-step-details').textContent = explanationText;
+        }
+
+        // Slide 11: Training simulator controller
+        function simulateTrainingVolume(value) {
+            const val = parseInt(value);
+            const textEl = document.getElementById('simulator-accuracy-text');
+            const barEl = document.getElementById('simulator-accuracy-bar');
+            const commentEl = document.getElementById('simulator-commentary');
+            const badgeEl = document.getElementById('simulator-accuracy-badge');
+            
+            let accuracy = 10;
+            let comment = "";
+            let colorClass = "bg-rose-500";
+            let badgeText = "Low Accuracy";
+            let badgeClass = "text-xs font-extrabold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full";
+
+            if (val < 100) {
+                accuracy = Math.floor(10 + (val / 10));
+                comment = `Shown ${val} images. The model lacks context and will likely misclassify unseen examples.`;
+            } else if (val < 5000) {
+                accuracy = Math.floor(25 + (val / 150));
+                comment = `Shown ${val.toLocaleString()} images. The model has learned basic features, but struggle with edge cases.`;
+                colorClass = "bg-amber-500";
+                badgeText = "Medium Accuracy";
+                badgeClass = "text-xs font-extrabold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full";
+            } else {
+                accuracy = Math.min(99, Math.floor(75 + (val / 4000)));
+                comment = `Shown ${val.toLocaleString()} images. Excellent dataset volume! The model classification accuracy is high.`;
+                colorClass = "bg-emerald-500";
+                badgeText = "High Accuracy";
+                badgeClass = "text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full";
+            }
+
+            textEl.textContent = `${accuracy}%`;
+            barEl.style.width = `${accuracy}%`;
+            barEl.className = `${colorClass} h-full transition-all duration-300`;
+            commentEl.textContent = comment;
+            badgeEl.textContent = badgeText;
+            badgeEl.className = badgeClass;
+        }
+
+        // Slide 21: Sorting Game classification feedback
+        function submitSortingClassification(choice) {
+            const feedbackEl = document.getElementById('sorting-feedback');
+            const currentTask = sortingTasks[currentSortingIndex];
+            
+            if (choice === currentTask.answer) {
+                feedbackEl.textContent = "✓ Correct Classification!";
+                feedbackEl.className = "text-center mt-3 font-bold text-xs h-4 text-emerald-600";
+            } else {
+                feedbackEl.textContent = "✗ Incorrect! Try again.";
+                feedbackEl.className = "text-center mt-3 font-bold text-xs h-4 text-rose-600";
+            }
+
+            // Move to next task after brief delay
+            setTimeout(() => {
+                currentSortingIndex = (currentSortingIndex + 1) % sortingTasks.length;
+                const nextTask = sortingTasks[currentSortingIndex];
+                document.getElementById('sorting-task-title').textContent = nextTask.title;
+                document.getElementById('sorting-task-description').textContent = nextTask.desc;
+                feedbackEl.textContent = "";
+            }, 1200);
+        }
+
+        // Persistent Canvas Background Animation for Neural Network simulation
+        function initNeuralBackground() {
+            const canvas = document.getElementById('neural-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let width = canvas.width = 1280;
+            let height = canvas.height = 720;
+            
+            const nodes = [];
+            const nodeCount = 35;
+            
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    radius: Math.random() * 2 + 1
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = "rgba(56, 189, 248, 0.4)";
+                ctx.strokeStyle = "rgba(56, 189, 248, 0.05)";
+                
+                // Draw and update nodes
+                for (let i = 0; i < nodeCount; i++) {
+                    const n = nodes[i];
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    n.x += n.vx;
+                    n.y += n.vy;
+                    
+                    if (n.x < 0 || n.x > width) n.vx *= -1;
+                    if (n.y < 0 || n.y > height) n.vy *= -1;
+                    
+                    // Draw connections
+                    for (let j = i + 1; j < nodeCount; j++) {
+                        const n2 = nodes[j];
+                        const dist = Math.hypot(n.x - n2.x, n.y - n2.y);
+                        if (dist < 150) {
+                            ctx.beginPath();
+                            ctx.moveTo(n.x, n.y);
+                            ctx.lineTo(n2.x, n2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
