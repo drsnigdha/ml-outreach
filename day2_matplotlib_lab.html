@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matplotlib: Interactive Masterclass Slide Deck</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom Tailwind Configurations -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .code-font {
+      font-family: 'Fira Code', monospace;
+    }
+    /* Hide scrollbars for slick slide interface */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 overflow-hidden min-h-screen flex flex-col justify-between relative">
+
+  <!-- TOP HEADER & PROGRESS BAR -->
+  <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between z-10">
+    <div class="flex items-center space-x-3">
+      <div class="bg-brand-600/20 text-brand-400 p-2 rounded-lg border border-brand-500/30">
+        <i class="fa-solid fa-chart-line text-lg"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-sm md:text-base tracking-tight flex items-center gap-2">
+          Matplotlib Masterclass 
+          <span class="text-xs font-normal text-slate-400 px-2 py-0.5 bg-slate-800 rounded-full border border-slate-700">Python Visualization</span>
+        </h1>
+        <p class="text-xs text-slate-400 hidden sm:block">An Interactive Presentation & Play Environment</p>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Index, Playback and Slide Editing Controls -->
+    <div class="flex items-center space-x-3">
+      <button onclick="toggleEditor()" class="text-xs font-medium px-3 py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-lg border border-brand-500/20 transition flex items-center space-x-1.5 shadow-lg shadow-brand-500/10" title="Edit current slide contents">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span>Edit Slide</span>
+      </button>
+      <button onclick="toggleSidebar()" class="text-xs font-medium px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition flex items-center space-x-1.5" title="List of Slides">
+        <i class="fa-solid fa-list-ul"></i>
+        <span>Slides</span>
+      </button>
+      <button onclick="toggleFullscreen()" class="text-xs font-medium px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition hidden md:flex items-center space-x-1.5" title="Full Screen">
+        <i class="fa-solid fa-expand"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Slide Progression indicator -->
+  <div class="w-full bg-slate-900 h-1">
+    <div id="slideProgressBar" class="bg-gradient-to-r from-brand-500 to-blue-600 h-1 transition-all duration-300" style="width: 0%"></div>
+  </div>
+
+  <!-- MAIN VIEWPORT LAYOUT -->
+  <main class="relative flex-grow flex overflow-hidden">
+    
+    <!-- SIDEBAR NAVIGATION DRAWER (Slide Index Navigation) -->
+    <div id="sidebarDrawer" class="absolute left-0 top-0 bottom-0 w-80 bg-slate-900/95 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 backdrop-blur-md">
+      <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+        <h3 class="font-semibold text-sm tracking-wide uppercase text-slate-300">Presentation Deck Index</h3>
+        <button onclick="toggleSidebar()" class="text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="overflow-y-auto h-[calc(100%-65px)] p-2 space-y-1 no-scrollbar" id="sidebarList">
+        <!-- Dyn List Items -->
+      </div>
+    </div>
+
+    <!-- ADVANCED SLIDE CODE EDITOR DRAWER (Right Slideout Editor) -->
+    <div id="editorDrawer" class="absolute right-0 top-0 bottom-0 w-full max-w-lg bg-slate-900/95 border-l border-slate-800 z-50 transform translate-x-full transition-transform duration-300 backdrop-blur-md flex flex-col">
+      <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-sliders text-brand-400"></i>
+          <h3 class="font-semibold text-sm tracking-wide uppercase text-slate-300">Advanced Slide Code Editor</h3>
+        </div>
+        <button onclick="toggleEditor()" class="text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <div class="p-5 flex-grow overflow-y-auto space-y-4 no-scrollbar">
+        <!-- Slide Metadata Inputs -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Slide Title</label>
+          <input type="text" id="editSlideTitle" class="w-full bg-slate-950 border border-slate-800 focus:border-brand-500 text-slate-100 text-sm rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-brand-500" />
+        </div>
+        
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Slide Subtitle</label>
+          <input type="text" id="editSlideSubtitle" class="w-full bg-slate-950 border border-slate-800 focus:border-brand-500 text-slate-100 text-sm rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-brand-500" />
+        </div>
+        
+        <!-- Live HTML Code Area -->
+        <div class="flex-grow flex flex-col min-h-[300px]">
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Slide Body Layout (HTML / Tailwind CSS)</label>
+            <span class="text-[10px] bg-brand-950 text-brand-400 px-1.5 py-0.5 rounded border border-brand-500/20 font-semibold font-mono">Live Sync Template</span>
+          </div>
+          <textarea id="editSlideHtml" class="w-full flex-grow bg-slate-950 text-emerald-400 font-mono text-xs p-3 rounded-lg focus:outline-none border border-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 resize-none leading-relaxed overflow-y-auto min-h-[250px]" spellcheck="false"></textarea>
+        </div>
+      </div>
+      
+      <!-- Drawer Control Buttons -->
+      <div class="p-4 border-t border-slate-800 bg-slate-900/90 flex items-center justify-between gap-3">
+        <button onclick="resetCurrentSlide()" class="px-3 py-2 bg-rose-950/30 hover:bg-rose-950/50 border border-rose-900/40 text-rose-400 hover:text-rose-300 rounded-lg text-xs transition flex items-center gap-1.5 font-semibold">
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+          <span>Reset Slide</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleEditor()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs transition font-medium text-slate-300">
+            Cancel
+          </button>
+          <button onclick="applySlideEdits()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 rounded-lg text-xs transition font-semibold text-white shadow-lg shadow-brand-500/20 flex items-center gap-1">
+            <i class="fa-solid fa-check"></i>
+            <span>Apply Changes</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN SLIDE CONTAINER -->
+    <div class="flex-grow flex flex-col justify-center items-center px-4 md:px-8 py-6 relative">
+      <div id="slidesViewport" class="w-full max-w-6xl bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 md:p-8 flex flex-col h-[75vh] md:h-[70vh] justify-between shadow-2xl relative overflow-y-auto no-scrollbar">
+        
+        <!-- Slide Content injected dynamically -->
+        <div id="slideContent" class="flex-grow flex flex-col justify-center"></div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION PANEL -->
+  <footer class="bg-slate-900/60 backdrop-blur-sm border-t border-slate-800/80 py-4 px-6 flex items-center justify-between z-10 text-xs text-slate-400">
+    <div class="flex items-center space-x-4">
+      <span class="flex items-center space-x-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Interactive Canvas Active</span>
+      </span>
+      <span class="hidden md:inline-block">|</span>
+      <span class="hidden md:inline-block">Use keyboard <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700">←</kbd> <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700">→</kbd> to browse</span>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="flex items-center space-x-3">
+      <button onclick="prevSlide()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:hover:bg-slate-800 rounded-lg border border-slate-700 text-slate-200 transition font-medium flex items-center space-x-2">
+        <i class="fa-solid fa-chevron-left"></i>
+        <span>Prev</span>
+      </button>
+      <span id="slideCounter" class="font-mono text-sm px-3 py-1.5 bg-slate-950 rounded-lg border border-slate-800 text-slate-300">
+        0 / 0
+      </span>
+      <button onclick="nextSlide()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:hover:bg-brand-600 rounded-lg text-white transition font-medium flex items-center space-x-2">
+        <span>Next</span>
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </footer>
+
+  <!-- CORE PRESENTATION AND CUSTOM MATPLOTLIB CANVAS SCRIPT -->
+  <script>
+    // 1. Definition of Slides and Interactive Demos
+    const slides = [
+      {
+        title: "Introduction to Matplotlib",
+        subtitle: "The Foundation of Python Data Science Visualization",
+        type: "cover",
+        html: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="space-y-6">
+              <span class="px-3 py-1 text-xs font-semibold text-brand-400 bg-brand-950/50 border border-brand-500/20 rounded-full uppercase tracking-wider">Module 1: Overview</span>
+              <h2 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                Matplotlib <br class="hidden md:block" />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-blue-500">Visualization Engine</span>
+              </h2>
+              <p class="text-slate-300 text-base leading-relaxed">
+                Matplotlib is the core cross-platform Python package designed for making publication-grade 2D plots from data structures. Combining robust multi-format support with NumPy optimization, it serves as the foundation for modern visualization.
+              </p>
+              <div class="flex items-center space-x-6 text-xs text-slate-400">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-pen text-brand-400"></i> John D. Hunter (2003)</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-code-branch text-brand-400"></i> Open Source BSD Compatible</span>
+              </div>
+            </div>
+            <div class="bg-slate-950/80 p-6 rounded-xl border border-slate-800 flex flex-col justify-center items-center shadow-inner relative">
+              <div class="absolute -top-3 left-4 px-2 py-0.5 bg-slate-800 text-slate-400 text-[10px] uppercase font-mono rounded">Matplotlib Philosophy</div>
+              <div class="w-full space-y-4 py-2">
+                <div class="flex items-start space-x-3">
+                  <div class="text-brand-400 mt-1"><i class="fa-solid fa-circle-check"></i></div>
+                  <p class="text-xs text-slate-300"><strong>Array Powered:</strong> Engineered to accept raw multidimensional NumPy arrays natively.</p>
+                </div>
+                <div class="flex items-start space-x-3">
+                  <div class="text-brand-400 mt-1"><i class="fa-solid fa-circle-check"></i></div>
+                  <p class="text-xs text-slate-300"><strong>Object-Oriented API:</strong> Easily embeds graphs into PyQt, WxPython, Tkinter, or Flask/Django backends.</p>
+                </div>
+                <div class="flex items-start space-x-3">
+                  <div class="text-brand-400 mt-1"><i class="fa-solid fa-circle-check"></i></div>
+                  <p class="text-xs text-slate-300"><strong>Procedural Interface (Pylab):</strong> Features clean MATLAB-like operational commands designed for scientific parity.</p>
+                </div>
+              </div>
+              <div class="w-full mt-4 p-3 bg-brand-950/20 border border-brand-500/20 rounded-lg text-xs text-brand-300 text-center">
+                <i class="fa-solid fa-circle-info mr-1"></i> Current standard relies deeply on the <strong>pyplot</strong> submodule.
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        title: "Community & Codebase",
+        subtitle: "How NumFOCUS, Github, and Developers Connect",
+        type: "text",
+        html: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-4">
+              <h3 class="text-lg font-semibold text-slate-200">The Core Source Ecosystem</h3>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                Mostly authored in pure Python for robust readability, Matplotlib leverages high-performance segments compiled in <strong>C, Objective-C, and JavaScript</strong> to manage local operating system display drivers and fast backends.
+              </p>
+              
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs text-slate-400">Official Repository</span>
+                  <span class="px-2 py-0.5 text-[10px] bg-emerald-950 text-emerald-400 rounded-full">Active BSD</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-mono text-brand-400">github.com/matplotlib/matplotlib</span>
+                  <a href="https://github.com/matplotlib/matplotlib" target="_blank" class="text-xs bg-slate-800 px-3 py-1 rounded hover:bg-slate-700 text-slate-200 transition">
+                    <i class="fa-brands fa-github mr-1"></i> View Codebase
+                  </a>
+                </div>
+              </div>
+
+              <div class="bg-slate-950/50 p-4 rounded-xl border border-slate-800/80 flex items-center space-x-4">
+                <div class="p-3 bg-blue-950 text-blue-400 rounded-lg">
+                  <i class="fa-solid fa-building-columns text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="text-xs font-semibold text-slate-300">NumFOCUS Sponsored Project</h4>
+                  <p class="text-[11px] text-slate-400">Supported by Netflix, NASA, and Google to build scientific computing frameworks.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h3 class="text-lg font-semibold text-slate-200">Community Support Pillars</h3>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg hover:border-slate-700 transition">
+                  <div class="text-rose-400 mb-1"><i class="fa-solid fa-comments text-lg"></i></div>
+                  <h4 class="text-xs font-bold text-slate-300">Discourse</h4>
+                  <p class="text-[10px] text-slate-400 mt-0.5">discourse.matplotlib.org for architectural debates.</p>
+                </div>
+                <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg hover:border-slate-700 transition">
+                  <div class="text-amber-500 mb-1"><i class="fa-brands fa-stack-overflow text-lg"></i></div>
+                  <h4 class="text-xs font-bold text-slate-300">StackOverflow</h4>
+                  <p class="text-[10px] text-slate-400 mt-0.5">Tagged index with thousands of code answers.</p>
+                </div>
+                <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg hover:border-slate-700 transition">
+                  <div class="text-blue-400 mb-1"><i class="fa-brands fa-twitter text-lg"></i></div>
+                  <h4 class="text-xs font-bold text-slate-300">Twitter Updates</h4>
+                  <p class="text-[10px] text-slate-400 mt-0.5">@matplotlib for announcements.</p>
+                </div>
+                <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg hover:border-slate-700 transition">
+                  <div class="text-purple-400 mb-1"><i class="fa-solid fa-envelope text-lg"></i></div>
+                  <h4 class="text-xs font-bold text-slate-300">Mailing Lists</h4>
+                  <p class="text-[10px] text-slate-400 mt-0.5">matplotlib-users & devel listservs.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        title: "Installation & Getting Started",
+        subtitle: "How to set up the library and build your first linear plot",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <!-- Instructions and Code panel -->
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <span class="text-xs uppercase bg-slate-800 px-2 py-1 rounded text-slate-300 font-mono">Setup & Basic API</span>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Before visualization starts, ensure dependencies are fetched via python package installer (pip) or scientific environments like Anaconda.
+                </p>
+                
+                <!-- Code Snippet -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">CLI</div>
+                  <code class="code-font text-xs text-emerald-400 block">pip install matplotlib</code>
+                </div>
+
+                <p class="text-xs text-slate-400">
+                  Most plotting commands lie inside the <strong>matplotlib.pyplot</strong> submodule. It is standard python syntax to alias it as <code class="code-font text-brand-300 font-bold bg-slate-800 px-1 rounded">plt</code>.
+                </p>
+
+                <!-- Python Plot Code -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python</div>
+                  <div class="code-font text-xs text-slate-300 leading-normal">
+                    <div><span class="text-rose-400">import</span> matplotlib.pyplot <span class="text-rose-400">as</span> plt</div>
+                    <div><span class="text-rose-400">import</span> numpy <span class="text-rose-400">as</span> np</div>
+                    <div class="text-slate-500"># Define values from (0,0) to (6,250)</div>
+                    <div>xpoints = np.array([<span class="text-amber-400">0</span>, <span class="text-amber-400">6</span>])</div>
+                    <div>ypoints = np.array([<span class="text-amber-400">0</span>, <span class="text-amber-400">250</span>])</div>
+                    <div>plt.plot(xpoints, ypoints)</div>
+                    <div>plt.show()</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex space-x-3">
+                <button onclick="triggerInstallPlot()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 transition rounded text-white text-xs font-semibold flex items-center gap-1.5 shadow-lg">
+                  <i class="fa-solid fa-play"></i> <span>Execute Compilation</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Custom Render Canvas -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Pyplot Simulator</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="basicPlotCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div class="text-[11px] text-slate-400 text-center mt-2">
+                Linear mapping of <code class="code-font">([0, 6], [0, 250])</code>.
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          renderBasicLine('basicPlotCanvas', [0, 6], [0, 250]);
+        }
+      },
+      {
+        title: "Plotting Points & Markers",
+        subtitle: "Using markers to emphasize key coordinate points",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <p class="text-xs text-slate-300">
+                  By default, the <code class="code-font text-brand-300">plot()</code> function connects arrays with a continuous line. To explicitly highlight key coordinate markers, provide the <code class="code-font text-brand-300">marker</code> parameter.
+                </p>
+
+                <!-- Marker API Code Box -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python Syntax</div>
+                  <div class="code-font text-xs text-slate-300 leading-normal">
+                    <div>ypoints = np.array([<span class="text-amber-400">3, 8, 1, 10</span>])</div>
+                    <div class="text-slate-500"># Set a circle marker explicitly</div>
+                    <div>plt.plot(ypoints, marker = <span class="text-emerald-400">'o'</span>)</div>
+                  </div>
+                </div>
+
+                <!-- Customizer Grid controls -->
+                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800 space-y-3">
+                  <h4 class="text-xs font-semibold text-slate-300">Interactive Marker Properties</h4>
+                  <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Select Marker Shape</label>
+                      <select id="markerTypeSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateMarkerDemo()">
+                        <option value="o">Circle ('o')</option>
+                        <option value="*">Star ('*')</option>
+                        <option value="s">Square ('s')</option>
+                        <option value="D">Diamond ('D')</option>
+                        <option value="^">Triangle Up ('^')</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Marker Size (ms)</label>
+                      <input type="range" id="markerSizeSlider" min="4" max="22" value="12" class="w-full" oninput="updateMarkerDemo()" />
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Edge Color (mec)</label>
+                      <select id="markerMecSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateMarkerDemo()">
+                        <option value="blue">Blue</option>
+                        <option value="red" selected>Red</option>
+                        <option value="black">Black</option>
+                        <option value="green">Green</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-400 bg-slate-950 p-3 rounded-lg border border-slate-800 flex items-center space-x-2">
+                <i class="fa-solid fa-circle-info text-blue-400"></i>
+                <span>Notice how Matplotlib maps coordinates cleanly. If xpoints is omitted, default values <code class="code-font">[0, 1, 2, 3]</code> are assigned.</span>
+              </div>
+            </div>
+
+            <!-- Interactive Canvas -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Live Custom Plot Preview</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="markerDemoCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div class="w-full flex justify-between items-center text-[10px] text-slate-500 font-mono mt-2">
+                <span>X: [0, 1, 2, 3]</span>
+                <span>Y: [3, 8, 1, 10]</span>
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          updateMarkerDemo();
+        }
+      },
+      {
+        title: "Format Strings: fmt Syntax",
+        subtitle: "Utilizing 'marker|line|color' shorthand notation",
+        type: "text",
+        html: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-4">
+              <p class="text-xs text-slate-300">
+                Instead of multiple keyword parameters, Matplotlib supports a powerful, condensed shortcut string parameter known as <code class="code-font text-brand-300">fmt</code> formatted as:
+              </p>
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                <span class="code-font text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-400">
+                  fmt = 'marker|line|color'
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                For example, the shortcut <code class="code-font text-emerald-400">'o:r'</code> translates directly to:
+                <br /><strong class="text-slate-200">Circle Marker</strong>, <strong class="text-slate-200">Dotted Line style</strong>, and colored <strong class="text-slate-200">Red</strong>.
+              </p>
+
+              <!-- Real code illustration -->
+              <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python</div>
+                <div class="code-font text-xs text-slate-300">
+                  <div>ypoints = np.array([3, 8, 1, 10])</div>
+                  <div>plt.plot(ypoints, <span class="text-emerald-400">'o:r'</span>, ms = <span class="text-amber-400">15</span>)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shortcut Reference Cheat-sheets -->
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Color Code Sheet -->
+              <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                <h4 class="text-xs font-semibold text-slate-300 border-b border-slate-800 pb-1.5 mb-2 flex justify-between">
+                  <span>Color Shortcuts</span>
+                  <span class="text-[10px] text-brand-400">Format Shorthand</span>
+                </h4>
+                <table class="w-full text-[11px] text-slate-400 space-y-1 font-mono">
+                  <tr><td class="text-slate-200">'r'</td><td>Red</td></tr>
+                  <tr><td class="text-slate-200">'g'</td><td>Green</td></tr>
+                  <tr><td class="text-slate-200">'b'</td><td>Blue</td></tr>
+                  <tr><td class="text-slate-200">'c'</td><td>Cyan</td></tr>
+                  <tr><td class="text-slate-200">'m'</td><td>Magenta</td></tr>
+                  <tr><td class="text-slate-200">'y'</td><td>Yellow</td></tr>
+                  <tr><td class="text-slate-200">'k'</td><td>Black</td></tr>
+                </table>
+              </div>
+
+              <!-- Line Reference Sheet -->
+              <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                <h4 class="text-xs font-semibold text-slate-300 border-b border-slate-800 pb-1.5 mb-2 flex justify-between">
+                  <span>Line Styles</span>
+                  <span class="text-[10px] text-brand-400">Format Shorthand</span>
+                </h4>
+                <table class="w-full text-[11px] text-slate-400 space-y-1 font-mono">
+                  <tr><td class="text-slate-200">'-'</td><td>Solid Line</td></tr>
+                  <tr><td class="text-slate-200">':'</td><td>Dotted Line</td></tr>
+                  <tr><td class="text-slate-200">'--'</td><td>Dashed Line</td></tr>
+                  <tr><td class="text-slate-200">'-.'</td><td>Dashed/Dotted</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        title: "Line Styles & Width Customization",
+        subtitle: "Mastering line visual traits in Python scripts",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <p class="text-xs text-slate-300">
+                  Control lines using explicit parameters: <code class="code-font text-brand-300">linestyle</code> (or shortcut <code class="code-font text-brand-300">ls</code>) and <code class="code-font text-brand-300">linewidth</code> (or shortcut <code class="code-font text-brand-300">lw</code>).
+                </p>
+
+                <!-- Code Example -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python</div>
+                  <div class="code-font text-xs text-slate-300">
+                    <div>plt.plot(ypoints, ls = <span class="text-emerald-400">'dotted'</span>, lw = <span class="text-amber-400">4.5</span>)</div>
+                  </div>
+                </div>
+
+                <!-- Custom Styling Interface -->
+                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800 space-y-3">
+                  <h4 class="text-xs font-semibold text-slate-300">Interactive Line Properties</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Select Line Style</label>
+                      <select id="lineStyleSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateLineDemo()">
+                        <option value="solid">Solid ('solid' or '-')</option>
+                        <option value="dashed">Dashed ('dashed' or '--')</option>
+                        <option value="dotted">Dotted ('dotted' or ':')</option>
+                        <option value="dashdot">Dashdot ('dashdot' or '-.')</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Line Width (lw / float)</label>
+                      <input type="range" id="lineWidthSlider" min="1" max="15" value="5" class="w-full" oninput="updateLineDemo()" />
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Line Color</label>
+                      <select id="lineColorSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateLineDemo()">
+                        <option value="#0ea5e9" selected>Sky Blue</option>
+                        <option value="#ef4444">Fire Red</option>
+                        <option value="#10b981">Green</option>
+                        <option value="#8b5cf6">Purple</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-400 bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <i class="fa-solid fa-lightbulb text-yellow-400 mr-1.5"></i> Line width accepts floating-point numbers in terms of points (e.g. <code class="code-font">20.5</code>).
+              </div>
+            </div>
+
+            <!-- Visualization Canvas -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Live Preview Output</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="lineDemoCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div class="text-[11px] text-slate-400 text-center mt-2">
+                Simulated line with variable styles.
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          updateLineDemo();
+        }
+      },
+      {
+        title: "Labels, Titles & Font Configurations",
+        subtitle: "Making graphics academic and clean for final publications",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <p class="text-xs text-slate-300">
+                  Label the axes using <code class="code-font text-brand-300">xlabel()</code>, <code class="code-font text-brand-300">ylabel()</code> and add descriptions via <code class="code-font text-brand-300">title()</code>. Customize layout aesthetics with font dictionaries.
+                </p>
+
+                <!-- Code Block -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python Syntax</div>
+                  <div class="code-font text-xs text-slate-300 leading-tight">
+                    <div>font1 = {<span class="text-emerald-400">'color'</span>:<span class="text-emerald-400">'blue'</span>, <span class="text-emerald-400">'size'</span>:<span class="text-amber-400">20</span>}</div>
+                    <div>plt.title(<span class="text-emerald-400">"Sports Watch Data"</span>, fontdict = font1)</div>
+                    <div>plt.xlabel(<span class="text-emerald-400">"Average Pulse"</span>)</div>
+                    <div>plt.ylabel(<span class="text-emerald-400">"Calorie Burnage"</span>)</div>
+                  </div>
+                </div>
+
+                <!-- Custom Labels Panel -->
+                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800 space-y-3">
+                  <h4 class="text-xs font-semibold text-slate-300">Interactive Text Labels</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Figure Title</label>
+                      <input type="text" id="figTitleInput" value="Sports Watch Data" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5 focus:outline-none focus:border-brand-500" onkeyup="updateLabelDemo()" />
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">X-Axis Label</label>
+                      <input type="text" id="figXInput" value="Average Pulse" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5 focus:outline-none focus:border-brand-500" onkeyup="updateLabelDemo()" />
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Y-Axis Label</label>
+                      <input type="text" id="figYInput" value="Calorie Burnage" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5 focus:outline-none focus:border-brand-500" onkeyup="updateLabelDemo()" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950/50 p-3 rounded-lg border border-slate-800/80 text-xs text-slate-400">
+                <i class="fa-solid fa-info-circle mr-1 text-sky-400"></i> The <code class="code-font font-bold">fontdict</code> argument lets you specify standard system fonts, fontweights, alignment, and sizes dynamically.
+              </div>
+            </div>
+
+            <!-- Graph Output -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Live Custom Figures Preview</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="labelDemoCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div class="text-[11px] text-slate-400 text-center mt-2">
+                Interactive Matplotlib representation.
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          updateLabelDemo();
+        }
+      },
+      {
+        title: "Plot Grid Customization",
+        subtitle: "Leveraging grid() lines for precision data analysis",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <p class="text-xs text-slate-300">
+                  With Pyplot, you can call the <code class="code-font text-brand-300">grid()</code> function to place mathematical coordinate assistance grids over standard charts.
+                </p>
+
+                <!-- Code Snippet -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python</div>
+                  <div class="code-font text-xs text-slate-300">
+                    <div>plt.plot(x, y)</div>
+                    <div class="text-slate-500"># Specify axis, line color, style and width</div>
+                    <div>plt.grid(axis = <span class="text-emerald-400">'x'</span>, color = <span class="text-emerald-400">'green'</span>, ls = <span class="text-emerald-400">'--'</span>, lw = <span class="text-amber-400">0.5</span>)</div>
+                  </div>
+                </div>
+
+                <!-- Customizer Grid controls -->
+                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800 space-y-3">
+                  <h4 class="text-xs font-semibold text-slate-300">Interactive Grid Settings</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Display Grid Axis</label>
+                      <select id="gridAxisSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateGridDemo()">
+                        <option value="both" selected>Both (X & Y)</option>
+                        <option value="x">X Axis Only ('x')</option>
+                        <option value="y">Y Axis Only ('y')</option>
+                        <option value="none">None (Hide Grid)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Grid Color</label>
+                      <select id="gridColorSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateGridDemo()">
+                        <option value="green" selected>Green</option>
+                        <option value="red">Red</option>
+                        <option value="#cccccc">Light Grey</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Grid Line Style</label>
+                      <select id="gridStyleSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateGridDemo()">
+                        <option value="dashed" selected>Dashed ('--')</option>
+                        <option value="solid">Solid ('-')</option>
+                        <option value="dotted">Dotted (':')</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-400 bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <i class="fa-solid fa-lightbulb text-yellow-400 mr-1 text-sm"></i> Grid visibility makes charts dramatically easier to read in professional data journals.
+              </div>
+            </div>
+
+            <!-- Graphic Panel Output -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Live Grid Preview</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="gridDemoCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div class="text-[11px] text-slate-400 text-center mt-2">
+                Customized grid overlays on real data.
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          updateGridDemo();
+        }
+      },
+      {
+        title: "Multiple Plots & Subplots Layout",
+        subtitle: "Using subplot() function to divide your dashboard figure",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <p class="text-xs text-slate-300">
+                  Draw multiple distinct plots inside a single unified window space using the <code class="code-font text-brand-300">subplot(rows, columns, index)</code> function.
+                </p>
+
+                <!-- Multiple Line Snippet -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python Syntax</div>
+                  <div class="code-font text-[11px] text-slate-300 leading-relaxed">
+                    <div class="text-slate-500"># Plot 1: Left graph</div>
+                    <div>plt.subplot(<span class="text-amber-400">1</span>, <span class="text-amber-400">2</span>, <span class="text-amber-400">1</span>)</div>
+                    <div>plt.plot(x1, y1)</div>
+                    <div class="text-slate-500"># Plot 2: Right graph</div>
+                    <div>plt.subplot(<span class="text-amber-400">1</span>, <span class="text-amber-400">2</span>, <span class="text-amber-400">2</span>)</div>
+                    <div>plt.plot(x2, y2)</div>
+                  </div>
+                </div>
+
+                <p class="text-xs text-slate-400">
+                  The first two parameters set the overall grid dimensions (rows & cols), and the third parameter states the target cell index (1-based index).
+                </p>
+              </div>
+
+              <div class="bg-slate-950/50 p-3 rounded-lg border border-slate-800/80 text-xs text-slate-400 flex items-center space-x-2">
+                <i class="fa-solid fa-code text-brand-400"></i>
+                <span>Use subplots when contrasting trend series side-by-side or building data dashboards.</span>
+              </div>
+            </div>
+
+            <!-- Subplot Canvas Simulation -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Simulated 1x2 Subplot Grid</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="subplotCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div class="w-full flex justify-between text-[10px] text-slate-400 px-4">
+                <span>Plot Index 1</span>
+                <span>Plot Index 2</span>
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          renderSubplotDemo('subplotCanvas');
+        }
+      },
+      {
+        title: "Scatter Plots",
+        subtitle: "Drawing observation dots to map complex trends",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <p class="text-xs text-slate-300">
+                  With Pyplot, the <code class="code-font text-brand-300">scatter()</code> function draws individual dots representing coordinate observation pairs without any linking lines.
+                </p>
+
+                <!-- Scatter API Code -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python Syntax</div>
+                  <div class="code-font text-xs text-slate-300">
+                    <div>x = np.array([<span class="text-amber-400">5, 7, 8, 2, 9, 4, 11</span>])</div>
+                    <div>y = np.array([<span class="text-amber-400">99, 86, 87, 111, 87, 94, 78</span>])</div>
+                    <div>plt.scatter(x, y, color = <span class="text-emerald-400">'hotpink'</span>)</div>
+                  </div>
+                </div>
+
+                <!-- Custom Scatter controls -->
+                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800 space-y-3">
+                  <h4 class="text-xs font-semibold text-slate-300">Interactive Scatter Parameters</h4>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Point Color Shading</label>
+                      <select id="scatterColorSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateScatterDemo()">
+                        <option value="hotpink" selected>Hotpink</option>
+                        <option value="#3b82f6">Ocean Blue</option>
+                        <option value="#10b981">Emerald Green</option>
+                        <option value="orange">Orange</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Plot Double Series</label>
+                      <select id="scatterDoubleSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateScatterDemo()">
+                        <option value="single" selected>Single Day Dataset</option>
+                        <option value="double">Two Days (Comparison Mode)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-[11px] text-slate-400 bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <i class="fa-solid fa-circle-nodes text-indigo-400 mr-1"></i> Highly utilized in machine learning for plotting linear regression fits and clustered scatter coordinate groupings.
+              </div>
+            </div>
+
+            <!-- Output canvas -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Live Scatter Plot</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="scatterCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div class="text-[11px] text-slate-400 text-center mt-2">
+                Simulated scatter observations dataset.
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          updateScatterDemo();
+        }
+      },
+      {
+        title: "Bar Graphs & Histograms",
+        subtitle: "Drawing frequency distributions and column graphs",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <p class="text-xs text-slate-300">
+                  Matplotlib provides the <code class="code-font text-brand-300">bar()</code> function for classic vertical column charts, <code class="code-font text-brand-300">barh()</code> for horizontal bars, and <code class="code-font text-brand-300">hist()</code> for frequency histograms.
+                </p>
+
+                <!-- Code Block -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python Syntax</div>
+                  <div class="code-font text-xs text-slate-300 leading-tight">
+                    <div>x = np.array([<span class="text-emerald-400">"A"</span>, <span class="text-emerald-400">"B"</span>, <span class="text-emerald-400">"C"</span>, <span class="text-emerald-400">"D"</span>])</div>
+                    <div>y = np.array([<span class="text-amber-400">3, 8, 1, 10</span>])</div>
+                    <div class="text-slate-500"># Draw bars or horizontal bars</div>
+                    <div>plt.bar(x, y, width = <span class="text-amber-400">0.1</span>, color = <span class="text-emerald-400">"red"</span>)</div>
+                  </div>
+                </div>
+
+                <!-- Customizer -->
+                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800 space-y-3">
+                  <h4 class="text-xs font-semibold text-slate-300">Interactive Bar Controls</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Select Chart Type</label>
+                      <select id="barTypeSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateBarDemo()">
+                        <option value="vertical" selected>Vertical Columns</option>
+                        <option value="horizontal">Horizontal Bars</option>
+                        <option value="hist">Gaussian Histogram</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Bar / Bin Color</label>
+                      <select id="barColorSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updateBarDemo()">
+                        <option value="#06b6d4" selected>Teal Blue</option>
+                        <option value="red">Red</option>
+                        <option value="orange">Orange</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Bar Width / Bin Count</label>
+                      <input type="range" id="barWidthSlider" min="1" max="10" value="7" class="w-full" oninput="updateBarDemo()" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950/50 p-3 rounded-lg border border-slate-800 text-xs text-slate-400">
+                <i class="fa-solid fa-chart-bar text-teal-400 mr-1"></i> Histograms group numeric values into frequency ranges (bins), whereas bar charts evaluate discrete categorical labels.
+              </div>
+            </div>
+
+            <!-- Visualization Panel -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Live Graph Preview</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="barCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div class="text-[11px] text-slate-400 text-center mt-2">
+                Simulated bar representation.
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          updateBarDemo();
+        }
+      },
+      {
+        title: "Pie Charts & Slice Exploits",
+        subtitle: "Using labels, startangles, and wedge explosions",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <p class="text-xs text-slate-300">
+                  Draw proportional circle slice charts using <code class="code-font text-brand-300">pie()</code>. Emphasize target slices using the <code class="code-font text-brand-300">explode</code> array logic.
+                </p>
+
+                <!-- Python Snippet -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python Syntax</div>
+                  <div class="code-font text-xs text-slate-300 leading-tight">
+                    <div>y = np.array([<span class="text-amber-400">35, 25, 25, 15</span>])</div>
+                    <div>mylabels = [<span class="text-emerald-400">"Apples", "Bananas", "Cherries", "Dates"</span>]</div>
+                    <div>myexplode = [<span class="text-amber-400">0.2</span>, <span class="text-amber-400">0</span>, <span class="text-amber-400">0</span>, <span class="text-amber-400">0</span>]</div>
+                    <div>plt.pie(y, labels = mylabels, explode = myexplode, startangle = <span class="text-amber-400">90</span>)</div>
+                  </div>
+                </div>
+
+                <!-- Customizer Grid controls -->
+                <div class="bg-slate-900/60 p-4 rounded-lg border border-slate-800 space-y-3">
+                  <h4 class="text-xs font-semibold text-slate-300">Interactive Pie Controls</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Apple Slice Explode</label>
+                      <input type="range" id="explodeSlider" min="0" max="40" value="20" class="w-full" oninput="updatePieDemo()" />
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Pie Start Angle</label>
+                      <input type="range" id="startAngleSlider" min="0" max="360" value="90" class="w-full" oninput="updatePieDemo()" />
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-slate-400 uppercase mb-1">Color Palette</label>
+                      <select id="pieColorSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded p-1.5" onchange="updatePieDemo()">
+                        <option value="vibrant" selected>Vibrant Matplotlib</option>
+                        <option value="cool">Cool Gradient</option>
+                        <option value="dark">Retro Monochrome</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-[11px] text-slate-400 bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <i class="fa-solid fa-pizza-slice text-yellow-500 mr-1.5"></i> By default, slices plot counterclockwise beginning at the 0° x-axis vector.
+              </div>
+            </div>
+
+            <!-- Graphic Display -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Live Pie Preview</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="pieDemoCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div class="text-[11px] text-slate-400 text-center mt-2">
+                Proportional categories distribution.
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          updatePieDemo();
+        }
+      },
+      {
+        title: "Advanced: Contour Plots",
+        subtitle: "Visualizing 3D structures on a 2D mesh grid plane",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <p class="text-xs text-slate-300">
+                  Contour plots (Level plots) represent 3D surface topography mapping a response variable <span class="code-font text-brand-300 font-bold">Z</span> across grid coordinate points <span class="code-font text-brand-300 font-bold">X & Y</span>.
+                </p>
+
+                <!-- Meshgrid explanation code -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-1 relative">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-500 uppercase">Python Formula</div>
+                  <div class="code-font text-[11px] text-slate-300 leading-tight">
+                    <div>xlist = np.linspace(-3.0, 3.0, 100)</div>
+                    <div>ylist = np.linspace(-3.0, 3.0, 100)</div>
+                    <div>X, Y = np.meshgrid(xlist, ylist)</div>
+                    <div>Z = np.sqrt(X**2 + Y**2) <span class="text-slate-500"># Iso-contours</span></div>
+                    <div>cp = plt.contourf(X, Y, Z)</div>
+                  </div>
+                </div>
+
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                  <h4 class="text-xs font-semibold text-slate-300">How Meshgrid Works</h4>
+                  <p class="text-[11px] text-slate-400 leading-normal">
+                    The <code class="code-font text-amber-400">numpy.meshgrid</code> operation constructs coordinate matrices spanning rows and columns so function values of <code class="code-font">f(X, Y)</code> are evaluated seamlessly at any intersection point.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center space-x-3">
+                <button onclick="triggerContourRedraw()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 rounded text-xs text-white transition flex items-center gap-1.5 font-semibold">
+                  <i class="fa-solid fa-redo"></i> <span>Re-evaluate Mathematical Grid</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Visualization Canvas -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Filled Contour Plane (contourf)</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="contourDemoCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div class="text-[11px] text-slate-400 text-center mt-2">
+                Simulated response variables for $Z = \\sqrt{X^2 + Y^2}$
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          renderContourDemo('contourDemoCanvas');
+        }
+      },
+      {
+        title: "Matplotlib Sandbox Playground",
+        subtitle: "Customize, run, and instantly visualize Matplotlib plots",
+        type: "interactive",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            <!-- Code Editor Column -->
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <span class="text-[11px] uppercase bg-brand-950 text-brand-300 px-2 py-0.5 rounded border border-brand-500/20 font-semibold tracking-wider">Live Development Environment</span>
+                <p class="text-xs text-slate-400">
+                  Select a classic visualization script preset, edit parameters inside the live editor console below, and witness the instant graphic render compilation.
+                </p>
+
+                <!-- Sandbox Select Presets -->
+                <div class="flex items-center space-x-3">
+                  <span class="text-xs text-slate-300 font-semibold shrink-0">Preset Sample:</span>
+                  <select id="sandboxPresetSelect" class="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded p-2 focus:border-brand-500" onchange="loadSandboxPreset()">
+                    <option value="line">1. Modern Styled Line Trend (plt.plot)</option>
+                    <option value="bar">2. Exploded Category Bars (plt.bar)</option>
+                    <option value="scatter">3. Dual Variable Observations (plt.scatter)</option>
+                    <option value="pie">4. Colorful Demographic Share (plt.pie)</option>
+                  </select>
+                </div>
+
+                <!-- Code Editor Textarea -->
+                <div class="relative bg-slate-950 rounded-lg border border-slate-800 p-2">
+                  <div class="absolute right-3 top-3 text-[10px] font-mono text-slate-600 uppercase z-10 select-none">Python IDE Console</div>
+                  <textarea id="sandboxTextarea" class="w-full h-44 bg-slate-950 text-emerald-400 font-mono text-xs p-2 rounded focus:outline-none focus:ring-0 resize-none leading-relaxed border-0 overflow-y-auto" spellcheck="false" oninput="compileSandbox()"></textarea>
+                </div>
+              </div>
+
+              <!-- Compile Action Trigger -->
+              <div class="flex space-x-3">
+                <button onclick="compileSandbox()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 rounded text-xs text-white transition flex items-center gap-1.5 font-semibold shadow-lg">
+                  <i class="fa-solid fa-play"></i> <span>Compile and Run Script</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Visualization Canvas Column -->
+            <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center relative">
+              <span class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">Live Simulator Render Output</span>
+              <div class="w-full flex-grow flex items-center justify-center py-2">
+                <canvas id="sandboxCanvas" width="300" height="220" class="bg-white rounded border border-slate-700 max-w-full"></canvas>
+              </div>
+              <div id="sandboxStatus" class="w-full mt-2 p-2 bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 rounded text-[10px] text-center font-mono">
+                <i class="fa-solid fa-circle-check mr-1.5"></i> Execution compiled successfully
+              </div>
+            </div>
+
+          </div>
+        `,
+        onload: () => {
+          loadSandboxPreset();
+        }
+      }
+    ];
+
+    let originalSlides = []; // Backup configuration for safety resets
+    let currentSlideIndex = 0;
+
+    // 2. Custom Drawing Engines to emulate Matplotlib Output in real-time HTML5 Canvas
+    
+    // Draw basic straight line plot from (0,0) to (6,250)
+    function renderBasicLine(canvasId, xVals, yVals) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      drawPlotSkeleton(ctx, canvas.width, canvas.height, 0, 6, 0, 250, "X-axis", "Y-axis");
+      
+      // Plot the mathematical line from coordinates (0,0) to (6,250)
+      const p1 = mapCoordinates(0, 0, canvas.width, canvas.height, 0, 6, 0, 250);
+      const p2 = mapCoordinates(6, 250, canvas.width, canvas.height, 0, 6, 0, 250);
+      
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.strokeStyle = '#0284c7'; // Classic Matplotlib blue
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    }
+
+    // Interactive Demo for customizable marker shapes and sizing
+    function updateMarkerDemo() {
+      const canvas = document.getElementById('markerDemoCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const mType = document.getElementById('markerTypeSelect').value;
+      const mSize = parseInt(document.getElementById('markerSizeSlider').value);
+      const mEdgeColor = document.getElementById('markerMecSelect').value;
+
+      const ypoints = [3, 8, 1, 10];
+      const xpoints = [0, 1, 2, 3];
+
+      drawPlotSkeleton(ctx, canvas.width, canvas.height, 0, 3, 0, 12, "Indices", "Values");
+
+      // Draw plotting lines connecting each coordinate
+      ctx.beginPath();
+      ctx.strokeStyle = '#555555';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < ypoints.length; i++) {
+        const pt = mapCoordinates(xpoints[i], ypoints[i], canvas.width, canvas.height, 0, 3, 0, 12);
+        if (i === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+
+      // Draw custom markers at coordinate intersections
+      for (let i = 0; i < ypoints.length; i++) {
+        const pt = mapCoordinates(xpoints[i], ypoints[i], canvas.width, canvas.height, 0, 3, 0, 12);
+        drawCustomMarkerShape(ctx, pt.x, pt.y, mType, mSize, mEdgeColor, '#0ea5e9');
+      }
+    }
+
+    // Trigger basic plot line button alert/compile animation
+    function triggerInstallPlot() {
+      const btn = document.querySelector('button[onclick="triggerInstallPlot()"]');
+      if (btn) {
+        btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Compiling Plot...</span>`;
+        setTimeout(() => {
+          btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>Success (Compiled)</span>`;
+          renderBasicLine('basicPlotCanvas', [0, 6], [0, 250]);
+          setTimeout(() => {
+            btn.innerHTML = `<i class="fa-solid fa-play"></i> <span>Execute Compilation</span>`;
+          }, 1500);
+        }, 1200);
+      }
+    }
+
+    // Live Customizer for line properties
+    function updateLineDemo() {
+      const canvas = document.getElementById('lineDemoCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const style = document.getElementById('lineStyleSelect').value;
+      const width = parseFloat(document.getElementById('lineWidthSlider').value);
+      const color = document.getElementById('lineColorSelect').value;
+
+      const ypoints = [3, 8, 1, 10];
+      const xpoints = [0, 1, 2, 3];
+
+      drawPlotSkeleton(ctx, canvas.width, canvas.height, 0, 3, 0, 11, "X-axis", "Y-axis");
+
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+
+      // Handle custom dashed or dotted line patterns in HTML5 context
+      if (style === 'dashed') {
+        ctx.setLineDash([8, 6]);
+      } else if (style === 'dotted') {
+        ctx.setLineDash([2, 4]);
+      } else if (style === 'dashdot') {
+        ctx.setLineDash([10, 4, 2, 4]);
+      } else {
+        ctx.setLineDash([]); // Solid
+      }
+
+      for (let i = 0; i < ypoints.length; i++) {
+        const pt = mapCoordinates(xpoints[i], ypoints[i], canvas.width, canvas.height, 0, 3, 0, 11);
+        if (i === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]); // Reset line pattern
+    }
+
+    // Live customized text and title positioning
+    function updateLabelDemo() {
+      const canvas = document.getElementById('labelDemoCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const titleVal = document.getElementById('figTitleInput').value;
+      const xVal = document.getElementById('figXInput').value;
+      const yVal = document.getElementById('figYInput').value;
+
+      const xpoints = [80, 90, 100, 110, 120];
+      const ypoints = [240, 260, 280, 300, 320];
+
+      drawPlotSkeleton(ctx, canvas.width, canvas.height, 80, 120, 240, 320, xVal, yVal, titleVal);
+
+      ctx.beginPath();
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 2.5;
+      for (let i = 0; i < ypoints.length; i++) {
+        const pt = mapCoordinates(xpoints[i], ypoints[i], canvas.width, canvas.height, 80, 120, 240, 320);
+        if (i === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+    }
+
+    // Live customizer for axis grids
+    function updateGridDemo() {
+      const canvas = document.getElementById('gridDemoCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const gridAxis = document.getElementById('gridAxisSelect').value;
+      const gridColor = document.getElementById('gridColorSelect').value;
+      const gridStyle = document.getElementById('gridStyleSelect').value;
+
+      const xpoints = [80, 90, 100, 110, 120];
+      const ypoints = [240, 260, 280, 300, 320];
+
+      drawPlotSkeleton(ctx, canvas.width, canvas.height, 80, 120, 240, 320, "Pulse Rate", "Calories", "Pulse vs Calories", {
+        show: gridAxis !== 'none',
+        axis: gridAxis,
+        color: gridColor,
+        style: gridStyle
+      });
+
+      // Draw primary series plot line
+      ctx.beginPath();
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2.5;
+      for (let i = 0; i < ypoints.length; i++) {
+        const pt = mapCoordinates(xpoints[i], ypoints[i], canvas.width, canvas.height, 80, 120, 240, 320);
+        if (i === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+    }
+
+    // Render Subplot Grid Simulation (1 Row, 2 Columns)
+    function renderSubplotDemo(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const halfW = canvas.width / 2;
+
+      // Draw Subplot 1 (Left Box)
+      ctx.save();
+      // Draw left plot skeleton boundaries and tick marks
+      drawPlotSkeleton(ctx, halfW, canvas.height, 0, 3, 0, 10, "X", "Y", "Subplot 1", null, 10);
+      const sub1Y = [3, 8, 1, 10];
+      ctx.beginPath();
+      ctx.strokeStyle = '#0ea5e9';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < sub1Y.length; i++) {
+        const pt = mapCoordinates(i, sub1Y[i], halfW, canvas.height, 0, 3, 0, 10, 10);
+        if (i === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // Draw Subplot 2 (Right Box)
+      ctx.save();
+      ctx.translate(halfW, 0);
+      drawPlotSkeleton(ctx, halfW, canvas.height, 0, 3, 0, 40, "X", "Y", "Subplot 2", null, 10);
+      const sub2Y = [10, 20, 30, 40];
+      ctx.beginPath();
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < sub2Y.length; i++) {
+        const pt = mapCoordinates(i, sub2Y[i], halfW, canvas.height, 0, 3, 0, 40, 10);
+        if (i === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Update scatter graph variables
+    function updateScatterDemo() {
+      const canvas = document.getElementById('scatterCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const color = document.getElementById('scatterColorSelect').value;
+      const mode = document.getElementById('scatterDoubleSelect').value;
+
+      drawPlotSkeleton(ctx, canvas.width, canvas.height, 0, 18, 70, 115, "Vehicle Age (Years)", "Speed Registered");
+
+      // Series 1
+      const x1 = [5, 7, 8, 7, 2, 17, 2, 9, 4, 11, 12, 9, 6];
+      const y1 = [99, 86, 87, 88, 111, 86, 103, 87, 94, 78, 77, 85, 86];
+
+      for (let i = 0; i < x1.length; i++) {
+        const pt = mapCoordinates(x1[i], y1[i], canvas.width, canvas.height, 0, 18, 70, 115);
+        drawCustomMarkerShape(ctx, pt.x, pt.y, 'o', 8, color, color);
+      }
+
+      if (mode === 'double') {
+        // Series 2 (Comparative Data Series)
+        const x2 = [2, 2, 8, 1, 15, 8, 12, 9, 7, 3, 11, 4, 7, 14, 12];
+        const y2 = [100, 105, 84, 105, 90, 99, 90, 95, 94, 100, 79, 112, 91, 80, 85];
+        
+        for (let i = 0; i < x2.length; i++) {
+          const pt = mapCoordinates(x2[i], y2[i], canvas.width, canvas.height, 0, 18, 70, 115);
+          drawCustomMarkerShape(ctx, pt.x, pt.y, 'o', 8, '#f59e0b', '#f59e0b');
+        }
+      }
+    }
+
+    // Update column bar sizes or histogram representation
+    function updateBarDemo() {
+      const canvas = document.getElementById('barCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const chartType = document.getElementById('barTypeSelect').value;
+      const barColor = document.getElementById('barColorSelect').value;
+      const sliderVal = parseInt(document.getElementById('barWidthSlider').value);
+
+      if (chartType === 'vertical') {
+        const categories = ["A", "B", "C", "D"];
+        const values = [3, 8, 1, 10];
+        const barWidthFrac = sliderVal / 10; // Normalized scale 0.1 to 1.0
+
+        drawPlotSkeleton(ctx, canvas.width, canvas.height, -0.5, 3.5, 0, 11, "Demographics", "Proportion Value");
+
+        for (let i = 0; i < values.length; i++) {
+          const bottomPt = mapCoordinates(i, 0, canvas.width, canvas.height, -0.5, 3.5, 0, 11);
+          const topPt = mapCoordinates(i, values[i], canvas.width, canvas.height, -0.5, 3.5, 0, 11);
+          
+          const maxPixelWidth = 40;
+          const pixelBarW = maxPixelWidth * barWidthFrac;
+
+          ctx.fillStyle = barColor;
+          ctx.fillRect(topPt.x - pixelBarW / 2, topPt.y, pixelBarW, bottomPt.y - topPt.y);
+          ctx.strokeStyle = '#444444';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(topPt.x - pixelBarW / 2, topPt.y, pixelBarW, bottomPt.y - topPt.y);
+        }
+      } else if (chartType === 'horizontal') {
+        const categories = ["A", "B", "C", "D"];
+        const values = [3, 8, 1, 10];
+        const barHeightFrac = sliderVal / 10;
+
+        drawPlotSkeleton(ctx, canvas.width, canvas.height, 0, 11, -0.5, 3.5, "Value Rate", "Categories");
+
+        for (let i = 0; i < values.length; i++) {
+          const leftPt = mapCoordinates(0, i, canvas.width, canvas.height, 0, 11, -0.5, 3.5);
+          const rightPt = mapCoordinates(values[i], i, canvas.width, canvas.height, 0, 11, -0.5, 3.5);
+          
+          const maxPixelHeight = 35;
+          const pixelBarH = maxPixelHeight * barHeightFrac;
+
+          ctx.fillStyle = barColor;
+          ctx.fillRect(leftPt.x, leftPt.y - pixelBarH / 2, rightPt.x - leftPt.x, pixelBarH);
+          ctx.strokeStyle = '#444444';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(leftPt.x, leftPt.y - pixelBarH / 2, rightPt.x - leftPt.x, pixelBarH);
+        }
+      } else {
+        // Frequency Gaussian Distribution Histogram
+        drawPlotSkeleton(ctx, canvas.width, canvas.height, 140, 195, 0, 60, "Observations Interval", "Frequency");
+        
+        // Emulated standard distribution curves 
+        const bins = [
+          { start: 140, end: 147, freq: 3 },
+          { start: 147, end: 154, freq: 8 },
+          { start: 154, end: 161, freq: 28 },
+          { start: 161, end: 168, freq: 44 },
+          { start: 168, end: 175, freq: 55 },
+          { start: 175, end: 182, freq: 43 },
+          { start: 182, end: 189, freq: 25 },
+          { start: 189, end: 196, freq: 5 }
+        ];
+
+        ctx.fillStyle = barColor;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
+
+        bins.forEach(b => {
+          const botLeft = mapCoordinates(b.start, 0, canvas.width, canvas.height, 140, 195, 0, 60);
+          const topRight = mapCoordinates(b.end, b.freq, canvas.width, canvas.height, 140, 195, 0, 60);
+          
+          ctx.fillRect(botLeft.x, topRight.y, topRight.x - botLeft.x, botLeft.y - topRight.y);
+          ctx.strokeRect(botLeft.x, topRight.y, topRight.x - botLeft.x, botLeft.y - topRight.y);
+        });
+      }
+    }
+
+    // Pie chart generator supporting dynamic startangles & slice explosions
+    function updatePieDemo() {
+      const canvas = document.getElementById('pieDemoCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const explodeVal = parseInt(document.getElementById('explodeSlider').value) / 100; // Explode factor
+      const startAngleDeg = parseInt(document.getElementById('startAngleSlider').value);
+      const palette = document.getElementById('pieColorSelect').value;
+
+      const slices = [
+        { label: "Apples", value: 35, explode: true },
+        { label: "Bananas", value: 25, explode: false },
+        { label: "Cherries", value: 25, explode: false },
+        { label: "Dates", value: 15, explode: false }
+      ];
+
+      const total = slices.reduce((acc, s) => acc + s.value, 0);
+      let currentAngle = (startAngleDeg * Math.PI) / 180; // Standardize to radians
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2 - 10;
+      const radius = 65;
+
+      // Set palette colors
+      let colors = ['#0ea5e9', '#10b981', '#f59e0b', '#ec4899'];
+      if (palette === 'cool') {
+        colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e'];
+      } else if (palette === 'dark') {
+        colors = ['#1e293b', '#475569', '#64748b', '#94a3b8'];
+      }
+
+      slices.forEach((slice, idx) => {
+        const sliceAngle = (slice.value / total) * Math.PI * 2;
+        const middleAngle = currentAngle + sliceAngle / 2;
+
+        let ox = 0;
+        let oy = 0;
+
+        if (slice.explode && explodeVal > 0) {
+          ox = Math.cos(middleAngle) * (explodeVal * 50);
+          oy = Math.sin(middleAngle) * (explodeVal * 50);
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(centerX + ox, centerY + oy);
+        ctx.arc(centerX + ox, centerY + oy, radius, currentAngle, currentAngle + sliceAngle);
+        ctx.closePath();
+        
+        ctx.fillStyle = colors[idx % colors.length];
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Label layout
+        const labelRadius = radius + 22;
+        const lx = centerX + ox + Math.cos(middleAngle) * labelRadius;
+        const ly = centerY + oy + Math.sin(middleAngle) * labelRadius;
+
+        ctx.fillStyle = '#333333';
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${slice.label} (${slice.value}%)`, lx, ly);
+
+        currentAngle += sliceAngle;
+      });
+    }
+
+    // Advanced: Topography Contour Grid plot simulator 
+    function renderContourDemo(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Create concentric grid orbits mapping circular responses Z = sqrt(X^2 + Y^2)
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const maxRadius = Math.min(canvas.width, canvas.height) / 2 - 15;
+
+      const colors = [
+        '#023e8a', '#0077b6', '#0096c7', '#00b4d8', 
+        '#48cae4', '#90e0ef', '#ade8f4', '#caf0f8'
+      ];
+
+      for (let i = colors.length - 1; i >= 0; i--) {
+        const currentRad = (maxRadius * (i + 1)) / colors.length;
+        ctx.beginPath();
+        ctx.arc(cx, cy, currentRad, 0, Math.PI * 2);
+        ctx.fillStyle = colors[i];
+        ctx.fill();
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+
+      // Render outer framework ticks for academic feel
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+      // Labeling axes 
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '10px monospace';
+      ctx.fillText('-3.0', 10, cy);
+      ctx.fillText('+3.0', canvas.width - 20, cy);
+    }
+
+    // Trigger contour calculations simulation reload
+    function triggerContourRedraw() {
+      const canvas = document.getElementById('contourDemoCanvas');
+      if (canvas) {
+        // Flash loader animation inside canvas area
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('Re-evaluating meshgrid matrices...', canvas.width / 2, canvas.height / 2);
+        
+        setTimeout(() => {
+          renderContourDemo('contourDemoCanvas');
+        }, 800);
+      }
+    }
+
+
+    // 3. Matplotlib Interactive Play Area / Sandbox Logic
+
+    const sandboxPresets = {
+      line: `import matplotlib.pyplot as plt\nimport numpy as np\n\nypoints = np.array([3, 12, 5, 20, 10])\nplt.plot(ypoints, marker='o', ls='--', lw=4, color='red')\nplt.title("Revenue Trendline", size=18)\nplt.xlabel("Months")\nplt.ylabel("In Millions USD")\nplt.grid(True)\nplt.show()`,
+      
+      bar: `import matplotlib.pyplot as plt\nimport numpy as np\n\nx = np.array(["Tech", "Bio", "Fin", "Edu"])\ny = np.array([15, 25, 8, 12])\nplt.bar(x, y, width=0.5, color='teal')\nplt.title("Industry Share Growth")\nplt.show()`,
+      
+      scatter: `import matplotlib.pyplot as plt\nimport numpy as np\n\nx = np.array([1, 2, 3, 4, 5, 6, 7])\ny = np.array([10, 25, 12, 45, 28, 60, 50])\nplt.scatter(x, y, color='hotpink')\nplt.title("Observation Points")\nplt.show()`,
+      
+      pie: `import matplotlib.pyplot as plt\nimport numpy as np\n\ny = np.array([40, 30, 20, 10])\nmylabels = ["A", "B", "C", "D"]\nplt.pie(y, labels=mylabels, startangle=90)\nplt.show()`
+    };
+
+    function loadSandboxPreset() {
+      const key = document.getElementById('sandboxPresetSelect').value;
+      document.getElementById('sandboxTextarea').value = sandboxPresets[key];
+      compileSandbox();
+    }
+
+    // Custom compiler interpreter emulating direct Python-to-canvas rendering
+    function compileSandbox() {
+      const code = document.getElementById('sandboxTextarea').value;
+      const canvas = document.getElementById('sandboxCanvas');
+      const status = document.getElementById('sandboxStatus');
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      try {
+        // Simple regex parser to parse trends inside the sandbox code
+        let ypoints = [5, 15, 8, 25, 12]; // Fallback
+        const yRegex = /ypoints\s*=\s*np\.array\(\[([\d\s,]+)\]\)/;
+        const matchY = code.match(yRegex);
+        if (matchY) {
+          ypoints = matchY[1].split(',').map(n => parseFloat(n.trim()));
+        }
+
+        let xBar = ["A", "B", "C", "D"];
+        const xBarRegex = /x\s*=\s*np\.array\(\[([^\]]+)\]\)/;
+        const matchXBar = code.match(xBarRegex);
+        if (matchXBar) {
+          xBar = matchXBar[1].split(',').map(s => s.replace(/['"]/g, '').trim());
+        }
+
+        let yBar = [15, 25, 8, 12];
+        const yBarRegex = /y\s*=\s*np\.array\(\[([\d\s,]+)\]\)/;
+        const matchYBar = code.match(yBarRegex);
+        if (matchYBar) {
+          yBar = matchYBar[1].split(',').map(n => parseFloat(n.trim()));
+        }
+
+        // Title text extract
+        let titleText = "Custom Graph Plot";
+        const titleRegex = /plt\.title\(([^)]+)\)/;
+        const matchTitle = code.match(titleRegex);
+        if (matchTitle) {
+          titleText = matchTitle[1].split(',')[0].replace(/['"]/g, '').trim();
+        }
+
+        // Check which plotting call is fired in the developer sandbox
+        if (code.includes('plt.bar')) {
+          drawPlotSkeleton(ctx, canvas.width, canvas.height, -0.5, xBar.length - 0.5, 0, Math.max(...yBar) * 1.2, "Categories", "Values", titleText);
+          const barWidth = 0.4;
+          for (let i = 0; i < yBar.length; i++) {
+            const botPt = mapCoordinates(i, 0, canvas.width, canvas.height, -0.5, xBar.length - 0.5, 0, Math.max(...yBar) * 1.2);
+            const topPt = mapCoordinates(i, yBar[i], canvas.width, canvas.height, -0.5, xBar.length - 0.5, 0, Math.max(...yBar) * 1.2);
+            ctx.fillStyle = '#0f766e';
+            ctx.fillRect(topPt.x - 15, topPt.y, 30, botPt.y - topPt.y);
+          }
+        } else if (code.includes('plt.scatter')) {
+          // Parse x and y coords
+          let xCoords = [1, 2, 3, 4, 5, 6, 7];
+          const xRegex = /x\s*=\s*np\.array\(\[([\d\s,]+)\]\)/;
+          const matchX = code.match(xRegex);
+          if (matchX) xCoords = matchX[1].split(',').map(n => parseFloat(n.trim()));
+
+          let yCoords = [10, 25, 12, 45, 28, 60, 50];
+          const yMatch = code.match(/y\s*=\s*np\.array\(\[([\d\s,]+)\]\)/);
+          if (yMatch) yCoords = yMatch[1].split(',').map(n => parseFloat(n.trim()));
+
+          drawPlotSkeleton(ctx, canvas.width, canvas.height, Math.min(...xCoords) - 1, Math.max(...xCoords) + 1, Math.min(...yCoords) - 10, Math.max(...yCoords) + 10, "X-axis", "Y-axis", titleText);
+          
+          for (let i = 0; i < xCoords.length; i++) {
+            const pt = mapCoordinates(xCoords[i], yCoords[i], canvas.width, canvas.height, Math.min(...xCoords) - 1, Math.max(...xCoords) + 1, Math.min(...yCoords) - 10, Math.max(...yCoords) + 10);
+            drawCustomMarkerShape(ctx, pt.x, pt.y, 'o', 8, '#ec4899', '#ec4899');
+          }
+        } else if (code.includes('plt.pie')) {
+          // Simulated pie slice parser
+          let pieVals = [40, 30, 20, 10];
+          const pMatch = code.match(/y\s*=\s*np\.array\(\[([\d\s,]+)\]\)/);
+          if (pMatch) pieVals = pMatch[1].split(',').map(n => parseFloat(n.trim()));
+
+          const total = pieVals.reduce((a, b) => a + b, 0);
+          let currentAngle = 0;
+          const colors = ['#0ea5e9', '#10b981', '#f59e0b', '#ec4899'];
+
+          slices = pieVals.map((v, i) => ({ label: `Slice ${i+1}`, value: v }));
+          
+          slices.forEach((slice, idx) => {
+            const sliceAngle = (slice.value / total) * Math.PI * 2;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2, canvas.height/2);
+            ctx.arc(canvas.width/2, canvas.height/2, 60, currentAngle, currentAngle + sliceAngle);
+            ctx.closePath();
+            ctx.fillStyle = colors[idx % colors.length];
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.stroke();
+            currentAngle += sliceAngle;
+          });
+        } else {
+          // Standard line plot
+          drawPlotSkeleton(ctx, canvas.width, canvas.height, 0, ypoints.length - 1, 0, Math.max(...ypoints) * 1.2, "X Indices", "Y Values", titleText);
+          ctx.beginPath();
+          ctx.strokeStyle = '#0284c7';
+          ctx.lineWidth = 3;
+          for (let i = 0; i < ypoints.length; i++) {
+            const pt = mapCoordinates(i, ypoints[i], canvas.width, canvas.height, 0, ypoints.length - 1, 0, Math.max(...ypoints) * 1.2);
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          }
+          ctx.stroke();
+        }
+
+        status.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Code Compiled Successfully</span>`;
+      } catch (err) {
+        status.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-circle-exclamation"></i> SyntaxError: ${err.message}</span>`;
+      }
+    }
+
+
+    // 4. Low Level Canvas Geometry Math Helpers 
+
+    // Frame layout coordinator transformation math
+    function mapCoordinates(x, y, w, h, minX, maxX, minY, maxY, padding = 40) {
+      const graphW = w - padding * 2;
+      const graphH = h - padding * 2;
+
+      const px = padding + ((x - minX) / (maxX - minX)) * graphW;
+      const py = h - padding - ((y - minY) / (maxY - minY)) * graphH;
+
+      return { x: px, y: py };
+    }
+
+    // Generic frame and scale tick markers generator to mimic Matplotlib layouts
+    function drawPlotSkeleton(ctx, w, h, minX, maxX, minY, maxY, xlabel = "", ylabel = "", title = "", gridOpts = null, padding = 40) {
+      const graphW = w - padding * 2;
+      const graphH = h - padding * 2;
+
+      // Fill basic interior box layout
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(padding, padding, graphW, graphH);
+      ctx.strokeStyle = '#333333';
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(padding, padding, graphW, graphH);
+
+      // Handle custom math coordinate grid injection inside simulator
+      if (gridOpts && gridOpts.show) {
+        ctx.save();
+        ctx.strokeStyle = gridOpts.color || '#cccccc';
+        ctx.lineWidth = 0.5;
+        if (gridOpts.style === 'dashed') ctx.setLineDash([5, 5]);
+        else if (gridOpts.style === 'dotted') ctx.setLineDash([1, 3]);
+
+        // Draw Vertical lines
+        if (gridOpts.axis === 'both' || gridOpts.axis === 'x') {
+          const stepX = (maxX - minX) / 4;
+          for (let i = 1; i < 4; i++) {
+            const xVal = minX + i * stepX;
+            const pt = mapCoordinates(xVal, minY, w, h, minX, maxX, minY, maxY, padding);
+            ctx.beginPath();
+            ctx.moveTo(pt.x, padding);
+            ctx.lineTo(pt.x, h - padding);
+            ctx.stroke();
+          }
+        }
+        // Draw Horizontal lines
+        if (gridOpts.axis === 'both' || gridOpts.axis === 'y') {
+          const stepY = (maxY - minY) / 4;
+          for (let i = 1; i < 4; i++) {
+            const yVal = minY + i * stepY;
+            const pt = mapCoordinates(minX, yVal, w, h, minX, maxX, minY, maxY, padding);
+            ctx.beginPath();
+            ctx.moveTo(padding, pt.y);
+            ctx.lineTo(w - padding, pt.y);
+            ctx.stroke();
+          }
+        }
+        ctx.restore();
+      }
+
+      // Numeric scale marks along borders
+      ctx.fillStyle = '#333333';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'center';
+
+      // X scale marks
+      const stepX = (maxX - minX) / 4;
+      for (let i = 0; i <= 4; i++) {
+        const xVal = minX + i * stepX;
+        const pt = mapCoordinates(xVal, minY, w, h, minX, maxX, minY, maxY, padding);
+        ctx.fillText(Number(xVal.toFixed(1)), pt.x, h - padding + 12);
+      }
+
+      // Y scale marks
+      ctx.textAlign = 'right';
+      const stepY = (maxY - minY) / 4;
+      for (let i = 0; i <= 4; i++) {
+        const yVal = minY + i * stepY;
+        const pt = mapCoordinates(minX, yVal, w, h, minX, maxX, minY, maxY, padding);
+        ctx.fillText(Number(yVal.toFixed(1)), padding - 5, pt.y + 3);
+      }
+
+      // Titles and Label strings
+      ctx.fillStyle = '#333333';
+      ctx.textAlign = 'center';
+
+      if (title) {
+        ctx.font = 'bold 11px sans-serif';
+        ctx.fillText(title, w / 2, padding - 10);
+      }
+
+      if (xlabel) {
+        ctx.font = 'italic 9px sans-serif';
+        ctx.fillText(xlabel, w / 2, h - padding + 26);
+      }
+
+      if (ylabel) {
+        ctx.save();
+        ctx.translate(padding - 26, h / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.font = 'italic 9px sans-serif';
+        ctx.fillText(ylabel, 0, 0);
+        ctx.restore();
+      }
+    }
+
+    // Geometry generators for standard custom marker shapes
+    function drawCustomMarkerShape(ctx, x, y, type, size, edgeColor, fillColor) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.strokeStyle = edgeColor;
+      ctx.fillStyle = fillColor;
+      ctx.lineWidth = 1.5;
+
+      const r = size / 2;
+
+      switch (type) {
+        case 'o': // Circle marker
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+          break;
+        case 's': // Square marker
+          ctx.rect(x - r, y - r, size, size);
+          break;
+        case '*': // Star marker
+          for (let i = 0; i < 5; i++) {
+            ctx.lineTo(Math.cos(((18 + i * 72) * Math.PI) / 180) * r + x, -Math.sin(((18 + i * 72) * Math.PI) / 180) * r + y);
+            ctx.lineTo(Math.cos(((54 + i * 72) * Math.PI) / 180) * (r/2) + x, -Math.sin(((54 + i * 72) * Math.PI) / 180) * (r/2) + y);
+          }
+          ctx.closePath();
+          break;
+        case 'D': // Diamond marker
+          ctx.moveTo(x, y - r);
+          ctx.lineTo(x + r, y);
+          ctx.lineTo(x, y + r);
+          ctx.lineTo(x - r, y);
+          ctx.closePath();
+          break;
+        case '^': // Triangle point up marker
+          ctx.moveTo(x, y - r);
+          ctx.lineTo(x + r, y + r);
+          ctx.lineTo(x - r, y + r);
+          ctx.closePath();
+          break;
+      }
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+
+    // 5. Presentation slide controller and custom editor engines
+
+    function loadSlide(index) {
+      if (index < 0 || index >= slides.length) return;
+      currentSlideIndex = index;
+
+      const slide = slides[index];
+
+      // Insert basic slide content frame with interactive contenteditable triggers
+      const container = document.getElementById('slideContent');
+      container.innerHTML = `
+        <div class="space-y-4">
+          <div class="border-b border-slate-800/80 pb-4 relative group">
+            <h2 class="text-xl md:text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
+              <span class="text-brand-400 font-mono text-lg select-none">[0${index + 1}]</span>
+              <span id="slideTitle" contenteditable="true" onblur="saveInlineTitle()" class="focus:outline-none focus:ring-2 focus:ring-brand-500/50 rounded px-1 transition hover:bg-slate-900/60 cursor-text" title="Click to edit title">${slide.title}</span>
+            </h2>
+            <p id="slideSubtitle" contenteditable="true" onblur="saveInlineSubtitle()" class="text-xs text-slate-400 mt-1 focus:outline-none focus:ring-2 focus:ring-brand-500/50 rounded px-1 transition hover:bg-slate-900/60 cursor-text" title="Click to edit subtitle">${slide.subtitle}</p>
+            
+            <!-- Floating helper tooltip indicator -->
+            <span class="absolute right-0 top-0 text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 select-none pointer-events-none">
+              <i class="fa-solid fa-pen text-brand-400"></i> Click text to edit inline
+            </span>
+          </div>
+          <div class="py-2">
+            ${slide.html}
+          </div>
+        </div>
+      `;
+
+      // Trigger load events for charts initialization
+      if (slide.onload) {
+        slide.onload();
+      }
+
+      // Update counters and slide navigation items
+      document.getElementById('slideCounter').textContent = `${index + 1} / ${slides.length}`;
+      
+      const percent = ((index + 1) / slides.length) * 100;
+      document.getElementById('slideProgressBar').style.width = `${percent}%`;
+
+      // Render updated list highlights inside sidebar index
+      const listItems = document.querySelectorAll('.sidebar-nav-item');
+      listItems.forEach((item, idx) => {
+        if (idx === index) {
+          item.classList.add('bg-brand-600', 'text-white');
+          item.classList.remove('text-slate-400', 'hover:bg-slate-800');
+        } else {
+          item.classList.remove('bg-brand-600', 'text-white');
+          item.classList.add('text-slate-400', 'hover:bg-slate-800');
+        }
+      });
+    }
+
+    function nextSlide() {
+      if (currentSlideIndex < slides.length - 1) {
+        loadSlide(currentSlideIndex + 1);
+        // Sync editor panel if open
+        if (!document.getElementById('editorDrawer').classList.contains('translate-x-full')) {
+          populateEditorFields();
+        }
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlideIndex > 0) {
+        loadSlide(currentSlideIndex - 1);
+        // Sync editor panel if open
+        if (!document.getElementById('editorDrawer').classList.contains('translate-x-full')) {
+          populateEditorFields();
+        }
+      }
+    }
+
+    // Inline Editor Save triggers (Triggers when user clicks away / blurs)
+    function saveInlineTitle() {
+      const el = document.getElementById('slideTitle');
+      if (el) {
+        slides[currentSlideIndex].title = el.innerText.trim();
+        buildSidebar(); // Sync indices listings
+      }
+    }
+
+    function saveInlineSubtitle() {
+      const el = document.getElementById('slideSubtitle');
+      if (el) {
+        slides[currentSlideIndex].subtitle = el.innerText.trim();
+      }
+    }
+
+    // Toggle Advanced Code Editor Drawer
+    function toggleEditor() {
+      const drawer = document.getElementById('editorDrawer');
+      const isClosed = drawer.classList.contains('translate-x-full');
+      
+      if (isClosed) {
+        drawer.classList.remove('translate-x-full');
+        populateEditorFields();
+      } else {
+        drawer.classList.add('translate-x-full');
+      }
+    }
+
+    function populateEditorFields() {
+      document.getElementById('editSlideTitle').value = slides[currentSlideIndex].title;
+      document.getElementById('editSlideSubtitle').value = slides[currentSlideIndex].subtitle;
+      document.getElementById('editSlideHtml').value = slides[currentSlideIndex].html.trim();
+    }
+
+    // Apply code and text changes from advanced configuration
+    function applySlideEdits() {
+      slides[currentSlideIndex].title = document.getElementById('editSlideTitle').value.trim();
+      slides[currentSlideIndex].subtitle = document.getElementById('editSlideSubtitle').value.trim();
+      slides[currentSlideIndex].html = document.getElementById('editSlideHtml').value;
+      
+      loadSlide(currentSlideIndex);
+      buildSidebar();
+      toggleEditor();
+    }
+
+    // Safety fallback: Reset slide back to its original parsed layout
+    function resetCurrentSlide() {
+      if (confirm("Are you sure you want to revert all changes on this slide to defaults?")) {
+        slides[currentSlideIndex] = JSON.parse(JSON.stringify(originalSlides[currentSlideIndex]));
+        loadSlide(currentSlideIndex);
+        buildSidebar();
+        toggleEditor();
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebarDrawer');
+      sidebar.classList.toggle('-translate-x-full');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch((err) => {
+          console.error(`Error attempting to enable fullscreen mode: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Build sidebar index layout list items
+    function buildSidebar() {
+      const list = document.getElementById('sidebarList');
+      list.innerHTML = "";
+      slides.forEach((slide, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "sidebar-nav-item w-full text-left text-xs px-3 py-2.5 rounded-lg transition font-medium flex items-center space-x-2.5";
+        btn.innerHTML = `
+          <span class="font-mono text-slate-500 text-[10px]">0${idx+1}</span>
+          <span class="truncate">${slide.title}</span>
+        `;
+        btn.onclick = () => {
+          loadSlide(idx);
+          toggleSidebar();
+        };
+        list.appendChild(btn);
+      });
+    }
+
+    // Monitor standard keyboard arrow layout key presses
+    document.addEventListener('keydown', (e) => {
+      // Ignore keys when editing code inside inputs or textareas to prevent sliding away
+      if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.getAttribute('contenteditable') === 'true') {
+        return;
+      }
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    window.onload = function() {
+      // Deep clone original slide data for fallback restores
+      originalSlides = JSON.parse(JSON.stringify(slides));
+      
+      buildSidebar();
+      loadSlide(0);
+      lucide.createIcons();
+    };
+  </script>
+</body>
+</html>

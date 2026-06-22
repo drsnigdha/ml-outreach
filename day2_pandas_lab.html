@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pandas - High-Performance Data Analysis in Python</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts (Inter & Fira Code) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .code-font {
+      font-family: 'Fira Code', monospace;
+    }
+    /* Hide scrollbar for clean slider behavior */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Slide Transition effects */
+    .slide-inactive {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      position: absolute;
+    }
+    .slide-active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    /* Flashing row simulation for interactivity */
+    @keyframes highlight-add {
+      0% { background-color: rgba(16, 185, 129, 0.4); }
+      100% { background-color: transparent; }
+    }
+    @keyframes highlight-remove {
+      0% { background-color: rgba(239, 68, 68, 0.4); }
+      100% { background-color: transparent; }
+    }
+    .row-flash-success {
+      animation: highlight-add 1.2s ease-out;
+    }
+    .row-flash-danger {
+      animation: highlight-remove 1.2s ease-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 overflow-hidden min-h-screen flex flex-col">
+
+  <!-- TOP DECK CONTROLLER HEADER -->
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md px-6 py-4 flex justify-between items-center z-10">
+    <div class="flex items-center space-x-3">
+      <div class="bg-indigo-600 text-white rounded p-1.5 font-bold text-xs tracking-wider uppercase code-font">pd</div>
+      <span class="font-semibold text-sm tracking-wide text-slate-200">Pandas Data Analysis Deck</span>
+    </div>
+    
+    <!-- Progress Indicator -->
+    <div class="flex items-center space-x-4">
+      <div class="hidden sm:flex space-x-1" id="dots-container">
+        <!-- Generated Dynamically -->
+      </div>
+      <span class="text-xs text-indigo-400 font-medium code-font" id="slide-fraction">1 / 10</span>
+    </div>
+  </header>
+
+  <!-- SIDEBAR NAVIGATION & MAIN VIEWPORT -->
+  <div class="flex-1 flex overflow-hidden relative">
+    
+    <!-- Navigation Sidebar (Collapsible on mobile) -->
+    <aside class="hidden lg:flex flex-col w-64 bg-slate-900 border-r border-slate-800/80 p-4 shrink-0 overflow-y-auto justify-between">
+      <div class="space-y-6">
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-widest px-2">Table of Contents</h3>
+        <nav class="space-y-1" id="sidebar-nav">
+          <!-- Dynamically populated links -->
+        </nav>
+      </div>
+      <div class="pt-4 border-t border-slate-800 text-center">
+        <p class="text-[10px] text-slate-500">Press <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700 text-slate-300">←</kbd> <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700 text-slate-300">→</kbd> to navigate</p>
+      </div>
+    </aside>
+
+    <!-- Slides Viewport -->
+    <main class="flex-1 relative overflow-y-auto p-4 md:p-8 lg:p-12 flex items-center justify-center min-h-0" id="deck-viewport">
+      
+      <!-- SLIDE 1: COVER -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="Welcome">
+        <div class="grid lg:grid-cols-12 gap-8 items-center py-6">
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full">
+              <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+              <span class="text-xs font-semibold text-indigo-300 tracking-wider uppercase">Python Data Library</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-slate-100 to-indigo-400 leading-tight">
+              Pandas Overview &amp; Interactive Learning
+            </h1>
+            <p class="text-slate-400 text-base sm:text-lg font-light leading-relaxed">
+              Master Python's premiere open-source engine for high-performance data manipulation, wrangling, analysis, and cleansing.
+            </p>
+            <div class="flex flex-wrap gap-4 pt-2">
+              <button onclick="goToSlide(1)" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg shadow-lg shadow-indigo-600/20 transition flex items-center space-x-2 group">
+                <span>Begin Presentation</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+              </button>
+              <button onclick="goToSlide(6)" class="px-6 py-3 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 font-medium rounded-lg transition">
+                Skip to Playground
+              </button>
+            </div>
+          </div>
+          <div class="lg:col-span-5 relative hidden lg:block">
+            <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 opacity-20 blur-xl"></div>
+            <div class="relative bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl space-y-4">
+              <div class="flex space-x-2 pb-2 border-b border-slate-800">
+                <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+              </div>
+              <p class="text-xs text-indigo-400 code-font"># Import the library</p>
+              <p class="text-sm text-slate-300 code-font"><span class="text-pink-400">import</span> pandas <span class="text-pink-400">as</span> pd</p>
+              <p class="text-xs text-indigo-400 code-font pt-2"># Load raw spreadsheet, CSV or SQL</p>
+              <p class="text-sm text-slate-300 code-font">df = pd.read_csv(<span class="text-amber-300">'workout_metrics.csv'</span>)</p>
+              <p class="text-xs text-indigo-400 code-font pt-2"># Generate standard analytical report</p>
+              <p class="text-sm text-slate-300 code-font">df.describe()</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: WHAT IS PANDAS -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="What is Pandas?">
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <span class="text-indigo-400 font-semibold tracking-wider text-xs uppercase code-font">Background &amp; History</span>
+            <h2 class="text-3xl font-extrabold text-white">What is Pandas?</h2>
+          </div>
+          <div class="grid md:grid-cols-12 gap-8 items-stretch pt-2">
+            <div class="md:col-span-7 space-y-5 flex flex-col justify-between">
+              <p class="text-slate-300 text-base leading-relaxed font-light">
+                Pandas is an open-source Python library providing highly optimized data structures and operational utilities designed for seamless tabular analysis.
+              </p>
+              
+              <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-3">
+                <h4 class="text-sm font-semibold text-indigo-300 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  Etymology
+                </h4>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  The name is derived from the econometrics concept <strong>Panel Data</strong> (multidimensional tracking arrays), developed originally in 2008 by <strong class="text-indigo-200">Wes McKinney</strong> for commercial quantitative finance environments.
+                </p>
+              </div>
+
+              <div class="bg-indigo-950/20 border border-indigo-900/30 p-5 rounded-xl">
+                <h4 class="text-xs font-semibold text-indigo-300 uppercase tracking-widest mb-2">The Five Data Lifecycles</h4>
+                <div class="grid grid-cols-5 text-center gap-2 text-[10px] font-bold text-indigo-200 code-font">
+                  <div class="bg-indigo-900/50 p-2 rounded border border-indigo-800/40">1. LOAD</div>
+                  <div class="bg-indigo-900/50 p-2 rounded border border-indigo-800/40">2. PREPARE</div>
+                  <div class="bg-indigo-900/50 p-2 rounded border border-indigo-800/40">3. MANIPULATE</div>
+                  <div class="bg-indigo-900/50 p-2 rounded border border-indigo-800/40">4. MODEL</div>
+                  <div class="bg-indigo-900/50 p-2 rounded border border-indigo-800/40">5. ANALYZE</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="md:col-span-5 bg-gradient-to-b from-indigo-950/10 to-slate-900 border border-indigo-900/25 p-6 rounded-2xl flex flex-col justify-between">
+              <h4 class="font-semibold text-slate-200 mb-2">Why was Pandas needed?</h4>
+              <ul class="space-y-4 text-xs text-slate-400">
+                <li class="flex items-start gap-2.5">
+                  <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 shrink-0"></span>
+                  <span><strong>Prior to Pandas:</strong> Python was primarily used for data munging and preparation, but was inefficient for deep statistical exploration.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 shrink-0"></span>
+                  <span><strong>The Solution:</strong> Introducing fast, labeled multidimensional structures natively bound with analytical computation.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 shrink-0"></span>
+                  <span><strong>Versatility:</strong> Broad academic &amp; industrial adoption ranging across finance, biomedical stats, physics modeling, and business intelligence systems.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 3: KEY FEATURES -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="Key Features">
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <span class="text-indigo-400 font-semibold tracking-wider text-xs uppercase code-font">Power Under the Hood</span>
+            <h2 class="text-3xl font-extrabold text-white">Key Features of Pandas</h2>
+          </div>
+          
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+            
+            <!-- Card 1 -->
+            <div class="bg-slate-900 hover:bg-slate-800/80 border border-slate-800 p-5 rounded-xl transition duration-200 space-y-2">
+              <div class="text-indigo-400 bg-indigo-950/30 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm">1</div>
+              <h3 class="font-semibold text-slate-200 text-sm">Fast DataFrame Object</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Highly optimized, index-aligned tabular array structure enabling default &amp; completely customized axes addressing.</p>
+            </div>
+            <!-- Card 2 -->
+            <div class="bg-slate-900 hover:bg-slate-800/80 border border-slate-800 p-5 rounded-xl transition duration-200 space-y-2">
+              <div class="text-indigo-400 bg-indigo-950/30 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm">2</div>
+              <h3 class="font-semibold text-slate-200 text-sm">Flexible File Loading</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Integrated reading pipelines for loading memory structures dynamically from formats like CSV, TSV, Excel, HDF5, JSON, or SQL databases.</p>
+            </div>
+            <!-- Card 3 -->
+            <div class="bg-slate-900 hover:bg-slate-800/80 border border-slate-800 p-5 rounded-xl transition duration-200 space-y-2">
+              <div class="text-indigo-400 bg-indigo-950/30 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm">3</div>
+              <h3 class="font-semibold text-slate-200 text-sm">Seamless Missing Data Alignment</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Natively tracks incomplete dataset values (<code class="text-indigo-300">NaN</code> / <code class="text-indigo-300">NaT</code>) and offers intelligent mathematical alignment parameters.</p>
+            </div>
+            <!-- Card 4 -->
+            <div class="bg-slate-900 hover:bg-slate-800/80 border border-slate-800 p-5 rounded-xl transition duration-200 space-y-2">
+              <div class="text-indigo-400 bg-indigo-950/30 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm">4</div>
+              <h3 class="font-semibold text-slate-200 text-sm">Slicing &amp; Subsetting</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Powerful label-based slicing, integer locational parsing, and advanced conditional boolean array subset masking.</p>
+            </div>
+            <!-- Card 5 -->
+            <div class="bg-slate-900 hover:bg-slate-800/80 border border-slate-800 p-5 rounded-xl transition duration-200 space-y-2">
+              <div class="text-indigo-400 bg-indigo-950/30 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm">5</div>
+              <h3 class="font-semibold text-slate-200 text-sm">Aggregation &amp; Reshaping</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">Pivot operations, stack/unstack manipulation, multi-index hierarchies, and robust <code class="text-indigo-300">groupby</code> logic for supercharged map-reduce pipelines.</p>
+            </div>
+            <!-- Card 6 -->
+            <div class="bg-slate-900 hover:bg-slate-800/80 border border-slate-800 p-5 rounded-xl transition duration-200 space-y-2">
+              <div class="text-indigo-400 bg-indigo-950/30 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm">6</div>
+              <h3 class="font-semibold text-slate-200 text-sm">Merging &amp; Time Series</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">SQL-like relational database join/merge actions and optimized frequency-converting time-series tracking.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 4: PANDAS SERIES -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="Pandas Series">
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <span class="text-indigo-400 font-semibold tracking-wider text-xs uppercase code-font">Data Structure I</span>
+            <h2 class="text-3xl font-extrabold text-white">Pandas Series</h2>
+          </div>
+          
+          <div class="grid md:grid-cols-12 gap-6 items-stretch">
+            <div class="md:col-span-6 space-y-4">
+              <p class="text-slate-300 font-light text-sm">
+                A <strong>Series</strong> is a 1D labeled array capable of holding data of any type (integers, strings, floats, Python objects). Think of it as a single column in a worksheet.
+              </p>
+              
+              <div class="space-y-2">
+                <span class="text-xs text-slate-400 block font-semibold">Creating a Series with Explicit String Indices:</span>
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                  <pre class="text-xs text-indigo-300 code-font leading-relaxed"><span class="text-pink-400">import</span> pandas <span class="text-pink-400">as</span> pd
+a = [<span class="text-amber-300">1</span>, <span class="text-amber-300">7</span>, <span class="text-amber-300">2</span>]
+my_series = pd.Series(a, index=[<span class="text-amber-300">"x"</span>, <span class="text-amber-300">"y"</span>, <span class="text-amber-300">"z"</span>])
+<span class="text-pink-400">print</span>(my_series)</pre>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <span class="text-xs text-slate-400 block font-semibold">From Python Dictionary (Keys become Index):</span>
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                  <pre class="text-xs text-indigo-300 code-font leading-relaxed">calories = {<span class="text-amber-300">"day1"</span>: <span class="text-amber-300">420</span>, <span class="text-amber-300">"day2"</span>: <span class="text-amber-300">380</span>}
+my_series = pd.Series(calories)
+<span class="text-pink-400">print</span>(my_series)</pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interactive Series visualizer -->
+            <div class="md:col-span-6 bg-slate-900/60 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between space-y-4">
+              <div>
+                <h4 class="font-semibold text-slate-200 text-sm mb-1">Interactive Series Visualizer</h4>
+                <p class="text-xs text-slate-400">Toggle index modes to see how elements are accessed either via default positional integers or explicit string indices.</p>
+              </div>
+
+              <!-- Interactive Toggle Box -->
+              <div class="flex bg-slate-950 p-1.5 rounded-lg border border-slate-800 w-full">
+                <button id="btn-series-default" onclick="toggleSeriesVisual(true)" class="flex-1 py-1.5 text-xs font-semibold rounded bg-indigo-600 text-white transition">Default Integer Index</button>
+                <button id="btn-series-custom" onclick="toggleSeriesVisual(false)" class="flex-1 py-1.5 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition">Explicit String Index</button>
+              </div>
+
+              <!-- Structured Output Visualization -->
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80 space-y-3">
+                <div class="flex justify-between items-center text-[11px] font-bold text-slate-400 uppercase border-b border-slate-800 pb-2">
+                  <span>Target Index Label</span>
+                  <span>Data Element (int64)</span>
+                </div>
+                <div id="series-container" class="space-y-2 code-font text-sm">
+                  <!-- Generated Dynamically by JS -->
+                </div>
+              </div>
+
+              <!-- Code simulation display -->
+              <div class="bg-indigo-950/20 border border-indigo-900/30 p-3.5 rounded-xl text-xs space-y-2">
+                <span class="text-indigo-300 font-semibold block">Addressing Element:</span>
+                <code id="series-code-example" class="text-slate-300 block">my_series[0] -> 1</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: PANDAS DATAFRAMES -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="DataFrames">
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <span class="text-indigo-400 font-semibold tracking-wider text-xs uppercase code-font">Data Structure II</span>
+            <h2 class="text-3xl font-extrabold text-white">Pandas DataFrame</h2>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+            <div class="lg:col-span-5 space-y-5 flex flex-col justify-between">
+              <div class="space-y-2">
+                <p class="text-slate-300 font-light text-sm leading-relaxed">
+                  A <strong>DataFrame</strong> is a 2D labeled spreadsheet structure with mutable size, row labels (index), and column headers that support multiple divergent datatypes.
+                </p>
+                <p class="text-xs text-slate-400">
+                  It can be constructed from nested dictionaries, lists of dictionaries, lists of tuples, multidimensional NumPy arrays, or loaded from disk.
+                </p>
+              </div>
+
+              <div class="space-y-2">
+                <span class="text-xs text-slate-400 block font-semibold">Standard constructor structure:</span>
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                  <pre class="text-xs text-indigo-300 code-font leading-relaxed">df = pd.DataFrame(
+    data,
+    index=row_labels,
+    columns=col_headers,
+    dtype=type_override
+)</pre>
+                </div>
+              </div>
+
+              <div class="bg-slate-900 border border-slate-850 p-4 rounded-xl text-xs space-y-2">
+                <span class="text-indigo-300 font-semibold block">Selecting Rows &amp; Columns:</span>
+                <ul class="space-y-1.5 text-slate-400 text-[11px]">
+                  <li><code class="text-indigo-200 bg-slate-950 px-1 py-0.5 rounded">df["col"]</code>: Selects single column as Series.</li>
+                  <li><code class="text-indigo-200 bg-slate-950 px-1 py-0.5 rounded">df.loc["row_label"]</code>: Accesses row by string label index.</li>
+                  <li><code class="text-indigo-200 bg-slate-950 px-1 py-0.5 rounded">df.iloc[0]</code>: Accesses row by positional integer index.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Interactive DataFrame Table Selector -->
+            <div class="lg:col-span-7 bg-slate-900/60 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between space-y-4">
+              <div>
+                <h4 class="font-semibold text-slate-200 text-sm mb-1">Interactive Selection Visualizer</h4>
+                <p class="text-xs text-slate-400">Select target selections below to highlight how Pandas parses dimensional matrices.</p>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2">
+                <button onclick="highlightDF('all')" id="df-hl-all" class="df-btn py-2 text-[10px] sm:text-xs font-bold rounded bg-indigo-600 text-white transition">All Data</button>
+                <button onclick="highlightDF('city')" id="df-hl-city" class="df-btn py-2 text-[10px] sm:text-xs font-bold rounded bg-slate-950 text-slate-400 hover:text-slate-200 transition">df["City"]</button>
+                <button onclick="highlightDF('stuti')" id="df-hl-stuti" class="df-btn py-2 text-[10px] sm:text-xs font-bold rounded bg-slate-950 text-slate-400 hover:text-slate-200 transition">df.loc["Stuti"]</button>
+              </div>
+
+              <!-- Visual Representation of Table -->
+              <div class="overflow-x-auto bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <table class="w-full text-left text-xs code-font">
+                  <thead>
+                    <tr class="border-b border-slate-800 text-slate-400">
+                      <th class="py-2 px-3 bg-slate-900/50">Name (Index)</th>
+                      <th class="py-2 px-3">Age</th>
+                      <th class="py-2 px-3">City</th>
+                      <th class="py-2 px-3 text-right">Salary</th>
+                    </tr>
+                  </thead>
+                  <tbody id="df-visual-tbody">
+                    <!-- Loaded dynamically via JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Output code snippet box -->
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs">
+                <span class="text-slate-400 font-semibold block mb-1">Execution Code &amp; Return Type:</span>
+                <code id="df-code-type" class="text-indigo-300 block">DataFrame -> Entire Tabular dataset returned</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 6: INTERACTIVE DATA CLEANING PLAYGROUND -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="Interactive Playground">
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <span class="text-indigo-400 font-semibold tracking-wider text-xs uppercase code-font">Hands-on Sandbox</span>
+            <h2 class="text-3xl font-extrabold text-white">Interactive Workout Data Playground</h2>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-6 items-stretch">
+            
+            <!-- Controls Panels -->
+            <div class="lg:col-span-5 space-y-4 flex flex-col">
+              <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-3 shrink-0">
+                <h4 class="font-bold text-xs uppercase text-slate-400 tracking-wider">Operational Pipeline</h4>
+                <p class="text-[11px] text-slate-400">Trigger standard data-cleansing operations. Yellow highlighted cell values indicate structural data issues (<code class="text-amber-400">NaN</code>/outliers/formatting mistakes).</p>
+                
+                <div class="flex flex-col gap-2 pt-2">
+                  <button onclick="playgroundOp('raw')" id="play-btn-raw" class="play-btn w-full py-2 px-3 text-left text-xs rounded font-semibold bg-indigo-600 text-white flex justify-between items-center">
+                    <span>1. Reset Raw Messy Data</span>
+                    <span class="text-[9px] code-font text-indigo-200">raw_df</span>
+                  </button>
+                  <button onclick="playgroundOp('dropna')" id="play-btn-dropna" class="play-btn w-full py-2 px-3 text-left text-xs rounded font-semibold bg-slate-950 text-slate-400 hover:bg-slate-900 hover:text-slate-200 flex justify-between items-center transition">
+                    <span>2. Remove Null Rows (<code class="text-indigo-400">dropna</code>)</span>
+                    <span class="text-[9px] code-font text-slate-500">drop rows 18 &amp; 22</span>
+                  </button>
+                  <button onclick="playgroundOp('fillna')" id="play-btn-fillna" class="play-btn w-full py-2 px-3 text-left text-xs rounded font-semibold bg-slate-950 text-slate-400 hover:bg-slate-900 hover:text-slate-200 flex justify-between items-center transition">
+                    <span>3. Fill Missing Calories (<code class="text-indigo-400">fillna</code>)</span>
+                    <span class="text-[9px] code-font text-slate-500">mean fill -> 300</span>
+                  </button>
+                  <button onclick="playgroundOp('format')" id="play-btn-format" class="play-btn w-full py-2 px-3 text-left text-xs rounded font-semibold bg-slate-950 text-slate-400 hover:bg-slate-900 hover:text-slate-200 flex justify-between items-center transition">
+                    <span>4. Standardize Dates (<code class="text-indigo-400">to_datetime</code>)</span>
+                    <span class="text-[9px] code-font text-slate-500">fix indices 22 &amp; 26</span>
+                  </button>
+                  <button onclick="playgroundOp('outlier')" id="play-btn-outlier" class="play-btn w-full py-2 px-3 text-left text-xs rounded font-semibold bg-slate-950 text-slate-400 hover:bg-slate-900 hover:text-slate-200 flex justify-between items-center transition">
+                    <span>5. Clamp Outliers (Duration &gt; 120)</span>
+                    <span class="text-[9px] code-font text-slate-500">450 -> 120 (index 7)</span>
+                  </button>
+                  <button onclick="playgroundOp('duplicates')" id="play-btn-duplicates" class="play-btn w-full py-2 px-3 text-left text-xs rounded font-semibold bg-slate-950 text-slate-400 hover:bg-slate-900 hover:text-slate-200 flex justify-between items-center transition">
+                    <span>6. Drop Duplicates (<code class="text-indigo-400">drop_duplicates</code>)</span>
+                    <span class="text-[9px] code-font text-slate-500">removes index 12</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Executed Command box -->
+              <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl flex-1 flex flex-col justify-between space-y-2">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Target Python Syntax Executed:</span>
+                <div class="bg-slate-950 p-3 rounded border border-slate-800 flex-1 flex items-center">
+                  <code id="playground-code" class="text-indigo-300 text-xs code-font block leading-relaxed"># Raw messy dataset initialized</code>
+                </div>
+              </div>
+            </div>
+
+            <!-- Simulated Table Render -->
+            <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800 p-5 rounded-xl flex flex-col space-y-4">
+              <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div>
+                  <h4 class="font-semibold text-slate-200 text-sm">Active Workspace Viewport</h4>
+                  <p class="text-[11px] text-slate-400">Memory footprint simulation output (<code class="text-indigo-300">df</code>)</p>
+                </div>
+                <span class="px-2 py-0.5 bg-slate-950 rounded text-[10px] text-indigo-400 font-bold border border-slate-800 code-font" id="play-row-count">10 rows</span>
+              </div>
+
+              <div class="overflow-y-auto no-scrollbar max-h-96 bg-slate-950 rounded-lg border border-slate-800">
+                <table class="w-full text-left text-xs code-font">
+                  <thead class="sticky top-0 bg-slate-900 text-slate-400 border-b border-slate-800 z-10">
+                    <tr>
+                      <th class="py-2.5 px-3">Row</th>
+                      <th class="py-2.5 px-3">Duration</th>
+                      <th class="py-2.5 px-3">Date</th>
+                      <th class="py-2.5 px-3">Pulse</th>
+                      <th class="py-2.5 px-3">Maxpulse</th>
+                      <th class="py-2.5 px-3">Calories</th>
+                    </tr>
+                  </thead>
+                  <tbody id="playground-tbody">
+                    <!-- Dynamic Rows Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: WRONG FORMAT & WRONG DATA -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="Cleansing Context">
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <span class="text-indigo-400 font-semibold tracking-wider text-xs uppercase code-font">Methodology Explanation</span>
+            <h2 class="text-3xl font-extrabold text-white">Wrong Format &amp; Wrong Data Deep-Dive</h2>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 pt-2">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+              <div class="inline-flex items-center space-x-2 bg-amber-500/15 border border-amber-500/20 px-3 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                <span class="text-[10px] font-bold text-amber-300 tracking-wider uppercase">Problem 1: Formatting</span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-100">Converting Chronological Formats</h3>
+              <p class="text-slate-400 text-xs leading-relaxed">
+                Raw inputs often represent dates as unparsed strings or inconsistent formats (e.g. <code class="text-amber-200">20201226</code> vs <code class="text-amber-200">'2020/12/26'</code>). Pandas easily resolves this with <code class="text-indigo-400">pd.to_datetime()</code>.
+              </p>
+              
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                <span class="text-[10px] text-slate-500 font-bold block mb-1">PYTHON SOLUTION</span>
+                <pre class="text-xs text-indigo-300 code-font leading-relaxed"># Convert strings directly to datetime64
+df[<span class="text-amber-300">'Date'</span>] = pd.to_datetime(df[<span class="text-amber-300">'Date'</span>])</pre>
+              </div>
+              <p class="text-xs text-slate-500 italic">
+                Note: Empty date targets default to NaT (Not a Time) structures, which can subsequently be targeted for removal using dropna().
+              </p>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+              <div class="inline-flex items-center space-x-2 bg-rose-500/15 border border-rose-500/20 px-3 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                <span class="text-[10px] font-bold text-rose-300 tracking-wider uppercase">Problem 2: Outliers</span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-100">Fixing Anomaly Values (Outliers)</h3>
+              <p class="text-slate-400 text-xs leading-relaxed">
+                Wrong values (such as an accidental extra zero making a workout session 450 minutes instead of 45) skew aggregations and summaries. We resolve this using index location mapping or conditional ceiling thresholds.
+              </p>
+
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                <div>
+                  <span class="text-[10px] text-slate-500 font-bold block mb-1">METHOD A: DIRECT CELL MAPPING</span>
+                  <pre class="text-xs text-indigo-300 code-font">df.loc[<span class="text-amber-300">7</span>, <span class="text-amber-300">'Duration'</span>] = <span class="text-amber-300">45</span></pre>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-500 font-bold block mb-1">METHOD B: CONDITIONAL REPLACEMENT LIMITER</span>
+                  <pre class="text-xs text-indigo-300 code-font leading-relaxed"><span class="text-pink-400">for</span> x <span class="text-pink-400">in</span> df.index:
+    <span class="text-pink-400">if</span> df.loc[x, <span class="text-amber-300">"Duration"</span>] &gt; <span class="text-amber-300">120</span>:
+        df.loc[x, <span class="text-amber-300">"Duration"</span>] = <span class="text-amber-300">120</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 8: DATA CORRELATIONS -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="Correlations">
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <span class="text-indigo-400 font-semibold tracking-wider text-xs uppercase code-font">Relational Analysis</span>
+            <h2 class="text-3xl font-extrabold text-white">Pandas Data Correlations (<code class="text-indigo-400">corr()</code>)</h2>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-8 items-stretch pt-2">
+            <div class="lg:col-span-5 space-y-4 flex flex-col justify-between">
+              <div class="space-y-2">
+                <p class="text-slate-300 font-light text-sm leading-relaxed">
+                  The <code class="text-indigo-300">corr()</code> function maps the mathematical linear relation between numeric columns, ignoring string parameters.
+                </p>
+                <p class="text-xs text-slate-400">
+                  Correlation coefficient values range strictly between <span class="text-indigo-300 font-semibold">-1.00</span> and <span class="text-indigo-300 font-semibold">+1.00</span>.
+                </p>
+              </div>
+
+              <!-- Interactive explainer block -->
+              <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-3" id="correlation-explainer-box">
+                <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block" id="corr-val-title">Interactive Matrix</span>
+                <p class="text-xs text-slate-300 leading-relaxed" id="corr-val-desc">
+                  Click on any variable intersection cell inside the matrix on the right to explain the statistical relationship between the pair.
+                </p>
+                <div class="pt-1 flex items-center space-x-2 text-[10px] text-slate-500 font-semibold uppercase">
+                  <span>Legend:</span>
+                  <span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-900/30">Positive</span>
+                  <span class="px-1.5 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-900/30">Negative</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interative Correlation Matrix -->
+            <div class="lg:col-span-7 bg-slate-900/60 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between space-y-4">
+              <span class="text-xs font-semibold text-slate-400 block uppercase">Result of `df.corr()` Matrix</span>
+              
+              <div class="overflow-x-auto bg-slate-950 p-4 rounded-xl border border-slate-800">
+                <table class="w-full text-center text-xs code-font">
+                  <thead>
+                    <tr class="text-slate-400 border-b border-slate-850">
+                      <th class="py-3 px-2 text-left bg-slate-900/40">Variable</th>
+                      <th class="py-3 px-2">Duration</th>
+                      <th class="py-3 px-2">Pulse</th>
+                      <th class="py-3 px-2">Maxpulse</th>
+                      <th class="py-3 px-2">Calories</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-900">
+                    <!-- Row 1: Duration -->
+                    <tr>
+                      <td class="py-3 px-2 text-left bg-slate-900/20 font-bold text-slate-300">Duration</td>
+                      <td onclick="explainCorr('Duration', 'Duration', 1.000000)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 bg-emerald-950/30 text-emerald-400 font-bold rounded">1.00000</td>
+                      <td onclick="explainCorr('Duration', 'Pulse', -0.059452)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-slate-400">-0.05945</td>
+                      <td onclick="explainCorr('Duration', 'Maxpulse', -0.250033)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-rose-400">-0.25003</td>
+                      <td onclick="explainCorr('Duration', 'Calories', 0.344341)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-emerald-400">0.34434</td>
+                    </tr>
+                    <!-- Row 2: Pulse -->
+                    <tr>
+                      <td class="py-3 px-2 text-left bg-slate-900/20 font-bold text-slate-300">Pulse</td>
+                      <td onclick="explainCorr('Pulse', 'Duration', -0.059452)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-slate-400">-0.05945</td>
+                      <td onclick="explainCorr('Pulse', 'Pulse', 1.000000)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 bg-emerald-950/30 text-emerald-400 font-bold rounded">1.00000</td>
+                      <td onclick="explainCorr('Pulse', 'Maxpulse', 0.269672)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-emerald-400">0.26967</td>
+                      <td onclick="explainCorr('Pulse', 'Calories', 0.481791)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-emerald-400">0.48179</td>
+                    </tr>
+                    <!-- Row 3: Maxpulse -->
+                    <tr>
+                      <td class="py-3 px-2 text-left bg-slate-900/20 font-bold text-slate-300">Maxpulse</td>
+                      <td onclick="explainCorr('Maxpulse', 'Duration', -0.250033)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-rose-400">-0.25003</td>
+                      <td onclick="explainCorr('Maxpulse', 'Pulse', 0.269672)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-emerald-400">0.26967</td>
+                      <td onclick="explainCorr('Maxpulse', 'Maxpulse', 1.000000)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 bg-emerald-950/30 text-emerald-400 font-bold rounded">1.00000</td>
+                      <td onclick="explainCorr('Maxpulse', 'Calories', 0.335392)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-emerald-400">0.33539</td>
+                    </tr>
+                    <!-- Row 4: Calories -->
+                    <tr>
+                      <td class="py-3 px-2 text-left bg-slate-900/20 font-bold text-slate-300">Calories</td>
+                      <td onclick="explainCorr('Calories', 'Duration', 0.344341)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-emerald-400">0.34434</td>
+                      <td onclick="explainCorr('Calories', 'Pulse', 0.481791)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-emerald-400">0.48179</td>
+                      <td onclick="explainCorr('Calories', 'Maxpulse', 0.335392)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 text-emerald-400">0.33539</td>
+                      <td onclick="explainCorr('Calories', 'Calories', 1.000000)" class="py-3 px-2 cursor-pointer hover:bg-slate-800 bg-emerald-950/30 text-emerald-400 font-bold rounded">1.00000</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="text-[10px] text-slate-500 italic mt-2">
+                Click any numeric cell to parse its meaning relative to physical statistics.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 9: KNOWLEDGE ASSESSMENT QUIZ -->
+      <div class="slide slide-inactive w-full max-w-4xl mx-auto" data-title="Quiz">
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <span class="text-indigo-400 font-semibold tracking-wider text-xs uppercase code-font">Interactive Assessment</span>
+            <h2 class="text-3xl font-extrabold text-white">Check Your Knowledge</h2>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-6">
+            <!-- Question container -->
+            <div class="space-y-3">
+              <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider block" id="quiz-question-number">Question 1 of 3</span>
+              <h3 class="text-base sm:text-lg font-semibold text-slate-100" id="quiz-question">Which code snippet modifies the original DataFrame in memory rather than returning a copy?</h3>
+            </div>
+
+            <!-- Options (List) -->
+            <div class="grid gap-3" id="quiz-options-list">
+              <!-- Dynamically generated buttons -->
+            </div>
+
+            <!-- Feedback Indicator -->
+            <div id="quiz-feedback" class="hidden p-4 rounded-xl text-xs sm:text-sm font-semibold transition">
+              <!-- Text populated dynamically -->
+            </div>
+
+            <!-- Control Buttons -->
+            <div class="flex justify-between items-center pt-2">
+              <div class="text-xs text-slate-400 font-medium">
+                Score: <span class="text-indigo-400 font-bold" id="quiz-score-val">0</span> / 3
+              </div>
+              <button onclick="quizNext()" id="quiz-next-btn" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition shadow-md shadow-indigo-600/10">
+                Next Question
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 10: WRAP UP SUMMARY -->
+      <div class="slide slide-inactive w-full max-w-4xl mx-auto" data-title="Summary">
+        <div class="space-y-8 py-6 text-center">
+          <div class="space-y-3">
+            <div class="inline-flex bg-indigo-950/40 text-indigo-400 border border-indigo-900/30 rounded-full p-2 text-xs font-bold uppercase tracking-widest">
+              Wrap Up
+            </div>
+            <h1 class="text-4xl font-extrabold text-white tracking-tight">Summary of Pandas Fundamentals</h1>
+            <p class="text-slate-400 text-sm max-w-lg mx-auto leading-relaxed">
+              You are now prepared to load datasets, evaluate missing numbers, fix structure formats, address rows/columns, and analyze structural correlation matrices.
+            </p>
+          </div>
+
+          <!-- Summary Matrix grid -->
+          <div class="grid sm:grid-cols-3 gap-4 text-left max-w-3xl mx-auto">
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-2">
+              <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block">Structural Arrays</span>
+              <p class="text-xs text-slate-300">Understand the foundational difference between 1D homogeneous Series arrays and 2D labeled spreadsheet DataFrames.</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-2">
+              <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block">Data Cleaning</span>
+              <p class="text-xs text-slate-300">Clean incomplete elements through either removal methods (<code class="text-indigo-300">dropna</code>) or replacement metrics (<code class="text-indigo-300">fillna</code>).</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-2">
+              <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block">Correlation Insights</span>
+              <p class="text-xs text-slate-300">Explore dependencies across variable combinations through quick calculations with <code class="text-indigo-300">corr()</code>.</p>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button onclick="goToSlide(0)" class="px-5 py-2.5 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 text-xs font-semibold rounded-lg transition inline-flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"></path></svg>
+              <span>Restart Slide Deck</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- BOTTOM NAVIGATION CONTROLLER BAR -->
+  <footer class="border-t border-slate-800/80 bg-slate-900/60 backdrop-blur px-6 py-4 flex justify-between items-center z-10 shrink-0">
+    <button onclick="prevSlide()" class="px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900 text-xs font-semibold transition flex items-center space-x-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      <span>Previous</span>
+    </button>
+    
+    <div class="text-xs text-slate-500">
+      Use swipe or <kbd class="px-1 bg-slate-950 rounded border border-slate-800">Space</kbd> key
+    </div>
+
+    <button onclick="nextSlide()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white text-xs font-semibold transition flex items-center space-x-2">
+      <span>Next</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+    </button>
+  </footer>
+
+  <!-- CORE PRESENTATION AND PLAYGROUND JAVASCRIPT LOGIC -->
+  <script>
+    // Presenter State Configuration
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const slideFraction = document.getElementById('slide-fraction');
+    const dotsContainer = document.getElementById('dots-container');
+    const sidebarNav = document.getElementById('sidebar-nav');
+
+    // Setup slide dot nodes and table of contents sidebar dynamically
+    function initializeStructure() {
+      dotsContainer.innerHTML = '';
+      sidebarNav.innerHTML = '';
+      
+      slides.forEach((slide, idx) => {
+        // Dot tracking indicator
+        const dot = document.createElement('button');
+        dot.className = `w-2 h-2 rounded-full transition-all ${idx === currentSlide ? 'bg-indigo-500 w-4' : 'bg-slate-700 hover:bg-slate-500'}`;
+        dot.onclick = () => goToSlide(idx);
+        dotsContainer.appendChild(dot);
+
+        // Sidebar link element
+        const title = slide.getAttribute('data-title') || `Slide ${idx + 1}`;
+        const navLink = document.createElement('button');
+        navLink.className = `w-full text-left px-3 py-2 text-xs font-medium rounded-lg transition-all flex items-center space-x-3 ${idx === currentSlide ? 'bg-indigo-950 text-indigo-400 font-bold border-l-2 border-indigo-500' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'}`;
+        navLink.innerHTML = `
+          <span class="w-4 text-center code-font text-[10px] text-slate-500">${idx + 1}</span>
+          <span class="truncate">${title}</span>
+        `;
+        navLink.onclick = () => goToSlide(idx);
+        sidebarNav.appendChild(navLink);
+      });
+
+      // Show/Hide target slides elements
+      slides.forEach((slide, idx) => {
+        if (idx === currentSlide) {
+          slide.classList.remove('slide-inactive');
+          slide.classList.add('slide-active');
+        } else {
+          slide.classList.add('slide-inactive');
+          slide.classList.remove('slide-active');
+        }
+      });
+
+      // Update fraction readout
+      slideFraction.textContent = `${currentSlide + 1} / ${slides.length}`;
+    }
+
+    function goToSlide(targetIdx) {
+      if (targetIdx >= 0 && targetIdx < slides.length) {
+        currentSlide = targetIdx;
+        initializeStructure();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        goToSlide(currentSlide - 1);
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < slides.length - 1) {
+        goToSlide(currentSlide + 1);
+      }
+    }
+
+    // Keyboard controls handler
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      }
+    });
+
+    // Mobile Swipe/Touch logic fallback
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const viewport = document.getElementById('deck-viewport');
+    
+    viewport.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    viewport.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+    
+    function handleSwipe() {
+      if (touchStartX - touchEndX > 50) {
+        nextSlide(); // Swiped Left
+      }
+      if (touchEndX - touchStartX > 50) {
+        prevSlide(); // Swiped Right
+      }
+    }
+
+    // --- SLIDE 4: PANDAS SERIES DECK CONTROLS ---
+    let seriesIsDefault = true;
+    function renderSeriesVisual() {
+      const container = document.getElementById('series-container');
+      const codeEx = document.getElementById('series-code-example');
+      container.innerHTML = '';
+      
+      const elements = [
+        { defaultIdx: '0', customIdx: 'x', val: '1' },
+        { defaultIdx: '1', customIdx: 'y', val: '7' },
+        { defaultIdx: '2', customIdx: 'z', val: '2' }
+      ];
+
+      elements.forEach(item => {
+        const activeLabel = seriesIsDefault ? item.defaultIdx : item.customIdx;
+        const div = document.createElement('div');
+        div.className = 'flex justify-between items-center py-1.5 px-3 bg-slate-900 border border-slate-800/60 rounded-lg';
+        div.innerHTML = `
+          <span class="text-indigo-400 font-bold">${activeLabel}</span>
+          <span class="text-slate-200">${item.val}</span>
+        `;
+        container.appendChild(div);
+      });
+
+      if (seriesIsDefault) {
+        codeEx.innerHTML = `<span class="text-indigo-400">print</span>(my_series[<span class="text-amber-400">0</span>]) <span class="text-slate-500"># Output: 1</span>`;
+      } else {
+        codeEx.innerHTML = `<span class="text-indigo-400">print</span>(my_series[<span class="text-amber-400">"y"</span>]) <span class="text-slate-500"># Output: 7</span>`;
+      }
+    }
+
+    function toggleSeriesVisual(isDefault) {
+      seriesIsDefault = isDefault;
+      const btnDefault = document.getElementById('btn-series-default');
+      const btnCustom = document.getElementById('btn-series-custom');
+      
+      if (isDefault) {
+        btnDefault.className = 'flex-1 py-1.5 text-xs font-semibold rounded bg-indigo-600 text-white transition';
+        btnCustom.className = 'flex-1 py-1.5 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition';
+      } else {
+        btnCustom.className = 'flex-1 py-1.5 text-xs font-semibold rounded bg-indigo-600 text-white transition';
+        btnDefault.className = 'flex-1 py-1.5 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition';
+      }
+      renderSeriesVisual();
+    }
+
+    // --- SLIDE 5: DATAFRAME SELECTION VISUALIZER ---
+    const dfSampleData = [
+      { name: 'Stuti', age: 28, city: 'Varanasi', salary: '20,000' },
+      { name: 'Saumya', age: 32, city: 'Delhi', salary: '25,000' },
+      { name: 'Aaditya', age: 25, city: 'Mumbai', salary: '40,000' }
+    ];
+
+    function highlightDF(mode) {
+      const tbody = document.getElementById('df-visual-tbody');
+      const codeType = document.getElementById('df-code-type');
+      tbody.innerHTML = '';
+
+      // Reset styles of option controllers
+      document.querySelectorAll('.df-btn').forEach(btn => {
+        btn.className = 'df-btn py-2 text-[10px] sm:text-xs font-bold rounded bg-slate-950 text-slate-400 hover:text-slate-200 transition';
+      });
+      document.getElementById(`df-hl-${mode}`).className = 'df-btn py-2 text-[10px] sm:text-xs font-bold rounded bg-indigo-600 text-white transition';
+
+      dfSampleData.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-900 transition-colors duration-200';
+        
+        let nameCellClass = 'py-2 px-3 bg-slate-900/40 text-slate-400 font-bold';
+        let ageCellClass = 'py-2 px-3 text-slate-300';
+        let cityCellClass = 'py-2 px-3 text-slate-300';
+        let salCellClass = 'py-2 px-3 text-right text-slate-300';
+
+        if (mode === 'city') {
+          cityCellClass += ' bg-indigo-950/40 text-indigo-300 font-bold';
+        } else if (mode === 'stuti' && row.name === 'Stuti') {
+          nameCellClass += ' bg-indigo-950/40 text-indigo-300';
+          ageCellClass += ' bg-indigo-950/40 text-indigo-300';
+          cityCellClass += ' bg-indigo-950/40 text-indigo-300';
+          salCellClass += ' bg-indigo-950/40 text-indigo-300';
+        } else if (mode === 'all') {
+          ageCellClass += ' bg-indigo-950/10';
+          cityCellClass += ' bg-indigo-950/10';
+          salCellClass += ' bg-indigo-950/10';
+        }
+
+        tr.innerHTML = `
+          <td class="${nameCellClass}">${row.name}</td>
+          <td class="${ageCellClass}">${row.age}</td>
+          <td class="${cityCellClass}">${row.city}</td>
+          <td class="${salCellClass}">${row.salary}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if (mode === 'city') {
+        codeType.innerHTML = `<span class="text-pink-400">Series</span>: df[<span class="text-amber-400">"City"</span>] -> 1-Dimensional column returned.`;
+      } else if (mode === 'stuti') {
+        codeType.innerHTML = `<span class="text-pink-400">Series</span>: df.loc[<span class="text-amber-400">"Stuti"</span>] -> 1-Dimensional row parsed as Series object.`;
+      } else {
+        codeType.innerHTML = `<span class="text-pink-400">DataFrame</span>: Entire multidimensional relational matrix returned.`;
+      }
+    }
+
+
+    // --- SLIDE 6: INTERACTIVE PLAYGROUND DATABASE CONFIGURATION ---
+    const playRawData = [
+      { id: 0, dur: 60, date: "'2020/12/01'", pulse: 110, maxp: 130, cal: 409.1 },
+      { id: 1, dur: 60, date: "'2020/12/02'", pulse: 117, maxp: 145, cal: 479.0 },
+      { id: 7, dur: 450, date: "'2020/12/08'", pulse: 104, maxp: 134, cal: 251.3 },
+      { id: 11, dur: 60, date: "'2020/12/12'", pulse: 100, maxp: 120, cal: 250.7 },
+      { id: 12, dur: 60, date: "'2020/12/12'", pulse: 100, maxp: 120, cal: 250.7 },
+      { id: 18, dur: 45, date: "'2020/12/18'", pulse: 90, maxp: 112, cal: 'NaN' },
+      { id: 22, dur: 45, date: 'NaN', pulse: 100, maxp: 119, cal: 282.0 },
+      { id: 26, dur: 60, date: '20201226', pulse: 100, maxp: 120, cal: 250.0 },
+      { id: 28, dur: 60, date: "'2020/12/28'", pulse: 103, maxp: 132, cal: 'NaN' }
+    ];
+
+    let currentPlayData = JSON.parse(JSON.stringify(playRawData));
+    let lastOperation = 'raw';
+
+    function renderPlaygroundTable(changedIndices = [], changeType = 'success') {
+      const tbody = document.getElementById('playground-tbody');
+      tbody.innerHTML = '';
+      
+      currentPlayData.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-900 transition';
+        
+        // Highlight logic for changed rows
+        if (changedIndices.includes(row.id)) {
+          tr.className += changeType === 'success' ? ' row-flash-success' : ' row-flash-danger';
+        }
+
+        // Highlight abnormal cells dynamically
+        const dateIsBad = row.date === 'NaN' || row.date === '20201226' || row.date === 'NaT';
+        const calIsBad = row.cal === 'NaN';
+        const durIsBad = row.dur === 450;
+
+        tr.innerHTML = `
+          <td class="py-2 px-3 text-slate-500 font-bold bg-slate-900/20">${row.id}</td>
+          <td class="py-2 px-3 ${durIsBad ? 'bg-amber-500/10 text-amber-300 font-bold' : 'text-slate-300'}">${row.dur}</td>
+          <td class="py-2 px-3 ${dateIsBad ? 'bg-amber-500/10 text-amber-300 font-bold' : 'text-slate-300'}">${row.date}</td>
+          <td class="py-2 px-3 text-slate-300">${row.pulse}</td>
+          <td class="py-2 px-3 text-slate-300">${row.maxp}</td>
+          <td class="py-2 px-3 ${calIsBad ? 'bg-amber-500/10 text-amber-300 font-bold' : 'text-slate-300'}">${row.cal}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('play-row-count').textContent = `${currentPlayData.length} rows`;
+    }
+
+    function playgroundOp(op) {
+      lastOperation = op;
+      
+      // Update sidebar buttons visual active states
+      document.querySelectorAll('.play-btn').forEach(btn => {
+        btn.className = 'play-btn w-full py-2 px-3 text-left text-xs rounded font-semibold bg-slate-950 text-slate-400 hover:bg-slate-900 hover:text-slate-200 flex justify-between items-center transition';
+      });
+      document.getElementById(`play-btn-${op}`).className = 'play-btn w-full py-2 px-3 text-left text-xs rounded font-semibold bg-indigo-600 text-white flex justify-between items-center';
+
+      const codeBox = document.getElementById('playground-code');
+
+      switch (op) {
+        case 'raw':
+          currentPlayData = JSON.parse(JSON.stringify(playRawData));
+          codeBox.innerHTML = `<span class="text-slate-400"># Resetting Raw DataFrame</span>\ndf = pd.read_csv(<span class="text-amber-300">'workout.csv'</span>)`;
+          renderPlaygroundTable();
+          break;
+
+        case 'dropna':
+          // Animates rows 18 and 22 disappearing, then filters them out
+          const targetIds = [18, 22, 28];
+          renderPlaygroundTable(targetIds, 'danger');
+          setTimeout(() => {
+            currentPlayData = currentPlayData.filter(r => r.id !== 18 && r.id !== 22 && r.id !== 28);
+            renderPlaygroundTable();
+          }, 1000);
+          codeBox.innerHTML = `<span class="text-slate-400"># Drop all rows with null parameters</span>\ndf.dropna(inplace=<span class="text-pink-400">True</span>)`;
+          break;
+
+        case 'fillna':
+          // Replaces 'NaN' with 300.0 (simulating mean)
+          const fillIds = [18, 28];
+          currentPlayData.forEach(row => {
+            if (row.cal === 'NaN') {
+              row.cal = 300.0;
+            }
+          });
+          renderPlaygroundTable(fillIds, 'success');
+          codeBox.innerHTML = `<span class="text-slate-400"># Fill missing values with calculated mean (300.0)</span>\ndf[<span class="text-amber-300">'Calories'</span>].fillna(<span class="text-amber-300">300.0</span>, inplace=<span class="text-pink-400">True</span>)`;
+          break;
+
+        case 'format':
+          // Standardizes the date row at index 26, converts empty row 22 to NaT
+          const formatIds = [22, 26];
+          currentPlayData.forEach(row => {
+            if (row.id === 26) row.date = "'2020/12/26'";
+            if (row.id === 22 && row.date === 'NaN') row.date = 'NaT';
+          });
+          renderPlaygroundTable(formatIds, 'success');
+          codeBox.innerHTML = `<span class="text-slate-400"># Convert date strings into standardized datetime64</span>\ndf[<span class="text-amber-300">'Date'</span>] = pd.to_datetime(df[<span class="text-amber-300">'Date'</span>])`;
+          break;
+
+        case 'outlier':
+          // Capping duration outlier from 450 to 120
+          currentPlayData.forEach(row => {
+            if (row.id === 7) row.dur = 120;
+          });
+          renderPlaygroundTable([7], 'success');
+          codeBox.innerHTML = `<span class="text-slate-400"># Cap any extreme outlier session durations &gt; 120</span>\n<span class="text-pink-400">for</span> x <span class="text-pink-400">in</span> df.index:\n    <span class="text-pink-400">if</span> df.loc[x, <span class="text-amber-300">'Duration'</span>] &gt; <span class="text-amber-300">120</span>:\n        df.loc[x, <span class="text-amber-300">'Duration'</span>] = <span class="text-amber-300">120</span>`;
+          break;
+
+        case 'duplicates':
+          // Find and drop duplicate row (row 12)
+          renderPlaygroundTable([12], 'danger');
+          setTimeout(() => {
+            currentPlayData = currentPlayData.filter(r => r.id !== 12);
+            renderPlaygroundTable();
+          }, 1000);
+          codeBox.innerHTML = `<span class="text-slate-400"># Deduplicate matching redundant rows</span>\ndf.drop_duplicates(inplace=<span class="text-pink-400">True</span>)`;
+          break;
+      }
+    }
+
+
+    // --- SLIDE 8: INTERACTIVE CORRELATION INTERSECTION EXPLAINER ---
+    function explainCorr(var1, var2, val) {
+      const title = document.getElementById('corr-val-title');
+      const desc = document.getElementById('corr-val-desc');
+      const box = document.getElementById('correlation-explainer-box');
+
+      title.innerHTML = `${var1} vs ${var2} <span class="text-indigo-400 code-font ml-2">${val.toFixed(5)}</span>`;
+      
+      if (var1 === var2) {
+        desc.textContent = "Self-correlation. Comparing any parameter to itself results in a perfect logical linear value of 1.00000.";
+        box.className = "bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-3";
+      } else if (val > 0.4) {
+        desc.textContent = `Strong Positive correlation (${val.toFixed(4)}). As ${var1} increases, ${var2} exhibits a highly corresponding rise. Consistent with biological metabolic increases during cardiovascular efforts.`;
+        box.className = "bg-emerald-950/20 border border-emerald-900/30 p-5 rounded-xl space-y-3";
+      } else if (val > 0) {
+        desc.textContent = `Moderate Positive correlation (${val.toFixed(4)}). Shows a proportional upward trend but with slightly higher distribution variance.`;
+        box.className = "bg-emerald-950/20 border border-emerald-900/30 p-5 rounded-xl space-y-3";
+      } else if (val < -0.1) {
+        desc.textContent = `Strong Negative correlation (${val.toFixed(4)}). Indicates an inverse mathematical trend; as one metric increases, the other falls proportionally.`;
+        box.className = "bg-rose-950/20 border border-rose-900/30 p-5 rounded-xl space-y-3";
+      } else {
+        desc.textContent = `Negligible or extremely weak correlation (${val.toFixed(4)}). There is almost zero direct statistical predictive relationship between ${var1} and ${var2}.`;
+        box.className = "bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-3";
+      }
+    }
+
+
+    // --- SLIDE 9: KNOWLEDGE ASSESSMENT QUIZ STATE ---
+    const quizQuestions = [
+      {
+        q: "Which code snippet modifies the original DataFrame directly in computer memory rather than returning a copy?",
+        options: [
+          "df.dropna()",
+          "df.dropna(inplace=True)",
+          "df.dropna(copy=False)",
+          "pd.dropna(df)"
+        ],
+        answer: 1,
+        expl: "Using the argument `inplace=True` tells Pandas to perform the operation directly on the caller DataFrame, conserving memory overhead."
+      },
+      {
+        q: "Which Pandas structure is defined as a 1D, size-immutable homogeneous array containing data with labeled axes?",
+        options: [
+          "DataFrame",
+          "Panel Data",
+          "Series",
+          "Tuple Array"
+        ],
+        answer: 2,
+        expl: "A Series is a one-dimensional labeled array. While the values inside a Series are mutable, its size is immutable."
+      },
+      {
+        q: "What does a correlation index score of exactly -0.90 represent in a df.corr() matrix?",
+        options: [
+          "A weak negative mathematical relationship",
+          "An invalid calculation error in numeric columns",
+          "A strong inverse relationship where one variable rises as the other drops",
+          "A perfect zero relationship"
+        ],
+        answer: 2,
+        expl: "Negative correlation values approaching -1.0 indicate an extremely strong predictive relationship where variables move in opposite directions."
+      }
+    ];
+
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+    let quizAnswered = false;
+
+    function renderQuizQuestion() {
+      quizAnswered = false;
+      const qData = quizQuestions[currentQuizIndex];
+      
+      document.getElementById('quiz-question-number').textContent = `Question ${currentQuizIndex + 1} of ${quizQuestions.length}`;
+      document.getElementById('quiz-question').textContent = qData.q;
+      
+      const optionsContainer = document.getElementById('quiz-options-list');
+      optionsContainer.innerHTML = '';
+      
+      const feedback = document.getElementById('quiz-feedback');
+      feedback.className = 'hidden p-4 rounded-xl text-xs sm:text-sm font-semibold transition';
+      
+      document.getElementById('quiz-next-btn').style.display = 'none';
+
+      qData.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full py-3 px-4 text-left text-xs sm:text-sm font-medium rounded-xl bg-slate-950 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900 transition flex justify-between items-center';
+        btn.innerHTML = `
+          <span>${opt}</span>
+          <span class="w-5 h-5 rounded-full border border-slate-700 flex items-center justify-center text-[10px] text-slate-500 font-bold">${String.fromCharCode(65 + idx)}</span>
+        `;
+        btn.onclick = () => submitQuizAnswer(idx);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function submitQuizAnswer(selectedIdx) {
+      if (quizAnswered) return;
+      quizAnswered = true;
+      
+      const qData = quizQuestions[currentQuizIndex];
+      const feedback = document.getElementById('quiz-feedback');
+      feedback.classList.remove('hidden');
+
+      const optionsList = document.getElementById('quiz-options-list').children;
+
+      if (selectedIdx === qData.answer) {
+        quizScore++;
+        document.getElementById('quiz-score-val').textContent = quizScore;
+        feedback.className = 'p-4 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-950/30 text-emerald-400 border border-emerald-900/30';
+        feedback.innerHTML = `<span class="block font-bold">✓ Correct!</span> <span class="font-normal text-slate-300 mt-1 block">${qData.expl}</span>`;
+        optionsList[selectedIdx].className = 'w-full py-3 px-4 text-left text-xs sm:text-sm font-semibold rounded-xl bg-emerald-950/20 border border-emerald-500 text-emerald-300 flex justify-between items-center';
+      } else {
+        feedback.className = 'p-4 rounded-xl text-xs sm:text-sm font-semibold bg-rose-950/30 text-rose-400 border border-rose-900/30';
+        feedback.innerHTML = `<span class="block font-bold">✗ Incorrect</span> <span class="font-normal text-slate-300 mt-1 block">Correct answer: ${qData.options[qData.answer]}. ${qData.expl}</span>`;
+        optionsList[selectedIdx].className = 'w-full py-3 px-4 text-left text-xs sm:text-sm font-semibold rounded-xl bg-rose-950/20 border border-rose-500 text-rose-300 flex justify-between items-center';
+        optionsList[qData.answer].className = 'w-full py-3 px-4 text-left text-xs sm:text-sm font-semibold rounded-xl bg-emerald-950/20 border border-emerald-500 text-emerald-300 flex justify-between items-center';
+      }
+
+      // Hide select action markers, show next btn
+      document.getElementById('quiz-next-btn').style.display = 'block';
+      if (currentQuizIndex === quizQuestions.length - 1) {
+        document.getElementById('quiz-next-btn').textContent = "Complete Quiz";
+      } else {
+        document.getElementById('quiz-next-btn').textContent = "Next Question";
+      }
+    }
+
+    function quizNext() {
+      if (currentQuizIndex < quizQuestions.length - 1) {
+        currentQuizIndex++;
+        renderQuizQuestion();
+      } else {
+        // Quiz completed, transition to Summary Slide
+        goToSlide(9);
+      }
+    }
+
+
+    // --- RUN INITIALIZERS ON WINDOW LOAD ---
+    window.onload = function() {
+      initializeStructure();
+      renderSeriesVisual();
+      highlightDF('all');
+      playgroundOp('raw');
+      renderQuizQuestion();
+    };
+  </script>
+</body>
+</html>

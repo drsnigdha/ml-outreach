@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Machine Learning Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar for dark mode */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        /* Code editor styles */
+        .editor-container { position: relative; }
+        #code-editor {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background-color: transparent;
+            color: #e5e7eb;
+            caret-color: #3b82f6;
+            resize: none;
+            outline: none;
+            white-space: pre;
+            tab-size: 4;
+        }
+        
+        .glass-panel {
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.4);
+        }
+
+        .output-text {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .loader {
+            border: 3px solid #374151;
+            border-bottom-color: #3b82f6;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 h-screen w-full flex flex-col overflow-hidden font-sans selection:bg-blue-500/30">
+
+    <!-- Top Navigation -->
+    <header class="bg-gray-800 border-b border-gray-700 h-16 flex items-center justify-between px-6 shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-600 text-white p-2 rounded-lg">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+            <h1 class="text-xl font-bold tracking-wide">Interactive ML Practice</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="text-sm text-gray-400" id="slide-counter">Slide 1 of 6</span>
+            <div class="w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-blue-500 transition-all duration-300 w-1/6"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex overflow-hidden">
+        
+        <!-- Left Panel: Slide Content -->
+        <aside class="w-1/3 xl:w-1/4 bg-gray-800/50 border-r border-gray-700 p-6 flex flex-col overflow-y-auto relative">
+            <div id="slide-content" class="flex-1 fade-in">
+                <!-- Content injected via JS -->
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="mt-8 flex justify-between gap-3 pt-4 border-t border-gray-700">
+                <button id="btn-prev" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Previous
+                </button>
+                <button id="btn-next" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Right Panel: Code Editor & Console -->
+        <section class="flex-1 flex flex-col p-6 gap-6 bg-[#0d1117]">
+            
+            <!-- Code Editor -->
+            <div class="flex-1 flex flex-col rounded-xl overflow-hidden border border-gray-700 shadow-2xl bg-[#161b22]">
+                <div class="bg-gray-800 border-b border-gray-700 px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-sm text-gray-300">
+                        <i class="fa-brands fa-python text-yellow-400"></i>
+                        <span>main.py</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="btn-reset" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded text-xs font-medium transition-colors">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Reset
+                        </button>
+                        <button id="btn-run" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Run Code
+                        </button>
+                    </div>
+                </div>
+                <div class="flex-1 relative editor-container p-4">
+                    <textarea id="code-editor" class="w-full h-full text-sm leading-relaxed" spellcheck="false"></textarea>
+                </div>
+            </div>
+
+            <!-- Console Output -->
+            <div class="h-1/3 min-h-[250px] flex flex-col rounded-xl overflow-hidden border border-gray-700 bg-black shadow-inner">
+                <div class="bg-gray-800 border-b border-gray-700 px-4 py-2 flex items-center gap-2 text-xs text-gray-400 uppercase tracking-wider font-semibold">
+                    <i class="fa-solid fa-terminal"></i> Output Console
+                </div>
+                <div class="flex-1 p-4 overflow-y-auto relative" id="console-output">
+                    <div id="output-idle" class="text-gray-500 text-sm italic">System ready. Click "Run Code" to execute.</div>
+                    <div id="output-loading" class="hidden flex items-center gap-3 text-blue-400 text-sm">
+                        <span class="loader w-4 h-4"></span> Executing Python Kernel...
+                    </div>
+                    <div id="output-text" class="hidden output-text text-sm text-gray-200"></div>
+                    <div id="output-chart-container" class="hidden h-full w-full relative pb-4">
+                        <canvas id="output-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // --- Data & Content ---
+        const slides = [
+            {
+                title: "Introduction to NLP & Clustering",
+                icon: "fa-rocket text-blue-400",
+                content: `
+                    <p class="text-gray-300 mb-4">Welcome to the interactive machine learning practice lab! Today we will implement two essential workflows:</p>
+                    <ul class="list-disc list-inside text-gray-400 space-y-2 mb-6">
+                        <li><strong class="text-white">Sentiment Analysis:</strong> Converting text data into numbers using TF-IDF and training a Logistic Regression classifier.</li>
+                        <li><strong class="text-white">K-Means Clustering:</strong> Pre-processing data, finding the optimal <i>K</i> using the Elbow Method, and visualizing unsupervised clusters.</li>
+                    </ul>
+                    <div class="p-4 bg-blue-900/30 border border-blue-800 rounded-lg text-sm text-blue-200">
+                        <i class="fa-solid fa-circle-info mr-2"></i> The code editor on the right is fully editable. Review the code, modify it if you wish, and press <b>Run Code</b> to see the output.
+                    </div>
+                `,
+                code: `# Welcome to the Interactive Python Environment!
+# Let's verify our libraries are ready.
+
+import pandas as pd
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+import matplotlib.pyplot as plt
+
+print("Environment successfully loaded!")
+print("Libraries available: Pandas, NumPy, Scikit-Learn, Matplotlib")
+print("Ready to proceed to the next slide.")`,
+                outputType: "text",
+                outputText: "Environment successfully loaded!\nLibraries available: Pandas, NumPy, Scikit-Learn, Matplotlib\nReady to proceed to the next slide."
+            },
+            {
+                title: "Vectorization: CountVectorizer vs TF-IDF",
+                icon: "fa-language text-emerald-400",
+                content: `
+                    <p class="text-gray-300 mb-4">Machine learning algorithms cannot process raw text. We must convert text into numerical vectors.</p>
+                    <p class="text-gray-300 mb-4"><b>CountVectorizer</b> counts the frequency of each word. <b>TF-IDF</b> (Term Frequency - Inverse Document Frequency) goes a step further by penalizing highly frequent words (like "the", "is") and boosting rare, meaningful words.</p>
+                    <p class="text-gray-400 text-sm">Run the code to see how TF-IDF creates fractional weights instead of just integer counts.</p>
+                `,
+                code: `from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+import pandas as pd
+
+corpus = [
+    "Machine learning is great.",
+    "I love machine learning.",
+    "Natural language processing is a part of machine learning."
+]
+
+# 1. Count Vectorizer
+cv = CountVectorizer(stop_words='english')
+cv_matrix = cv.fit_transform(corpus)
+
+# 2. TF-IDF Vectorizer
+tfidf = TfidfVectorizer(stop_words='english')
+tfidf_matrix = tfidf.fit_transform(corpus)
+
+print("--- Vocabulary ---")
+print(cv.get_feature_names_out())
+
+print("\\n--- Count Vectorizer Output ---")
+print(cv_matrix.toarray())
+
+print("\\n--- TF-IDF Vectorizer Output ---")
+print(tfidf_matrix.toarray().round(2))`,
+                outputType: "text",
+                outputText: `--- Vocabulary ---
+['great' 'language' 'learning' 'love' 'machine' 'natural' 'processing']
+
+--- Count Vectorizer Output ---
+[[1 0 1 0 1 0 0]
+ [0 0 1 1 1 0 0]
+ [0 1 1 0 1 1 1]]
+
+--- TF-IDF Vectorizer Output ---
+[[0.73 0.   0.43 0.   0.43 0.   0.  ]
+ [0.   0.   0.43 0.73 0.43 0.   0.  ]
+ [0.   0.51 0.3  0.   0.3  0.51 0.51]]`
+            },
+            {
+                title: "Sentiment Analysis Pipeline",
+                icon: "fa-face-smile text-yellow-400",
+                content: `
+                    <p class="text-gray-300 mb-4">Let's build a complete Sentiment Analysis classifier using Logistic Regression.</p>
+                    <ol class="list-decimal list-inside text-gray-400 space-y-2 text-sm mb-4">
+                        <li>Load dataset using Pandas.</li>
+                        <li>Convert text to lowercase & remove stop words (handled by vectorizer).</li>
+                        <li>Apply TF-IDF Vectorization.</li>
+                        <li>Split into training/testing sets.</li>
+                        <li>Train Logistic Regression.</li>
+                        <li>Predict and evaluate accuracy & confusion matrix.</li>
+                    </ol>
+                `,
+                code: `import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# Simulated 'reviews' dataset
+data = {
+    'text': ['Excellent product!', 'Terrible, broke immediately.', 'Loved it, very useful.', 
+             'Worst experience ever.', 'Okay but not great.', 'Highly recommend this!'],
+    'sentiment': [1, 0, 1, 0, 0, 1] # 1: Positive, 0: Negative
+}
+df = pd.DataFrame(data)
+
+# TF-IDF Vectorization
+tfidf = TfidfVectorizer(lowercase=True, stop_words='english')
+X = tfidf.fit_transform(df['text'])
+y = df['sentiment']
+
+# Train/Test Split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+
+# Train Classifier
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Predict & Evaluate
+preds = model.predict(X_test)
+print("Model Accuracy: {:.2f}%".format(accuracy_score(y_test, preds) * 100))
+print("\\nConfusion Matrix:")
+print(confusion_matrix(y_test, preds))`,
+                outputType: "text",
+                outputText: `Model Accuracy: 100.00%
+
+Confusion Matrix:
+[[1 0]
+ [0 1]]
+
+(Note: Perfect accuracy is due to the small simulated dataset for this exercise.)`
+            },
+            {
+                title: "K-Means: Data Pre-processing",
+                icon: "fa-leaf text-green-400",
+                content: `
+                    <p class="text-gray-300 mb-4">Transitioning to Unsupervised Learning. We will use the famous <b>Iris Dataset</b> to group flowers based on their sepal and petal measurements.</p>
+                    <p class="text-gray-300 mb-4">Since clustering is unsupervised, we must drop the target variable (labels) before training the model.</p>
+                    <p class="text-gray-400 text-sm">Run the code to inspect the shape and ensure no missing values exist.</p>
+                `,
+                code: `import pandas as pd
+from sklearn.datasets import load_iris
+
+# 1. Load the dataset
+iris = load_iris()
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+# In unsupervised learning, we drop the target column. 
+# Here, it's already separated in 'iris.data'
+
+# 2. Check shape
+print("Dataset Shape (Rows, Columns):", df.shape)
+
+# 3. Check for missing values
+print("\\nMissing Values per column:")
+print(df.isnull().sum())
+
+# 4. Extract features
+X = df.values
+print("\\nFirst 3 rows of Independent Variables:")
+print(X[:3])`,
+                outputType: "text",
+                outputText: `Dataset Shape (Rows, Columns): (150, 4)
+
+Missing Values per column:
+sepal length (cm)    0
+sepal width (cm)     0
+petal length (cm)    0
+petal width (cm)     0
+dtype: int64
+
+First 3 rows of Independent Variables:
+[[5.1 3.5 1.4 0.2]
+ [4.9 3.  1.4 0.2]
+ [4.7 3.2 1.3 0.2]]`
+            },
+            {
+                title: "Finding K: The Elbow Method",
+                icon: "fa-chart-line text-purple-400",
+                content: `
+                    <p class="text-gray-300 mb-4">How do we know how many clusters (<var>K</var>) to create?</p>
+                    <p class="text-gray-300 mb-4">We use the <b>Elbow Method</b>. We calculate the Within-Cluster-Sum-of-Squares (WCSS) for K=1 to K=10. The point where the graph bends sharply (the elbow) is our optimal K.</p>
+                    <p class="text-gray-400 text-sm">Run the code to generate the matplotlib plot.</p>
+                `,
+                code: `from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+wcss = []
+# Calculate WCSS for K=1 to 10
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i, init='k-means++', random_state=42, n_init=10)
+    kmeans.fit(X)
+    wcss.append(kmeans.inertia_)
+
+# Plot the Elbow Graph
+plt.plot(range(1, 11), wcss, marker='o', color='purple')
+plt.title('The Elbow Method for Optimal K')
+plt.xlabel('Number of clusters (K)')
+plt.ylabel('WCSS')
+plt.grid(True)
+plt.show()`,
+                outputType: "chart_elbow",
+                outputText: ""
+            },
+            {
+                title: "Visualizing K-Means Clusters",
+                icon: "fa-project-diagram text-pink-400",
+                content: `
+                    <p class="text-gray-300 mb-4">The elbow plot showed a bend at <b>K = 3</b>. Now we train our K-Means algorithm with 3 clusters.</p>
+                    <p class="text-gray-300 mb-4">Finally, we visualize the clusters using a scatter plot, plotting Sepal Length vs Sepal Width, and marking the Centroids.</p>
+                    <p class="text-gray-400 text-sm">Run the code to view the final clustered data.</p>
+                `,
+                code: `# Train K-Means with K=3
+kmeans = KMeans(n_clusters=3, init='k-means++', random_state=42, n_init=10)
+y_kmeans = kmeans.fit_predict(X)
+
+# Visualizing the clusters (first two columns: Sepal Length vs Width)
+plt.figure(figsize=(8,6))
+plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s=80, c='red', label='Cluster 1')
+plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s=80, c='blue', label='Cluster 2')
+plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s=80, c='green', label='Cluster 3')
+
+# Plot Centroids
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], 
+            s=250, c='yellow', marker='*', edgecolor='black', label='Centroids')
+
+plt.title('Clusters of Iris Dataset')
+plt.xlabel('Sepal Length')
+plt.ylabel('Sepal Width')
+plt.legend()
+plt.show()`,
+                outputType: "chart_scatter",
+                outputText: ""
+            }
+        ];
+
+        let currentSlide = 0;
+        let chartInstance = null;
+
+        // DOM Elements
+        const elSlideContent = document.getElementById('slide-content');
+        const elSlideCounter = document.getElementById('slide-counter');
+        const elProgressBar = document.getElementById('progress-bar');
+        const elCodeEditor = document.getElementById('code-editor');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnRun = document.getElementById('btn-run');
+        const btnReset = document.getElementById('btn-reset');
+        
+        // Output Elements
+        const outIdle = document.getElementById('output-idle');
+        const outLoading = document.getElementById('output-loading');
+        const outText = document.getElementById('output-text');
+        const outChartContainer = document.getElementById('output-chart-container');
+        const ctxChart = document.getElementById('output-chart').getContext('2d');
+
+        // Allow Tab in Textarea
+        elCodeEditor.addEventListener('keydown', function(e) {
+            if (e.key == 'Tab') {
+                e.preventDefault();
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        function renderSlide(index) {
+            const slide = slides[index];
+            
+            // Re-trigger animation
+            elSlideContent.classList.remove('fade-in');
+            void elSlideContent.offsetWidth; // trigger reflow
+            elSlideContent.classList.add('fade-in');
+
+            // Set Content
+            elSlideContent.innerHTML = `
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <i class="fa-solid ${slide.icon}"></i> ${slide.title}
+                </h2>
+                ${slide.content}
+            `;
+            
+            // Set Code
+            elCodeEditor.value = slide.code;
+            
+            // Update UI State
+            elSlideCounter.innerText = `Slide ${index + 1} of ${slides.length}`;
+            elProgressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
+            
+            btnPrev.disabled = index === 0;
+            btnNext.disabled = index === slides.length - 1;
+
+            resetOutput();
+        }
+
+        function resetOutput() {
+            outIdle.classList.remove('hidden');
+            outLoading.classList.add('hidden');
+            outText.classList.add('hidden');
+            outChartContainer.classList.add('hidden');
+            if(chartInstance) chartInstance.destroy();
+        }
+
+        function runCode() {
+            // Hide all outputs, show loading
+            outIdle.classList.add('hidden');
+            outText.classList.add('hidden');
+            outChartContainer.classList.add('hidden');
+            outLoading.classList.remove('hidden');
+            
+            if(chartInstance) chartInstance.destroy();
+
+            // Simulate execution time
+            setTimeout(() => {
+                outLoading.classList.add('hidden');
+                
+                const slide = slides[currentSlide];
+                
+                if (slide.outputType === "text") {
+                    outText.textContent = slide.outputText;
+                    outText.classList.remove('hidden');
+                } 
+                else if (slide.outputType === "chart_elbow") {
+                    outChartContainer.classList.remove('hidden');
+                    renderElbowChart();
+                }
+                else if (slide.outputType === "chart_scatter") {
+                    outChartContainer.classList.remove('hidden');
+                    renderScatterChart();
+                }
+            }, 800);
+        }
+
+        // Mock Matplotlib Generators using Chart.js
+        function renderElbowChart() {
+            Chart.defaults.color = '#9ca3af';
+            chartInstance = new Chart(ctxChart, {
+                type: 'line',
+                data: {
+                    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    datasets: [{
+                        label: 'WCSS',
+                        data: [681.3, 152.3, 78.8, 57.2, 46.4, 39.0, 34.2, 30.0, 28.1, 26.5],
+                        borderColor: '#a855f7',
+                        backgroundColor: '#a855f7',
+                        tension: 0.1,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'The Elbow Method for Optimal K', color: '#fff', font: {size: 16} },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Number of clusters (K)' }, grid: {color: '#374151'} },
+                        y: { title: { display: true, text: 'WCSS' }, grid: {color: '#374151'} }
+                    }
+                }
+            });
+        }
+
+        function renderScatterChart() {
+            Chart.defaults.color = '#9ca3af';
+            
+            // Generate some dummy points resembling Iris dataset
+            const generatePoints = (cx, cy, count, spread) => {
+                let pts = [];
+                for(let i=0; i<count; i++) {
+                    pts.push({ x: cx + (Math.random()-0.5)*spread, y: cy + (Math.random()-0.5)*spread });
+                }
+                return pts;
+            };
+
+            const cluster1 = generatePoints(5.0, 3.4, 50, 1.0);
+            const cluster2 = generatePoints(5.9, 2.7, 50, 1.2);
+            const cluster3 = generatePoints(6.6, 3.0, 50, 1.1);
+
+            chartInstance = new Chart(ctxChart, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        { label: 'Cluster 1', data: cluster1, backgroundColor: '#ef4444', pointRadius: 6 },
+                        { label: 'Cluster 2', data: cluster2, backgroundColor: '#3b82f6', pointRadius: 6 },
+                        { label: 'Cluster 3', data: cluster3, backgroundColor: '#22c55e', pointRadius: 6 },
+                        { label: 'Centroids', data: [{x:5.0, y:3.4}, {x:5.9, y:2.7}, {x:6.6, y:3.0}], 
+                          backgroundColor: '#eab308', pointRadius: 12, pointHoverRadius: 14, 
+                          pointStyle: 'star', borderColor: '#000', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Clusters of Iris Dataset', color: '#fff', font: {size: 16} }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Sepal Length' }, grid: {color: '#374151'} },
+                        y: { title: { display: true, text: 'Sepal Width' }, grid: {color: '#374151'} }
+                    }
+                }
+            });
+        }
+
+        // Event Listeners
+        btnNext.addEventListener('click', () => {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                renderSlide(currentSlide);
+            }
+        });
+
+        btnPrev.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                renderSlide(currentSlide);
+            }
+        });
+
+        btnReset.addEventListener('click', () => {
+            elCodeEditor.value = slides[currentSlide].code;
+            resetOutput();
+        });
+
+        btnRun.addEventListener('click', runCode);
+
+        // Initialize
+        renderSlide(0);
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basics of Machine Learning - Interactive Lab Master</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['Fira Code', 'monospace'],
+          },
+          colors: {
+            brand: {
+              dark: '#030712',
+              card: '#0f172a',
+              accent: '#3b82f6',
+              np: '#38bdf8', /* NumPy Cyan */
+              pd: '#facc15', /* Pandas Yellow */
+              plt: '#f43f5e', /* Matplotlib/Seaborn Rose */
+              ml: '#c084fc', /* ML Purple */
+              terminal: '#020617'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #030712;
+      color: #f3f4f6;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.07) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(192, 132, 252, 0.07) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(24a, 204, 21, 0.03) 0px, transparent 60%);
+    }
+
+    /* Smooth Slide Transition Configuration */
+    .slide-inactive {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(30px);
+      position: absolute;
+      width: 100%;
+    }
+    .slide-active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Custom Glassmorphism */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 1rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .terminal-container {
+      background: #020617;
+      border: 1px solid #1e293b;
+      font-family: 'Fira Code', monospace;
+      border-radius: 0.75rem;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    /* Highlight rows animation */
+    @keyframes row-flash {
+      0% { background-color: rgba(56, 189, 248, 0.3); }
+      100% { background-color: transparent; }
+    }
+    .row-highlight {
+      animation: row-flash 1.5s ease-out forwards;
+    }
+
+    /* Custom Hide Scrollbar */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="overflow-hidden min-h-screen flex flex-col select-none">
+
+  <!-- TOP DECK CONTROLLER HEADER -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-6 py-4 flex justify-between items-center z-20">
+    <div class="flex items-center space-x-3">
+      <div class="bg-gradient-to-tr from-brand-accent to-brand-ml text-slate-950 rounded-lg p-2 font-black text-xs tracking-wider uppercase code-font flex items-center justify-center">
+        <i class="fa-solid fa-laptop-code text-white text-sm"></i>
+      </div>
+      <div>
+        <span class="font-bold text-sm tracking-wide text-white block">Basics of Machine Learning</span>
+        <span class="text-xs text-slate-400">Interactive Lab Workbook (Labs 1, 2 & 3)</span>
+      </div>
+    </div>
+    
+    <!-- Progress Indicator -->
+    <div class="flex items-center space-x-4">
+      <div class="hidden sm:flex space-x-1" id="dots-container">
+        <!-- Generated Dynamically -->
+      </div>
+      <span class="text-xs text-brand-np font-medium font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full" id="slide-fraction">1 / 10</span>
+    </div>
+  </header>
+
+  <!-- SIDEBAR NAVIGATION & MAIN VIEWPORT -->
+  <div class="flex-1 flex overflow-hidden relative">
+    
+    <!-- Navigation Sidebar -->
+    <aside class="hidden lg:flex flex-col w-64 bg-slate-950 border-r border-slate-900 p-4 shrink-0 overflow-y-auto justify-between z-10">
+      <div class="space-y-6">
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-widest px-2">Lab Structure Map</h3>
+        <nav class="space-y-1" id="sidebar-nav">
+          <!-- Dynamically populated links -->
+        </nav>
+      </div>
+      <div class="pt-4 border-t border-slate-900 text-center">
+        <p class="text-[10px] text-slate-500">Navigate using sidebar clicks or</p>
+        <div class="flex items-center justify-center gap-2 mt-1">
+          <kbd class="px-1.5 py-0.5 bg-slate-900 rounded border border-slate-800 text-[10px] text-slate-400">←</kbd>
+          <kbd class="px-1.5 py-0.5 bg-slate-900 rounded border border-slate-800 text-[10px] text-slate-400">→</kbd>
+          <span class="text-[10px] text-slate-500">Keys</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Slides Viewport -->
+    <main class="flex-1 relative overflow-y-auto p-4 md:p-6 lg:p-8 flex items-center justify-center min-h-0" id="deck-viewport">
+      
+      <!-- SLIDE 1: WELCOME SCREEN -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="Intro" data-lab="Welcome">
+        <div class="grid lg:grid-cols-12 gap-8 items-center py-6">
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full">
+              <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
+              <span class="text-xs font-semibold text-brand-accent tracking-wider uppercase">Interactive Execution Deck</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-brand-np leading-tight">
+              Machine Learning Foundations Lab Workbook
+            </h1>
+            <p class="text-slate-400 text-base sm:text-lg font-light leading-relaxed">
+              Explore hands-on programming exercises designed to master Python basics, multidimensional matrix slicing in NumPy, data wrangling with Pandas, core modules (Math, OS, Sys), and data visualization frameworks.
+            </p>
+            <div class="flex flex-wrap gap-4 pt-2">
+              <button onclick="goToSlide(1)" class="px-6 py-3 bg-brand-accent hover:bg-blue-600 text-white font-medium rounded-lg shadow-lg shadow-brand-accent/20 transition flex items-center space-x-2 group">
+                <span>Start Lab 1</span>
+                <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+              </button>
+              <button onclick="goToSlide(5)" class="px-6 py-3 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 font-medium rounded-lg transition">
+                Skip to Lab 2
+              </button>
+            </div>
+          </div>
+          <div class="lg:col-span-5 relative hidden lg:block">
+            <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-np to-brand-ml opacity-20 blur-xl"></div>
+            <div class="relative bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl space-y-4">
+              <div class="flex space-x-2 pb-2 border-b border-slate-800">
+                <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+              </div>
+              <p class="text-xs text-brand-np font-mono"># Interactive Environment Initialization</p>
+              <p class="text-sm text-slate-300 font-mono"><span class="text-pink-400">import</span> numpy <span class="text-pink-400">as</span> np</p>
+              <p class="text-sm text-slate-300 font-mono"><span class="text-pink-400">import</span> pandas <span class="text-pink-400">as</span> pd</p>
+              <p class="text-xs text-brand-ml font-mono pt-2"># Load dataset pipeline</p>
+              <p class="text-sm text-slate-300 font-mono">df = pd.read_csv(<span class="text-amber-300">"house_prices.csv"</span>)</p>
+              <p class="text-xs text-brand-pd font-mono pt-2"># Prepare computational matrix</p>
+              <p class="text-sm text-slate-300 font-mono">arr_3d = np.ones((<span class="text-orange-400">4</span>, <span class="text-orange-400">3</span>, <span class="text-orange-400">3</span>))</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: LAB 1 - 3D ARRAY SLICING -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="1a/1b: 3D Array" data-lab="Lab 1: Arrays">
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <span class="text-brand-np font-semibold tracking-wider text-xs uppercase font-mono">Lab 1: Multi-Dimensional NumPy</span>
+            <h2 class="text-3xl font-extrabold text-white">3D Array Creation &amp; Slicing</h2>
+          </div>
+          
+          <div class="grid md:grid-cols-12 gap-6 items-stretch">
+            <div class="md:col-span-5 flex flex-col justify-between space-y-4">
+              <div class="glass-card p-5 space-y-3">
+                <h4 class="text-sm font-semibold text-brand-np flex items-center gap-2">
+                  <i class="fa-solid fa-cubes"></i> Task 1a: Slice 3D Array
+                </h4>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  Generate a 3D NumPy array, then slice values ranging from index 1 to 3 (inclusive) across all rows and depth levels.
+                </p>
+                <button onclick="runCode_1a()" class="w-full py-2 bg-brand-accent/20 border border-brand-accent/40 text-brand-np font-mono text-xs rounded hover:bg-brand-accent hover:text-white transition">
+                  Load Slicing Command
+                </button>
+              </div>
+
+              <div class="glass-card p-5 space-y-3">
+                <h4 class="text-sm font-semibold text-brand-np flex items-center gap-2">
+                  <i class="fa-solid fa-cube"></i> Task 1b: 3D Ones Array
+                </h4>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  Construct a 3-Dimensional array of shape <code class="text-brand-np bg-slate-900 px-1 rounded">(4, 3, 3)</code> loaded entirely with ones.
+                </p>
+                <button onclick="runCode_1b()" class="w-full py-2 bg-brand-accent/20 border border-brand-accent/40 text-brand-np font-mono text-xs rounded hover:bg-brand-accent hover:text-white transition">
+                  Load Ones Setup Command
+                </button>
+              </div>
+            </div>
+
+            <!-- Interactive Terminal Output View -->
+            <div class="md:col-span-7 flex flex-col">
+              <div class="terminal-container flex-1 flex flex-col p-4 min-h-[320px]">
+                <div class="flex justify-between items-center pb-2 border-b border-slate-800 mb-3 text-xs text-slate-400">
+                  <span class="font-mono"><i class="fa-solid fa-terminal mr-2"></i>Python Console</span>
+                  <div class="flex gap-3">
+                    <button onclick="resetTerminal('term-1')" class="hover:text-white text-brand-np"><i class="fa-solid fa-rotate-left mr-1"></i> Reset</button>
+                    <button onclick="clearTerminal('term-1')" class="hover:text-white"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                  </div>
+                </div>
+                <div class="flex-1 overflow-y-auto no-scrollbar space-y-2 text-xs font-mono" id="term-1-output">
+                  <div class="text-slate-500"># Interactive terminal. Type or load commands, then press Enter inside prompt below...</div>
+                </div>
+                <div class="flex items-center text-xs font-mono pt-2 border-t border-slate-900">
+                  <span class="text-green-400 mr-2 shrink-0">>>></span>
+                  <input type="text" id="term-1-input" onkeydown="handleCommandLineKeyPress(event, 'term-1')" class="bg-transparent border-none outline-none text-slate-200 font-mono text-xs flex-1 focus:ring-0 placeholder-slate-700" placeholder="Type custom NumPy expression and press Enter...">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 3: LAB 1 - HOUSE PRICE PANDAS ANALYSIS -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="2: Housing Pandas" data-lab="Lab 1: Housing">
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <span class="text-brand-pd font-semibold tracking-wider text-xs uppercase font-mono">Lab 1: Pandas Integration</span>
+            <h2 class="text-3xl font-extrabold text-white">Housing Price Dataset Analysis</h2>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-6 items-stretch">
+            <div class="lg:col-span-4 flex flex-col gap-3 justify-between">
+              <div class="glass-card p-5 space-y-3">
+                <span class="text-[10px] bg-brand-pd/20 text-brand-pd px-2 py-0.5 rounded font-mono font-bold">TASK CONTROLS</span>
+                <p class="text-xs text-slate-300">Run structural and conditional operations on the loaded housing dataset:</p>
+                
+                <div class="space-y-2 pt-1">
+                  <button onclick="runHousingTask('rowcount')" class="w-full py-2 px-3 text-left text-xs bg-slate-900 border border-slate-800 hover:border-slate-700 rounded font-mono text-slate-300 flex justify-between items-center transition">
+                    <span>1. Find Row Count</span>
+                    <span class="text-[9px] text-brand-pd">df.shape[0]</span>
+                  </button>
+                  <button onclick="runHousingTask('dtypes')" class="w-full py-2 px-3 text-left text-xs bg-slate-900 border border-slate-800 hover:border-slate-700 rounded font-mono text-slate-300 flex justify-between items-center transition">
+                    <span>2. Inspect Data Types</span>
+                    <span class="text-[9px] text-brand-pd">df.dtypes</span>
+                  </button>
+                  <button onclick="runHousingTask('parking')" class="w-full py-2 px-3 text-left text-xs bg-slate-900 border border-slate-800 hover:border-slate-700 rounded font-mono text-slate-300 flex justify-between items-center transition">
+                    <span>3. Houses with &ge; 2 Parking</span>
+                    <span class="text-[9px] text-brand-pd">df[parking &gt;= 2]</span>
+                  </button>
+                  <button onclick="runHousingTask('avgarea')" class="w-full py-2 px-3 text-left text-xs bg-slate-900 border border-slate-800 hover:border-slate-700 rounded font-mono text-slate-300 flex justify-between items-center transition">
+                    <span>4. Furnished Area Mean</span>
+                    <span class="text-[9px] text-brand-pd">groupby()</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Python syntax executor display -->
+              <div class="glass-card p-4 space-y-1">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Executed Syntax:</span>
+                  <button onclick="resetTerminal('term-housing')" class="text-[10px] text-brand-pd hover:text-white font-mono"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                </div>
+                <code id="housing-syntax" class="text-xs font-mono text-brand-pd block"># Waiting for operation execution...</code>
+              </div>
+            </div>
+
+            <!-- Dataset Table View and Terminal Output -->
+            <div class="lg:col-span-8 flex flex-col gap-4">
+              <div class="glass-card p-4 flex-1 flex flex-col justify-between space-y-3 overflow-hidden min-h-[220px]">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                  <span class="text-xs font-bold text-slate-400">DataFrame Memory View (<code class="text-brand-pd font-mono">house_df</code>)</span>
+                  <span id="house-row-count-badge" class="px-2 py-0.5 bg-slate-950 rounded text-[10px] text-brand-pd font-bold border border-slate-800 font-mono">4 rows x 6 cols</span>
+                </div>
+                
+                <div class="overflow-x-auto flex-1 no-scrollbar">
+                  <table class="w-full text-left text-xs font-mono" id="housing-table">
+                    <thead>
+                      <tr class="border-b border-slate-800 text-slate-400">
+                        <th class="py-2 px-2 bg-slate-950 text-center">Row</th>
+                        <th class="py-2 px-3">Price</th>
+                        <th class="py-2 px-3">Area (sqft)</th>
+                        <th class="py-2 px-3">Bedrooms</th>
+                        <th class="py-2 px-3">Bathrooms</th>
+                        <th class="py-2 px-3">Parking</th>
+                        <th class="py-2 px-3">Furnishing</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-900" id="housing-tbody">
+                      <!-- Filled Dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Interactive prompt container -->
+              <div class="terminal-container p-3 h-24 overflow-y-auto no-scrollbar flex flex-col justify-between">
+                <div class="text-[10px] text-slate-500 font-mono pb-1 border-b border-slate-900 flex justify-between">
+                  <span>Interactive Housing Console</span>
+                  <span>Press Enter inside prompt below...</span>
+                </div>
+                <div class="text-xs font-mono text-brand-np flex-1 flex items-center pt-1" id="housing-terminal-prompt">
+                  >>> Ready to process database records.
+                </div>
+                <div class="flex items-center text-xs font-mono pt-1 border-t border-slate-900/60">
+                  <span class="text-green-400 mr-2 shrink-0">>>></span>
+                  <input type="text" id="term-housing-input" onkeydown="handleCommandLineKeyPress(event, 'term-housing')" class="bg-transparent border-none outline-none text-slate-200 font-mono text-xs flex-1 focus:ring-0 placeholder-slate-700" placeholder="Type commands like: df.shape, df.dtypes, parking >= 2, mean, or reset...">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 4: LAB 1 - EMPLOYEE DATABASE INDEXING & FILTERING -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="3: Employee Bonus" data-lab="Lab 1: Employees">
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <span class="text-brand-pd font-semibold tracking-wider text-xs uppercase font-mono">Lab 1: Indexing &amp; Query Slicing</span>
+            <h2 class="text-3xl font-extrabold text-white">Employee Bonus Segment Slicing</h2>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-6 items-stretch">
+            <!-- Left Dataframe Column -->
+            <div class="lg:col-span-7 flex flex-col justify-between gap-4">
+              <div class="glass-card p-4 flex-1 flex flex-col justify-between space-y-3 overflow-hidden min-h-[250px]">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                  <span class="text-xs font-bold text-slate-400">Employee DataFrame Memory View (<code class="text-brand-pd font-mono">emp_df</code>)</span>
+                  <span class="px-2 py-0.5 bg-slate-950 rounded text-[10px] text-brand-pd font-bold border border-slate-800 font-mono">Index: <span id="emp-index-mode">Default RangeIndex</span></span>
+                </div>
+
+                <div class="overflow-x-auto flex-1 no-scrollbar">
+                  <table class="w-full text-left text-xs font-mono" id="emp-table">
+                    <thead>
+                      <tr class="border-b border-slate-800 text-slate-400">
+                        <th class="py-2 px-2 bg-slate-950 text-center" id="emp-index-header">Index</th>
+                        <th class="py-2 px-3" id="emp-col-empid">Empid</th>
+                        <th class="py-2 px-3">Name</th>
+                        <th class="py-2 px-3 text-center">Age</th>
+                        <th class="py-2 px-3">Profession</th>
+                        <th class="py-2 px-3 text-right">Salary</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-900" id="emp-tbody">
+                      <!-- Populated via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Controls and Code Simulator -->
+            <div class="lg:col-span-5 flex flex-col gap-4 justify-between">
+              <div class="glass-card p-5 space-y-4 flex-1 flex flex-col justify-between">
+                <div>
+                  <h4 class="text-sm font-semibold text-brand-pd mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i> Segment Controls
+                  </h4>
+                  <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                    Modify the index coordinate structure by promoting the <code class="text-brand-np font-mono">Empid</code> column, and dynamically filter employees within the corporate bonus age window <code class="text-brand-np font-mono">[29 to 40]</code>.
+                  </p>
+                  
+                  <div class="space-y-3">
+                    <button onclick="setEmpIndex()" class="w-full py-2 px-4 bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs text-slate-300 font-mono rounded flex justify-between items-center transition">
+                      <span>Set Index to Empid</span>
+                      <code class="text-[9px] text-brand-pd">set_index()</code>
+                    </button>
+                    <button onclick="filterBonusAge()" class="w-full py-2 px-4 bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs text-slate-300 font-mono rounded flex justify-between items-center transition">
+                      <span>Find Bonus Group (29-40)</span>
+                      <code class="text-[9px] text-brand-pd">df[(Age &gt;= 29)...]</code>
+                    </button>
+                    <button onclick="resetEmpDataset()" class="w-full py-1.5 text-center text-slate-500 hover:text-slate-300 text-[10px] font-mono border border-dashed border-slate-800 rounded transition">
+                      <i class="fa-solid fa-rotate-left mr-1"></i> Reset Employee Data state
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Executed code output console -->
+                <div class="terminal-container p-4 min-h-[140px] flex flex-col justify-between">
+                  <div class="flex justify-between items-center border-b border-slate-900 pb-1 text-[10px] text-slate-500 font-mono">
+                    <span>Interactive Output Monitor</span>
+                    <button onclick="resetTerminal('term-emp')" class="text-brand-pd hover:text-white font-mono"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                  </div>
+                  <div class="text-xs font-mono text-brand-np mt-1 leading-relaxed flex-1 overflow-y-auto" id="emp-terminal-output">
+                    # Interactive console. Type custom queries or press the action buttons...
+                  </div>
+                  <div class="flex items-center text-xs font-mono pt-1.5 border-t border-slate-900">
+                    <span class="text-green-400 mr-2 shrink-0">>>></span>
+                    <input type="text" id="term-emp-input" onkeydown="handleCommandLineKeyPress(event, 'term-emp')" class="bg-transparent border-none outline-none text-slate-200 font-mono text-xs flex-1 focus:ring-0 placeholder-slate-700" placeholder="Type queries like set_index, bonus, reset...">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: LAB 1 - COMPARATIVE STATS & IMPUTATION -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="4: Analytics &amp; Imputation" data-lab="Lab 1: Stats">
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <span class="text-brand-pd font-semibold tracking-wider text-xs uppercase font-mono">Lab 1: Analytical Imputation</span>
+            <h2 class="text-3xl font-extrabold text-white">Profession Metrics &amp; Missing Imputations</h2>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-6 items-stretch">
+            <!-- Left Panel controls -->
+            <div class="lg:col-span-5 flex flex-col gap-4">
+              <div class="glass-card p-5 space-y-3">
+                <span class="text-[10px] bg-brand-ml/20 text-brand-ml px-2 py-0.5 rounded font-mono font-bold">PROFESSION COMPARISON</span>
+                <p class="text-xs text-slate-300">
+                  Analyze the proportion of capital allocated across Engineers versus Doctors to see which segment has a higher salary foot-print:
+                </p>
+                <button onclick="compareProfessionSalaries()" class="w-full py-2 bg-brand-ml/20 border border-brand-ml/40 text-brand-ml font-mono text-xs rounded hover:bg-brand-ml hover:text-slate-950 transition font-bold">
+                  Calculate Salary Split Ratio
+                </button>
+              </div>
+
+              <div class="glass-card p-5 space-y-3">
+                <span class="text-[10px] bg-brand-pd/20 text-brand-pd px-2 py-0.5 rounded font-mono font-bold">MISSING DATA IMPUTATION</span>
+                <p class="text-xs text-slate-300">
+                  Some salaries are missing (<code class="text-red-400 font-mono">NaN</code>) due to database failures. Impute empty records using the arithmetic mean salary of complete records:
+                </p>
+                <button onclick="imputeMissingSalaries()" class="w-full py-2 bg-brand-pd/20 border border-brand-pd/40 text-brand-pd font-mono text-xs rounded hover:bg-brand-pd hover:text-slate-950 transition font-bold">
+                  Execute Imputation Pipeline
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Visual Panel representation -->
+            <div class="lg:col-span-7 flex flex-col gap-4">
+              <div class="glass-card p-5 flex-1 flex flex-col justify-between overflow-hidden min-h-[300px]">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
+                  <span class="text-xs font-bold text-slate-400">Analytical &amp; Execution Output Monitor</span>
+                  <div class="flex gap-3">
+                    <button onclick="resetTerminal('term-imputation')" class="text-xs font-mono text-brand-ml hover:text-white"><i class="fa-solid fa-rotate-left mr-1"></i> Reset</button>
+                  </div>
+                </div>
+
+                <div class="flex-1 flex flex-col justify-center space-y-4" id="imputation-visual-area">
+                  <div class="text-center text-slate-500 italic text-xs py-8">
+                    Click an action on the left to display statistical models and structural transformations in real-time.
+                  </div>
+                </div>
+
+                <div class="bg-slate-950 p-3 rounded border border-slate-900 text-xs font-mono text-brand-np" id="imputation-log">
+                  # Log console loaded. Ready.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 6: LAB 2 - NUMPY STATISTICS FOR MACHINE LEARNING -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="1: Array ML Stats" data-lab="Lab 2: ML Arrays">
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <span class="text-brand-np font-semibold tracking-wider text-xs uppercase font-mono">Lab 2: Mathematical Array Computing</span>
+            <h2 class="text-3xl font-extrabold text-white">NumPy Array Statistics for ML</h2>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-6 items-stretch">
+            <div class="lg:col-span-6 flex flex-col justify-between gap-4">
+              <div class="glass-card p-6 space-y-4 flex-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] text-brand-np font-mono uppercase tracking-widest block font-bold">1D Marks Array Initialization</span>
+                  <button onclick="resetTerminal('term-marks')" class="text-xs font-mono text-brand-np hover:text-white"><i class="fa-solid fa-rotate-left mr-1"></i> Reset</button>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  We initialize a student performance marks dataset as a NumPy 1-Dimensional array:
+                </p>
+                
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 font-mono text-xs space-y-1.5">
+                  <p class="text-slate-400"><span class="text-pink-400">import</span> numpy <span class="text-pink-400">as</span> np</p>
+                  <p class="text-slate-200">marks = np.array([<span class="text-orange-400">55</span>, <span class="text-orange-400">60</span>, <span class="text-orange-400">65</span>, <span class="text-orange-400">70</span>, <span class="text-orange-400">80</span>])</p>
+                </div>
+
+                <button onclick="calculateMarksStatistics()" class="w-full py-3 bg-brand-np hover:bg-sky-400 text-slate-950 font-bold rounded-lg transition text-xs font-mono shadow-md shadow-brand-np/20">
+                  Compute Array Mean &amp; Standard Deviation
+                </button>
+
+                <div class="grid grid-cols-2 gap-4 pt-2">
+                  <div class="bg-slate-950 p-3 rounded-lg border border-slate-900 text-center">
+                    <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider mb-1">Mean (&mu;)</span>
+                    <span id="marks-mean-out" class="text-xl font-bold font-mono text-brand-np">---</span>
+                  </div>
+                  <div class="bg-slate-950 p-3 rounded-lg border border-slate-900 text-center">
+                    <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider mb-1">Std Dev (&sigma;)</span>
+                    <span id="marks-std-out" class="text-xl font-bold font-mono text-brand-np">---</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Conceptual justification -->
+            <div class="lg:col-span-6 flex flex-col justify-between gap-4">
+              <div class="glass-card p-6 space-y-4 flex-1 flex flex-col justify-between">
+                <div>
+                  <h4 class="font-bold text-sm text-slate-200 mb-3 uppercase tracking-wider"><i class="fa-solid fa-graduation-cap text-brand-ml mr-2"></i>Why use Arrays over Python Lists in ML?</h4>
+                  <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Machine Learning models require massive matrix computations. Standard Python lists are slow and memory-intensive. NumPy resolves this structural bottleneck in three ways:
+                  </p>
+
+                  <div class="space-y-3">
+                    <div class="flex items-start gap-3">
+                      <div class="bg-brand-np/10 p-2 rounded text-brand-np text-xs"><i class="fa-solid fa-bolt"></i></div>
+                      <div>
+                        <span class="text-xs font-bold text-slate-300 block">Vectorization (No Loops)</span>
+                        <span class="text-[11px] text-slate-400 block leading-normal">Processes operations element-wise natively in pre-compiled C-speed vectors without slow Python <code class="text-pink-400">for</code> loop wrappers.</span>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                      <div class="bg-brand-pd/10 p-2 rounded text-brand-pd text-xs"><i class="fa-solid fa-memory"></i></div>
+                      <div>
+                        <span class="text-xs font-bold text-slate-300 block">Contiguous Memory Allocation</span>
+                        <span class="text-[11px] text-slate-400 block leading-normal">Elements are stored side-by-side in computer memory, optimizing CPU cache hits compared to scattered Python object references.</span>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                      <div class="bg-brand-ml/10 p-2 rounded text-brand-ml text-xs"><i class="fa-solid fa-database"></i></div>
+                      <div>
+                        <span class="text-xs font-bold text-slate-300 block">Homogeneous Data Types</span>
+                        <span class="text-[11px] text-slate-400 block leading-normal">Fixed data types (<code class="text-brand-np">int64</code>, <code class="text-brand-np">float64</code>) remove data type checking overhead on every single math operation.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: LAB 2 - DATA VISUALIZATION SCATTER & REGRESSION -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="2: Visualizations" data-lab="Lab 2: Plotting">
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <span class="text-brand-plt font-semibold tracking-wider text-xs uppercase font-mono">Lab 2: Plotting Frameworks</span>
+            <h2 class="text-3xl font-extrabold text-white">Scatter Plot &amp; Linear Regression Simulation</h2>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-6 items-stretch">
+            <!-- Left Data Column & Plot Controls -->
+            <div class="lg:col-span-5 flex flex-col justify-between gap-4">
+              <div class="glass-card p-5 space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] text-brand-plt font-mono uppercase tracking-widest block font-bold">Study Hours vs Exam Marks</span>
+                  <button onclick="resetTerminal('term-plotting')" class="text-xs font-mono text-brand-plt hover:text-white"><i class="fa-solid fa-rotate-left mr-1"></i> Reset</button>
+                </div>
+                <p class="text-xs text-slate-300">
+                  Compare student study metrics against final evaluation scores to analyze linear relationships:
+                </p>
+
+                <div class="overflow-x-auto no-scrollbar bg-slate-950 rounded border border-slate-900 p-2">
+                  <table class="w-full text-center text-[11px] font-mono">
+                    <thead>
+                      <tr class="text-slate-400 border-b border-slate-900">
+                        <th class="py-1 px-2 text-left">Student</th>
+                        <th class="py-1 px-2">Study Hours (X)</th>
+                        <th class="py-1 px-2">Exam Marks (Y)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-b border-slate-900/40 text-slate-300">
+                        <td class="py-1 px-2 text-left">A</td>
+                        <td class="py-1 px-2">1.5</td>
+                        <td class="py-1 px-2">45</td>
+                      </tr>
+                      <tr class="border-b border-slate-900/40 text-slate-300">
+                        <td class="py-1 px-2 text-left">B</td>
+                        <td class="py-1 px-2">3.0</td>
+                        <td class="py-1 px-2">55</td>
+                      </tr>
+                      <tr class="border-b border-slate-900/40 text-slate-300">
+                        <td class="py-1 px-2 text-left">C</td>
+                        <td class="py-1 px-2">4.5</td>
+                        <td class="py-1 px-2">68</td>
+                      </tr>
+                      <tr class="text-slate-300">
+                        <td class="py-1 px-2 text-left">D</td>
+                        <td class="py-1 px-2">7.0</td>
+                        <td class="py-1 px-2">90</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                  <button onclick="simulatePlot('scatter')" class="py-2.5 px-3 bg-brand-plt/10 border border-brand-plt/30 hover:bg-brand-plt text-brand-plt hover:text-slate-950 font-bold font-mono text-xs rounded transition flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-chart-line text-lg mb-1"></i>
+                    <span>Scatter Plot</span>
+                  </button>
+                  <button onclick="simulatePlot('regression')" class="py-2.5 px-3 bg-brand-ml/10 border border-brand-ml/30 hover:bg-brand-ml text-brand-ml hover:text-slate-950 font-bold font-mono text-xs rounded transition flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-arrow-trend-up text-lg mb-1"></i>
+                    <span>Regression line</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Graphic Render Area -->
+            <div class="lg:col-span-7 flex flex-col gap-4">
+              <div class="glass-card p-5 flex-1 flex flex-col justify-between overflow-hidden min-h-[300px] relative">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                  <span class="text-xs font-bold text-slate-400" id="plot-title-display">Interactive Plot Canvas</span>
+                  <span class="text-[10px] text-slate-500 font-mono">Simulating rendering library...</span>
+                </div>
+
+                <!-- Live Vector Chart simulation -->
+                <div class="flex-1 flex items-center justify-center relative p-2" id="chart-viewport">
+                  <div class="text-center text-slate-500 italic text-xs">
+                    Select a visualization module to compile Matplotlib or Seaborn plots.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 8: LAB 2 - UTILITY BUILT-IN CORE MODULES -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="3: Math/OS/Sys" data-lab="Lab 2: Modules">
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <span class="text-brand-pd font-semibold tracking-wider text-xs uppercase font-mono">Lab 2: Core Utility Modules</span>
+            <h2 class="text-3xl font-extrabold text-white">System Runtime, OS &amp; Math Libraries</h2>
+          </div>
+
+          <div class="grid lg:grid-cols-3 gap-6 items-stretch">
+            <!-- Math Module Card -->
+            <div class="glass-card p-5 flex flex-col justify-between space-y-4">
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] bg-brand-np/20 text-brand-np px-2 py-0.5 rounded font-mono font-bold">MATH MODULE</span>
+                  <button onclick="resetTerminal('term-math-mod')" class="text-[10px] text-slate-500 hover:text-white font-mono"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                </div>
+                <h3 class="font-bold text-sm text-slate-200">Euclidean Distance Calc</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Calculate distance between coordinate coordinate points <code class="text-brand-np font-mono">A(2, 50)</code> and <code class="text-brand-np font-mono">B(4, 70)</code>:
+                </p>
+                <div class="bg-slate-950 p-3 rounded font-mono text-[11px] text-brand-np mt-2 border border-slate-900">
+                  <span class="text-pink-400">import</span> math<br>
+                  math.sqrt((4-2)**<span class="text-orange-400">2</span> + (70-50)**<span class="text-orange-400">2</span>)
+                </div>
+              </div>
+
+              <div>
+                <div id="math-result-box" class="py-2.5 px-3 bg-slate-950 border border-slate-900 text-slate-300 font-mono text-center text-xs rounded mb-3 italic">
+                  # Waiting for execution...
+                </div>
+                <button onclick="executeMathModule()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-mono font-bold rounded text-slate-200 transition">
+                  Run math.sqrt()
+                </button>
+              </div>
+            </div>
+
+            <!-- OS Module Card -->
+            <div class="glass-card p-5 flex flex-col justify-between space-y-4">
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] bg-brand-pd/20 text-brand-pd px-2 py-0.5 rounded font-mono font-bold">OS MODULE</span>
+                  <button onclick="resetTerminal('term-os-mod')" class="text-[10px] text-slate-500 hover:text-white font-mono"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                </div>
+                <h3 class="font-bold text-sm text-slate-200">Filesystem &amp; Workspace</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Extract current active directory path variables from environmental OS interfaces:
+                </p>
+                <div class="bg-slate-950 p-3 rounded font-mono text-[11px] text-brand-pd mt-2 border border-slate-900">
+                  <span class="text-pink-400">import</span> os<br>
+                  os.getcwd()
+                </div>
+              </div>
+
+              <div>
+                <div id="os-result-box" class="py-2.5 px-3 bg-slate-950 border border-slate-900 text-slate-300 font-mono text-center text-xs rounded mb-3 italic truncate">
+                  # Waiting for execution...
+                </div>
+                <button onclick="executeOSModule()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-mono font-bold rounded text-slate-200 transition">
+                  Run os.getcwd()
+                </button>
+              </div>
+            </div>
+
+            <!-- Sys Module Card -->
+            <div class="glass-card p-5 flex flex-col justify-between space-y-4">
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] bg-brand-ml/20 text-brand-ml px-2 py-0.5 rounded font-mono font-bold">SYS MODULE</span>
+                  <button onclick="resetTerminal('term-sys-mod')" class="text-[10px] text-slate-500 hover:text-white font-mono"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                </div>
+                <h3 class="font-bold text-sm text-slate-200">Runtime Specs</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Query the virtual environment compiler specifications using standard system hooks:
+                </p>
+                <div class="bg-slate-950 p-3 rounded font-mono text-[11px] text-brand-ml mt-2 border border-slate-900">
+                  <span class="text-pink-400">import</span> sys<br>
+                  sys.version
+                </div>
+              </div>
+
+              <div>
+                <div id="sys-result-box" class="py-2.5 px-3 bg-slate-950 border border-slate-900 text-slate-300 font-mono text-center text-xs rounded mb-3 italic">
+                  # Waiting for execution...
+                </div>
+                <button onclick="executeSysModule()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-mono font-bold rounded text-slate-200 transition">
+                  Run sys.version
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 9: LAB 3 - MATHEMATICAL OPERATIONS & STATISTICAL DISTRIBUTION -->
+      <div class="slide slide-inactive w-full max-w-5xl mx-auto" data-title="Arithmetic &amp; Skewness" data-lab="Lab 3: Calculations">
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <span class="text-brand-ml font-semibold tracking-wider text-xs uppercase font-mono">Lab 3: Statistical Operators</span>
+            <h2 class="text-3xl font-extrabold text-white">Mathematical Operators &amp; Skewness Verification</h2>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-6 items-stretch">
+            <!-- Operations & User Input Parameters -->
+            <div class="lg:col-span-5 flex flex-col justify-between gap-4">
+              <div class="glass-card p-5 space-y-4 flex-1">
+                <span class="text-[10px] text-brand-ml font-mono uppercase tracking-widest block font-bold">Parameter Configurator</span>
+                
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="text-[10px] text-slate-400 uppercase font-mono block mb-1">Value A</label>
+                    <input type="number" id="math-input-a" value="10" class="w-full bg-slate-950 border border-slate-850 p-2 rounded text-sm text-brand-ml font-mono focus:outline-none focus:border-brand-ml">
+                  </div>
+                  <div>
+                    <label class="text-[10px] text-slate-400 uppercase font-mono block mb-1">Value B</label>
+                    <input type="number" id="math-input-b" value="5" class="w-full bg-slate-950 border border-slate-850 p-2 rounded text-sm text-brand-ml font-mono focus:outline-none focus:border-brand-ml">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                  <button onclick="runLab3Operators('arithmetic')" class="py-2 px-3 bg-slate-900 hover:bg-slate-800 text-xs font-mono text-slate-300 rounded border border-slate-800 hover:border-slate-700 transition text-center">
+                    Basic Arithmetic
+                  </button>
+                  <button onclick="runLab3Operators('advanced')" class="py-2 px-3 bg-slate-900 hover:bg-slate-800 text-xs font-mono text-slate-300 rounded border border-slate-800 hover:border-slate-700 transition text-center">
+                    Advanced Math
+                  </button>
+                </div>
+
+                <div class="border-t border-slate-900 pt-4 space-y-2">
+                  <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">Data Skewness Logic</h4>
+                  <p class="text-[11px] text-slate-400 leading-normal">
+                    Assess structural asymmetry in datasets: <br>
+                    - <strong class="text-brand-np">Mean &gt; Median</strong> : Positively (Right) Skewed<br>
+                    - <strong class="text-brand-plt">Mean &lt; Median</strong> : Negatively (Left) Skewed<br>
+                    - <strong class="text-brand-ml">Mean &asymp; Median</strong> : Symmetric Distribution
+                  </p>
+                  <button onclick="verifyDatasetSkewness()" class="w-full py-2 bg-brand-ml/20 hover:bg-brand-ml border border-brand-ml/40 text-brand-ml hover:text-slate-950 font-bold font-mono text-xs rounded transition mt-2">
+                    Verify Sample Dataset Skewness
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Terminal output representation -->
+            <div class="lg:col-span-7 flex flex-col gap-4">
+              <div class="terminal-container p-5 flex-1 flex flex-col justify-between overflow-hidden min-h-[300px]">
+                <div class="flex justify-between items-center pb-2 border-b border-slate-800 mb-3 text-xs text-slate-400">
+                  <span class="font-mono"><i class="fa-solid fa-code mr-2"></i>Python Output Console (Lab 3)</span>
+                  <div class="flex gap-3">
+                    <button onclick="resetTerminal('term-3')" class="hover:text-white text-brand-ml"><i class="fa-solid fa-rotate-left mr-1"></i> Reset</button>
+                    <button onclick="clearTerminal('term-3')" class="hover:text-white"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                  </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto no-scrollbar space-y-2 text-xs font-mono" id="term-3-output">
+                  <div class="text-slate-500"># Interactive terminal. Type calculations or run parameter utilities...</div>
+                </div>
+
+                <div class="flex items-center text-xs font-mono pt-2 border-t border-slate-900">
+                  <span class="text-green-400 mr-2 shrink-0">>>></span>
+                  <input type="text" id="term-3-input" onkeydown="handleCommandLineKeyPress(event, 'term-3')" class="bg-transparent border-none outline-none text-slate-200 font-mono text-xs flex-1 focus:ring-0 placeholder-slate-700" placeholder="Type arithmetic expressions or trigger verification functions...">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 10: WORKBOOK SUMMARY & COMPLETE PREVIEW -->
+      <div class="slide slide-inactive w-full max-w-4xl mx-auto" data-title="Summary" data-lab="Summary">
+        <div class="space-y-6 py-4 text-center">
+          <div class="space-y-2">
+            <div class="inline-flex bg-brand-accent/10 text-brand-accent border border-brand-accent/20 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest font-mono">
+              Certification
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-none">
+              Lab Assignment Complete
+            </h1>
+            <p class="text-slate-400 text-sm max-w-lg mx-auto leading-relaxed">
+              You have completed all interactive exercises across Lab 1, Lab 2, and Lab 3. The verified models are successfully integrated.
+            </p>
+          </div>
+
+          <!-- Summary Matrix grids -->
+          <div class="grid sm:grid-cols-3 gap-4 text-left max-w-3xl mx-auto pt-2">
+            <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-xl space-y-2">
+              <div class="text-brand-np text-xs font-bold font-mono uppercase tracking-wider">Lab 1 Matrix</div>
+              <p class="text-xs text-slate-400">Successfully created and sliced 3D arrays; wrangled home dataset variables; set custom DataFrame index; filtered data &amp; imputed missing salaries.</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-xl space-y-2">
+              <div class="text-brand-plt text-xs font-bold font-mono uppercase tracking-wider">Lab 2 Matrix</div>
+              <p class="text-xs text-slate-400">Calculated dataset metrics; constructed simulated scatter &amp; linear regression plots; mapped built-in utility math, OS workspace, and system runtime indicators.</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-xl space-y-2">
+              <div class="text-brand-ml text-xs font-bold font-mono uppercase tracking-wider">Lab 3 Matrix</div>
+              <p class="text-xs text-slate-400">Built basic and advanced mathematical operators; evaluated statistical asymmetry coefficients &amp; completed distribution skewness calculations.</p>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <button onclick="goToSlide(0)" class="px-5 py-2.5 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 text-xs font-semibold rounded-lg transition inline-flex items-center space-x-2">
+              <i class="fa-solid fa-arrow-rotate-left"></i>
+              <span>Restart Slide Deck</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- BOTTOM NAVIGATION CONTROLLER BAR -->
+  <footer class="border-t border-slate-900 bg-slate-950 px-6 py-4 flex justify-between items-center z-20 shrink-0">
+    <button onclick="prevSlide()" class="px-4 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 text-xs font-semibold transition flex items-center space-x-2">
+      <i class="fa-solid fa-chevron-left text-xs"></i>
+      <span>Previous</span>
+    </button>
+    
+    <div class="text-xs text-slate-500 font-mono hidden sm:block">
+      Press keyboard <kbd class="px-1.5 py-0.5 bg-slate-900 rounded border border-slate-800 text-slate-400">←</kbd> <kbd class="px-1.5 py-0.5 bg-slate-900 rounded border border-slate-800 text-slate-400">→</kbd> to control
+    </div>
+
+    <button onclick="nextSlide()" class="px-4 py-2 bg-brand-accent hover:bg-blue-600 rounded-lg text-white text-xs font-semibold transition flex items-center space-x-2">
+      <span>Next</span>
+      <i class="fa-solid fa-chevron-right text-xs"></i>
+    </button>
+  </footer>
+
+  <!-- DYNAMIC CORE JAVASCRIPT SYSTEM -->
+  <script>
+    // Presenter State Configuration
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const slideFraction = document.getElementById('slide-fraction');
+    const dotsContainer = document.getElementById('dots-container');
+    const sidebarNav = document.getElementById('sidebar-nav');
+
+    // Setup slide dot indicators and sidebar index directory dynamically
+    function initializeStructure() {
+      dotsContainer.innerHTML = '';
+      sidebarNav.innerHTML = '';
+      
+      slides.forEach((slide, idx) => {
+        // Dot progress tracker
+        const dot = document.createElement('button');
+        dot.className = `w-2 h-2 rounded-full transition-all ${idx === currentSlide ? 'bg-brand-accent w-4' : 'bg-slate-800 hover:bg-slate-600'}`;
+        dot.onclick = () => goToSlide(idx);
+        dotsContainer.appendChild(dot);
+
+        // Sidebar navigation index
+        const title = slide.getAttribute('data-title') || `Slide ${idx + 1}`;
+        const labLabel = slide.getAttribute('data-lab') || `Task`;
+        const navLink = document.createElement('button');
+        
+        let linkStyle = `w-full text-left px-3 py-2.5 text-xs rounded-lg transition-all flex flex-col space-y-0.5 ${
+          idx === currentSlide 
+            ? 'bg-slate-900 text-brand-np border-l-2 border-brand-accent font-semibold' 
+            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
+        }`;
+        
+        navLink.className = linkStyle;
+        navLink.innerHTML = `
+          <div class="flex justify-between items-center w-full">
+            <span class="truncate text-[11px] tracking-wide font-bold">${title}</span>
+            <span class="text-[8px] font-mono text-slate-500 uppercase">${labLabel}</span>
+          </div>
+        `;
+        navLink.onclick = () => goToSlide(idx);
+        sidebarNav.appendChild(navLink);
+      });
+
+      // Toggle display states for slides elements
+      slides.forEach((slide, idx) => {
+        if (idx === currentSlide) {
+          slide.classList.remove('slide-inactive');
+          slide.classList.add('slide-active');
+        } else {
+          slide.classList.add('slide-inactive');
+          slide.classList.remove('slide-active');
+        }
+      });
+
+      // Update fraction readout
+      slideFraction.textContent = `${currentSlide + 1} / ${slides.length}`;
+    }
+
+    function goToSlide(targetIdx) {
+      if (targetIdx >= 0 && targetIdx < slides.length) {
+        currentSlide = targetIdx;
+        initializeStructure();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        goToSlide(currentSlide - 1);
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < slides.length - 1) {
+        goToSlide(currentSlide + 1);
+      }
+    }
+
+    // Keyboard handlers
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      }
+    });
+
+    // Simulated terminal typewriter mechanism
+    let typing = false;
+    function simulateTypewriter(termOutputId, termInputId, cmdStr, outputLinesArray, callback) {
+      if (typing) return;
+      typing = true;
+      
+      const inputSpan = document.getElementById(termInputId);
+      const outputDiv = document.getElementById(termOutputId);
+      inputSpan.value = '';
+      
+      let charIdx = 0;
+      const timer = setInterval(() => {
+        inputSpan.value += cmdStr.charAt(charIdx);
+        charIdx++;
+        if (charIdx >= cmdStr.length) {
+          clearInterval(timer);
+          
+          setTimeout(() => {
+            // Push active input into execution history
+            const histElem = document.createElement('div');
+            histElem.innerHTML = `<div><span class="text-green-400 mr-1">&gt;&gt;&gt;</span> <span class="text-slate-100">${cmdStr}</span></div>`;
+            outputDiv.appendChild(histElem);
+            inputSpan.value = '';
+            
+            // Output multi-line execution results
+            outputLinesArray.forEach(line => {
+              const lineElem = document.createElement('div');
+              lineElem.className = 'text-slate-400 font-mono text-[11px] pl-4';
+              lineElem.innerHTML = line;
+              outputDiv.appendChild(lineElem);
+            });
+            
+            // Auto scroll container
+            outputDiv.parentElement.scrollTop = outputDiv.parentElement.scrollHeight;
+            typing = false;
+            if (callback) callback();
+          }, 350);
+        }
+      }, 20);
+    }
+
+    function clearTerminal(termId) {
+      if (termId === 'term-1') {
+        document.getElementById('term-1-output').innerHTML = '<div class="text-slate-500"># Terminal output history cleared.</div>';
+      } else if (termId === 'term-3') {
+        document.getElementById('term-3-output').innerHTML = '<div class="text-slate-500"># Terminal output history cleared.</div>';
+      }
+    }
+
+    // Universal Reset Handler for all terminals and dataset structures
+    function resetTerminal(termId) {
+      if (termId === 'term-1') {
+        document.getElementById('term-1-output').innerHTML = '<div class="text-slate-500"># Interactive terminal reset. Click any button on left or type custom code.</div>';
+        document.getElementById('term-1-input').value = '';
+      } else if (termId === 'term-housing') {
+        document.getElementById('housing-syntax').innerText = "# Waiting for operation execution...";
+        document.getElementById('housing-terminal-prompt').innerHTML = ">>> Ready to process database records.";
+        document.getElementById('term-housing-input').value = '';
+        renderHousingTable();
+      } else if (termId === 'term-emp') {
+        resetEmpDataset();
+        document.getElementById('term-emp-input').value = '';
+      } else if (termId === 'term-imputation') {
+        currentEmployees = JSON.parse(JSON.stringify(employeesRaw));
+        renderEmployeeTable();
+        document.getElementById('imputation-visual-area').innerHTML = `
+          <div class="text-center text-slate-500 italic text-xs py-8">
+            Click an action on the left to display statistical models and structural transformations in real-time.
+          </div>
+        `;
+        document.getElementById('imputation-log').innerHTML = "# Log console loaded. Ready.";
+      } else if (termId === 'term-marks') {
+        document.getElementById('marks-mean-out').innerText = "---";
+        document.getElementById('marks-std-out').innerText = "---";
+      } else if (termId === 'term-plotting') {
+        document.getElementById('plot-title-display').innerText = "Interactive Plot Canvas";
+        document.getElementById('chart-viewport').innerHTML = `
+          <div class="text-center text-slate-500 italic text-xs">
+            Select a visualization module to compile Matplotlib or Seaborn plots.
+          </div>
+        `;
+      } else if (termId === 'term-math-mod') {
+        const box = document.getElementById('math-result-box');
+        box.innerText = "# Waiting for execution...";
+        box.className = "py-2.5 px-3 bg-slate-950 border border-slate-900 text-slate-300 font-mono text-center text-xs rounded mb-3 italic";
+      } else if (termId === 'term-os-mod') {
+        const box = document.getElementById('os-result-box');
+        box.innerText = "# Waiting for execution...";
+        box.className = "py-2.5 px-3 bg-slate-950 border border-slate-900 text-slate-300 font-mono text-center text-xs rounded mb-3 italic";
+      } else if (termId === 'term-sys-mod') {
+        const box = document.getElementById('sys-result-box');
+        box.innerText = "# Waiting for execution...";
+        box.className = "py-2.5 px-3 bg-slate-950 border border-slate-900 text-slate-300 font-mono text-center text-xs rounded mb-3 italic";
+      } else if (termId === 'term-3') {
+        document.getElementById('term-3-output').innerHTML = '<div class="text-slate-500"># Interactive terminal reset. Configure inputs or type expression...</div>';
+        document.getElementById('term-3-input').value = '';
+        document.getElementById('math-input-a').value = '10';
+        document.getElementById('math-input-b').value = '5';
+      }
+    }
+
+    // Handles user typed command execution inside any terminal
+    function handleCommandLineKeyPress(event, termId) {
+      if (event.key === 'Enter') {
+        const inputEl = document.getElementById(`${termId}-input`);
+        const command = inputEl.value.trim();
+        if (!command) return;
+
+        inputEl.value = ''; // clear input immediately after submit
+        processTerminalInput(command, termId);
+      }
+    }
+
+    // Custom Mock Interpreter for manual typing inputs
+    function processTerminalInput(command, termId) {
+      if (termId === 'term-1') {
+        const outputDiv = document.getElementById('term-1-output');
+        const appendCommandHistory = () => {
+          outputDiv.innerHTML += `<div><span class="text-green-400 mr-1">&gt;&gt;&gt;</span> <span class="text-slate-100">${command}</span></div>`;
+        };
+
+        const normalized = command.toLowerCase();
+        
+        if (normalized.includes('1:4') || normalized.includes('slice') || normalized.includes('1:')) {
+          appendCommandHistory();
+          outputDiv.innerHTML += `<div class="text-slate-400 font-mono text-[11px] pl-4">[[[ 2  3]<br>&nbsp;&nbsp;[ 5  6]<br>&nbsp;&nbsp;[ 8  9]]<br><br>&nbsp;&nbsp;[[11 12]<br>&nbsp;&nbsp;[14 15]<br>&nbsp;&nbsp;[17 18]]<br><br>&nbsp;&nbsp;[[20 21]<br>&nbsp;&nbsp;[23 24]<br>&nbsp;&nbsp;[26 27]]]</div>`;
+        } else if (normalized.includes('ones') || normalized.includes('4,3,3') || normalized.includes('shape')) {
+          appendCommandHistory();
+          outputDiv.innerHTML += `<div class="text-slate-400 font-mono text-[11px] pl-4">Shape: (4, 3, 3)<br>Array initialized with 1.0 values.</div>`;
+        } else if (testArithmeticExpression(command)) {
+          appendCommandHistory();
+          try {
+            const evalResult = safeMathEvaluate(command);
+            outputDiv.innerHTML += `<div class="text-brand-np font-mono text-[11px] pl-4">${evalResult}</div>`;
+          } catch (e) {
+            outputDiv.innerHTML += `<div class="text-red-400 font-mono text-[11px] pl-4">SyntaxError: Invalid expression in environment context</div>`;
+          }
+        } else {
+          appendCommandHistory();
+          outputDiv.innerHTML += `<div class="text-slate-500 font-mono text-[11px] pl-4"># Command parsed successfully in environment.<br>Executed mock sequence of "${command}".</div>`;
+        }
+        outputDiv.parentElement.scrollTop = outputDiv.parentElement.scrollHeight;
+
+      } else if (termId === 'term-housing') {
+        const normalized = command.toLowerCase();
+        const syntaxEl = document.getElementById('housing-syntax');
+        const terminalEl = document.getElementById('housing-terminal-prompt');
+        
+        syntaxEl.innerText = command;
+
+        if (normalized.includes('shape') || normalized.includes('row')) {
+          terminalEl.innerHTML = ">>> Total houses in dataset: <strong class='text-brand-pd'>545</strong> (Simulated Full Database length)";
+          renderHousingTable();
+        } else if (normalized.includes('dtypes') || normalized.includes('type')) {
+          terminalEl.innerHTML = `>>> Price: int64<br>Area: int64<br>Bedrooms: int64<br>Bathrooms: int64<br>Parking: int64<br>Furnishing: object`;
+          renderHousingTable();
+        } else if (normalized.includes('parking') || normalized.includes('>= 2') || normalized.includes('>=2')) {
+          terminalEl.innerHTML = ">>> High parking elements identified. Matching rows highlighted in table visual above.";
+          renderHousingTable(row => row.parking >= 2);
+        } else if (normalized.includes('mean') || normalized.includes('groupby') || normalized.includes('furnished')) {
+          terminalEl.innerHTML = `>>> <strong>Average Area (sqft) per Furnishing Status:</strong><br>
+          - Furnished: <strong class='text-brand-np'>7,960.0</strong><br>
+          - Semi-Furnished: <strong class='text-brand-np'>6,500.0</strong><br>
+          - Unfurnished: <strong class='text-brand-np'>5,200.0</strong>`;
+          renderHousingTable(row => row.status === 'Furnished');
+        } else if (testArithmeticExpression(command)) {
+          try {
+            const val = safeMathEvaluate(command);
+            terminalEl.innerHTML = `>>> Arithmetic Evaluated: <strong class="text-white">${val}</strong>`;
+          } catch(e) {
+            terminalEl.innerHTML = `>>> SyntaxError: Invalid input expression`;
+          }
+        } else if (normalized === 'reset') {
+          resetTerminal('term-housing');
+        } else {
+          terminalEl.innerHTML = `>>> Custom command processed: "${command}". Standard table visual loaded.`;
+          renderHousingTable();
+        }
+
+      } else if (termId === 'term-emp') {
+        const normalized = command.toLowerCase();
+        const termOutput = document.getElementById('emp-terminal-output');
+
+        if (normalized.includes('set_index') || normalized.includes('index')) {
+          setEmpIndex();
+        } else if (normalized.includes('bonus') || normalized.includes('29') || normalized.includes('40')) {
+          filterBonusAge();
+        } else if (normalized.includes('reset')) {
+          resetEmpDataset();
+        } else if (testArithmeticExpression(command)) {
+          try {
+            const val = safeMathEvaluate(command);
+            termOutput.innerHTML = `<span class="text-white">Calculated expression result: <strong>${val}</strong></span>`;
+          } catch(e) {
+            termOutput.innerHTML = `<span class="text-red-400">SyntaxError: Invalid arithmetic input</span>`;
+          }
+        } else {
+          termOutput.innerHTML = `
+            <span class="text-brand-pd">df_query_evaluated</span><br>
+            <span class="text-slate-300">Executed custom interactive query check: "${command}"</span>
+          `;
+        }
+
+      } else if (termId === 'term-3') {
+        const outputDiv = document.getElementById('term-3-output');
+        const appendCommandHistory = () => {
+          outputDiv.innerHTML += `<div><span class="text-green-400 mr-1">&gt;&gt;&gt;</span> <span class="text-slate-100">${command}</span></div>`;
+        };
+
+        const normalized = command.toLowerCase();
+
+        if (normalized.includes('arithmetic') || normalized.includes('add') || normalized.includes('+')) {
+          appendCommandHistory();
+          runLab3Operators('arithmetic');
+        } else if (normalized.includes('advanced') || normalized.includes('factorial') || normalized.includes('sin') || normalized.includes('log')) {
+          appendCommandHistory();
+          runLab3Operators('advanced');
+        } else if (normalized.includes('skewness') || normalized.includes('verify') || normalized.includes('data_set')) {
+          appendCommandHistory();
+          verifyDatasetSkewness();
+        } else if (testArithmeticExpression(command)) {
+          appendCommandHistory();
+          try {
+            const val = safeMathEvaluate(command);
+            outputDiv.innerHTML += `<div class="text-brand-ml font-mono text-[11px] pl-4">Result: <strong class="text-white">${val}</strong></div>`;
+          } catch (e) {
+            outputDiv.innerHTML += `<div class="text-red-400 font-mono text-[11px] pl-4">SyntaxError: Expression evaluation error</div>`;
+          }
+        } else {
+          appendCommandHistory();
+          outputDiv.innerHTML += `<div class="text-slate-500 font-mono text-[11px] pl-4"># Lab 3 customized expression "${command}" calculated inside active environment.</div>`;
+        }
+        outputDiv.parentElement.scrollTop = outputDiv.parentElement.scrollHeight;
+      }
+    }
+
+    // Evaluator verification safety guards
+    function testArithmeticExpression(str) {
+      return /^[\d\s\+\-\*\/\(\)\.]*$/.test(str);
+    }
+
+    function safeMathEvaluate(str) {
+      // Remove whitespace and run math parser (safe fallback instead of raw eval)
+      return Function(`"use strict"; return (${str})`)();
+    }
+
+
+    // --- SLIDE 2: LAB 1 - NUMPY CODES ---
+    function runCode_1a() {
+      const code = "arr_3d = np.arange(1, 28).reshape(3, 3, 3)\nprint(arr_3d[:, :, 1:4])";
+      const outputs = [
+        "<span class='text-brand-np'># Sliced array output (columns 1 to 3 indices across all rows and depths):</span>",
+        "[[[ 2  3]",
+        "  [ 5  6]",
+        "  [ 8  9]]",
+        "",
+        " [[11 12]",
+        "  [14 15]",
+        "  [17 18]]",
+        "",
+        " [[20 21]",
+        "  [23 24]",
+        "  [26 27]]]"
+      ];
+      simulateTypewriter('term-1-output', 'term-1-input', code, outputs);
+    }
+
+    function runCode_1b() {
+      const code = "arr_ones = np.ones((4, 3, 3))\nprint('Shape:', arr_ones.shape)\nprint('Array:', arr_ones)";
+      const outputs = [
+        "Shape: (4, 3, 3)",
+        "Array: [[[1. 1. 1.]",
+        "  [1. 1. 1.]",
+        "  [1. 1. 1.]]",
+        "  ...",
+        "  [[1. 1. 1.]",
+        "  [1. 1. 1.]",
+        "  [1. 1. 1.]]]"
+      ];
+      simulateTypewriter('term-1-output', 'term-1-input', code, outputs);
+    }
+
+
+    // --- SLIDE 3: LAB 1 - HOUSING PANDAS STATE ---
+    const housingData = [
+      { price: "74.2L", area: 7420, bedrooms: 4, bathrooms: 2, parking: 2, status: "Furnished" },
+      { price: "62.5L", area: 6500, bedrooms: 3, bathrooms: 2, parking: 1, status: "Semi-Furnished" },
+      { price: "58.0L", area: 5200, bedrooms: 3, bathrooms: 1, parking: 0, status: "Unfurnished" },
+      { price: "91.0L", area: 8500, bedrooms: 4, bathrooms: 3, parking: 3, status: "Furnished" }
+    ];
+
+    function renderHousingTable(highlightPredicate = null) {
+      const tbody = document.getElementById('housing-tbody');
+      tbody.innerHTML = '';
+      
+      housingData.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-900/40 hover:bg-slate-900/40 text-slate-300 font-mono transition';
+        
+        let highlightClass = "";
+        if (highlightPredicate && highlightPredicate(row)) {
+          highlightClass = "row-highlight font-bold text-white bg-slate-900";
+          tr.className += " " + highlightClass;
+        }
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-2 bg-slate-950 text-center font-bold text-slate-500">${idx}</td>
+          <td class="py-2.5 px-3 ${highlightPredicate && highlightPredicate(row) ? 'text-brand-pd' : ''}">${row.price}</td>
+          <td class="py-2.5 px-3">${row.area}</td>
+          <td class="py-2.5 px-3 text-center">${row.bedrooms}</td>
+          <td class="py-2.5 px-3 text-center">${row.bathrooms}</td>
+          <td class="py-2.5 px-3 text-center ${row.parking >= 2 && highlightPredicate ? 'text-green-400 font-bold' : ''}">${row.parking}</td>
+          <td class="py-2.5 px-3">${row.status}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function runHousingTask(mode) {
+      const syntaxEl = document.getElementById('housing-syntax');
+      const terminalEl = document.getElementById('housing-terminal-prompt');
+
+      if (mode === 'rowcount') {
+        syntaxEl.innerText = "row_count = df.shape[0]\nprint('Total houses in dataset:', row_count)";
+        terminalEl.innerHTML = ">>> Total houses in dataset: <strong class='text-brand-pd'>545</strong> (Simulated Full Database length)";
+        renderHousingTable();
+      } else if (mode === 'dtypes') {
+        syntaxEl.innerText = "print(df.dtypes)";
+        terminalEl.innerHTML = `>>> Price: int64<br>Area: int64<br>Bedrooms: int64<br>Bathrooms: int64<br>Parking: int64<br>Furnishing: object`;
+        renderHousingTable();
+      } else if (mode === 'parking') {
+        syntaxEl.innerText = "high_parking = df[df['Parking'] >= 2]\nprint(high_parking)";
+        terminalEl.innerHTML = ">>> High parking elements identified. Matching rows highlighted in table visual above.";
+        renderHousingTable(row => row.parking >= 2);
+      } else if (mode === 'avgarea') {
+        syntaxEl.innerText = "avg_area = df.groupby('Furnishing')['Area'].mean()\nprint(avg_area)";
+        terminalEl.innerHTML = `>>> <strong>Average Area (sqft) per Furnishing Status:</strong><br>
+        - Furnished: <strong class='text-brand-np'>7,960.0</strong><br>
+        - Semi-Furnished: <strong class='text-brand-np'>6,500.0</strong><br>
+        - Unfurnished: <strong class='text-brand-np'>5,200.0</strong>`;
+        renderHousingTable(row => row.status === 'Furnished');
+      }
+    }
+
+
+    // --- SLIDE 4: LAB 1 - EMPLOYEE DATABASE ---
+    const employeesRaw = [
+      { empid: 101, name: "Rahul", age: 38, prof: "Engineer", sal: 86000 },
+      { empid: 102, name: "Vipul", age: 29, prof: "Doctor", sal: 92000 },
+      { empid: 103, name: "Saurav", age: 33, prof: "Doctor", sal: 81000 },
+      { empid: 104, name: "Niyaz", age: 26, prof: "Teacher", sal: 42000 },
+      { empid: 105, name: "Franklin", age: 35, prof: "Engineer", sal: null }, // missing salary
+      { empid: 106, name: "Niroja", age: 44, prof: "Engineer", sal: 79000 },
+      { empid: 107, name: "Meetesh", age: 30, prof: "Doctor", sal: null } // missing salary
+    ];
+
+    let currentEmployees = JSON.parse(JSON.stringify(employeesRaw));
+    let hasCustomIndex = false;
+
+    function renderEmployeeTable(highlightFilter = null) {
+      const tbody = document.getElementById('emp-tbody');
+      tbody.innerHTML = '';
+
+      const indexHeader = document.getElementById('emp-index-header');
+      const colEmpid = document.getElementById('emp-col-empid');
+      const indexModeBadge = document.getElementById('emp-index-mode');
+
+      if (hasCustomIndex) {
+        indexHeader.innerText = "Empid (Index)";
+        colEmpid.style.display = "none";
+        indexModeBadge.innerText = "Custom Empid Index";
+      } else {
+        indexHeader.innerText = "Index";
+        colEmpid.style.display = "table-cell";
+        indexModeBadge.innerText = "Default RangeIndex";
+      }
+
+      currentEmployees.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = "border-b border-slate-900 hover:bg-slate-900/30 text-slate-300 font-mono transition";
+        
+        if (highlightFilter && highlightFilter(row)) {
+          tr.className += " row-highlight font-bold text-white bg-slate-900";
+        }
+
+        const indexVal = hasCustomIndex ? row.empid : idx;
+        const empidCell = hasCustomIndex ? "" : `<td class="py-2 px-3 text-brand-np">${row.empid}</td>`;
+        const salaryVal = row.sal === null ? "<span class='text-red-400 font-bold bg-red-950/20 px-1.5 rounded'>NaN</span>" : `$${row.sal.toLocaleString()}`;
+
+        tr.innerHTML = `
+          <td class="py-2 px-2 bg-slate-950 text-center font-bold text-slate-500">${indexVal}</td>
+          ${empidCell}
+          <td class="py-2 px-3">${row.name}</td>
+          <td class="py-2 px-3 text-center">${row.age}</td>
+          <td class="py-2 px-3 text-brand-ml">${row.prof}</td>
+          <td class="py-2 px-3 text-right font-semibold">${salaryVal}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function setEmpIndex() {
+      hasCustomIndex = true;
+      renderEmployeeTable();
+      document.getElementById('emp-terminal-output').innerHTML = `
+        <span class="text-brand-pd">df.set_index('Empid', inplace=True)</span><br>
+        <span class="text-slate-400">DataFrame index promoted to 'Empid'. Axis range indices dropped.</span>
+      `;
+    }
+
+    function filterBonusAge() {
+      renderEmployeeTable(row => row.age >= 29 && row.age <= 40);
+      const matchedNames = currentEmployees.filter(r => r.age >= 29 && r.age <= 40).map(r => r.name);
+      document.getElementById('emp-terminal-output').innerHTML = `
+        <span class="text-brand-pd">bonus_candidates = df[(df['Age'] >= 29) & (df['Age'] <= 40)]</span><br>
+        <span class="text-slate-200">Matching records flagged: <strong>${matchedNames.join(', ')}</strong></span>
+      `;
+    }
+
+    function resetEmpDataset() {
+      currentEmployees = JSON.parse(JSON.stringify(employeesRaw));
+      hasCustomIndex = false;
+      renderEmployeeTable();
+      document.getElementById('emp-terminal-output').innerHTML = "# Employee database states reset.";
+    }
+
+
+    // --- SLIDE 5: COMPARATIVE METRICS & IMPUTATION ---
+    function compareProfessionSalaries() {
+      const engineers = currentEmployees.filter(r => r.prof === 'Engineer' && r.sal !== null);
+      const doctors = currentEmployees.filter(r => r.prof === 'Doctor' && r.sal !== null);
+
+      const engSum = engineers.reduce((sum, r) => sum + r.sal, 0);
+      const docSum = doctors.reduce((sum, r) => sum + r.sal, 0);
+      const totalSum = engSum + docSum;
+
+      const engPct = ((engSum / totalSum) * 100).toFixed(1);
+      const docPct = ((docSum / totalSum) * 100).toFixed(1);
+
+      const visualArea = document.getElementById('imputation-visual-area');
+      visualArea.innerHTML = `
+        <div class="space-y-4">
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-widest text-center">Engineers vs Doctors Salary Ratio</h4>
+          <div class="flex gap-2 w-full bg-slate-950 p-2 rounded-lg border border-slate-900 font-mono text-xs">
+            <div class="bg-brand-ml/30 border border-brand-ml text-brand-ml p-3 rounded text-center" style="width: ${engPct}%">
+              <span class="block font-bold">Engineers</span>
+              <span class="block font-bold text-lg">${engPct}%</span>
+              <span class="text-[10px] text-slate-400">Total: $${engSum.toLocaleString()}</span>
+            </div>
+            <div class="bg-brand-np/30 border border-brand-np text-brand-np p-3 rounded text-center" style="width: ${docPct}%">
+              <span class="block font-bold">Doctors</span>
+              <span class="block font-bold text-lg">${docPct}%</span>
+              <span class="text-[10px] text-slate-400">Total: $${docSum.toLocaleString()}</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 text-center">Calculation excludes un-imputed null (NaN) records.</p>
+        </div>
+      `;
+
+      document.getElementById('imputation-log').innerHTML = `
+        >>> eng_sal = df[df['Profession']=='Engineer']['Salary'].sum()<br>
+        >>> doc_sal = df[df['Profession']=='Doctor']['Salary'].sum()
+      `;
+    }
+
+    function imputeMissingSalaries() {
+      // Find mean of non-null salaries
+      const validSalaries = currentEmployees.filter(r => r.sal !== null).map(r => r.sal);
+      const sum = validSalaries.reduce((a, b) => a + b, 0);
+      const mean = Math.round(sum / validSalaries.length);
+
+      const affectedIds = [];
+      currentEmployees.forEach(row => {
+        if (row.sal === null) {
+          row.sal = mean;
+          affectedIds.push(row.empid);
+        }
+      });
+
+      renderEmployeeTable();
+      
+      const visualArea = document.getElementById('imputation-visual-area');
+      visualArea.innerHTML = `
+        <div class="space-y-4 p-4 bg-emerald-950/20 border border-emerald-500/30 rounded-xl">
+          <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-circle-check"></i> Imputation Completed Successfully
+          </h4>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Pandas successfully calculated the non-null average salary value to be <strong class="text-brand-np">$${mean.toLocaleString()}</strong>.
+            This value has been imputed into records for <strong class="text-slate-200">Franklin (105)</strong> and <strong class="text-slate-200">Meetesh (107)</strong>.
+          </p>
+          <div class="bg-slate-950 p-2.5 rounded font-mono text-[11px] text-brand-pd border border-slate-900">
+            df['Salary'].fillna(df['Salary'].mean(), inplace=True)
+          </div>
+        </div>
+      `;
+
+      document.getElementById('imputation-log').innerHTML = `>>> Imputed Mean Salary of $${mean.toLocaleString()} across empty null variables.`;
+    }
+
+
+    // --- SLIDE 6: LAB 2 - NUMPY PERFORMANCE METRICS ---
+    function calculateMarksStatistics() {
+      const marks = [55, 60, 65, 70, 80];
+      
+      // Calculate Mean
+      const sum = marks.reduce((a, b) => a + b, 0);
+      const mean = sum / marks.length;
+
+      // Calculate Std Dev
+      const variance = marks.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / marks.length;
+      const stdDev = Math.sqrt(variance);
+
+      document.getElementById('marks-mean-out').innerText = mean.toFixed(2);
+      document.getElementById('marks-std-out').innerText = stdDev.toFixed(4);
+    }
+
+
+    // --- SLIDE 7: LAB 2 - DATA VISUALIZATIONS ---
+    function simulatePlot(type) {
+      const viewport = document.getElementById('chart-viewport');
+      const titleDisplay = document.getElementById('plot-title-display');
+
+      if (type === 'scatter') {
+        titleDisplay.innerText = "Matplotlib Output: plt.scatter()";
+        viewport.innerHTML = `
+          <svg class="w-full h-48 max-w-sm" viewBox="0 0 400 200">
+            <!-- Grid lines -->
+            <line x1="40" y1="20" x2="380" y2="20" stroke="#1e293b" stroke-dasharray="2" />
+            <line x1="40" y1="70" x2="380" y2="70" stroke="#1e293b" stroke-dasharray="2" />
+            <line x1="40" y1="120" x2="380" y2="120" stroke="#1e293b" stroke-dasharray="2" />
+            <line x1="40" y1="170" x2="380" y2="170" stroke="#1e293b" />
+            <line x1="40" y1="20" x2="40" y2="170" stroke="#1e293b" />
+
+            <!-- Axis values -->
+            <text x="35" y="174" fill="#64748b" font-family="monospace" font-size="9" text-anchor="end">40</text>
+            <text x="35" y="124" fill="#64748b" font-family="monospace" font-size="9" text-anchor="end">60</text>
+            <text x="35" y="74" fill="#64748b" font-family="monospace" font-size="9" text-anchor="end">80</text>
+            <text x="35" y="24" fill="#64748b" font-family="monospace" font-size="9" text-anchor="end">100</text>
+
+            <text x="80" y="185" fill="#64748b" font-family="monospace" font-size="9" text-anchor="middle">1.5h</text>
+            <text x="160" y="185" fill="#64748b" font-family="monospace" font-size="9" text-anchor="middle">3.0h</text>
+            <text x="240" y="185" fill="#64748b" font-family="monospace" font-size="9" text-anchor="middle">4.5h</text>
+            <text x="340" y="185" fill="#64748b" font-family="monospace" font-size="9" text-anchor="middle">7.0h</text>
+
+            <!-- Data Scatter Points -->
+            <circle cx="80" cy="157" r="6" fill="#f43f5e" stroke="#fff" stroke-width="1.5" class="animate-bounce" />
+            <circle cx="160" cy="132" r="6" fill="#f43f5e" stroke="#fff" stroke-width="1.5" />
+            <circle cx="240" cy="100" r="6" fill="#f43f5e" stroke="#fff" stroke-width="1.5" />
+            <circle cx="340" cy="45" r="6" fill="#f43f5e" stroke="#fff" stroke-width="1.5" />
+
+            <!-- Labels -->
+            <text x="210" y="198" fill="#94a3b8" font-family="sans-serif" font-size="10" text-anchor="middle">Study Hours</text>
+            <text x="12" y="95" fill="#94a3b8" font-family="sans-serif" font-size="10" text-anchor="middle" transform="rotate(-90 12 95)">Exam Marks</text>
+          </svg>
+        `;
+      } else if (type === 'regression') {
+        titleDisplay.innerText = "Seaborn Output: sns.regplot()";
+        viewport.innerHTML = `
+          <svg class="w-full h-48 max-w-sm" viewBox="0 0 400 200">
+            <!-- Grid lines -->
+            <line x1="40" y1="20" x2="380" y2="20" stroke="#1e293b" stroke-dasharray="2" />
+            <line x1="40" y1="70" x2="380" y2="70" stroke="#1e293b" stroke-dasharray="2" />
+            <line x1="40" y1="120" x2="380" y2="120" stroke="#1e293b" stroke-dasharray="2" />
+            <line x1="40" y1="170" x2="380" y2="170" stroke="#1e293b" />
+            <line x1="40" y1="20" x2="40" y2="170" stroke="#1e293b" />
+
+            <!-- Axis values -->
+            <text x="35" y="174" fill="#64748b" font-family="monospace" font-size="9" text-anchor="end">40</text>
+            <text x="35" y="124" fill="#64748b" font-family="monospace" font-size="9" text-anchor="end">60</text>
+            <text x="35" y="74" fill="#64748b" font-family="monospace" font-size="9" text-anchor="end">80</text>
+
+            <text x="80" y="185" fill="#64748b" font-family="monospace" font-size="9" text-anchor="middle">1.5h</text>
+            <text x="160" y="185" fill="#64748b" font-family="monospace" font-size="9" text-anchor="middle">3.0h</text>
+            <text x="240" y="185" fill="#64748b" font-family="monospace" font-size="9" text-anchor="middle">4.5h</text>
+            <text x="340" y="185" fill="#64748b" font-family="monospace" font-size="9" text-anchor="middle">7.0h</text>
+
+            <!-- Regression Line -->
+            <line x1="50" y1="175" x2="370" y2="35" stroke="#c084fc" stroke-width="2.5" stroke-dasharray="4" />
+            
+            <!-- Confident interval shadow area -->
+            <polygon points="50,185 370,45 370,25 50,165" fill="rgba(192, 132, 252, 0.15)" />
+
+            <!-- Data Scatter Points -->
+            <circle cx="80" cy="157" r="5" fill="#a855f7" stroke="#fff" stroke-width="1" />
+            <circle cx="160" cy="132" r="5" fill="#a855f7" stroke="#fff" stroke-width="1" />
+            <circle cx="240" cy="100" r="5" fill="#a855f7" stroke="#fff" stroke-width="1" />
+            <circle cx="340" cy="45" r="5" fill="#a855f7" stroke="#fff" stroke-width="1" />
+
+            <!-- Labels -->
+            <text x="210" y="198" fill="#94a3b8" font-family="sans-serif" font-size="10" text-anchor="middle">Study Hours</text>
+          </svg>
+        `;
+      }
+    }
+
+
+    // --- SLIDE 8: LAB 2 - CORE UTILITIES ---
+    function executeMathModule() {
+      // coordinates distance calc sqrt((4-2)^2 + (70-50)^2)
+      const res = Math.sqrt(Math.pow(4-2, 2) + Math.pow(70-50, 2));
+      const box = document.getElementById('math-result-box');
+      box.innerText = `Result: ${res.toFixed(5)}`;
+      box.className = "py-2.5 px-3 bg-slate-950 border border-slate-900 text-brand-np font-mono text-center text-xs rounded mb-3 font-bold";
+    }
+
+    function executeOSModule() {
+      const box = document.getElementById('os-result-box');
+      box.innerText = "C:\\Workspace\\Machine_Learning\\ML_Basics";
+      box.className = "py-2.5 px-3 bg-slate-950 border border-slate-900 text-brand-pd font-mono text-center text-xs rounded mb-3 font-bold";
+    }
+
+    function executeSysModule() {
+      const box = document.getElementById('sys-result-box');
+      box.innerText = "3.10.12 (GCC 11.2.0, 64-bit)";
+      box.className = "py-2.5 px-3 bg-slate-950 border border-slate-900 text-brand-ml font-mono text-center text-xs rounded mb-3 font-bold";
+    }
+
+
+    // --- SLIDE 9: LAB 3 - MATHEMATICAL OPERATORS ---
+    function runLab3Operators(type) {
+      const valA = parseFloat(document.getElementById('math-input-a').value);
+      const valB = parseFloat(document.getElementById('math-input-b').value);
+
+      if (isNaN(valA) || isNaN(valB)) {
+        alert("Please enter numeric inputs in configurator.");
+        return;
+      }
+
+      const outDiv = document.getElementById('term-3-output');
+
+      if (type === 'arithmetic') {
+        const cmd = `a = ${valA}; b = ${valB}\nprint('Add:', a+b, 'Mod:', a%b)`;
+        const lines = [
+          `Addition (+): <strong class="text-white">${valA + valB}</strong>`,
+          `Subtraction (-): <strong class="text-white">${valA - valB}</strong>`,
+          `Multiplication (*): <strong class="text-white">${valA * valB}</strong>`,
+          `Division (/): <strong class="text-white">${valB !== 0 ? (valA / valB).toFixed(3) : "ZeroDivisionError"}</strong>`,
+          `Modulo (%): <strong class="text-white">${valB !== 0 ? valA % valB : "ZeroDivisionError"}</strong>`
+        ];
+        simulateTypewriter('term-3-output', 'term-3-input', cmd, lines);
+      } else if (type === 'advanced') {
+        // factorial simulation, log10, sin
+        let factResult = 1;
+        if (valA >= 0 && valA <= 12) {
+          for (let i = 2; i <= Math.floor(valA); i++) factResult *= i;
+        } else {
+          factResult = "Inf/Error (>12)";
+        }
+        
+        const cmd = `import math\nprint('Factorial:', math.factorial(${valA}))`;
+        const lines = [
+          `Factorial (${valA}!): <strong class="text-white">${factResult}</strong>`,
+          `Log10 (log10(${valA})): <strong class="text-white">${valA > 0 ? Math.log10(valA).toFixed(5) : "NaN"}</strong>`,
+          `Sine (sin(${valA})): <strong class="text-white">${Math.sin(valA).toFixed(5)}</strong>`
+        ];
+        simulateTypewriter('term-3-output', 'term-3-input', cmd, lines);
+      }
+    }
+
+    function verifyDatasetSkewness() {
+      // Sample dataset: [12, 15, 18, 20, 25]
+      const data = [12, 15, 18, 20, 25];
+      
+      // Mean
+      const sum = data.reduce((a, b) => a + b, 0);
+      const mean = sum / data.length;
+
+      // Median
+      const sorted = [...data].sort((a,b)=>a-b);
+      const median = sorted[Math.floor(sorted.length/2)];
+
+      // Variance
+      const variance = data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / data.length;
+
+      let skewnessResult = "";
+      let highlightColorClass = "";
+      if (mean > median) {
+        skewnessResult = "Positively (Right) Skewed distribution because Mean > Median.";
+        highlightColorClass = "text-brand-pd";
+      } else if (mean < median) {
+        skewnessResult = "Negatively (Left) Skewed distribution because Mean < Median.";
+        highlightColorClass = "text-brand-plt";
+      } else {
+        skewnessResult = "Symmetric Distribution because Mean &asymp; Median.";
+        highlightColorClass = "text-brand-np";
+      }
+
+      const cmd = "data_set = [12, 15, 18, 20, 25]\nprint_skewness_assessment(data_set)";
+      const lines = [
+        `Mean (&mu;): <strong class="text-white">${mean.toFixed(2)}</strong>`,
+        `Median (M): <strong class="text-white">${median.toFixed(2)}</strong>`,
+        `Variance (&sigma;²): <strong class="text-white">${variance.toFixed(2)}</strong>`,
+        `Skewness Verdict: <strong class="${highlightColorClass}">${skewnessResult}</strong>`
+      ];
+      simulateTypewriter('term-3-output', 'term-3-input', cmd, lines);
+    }
+
+
+    // --- INITIALIZERS ON RUNTIME WINDOW LOAD ---
+    window.onload = function() {
+      initializeStructure();
+      renderHousingTable();
+      renderEmployeeTable();
+    };
+  </script>
+</body>
+</html>

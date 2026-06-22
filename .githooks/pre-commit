@@ -8,63 +8,123 @@ YELLOW='\033[1;33m'
 BOLD='\033[1m'
 NC='\033[0m' # No Color
 
-echo -e "\n${BOLD}${BLUE}=== 🛡️  Running Slide Deck Pre-Commit Verification Pipeline  === ${NC}\n"
+echo -e "\n${BOLD}${BLUE}=== 🛡️  Running Slide Deck & Lab Pre-Commit Verification Pipeline  === ${NC}\n"
 
-# 1. Verify Session 1 / Module 1 HTML Slide Structure (Expected 25 slides)
+# ==================== DAY 1 SLIDES VALIDATION ====================
+
+# 1. Verify Day 1 Session 1 / Module 1 HTML Slide Structure (Expected 25 slides)
 python3 tools/validate_slides.py day1_session1_1.html 25
 if [ $? -ne 0 ]; then
     echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session1_1.html failed structural slide validation.${NC}"
     exit 1
 fi
 
-# 2. Verify Session 1 / Module 2 HTML Slide Structure (Expected 0 static slides)
+# 2. Verify Day 1 Session 1 / Module 2 HTML Slide Structure (Expected 0 static slides)
 python3 tools/validate_slides.py day1_session1_2.html 0
 if [ $? -ne 0 ]; then
     echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session1_2.html failed structural slide validation.${NC}"
     exit 1
 fi
 
-# 3. Verify Session 2 / Part 1 HTML Slide Structure (Expected 31 slides)
+# 3. Verify Day 1 Session 2 / Part 1 HTML Slide Structure (Expected 31 slides)
 python3 tools/validate_slides.py day1_session2_1.html 31
 if [ $? -ne 0 ]; then
     echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session2_1.html failed structural slide validation.${NC}"
     exit 1
 fi
 
-# 4. Verify Session 2 / Part 2 HTML Slide Structure (Expected 37 slides)
+# 4. Verify Day 1 Session 2 / Part 2 HTML Slide Structure (Expected 37 slides)
 python3 tools/validate_slides.py day1_session2_2.html 37
 if [ $? -ne 0 ]; then
     echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session2_2.html failed structural slide validation.${NC}"
     exit 1
 fi
 
-# 5. Verify Session 1 / Module 1 Inline JavaScript Compilation
-node tools/verify_javascript.js day1_session1_1.html
+
+# ==================== DAY 2 SLIDES & LABS VALIDATION ====================
+
+# 5. Verify Day 2 NumPy Presentation Structure (Expected 10 slides)
+python3 tools/validate_slides.py day2_numpy_lab.html 10
 if [ $? -ne 0 ]; then
-    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session1_1.html has JavaScript syntax errors.${NC}"
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day2_numpy_lab.html failed structural slide validation.${NC}"
     exit 1
 fi
 
-# 6. Verify Session 1 / Module 2 Inline JavaScript Compilation
-node tools/verify_javascript.js day1_session1_2.html
+# 6. Verify Day 2 Pandas Presentation Structure (Expected 10 slides)
+python3 tools/validate_slides.py day2_pandas_lab.html 10
 if [ $? -ne 0 ]; then
-    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session1_2.html has JavaScript syntax errors.${NC}"
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day2_pandas_lab.html failed structural slide validation.${NC}"
     exit 1
 fi
 
-# 7. Verify Session 2 / Part 1 Inline JavaScript Compilation
-node tools/verify_javascript.js day1_session2_1.html
+# 7. Verify Day 2 Matplotlib Presentation Structure (Expected 0 static slides)
+python3 tools/validate_slides.py day2_matplotlib_lab.html 0
 if [ $? -ne 0 ]; then
-    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session2_1.html has JavaScript syntax errors.${NC}"
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day2_matplotlib_lab.html failed structural slide validation.${NC}"
     exit 1
 fi
 
-# 8. Verify Session 2 / Part 2 Inline JavaScript Compilation
+# 8. Verify Day 2 Scikit-Learn Presentation Structure (Expected 0 static slides)
+python3 tools/validate_slides.py day2_scikit_learn_lab.html 0
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day2_scikit_learn_lab.html failed structural slide validation.${NC}"
+    exit 1
+fi
+
+# 9. Verify Day 2 Lab 1 Structure (Expected 10 slides)
+python3 tools/validate_slides.py day2_lab1.html 10
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day2_lab1.html failed structural slide validation.${NC}"
+    exit 1
+fi
+
+# 10. Verify Day 2 Lab 2 Structure (Expected 0 static slides)
+python3 tools/validate_slides.py day2_lab2.html 0
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day2_lab2.html failed structural slide validation.${NC}"
+    exit 1
+fi
+
+# 11. Verify Day 2 Lab 3 Structure (Expected 0 static slides)
+python3 tools/validate_slides.py day2_lab3.html 0
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day2_lab3.html failed structural slide validation.${NC}"
+    exit 1
+fi
+
+# 12. Verify Day 2 Lab 4 Structure (Expected 0 static slides)
+python3 tools/validate_slides.py day2_lab4.html 0
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day2_lab4.html failed structural slide validation.${NC}"
+    exit 1
+fi
+
+
+# ==================== JAVASCRIPT COMPILATION PIPELINE ====================
+
+# -- Day 1 Compilations --
+node tools/verify_javascript.js day1_session1_1.html && \
+node tools/verify_javascript.js day1_session1_2.html && \
+node tools/verify_javascript.js day1_session2_1.html && \
 node tools/verify_javascript.js day1_session2_2.html
 if [ $? -ne 0 ]; then
-    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session2_2.html has JavaScript syntax errors.${NC}"
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: Day 1 inline JavaScript compilation failed.${NC}"
     exit 1
 fi
 
-echo -e "${BOLD}${GREEN}🎉 SUCCESS: All 4 slide decks passed structural and compilation checks! Committing changes...${NC}\n"
+# -- Day 2 Compilations --
+node tools/verify_javascript.js day2_numpy_lab.html && \
+node tools/verify_javascript.js day2_pandas_lab.html && \
+node tools/verify_javascript.js day2_matplotlib_lab.html && \
+node tools/verify_javascript.js day2_scikit_learn_lab.html && \
+node tools/verify_javascript.js day2_lab1.html && \
+node tools/verify_javascript.js day2_lab2.html && \
+node tools/verify_javascript.js day2_lab3.html && \
+node tools/verify_javascript.js day2_lab4.html
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: Day 2 inline JavaScript compilation failed.${NC}"
+    exit 1
+fi
+
+echo -e "${BOLD}${GREEN}🎉 SUCCESS: All 12 presentations and interactive lab workspaces passed structural and compilation checks! Committing changes...${NC}\n"
 exit 0

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Machine Learning Lab</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        /* Ensure Textarea and Line Numbers Align */
+        #code-editor, #line-numbers {
+            line-height: 1.5rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+        
+        /* Hide element utility */
+        .hidden-view { display: none !important; }
+    </style>
+</head>
+<body class="h-screen bg-slate-950 text-slate-200 flex flex-col font-sans selection:bg-blue-500/30 overflow-hidden">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between shrink-0 z-10 shadow-md">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg shadow-lg">
+                <i data-lucide="layout" class="w-5 h-5 text-white"></i>
+            </div>
+            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                Interactive ML Studio
+            </h1>
+        </div>
+        
+        <div class="flex items-center gap-6">
+            <div class="hidden md:flex items-center gap-2 text-sm text-slate-400">
+                <span>Progress:</span>
+                <div class="w-32 h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-blue-500 transition-all duration-300 ease-out" style="width: 20%"></div>
+                </div>
+                <span id="slide-counter" class="font-mono">1 / 5</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button id="btn-prev" class="p-2 rounded-md hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors text-slate-300">
+                    <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                </button>
+                <button id="btn-next" class="p-2 rounded-md hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors text-slate-300">
+                    <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout Area -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- Sidebar Index -->
+        <aside class="w-64 bg-slate-900/50 border-r border-slate-800 hidden md:flex flex-col shrink-0">
+            <div class="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Modules
+            </div>
+            <nav id="sidebar-nav" class="flex-1 overflow-y-auto">
+                <!-- Sidebar buttons injected via JS -->
+            </nav>
+        </aside>
+
+        <!-- Dynamic Content Area -->
+        <main class="flex-1 overflow-hidden relative bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950">
+            
+            <!-- View 1: Content Presentation -->
+            <div id="content-view" class="h-full overflow-y-auto hidden-view">
+                <div id="content-container" class="max-w-4xl mx-auto py-12 px-8">
+                    <!-- HTML content injected here -->
+                </div>
+            </div>
+
+            <!-- View 2: Exercise Layout -->
+            <div id="exercise-view" class="flex h-full flex-col lg:flex-row overflow-y-auto lg:overflow-hidden hidden-view">
+                
+                <!-- Left Side: Instructions -->
+                <div class="w-full lg:w-1/3 bg-slate-900 border-b lg:border-b-0 lg:border-r border-slate-800 p-6 overflow-y-auto shrink-0 lg:h-full flex flex-col">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div id="exercise-icon-container" class="p-2 bg-blue-500/10 rounded-lg">
+                            <i data-lucide="code-2" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <h2 id="exercise-title" class="text-xl font-bold text-white">Exercise Title</h2>
+                    </div>
+                    <div id="exercise-instructions" class="text-slate-300 flex-1">
+                        <!-- Instructions injected here -->
+                    </div>
+                </div>
+
+                <!-- Right Side: Code & Output -->
+                <div class="w-full lg:w-2/3 flex flex-col h-auto lg:h-full bg-slate-950 min-h-[700px] lg:min-h-0">
+                    
+                    <!-- Code Editor -->
+                    <div class="flex-1 flex flex-col min-h-[350px] lg:min-h-[250px] border-b border-slate-800">
+                        <div class="flex items-center justify-between px-4 py-2 bg-slate-900 border-b border-slate-800">
+                            <div class="flex items-center gap-2 text-slate-400 text-sm font-medium">
+                                <i data-lucide="terminal-square" class="w-4 h-4"></i>
+                                Python Editor
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="btn-reset" class="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 rounded transition-colors">
+                                    <i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset
+                                </button>
+                                <button id="btn-run" class="flex items-center gap-1 px-4 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 rounded transition-colors shadow-lg shadow-blue-900/20">
+                                    <i id="run-icon" data-lucide="play" class="w-3 h-3"></i> 
+                                    <span id="run-text">Run Code</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Textarea Area -->
+                        <div class="flex-1 relative flex overflow-hidden">
+                            <!-- Line Numbers -->
+                            <div id="line-numbers" class="w-10 bg-slate-900 border-r border-slate-800 flex flex-col items-end py-4 pr-2 text-slate-600 text-sm select-none overflow-hidden shrink-0">
+                                1
+                            </div>
+                            <textarea id="code-editor" spellcheck="false" class="flex-1 h-full bg-transparent text-slate-200 text-sm p-4 outline-none resize-none focus:ring-inset focus:ring-1 focus:ring-blue-500/50 whitespace-pre overflow-y-auto" style="tab-size: 4;"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Console Output (Enlarged for slides 2-5) -->
+                    <div class="h-80 lg:h-[42%] min-h-[300px] bg-[#0d1117] flex flex-col shrink-0">
+                        <div class="px-4 py-2 bg-[#161b22] border-b border-slate-800 flex items-center gap-2 text-slate-400 text-xs font-mono uppercase tracking-wider">
+                            Output Console
+                        </div>
+                        <div id="output-console" class="p-4 flex-1 overflow-y-auto font-mono text-sm">
+                            <!-- Output injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // --- DATA ---
+        const SLIDES = [
+            {
+                id: 'intro',
+                title: 'Machine Learning Basics: Regression & Classification',
+                type: 'content',
+                icon: 'book-open',
+                iconColor: 'text-blue-400',
+                content: `
+                    <div class="space-y-4 text-slate-300">
+                        <h2 class="text-3xl font-bold text-white mb-6">Welcome to the Interactive ML Lab</h2>
+                        <p>
+                            In this module, we will explore fundamental Machine Learning concepts through hands-on practice. 
+                            You will be writing and executing code directly in your browser.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                            <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-colors">
+                                <i data-lucide="activity" class="w-10 h-10 text-blue-400 mb-4 block"></i>
+                                <h3 class="text-xl font-semibold text-white mb-2">Linear Regression</h3>
+                                <p class="text-sm">Build models from scratch using Gradient Descent and utilize Scikit-Learn for performance comparisons.</p>
+                            </div>
+                            <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-purple-500/50 transition-colors">
+                                <i data-lucide="database" class="w-10 h-10 text-purple-400 mb-4 block"></i>
+                                <h3 class="text-xl font-semibold text-white mb-2">Logistic Regression</h3>
+                                <p class="text-sm">Process real-world banking datasets, encode categorical variables, and evaluate using Confusion Matrices.</p>
+                            </div>
+                            <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-emerald-500/50 transition-colors">
+                                <i data-lucide="layout" class="w-10 h-10 text-emerald-400 mb-4 block"></i>
+                                <h3 class="text-xl font-semibold text-white mb-2">Decision Trees</h3>
+                                <p class="text-sm">Compare multiple classifiers (KNN, Trees) and understand evaluation metrics like Precision and Recall.</p>
+                            </div>
+                        </div>
+                        <div class="mt-8 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                            <p class="text-blue-200">
+                                <strong>Note for Students:</strong> You don't need to be a Python expert. The coding exercises provide boilerplate code. Focus on the Scikit-learn functions and the mathematical logic!
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'linreg-scratch',
+                title: 'Linear Regression from Scratch',
+                type: 'exercise',
+                icon: 'code-2',
+                iconColor: 'text-blue-400',
+                instructions: `
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold text-white">Gradient Descent Implementation</h3>
+                        <p>We are using a Student Performance dataset. We want to predict final grades (G3) based on period 2 grades (G2).</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Extract G2 as <code>X</code> and G3 as <code>Y</code>.</li>
+                            <li>Initialize weight (m) to 0.1 and bias (c) to 0.01.</li>
+                            <li>Use a learning rate of 0.0001.</li>
+                            <li>Calculate the Mean Squared Error (MSE).</li>
+                        </ul>
+                        <p class="text-sm text-slate-400 bg-slate-800 p-3 rounded">
+                            <strong>Task:</strong> Complete the gradient descent loop in the editor to update the weight and bias.
+                        </p>
+                    </div>
+                `,
+                defaultCode: `# Import necessary libraries
+import pandas as pd
+import numpy as np
+
+# 1. Load Data (Simulated for this lab environment)
+# df = pd.read_csv('student_performance.csv')
+print("Loading dataset...")
+print("Shape of X: (395, 1) | Shape of Y: (395, 1)\\n")
+
+# 2. Initialize parameters
+m = 0.1     # Weight
+c = 0.01    # Bias
+lr = 0.0001 # Learning rate
+epochs = 1000
+
+def compute_mse(y_true, y_pred):
+    return np.mean((y_true - y_pred) ** 2)
+
+# 3. Gradient Descent Loop
+# TODO: Students, review the gradient calculation below
+print("Starting training...")
+for i in range(epochs):
+    # Make prediction: Y = mX + C
+    # y_pred = m * X + c
+    
+    # Calculate gradients
+    # D_m = (-2/n) * sum(X * (Y - y_pred))
+    # D_c = (-2/n) * sum(Y - y_pred)
+    
+    # Update weights
+    # m = m - lr * D_m
+    # c = c - lr * D_c
+    pass
+
+print("Training completed. Optimal weights found!")
+# print(f"Final Weight (m): {m:.4f}")
+# print(f"Final Bias (c): {c:.4f}")`,
+                mockOutput: `
+                    <div class="text-emerald-400 font-mono text-sm space-y-1">
+                        <div>Loading dataset...</div>
+                        <div>Shape of X: (395, 1) | Shape of Y: (395, 1)</div>
+                        <br/>
+                        <div>Starting training...</div>
+                        <div>Epoch 0: MSE = 45.2312</div>
+                        <div>Epoch 200: MSE = 12.4510</div>
+                        <div>Epoch 400: MSE = 5.1234</div>
+                        <div>Epoch 600: MSE = 2.4512</div>
+                        <div>Epoch 800: MSE = 1.9832</div>
+                        <div>Epoch 1000: MSE = 1.8745</div>
+                        <br/>
+                        <div class="text-white">Training completed. Optimal weights found!</div>
+                        <div class="text-blue-300">Final Weight (m): 0.9821</div>
+                        <div class="text-blue-300">Final Bias (c): 1.2054</div>
+                    </div>
+                `
+            },
+            {
+                id: 'linreg-sklearn',
+                title: 'Linear Regression using Scikit-Learn',
+                type: 'exercise',
+                icon: 'code-2',
+                iconColor: 'text-blue-400',
+                instructions: `
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold text-white">Scikit-Learn & Preprocessing</h3>
+                        <p>Now, let's use the built-in <code>LinearRegression</code> function. We will also introduce data preprocessing.</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Use <code>LabelEncoder</code> for categorical columns.</li>
+                            <li>Scale data using <code>MinMaxScaler</code>.</li>
+                            <li>Split data 70:30 (Train:Test).</li>
+                            <li>Report RMSE and MAE.</li>
+                        </ul>
+                    </div>
+                `,
+                defaultCode: `from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+import matplotlib.pyplot as plt
+
+# 1. Preprocessing
+encoder = LabelEncoder()
+scaler = MinMaxScaler()
+# df['categorical_col'] = encoder.fit_transform(df['col'])
+# X_scaled = scaler.fit_transform(X)
+
+print("Data scaled and encoded successfully.\\n")
+
+# 2. Train/Test Split (70:30)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+print("Data split: 70% Training, 30% Testing.\\n")
+
+# 3. Model Training
+model = LinearRegression()
+# TODO: Call the fit function
+# model.fit(X_train, y_train)
+print("Model trained using Scikit-Learn!\\n")
+
+# 4. Evaluation
+# predictions = model.predict(X_test)
+# rmse = np.sqrt(mean_squared_error(y_test, predictions))
+# mae = mean_absolute_error(y_test, predictions)
+
+# print(f"RMSE: {rmse}")
+# print(f"MAE: {mae}")`,
+                mockOutput: `
+                    <div class="space-y-4 pb-4">
+                        <div class="text-emerald-400 font-mono text-sm space-y-1">
+                            <div>Data scaled and encoded successfully.</div>
+                            <div>Data split: 70% Training, 30% Testing.</div>
+                            <br/>
+                            <div>Model trained using Scikit-Learn!</div>
+                            <br/>
+                            <div class="text-blue-300 font-bold">Evaluation Metrics:</div>
+                            <div>RMSE (Root Mean Squared Error): 1.342</div>
+                            <div>MAE (Mean Absolute Error): 0.985</div>
+                        </div>
+                        
+                        <div class="mt-4 bg-white p-4 rounded text-center max-w-md mx-auto">
+                            <div class="text-black text-xs font-bold mb-2">Matplotlib: Actual vs Predicted</div>
+                            <svg viewBox="0 0 400 200" class="w-full h-auto">
+                                <line x1="40" y1="160" x2="360" y2="160" stroke="black" stroke-width="2" />
+                                <line x1="40" y1="160" x2="40" y2="20" stroke="black" stroke-width="2" />
+                                <line x1="40" y1="160" x2="360" y2="20" stroke="red" stroke-width="2" stroke-dasharray="5,5" />
+                                <circle cx="80" cy="140" r="3" fill="blue" opacity="0.6"/>
+                                <circle cx="120" cy="110" r="3" fill="blue" opacity="0.6"/>
+                                <circle cx="160" cy="115" r="3" fill="blue" opacity="0.6"/>
+                                <circle cx="200" cy="80" r="3" fill="blue" opacity="0.6"/>
+                                <circle cx="240" cy="70" r="3" fill="blue" opacity="0.6"/>
+                                <circle cx="280" cy="50" r="3" fill="blue" opacity="0.6"/>
+                                <circle cx="320" cy="40" r="3" fill="blue" opacity="0.6"/>
+                                <circle cx="100" cy="130" r="3" fill="blue" opacity="0.6"/>
+                                <circle cx="180" cy="90" r="3" fill="blue" opacity="0.6"/>
+                                <circle cx="260" cy="65" r="3" fill="blue" opacity="0.6"/>
+                            </svg>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'logreg-intro',
+                title: 'Logistic Regression: Classification',
+                type: 'exercise',
+                icon: 'code-2',
+                iconColor: 'text-purple-400',
+                instructions: `
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold text-white">Bank Marketing Dataset</h3>
+                        <p>Goal: Predict if a client will subscribe (1/0) to a term deposit based on phone call campaigns.</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Check for missing values and pre-process.</li>
+                            <li>Split dataset 80:20.</li>
+                            <li>Create a Logistic Regression model.</li>
+                            <li>Plot a Confusion Matrix and display Accuracy / F1-Score.</li>
+                        </ul>
+                    </div>
+                `,
+                defaultCode: `from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
+import seaborn as sns
+
+# 1. Handle Missing Values
+print("Checking for missing values... None found.")
+
+# 2. Model Creation
+log_model = LogisticRegression(max_iter=1000)
+
+# TODO: Fit the model on training data
+# log_model.fit(X_train, y_train)
+print("Logistic Regression Model Trained.\\n")
+
+# 3. Predictions
+# y_pred = log_model.predict(X_test)
+
+# 4. Metrics & Confusion Matrix
+# acc = accuracy_score(y_test, y_pred)
+# f1 = f1_score(y_test, y_pred)
+# cm = confusion_matrix(y_test, y_pred)
+
+print("Calculating metrics...")
+# print(f"Accuracy: {acc}")
+# print(f"F1-Score: {f1}")`,
+                mockOutput: `
+                    <div class="space-y-4 pb-4">
+                        <div class="text-emerald-400 font-mono text-sm space-y-1">
+                            <div>Checking for missing values... None found.</div>
+                            <div>Data split successfully (80:20).</div>
+                            <div>Logistic Regression Model Trained.</div>
+                            <br/>
+                            <div>Calculating metrics...</div>
+                            <div class="text-purple-300 font-bold">Accuracy: 89.4%</div>
+                            <div class="text-purple-300 font-bold">F1-Score: 0.82</div>
+                        </div>
+                        
+                        <div class="mt-4 bg-slate-800 p-4 rounded border border-slate-700 text-center max-w-sm mx-auto">
+                            <div class="text-white text-sm font-bold mb-4">Confusion Matrix</div>
+                            <div class="flex justify-center items-center">
+                                <div class="grid grid-cols-2 gap-1 bg-slate-900 p-1 rounded">
+                                    <div class="bg-purple-900/80 w-20 h-20 flex flex-col justify-center items-center rounded-tl text-white">
+                                        <span class="text-xs text-purple-300">True Neg</span>
+                                        <span class="text-xl font-bold">7234</span>
+                                    </div>
+                                    <div class="bg-purple-500/20 w-20 h-20 flex flex-col justify-center items-center rounded-tr text-white">
+                                        <span class="text-xs text-purple-300">False Pos</span>
+                                        <span class="text-xl font-bold">342</span>
+                                    </div>
+                                    <div class="bg-purple-500/20 w-20 h-20 flex flex-col justify-center items-center rounded-bl text-white">
+                                        <span class="text-xs text-purple-300">False Neg</span>
+                                        <span class="text-xl font-bold">512</span>
+                                    </div>
+                                    <div class="bg-purple-800/80 w-20 h-20 flex flex-col justify-center items-center rounded-br text-white">
+                                        <span class="text-xs text-purple-300">True Pos</span>
+                                        <span class="text-xl font-bold">1032</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'trees-classifiers',
+                title: 'Decision Trees & Multiple Classifiers',
+                type: 'exercise',
+                icon: 'code-2',
+                iconColor: 'text-emerald-400',
+                instructions: `
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold text-white">Classifier Comparison</h3>
+                        <p>Using a health dataset, let's implement multiple classification algorithms and compare them.</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Models: Logistic Regression, KNN, Decision Tree.</li>
+                            <li>Apply Feature Scaling (0 to 1).</li>
+                            <li>Determine which metric (Accuracy, Precision, Recall, F1) is most appropriate for a medical diagnosis problem.</li>
+                        </ul>
+                    </div>
+                `,
+                defaultCode: `from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import MinMaxScaler
+
+# 1. Feature Scaling
+scaler = MinMaxScaler()
+# X_scaled = scaler.fit_transform(X)
+print("Features normalized to range [0, 1].\\n")
+
+# 2. Initialize Models
+dt_gini = DecisionTreeClassifier(criterion='gini')
+dt_entropy = DecisionTreeClassifier(criterion='entropy')
+knn = KNeighborsClassifier(n_neighbors=5)
+
+# 3. Train Models
+print("Training Decision Tree (Gini)...")
+# dt_gini.fit(X_train_scaled, y_train)
+
+print("Training Decision Tree (Entropy)...")
+# dt_entropy.fit(X_train_scaled, y_train)
+
+print("Training K-Nearest Neighbors...")
+# knn.fit(X_train_scaled, y_train)
+
+print("\\nEvaluating performance metrics...")
+# print("Report best model based on Recall (crucial for health diagnostics)")`,
+                mockOutput: `
+                    <div class="text-emerald-400 font-mono text-sm space-y-2 pb-4">
+                        <div>Features normalized to range [0, 1].</div>
+                        <br/>
+                        <div>Training Decision Tree (Gini)... <span class="text-slate-400">Done.</span></div>
+                        <div>Training Decision Tree (Entropy)... <span class="text-slate-400">Done.</span></div>
+                        <div>Training K-Nearest Neighbors... <span class="text-slate-400">Done.</span></div>
+                        <div>Training Logistic Regression... <span class="text-slate-400">Done.</span></div>
+                        <br/>
+                        <div class="text-white font-bold bg-slate-800 p-2 rounded">Model Performance Report:</div>
+                        <div class="overflow-x-auto w-full">
+                            <table class="w-full min-w-[300px] text-left mt-2">
+                                <thead>
+                                    <tr class="text-emerald-200 border-b border-emerald-800">
+                                        <th class="pb-1">Classifier</th>
+                                        <th class="pb-1">Accuracy</th>
+                                        <th class="pb-1">Recall</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="py-1">Log. Regression</td>
+                                        <td>76.5%</td>
+                                        <td class="text-yellow-400">58.2%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-1">KNN (k=5)</td>
+                                        <td>73.2%</td>
+                                        <td class="text-yellow-400">60.1%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-1">DT (Gini)</td>
+                                        <td>71.8%</td>
+                                        <td class="text-yellow-400">65.4%</td>
+                                    </tr>
+                                    <tr class="bg-emerald-900/30">
+                                        <td class="py-1 font-bold">DT (Entropy)</td>
+                                        <td class="font-bold">74.1%</td>
+                                        <td class="text-emerald-300 font-bold">71.2% (Best)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br/>
+                        <div class="text-blue-300">
+                            <strong>Analysis:</strong> For health diagnostics, <em>Recall</em> is highly significant to minimize False Negatives (missing a diagnosis). The Decision Tree using Entropy performs best here.
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        // --- STATE ---
+        let currentSlideIndex = 0;
+        let codes = {};
+        let outputs = {};
+
+        // Pre-fill initial code states
+        SLIDES.forEach(slide => {
+            if (slide.type === 'exercise') {
+                codes[slide.id] = slide.defaultCode;
+            }
+        });
+
+        // --- DOM ELEMENTS ---
+        const ui = {
+            progressBar: document.getElementById('progress-bar'),
+            slideCounter: document.getElementById('slide-counter'),
+            btnPrev: document.getElementById('btn-prev'),
+            btnNext: document.getElementById('btn-next'),
+            sidebarNav: document.getElementById('sidebar-nav'),
+            
+            contentView: document.getElementById('content-view'),
+            contentContainer: document.getElementById('content-container'),
+            
+            exerciseView: document.getElementById('exercise-view'),
+            exerciseIconContainer: document.getElementById('exercise-icon-container'),
+            exerciseTitle: document.getElementById('exercise-title'),
+            exerciseInstructions: document.getElementById('exercise-instructions'),
+            codeEditor: document.getElementById('code-editor'),
+            lineNumbers: document.getElementById('line-numbers'),
+            outputConsole: document.getElementById('output-console'),
+            
+            btnReset: document.getElementById('btn-reset'),
+            btnRun: document.getElementById('btn-run'),
+            runIcon: document.getElementById('run-icon'),
+            runText: document.getElementById('run-text')
+        };
+
+        // --- CORE FUNCTIONS ---
+        function renderSidebar() {
+            ui.sidebarNav.innerHTML = SLIDES.map((slide, index) => {
+                const isActive = index === currentSlideIndex;
+                const isPast = index < currentSlideIndex;
+                
+                let iconHtml = '';
+                if (isPast) {
+                    iconHtml = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>`;
+                } else {
+                    const circleClass = isActive ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'bg-slate-700';
+                    iconHtml = `<div class="w-2 h-2 rounded-full ${circleClass}"></div>`;
+                }
+
+                const baseClasses = "w-full text-left px-4 py-3 flex items-center gap-3 text-sm transition-colors border-l-2";
+                const activeClasses = isActive 
+                    ? "border-blue-500 bg-blue-500/10 text-white" 
+                    : "border-transparent text-slate-400 hover:bg-slate-800/50 hover:text-slate-200";
+
+                return `
+                    <button onclick="goToSlide(${index})" class="${baseClasses} ${activeClasses}">
+                        ${iconHtml}
+                        <span class="truncate">${slide.title}</span>
+                    </button>
+                `;
+            }).join('');
+            lucide.createIcons({ root: ui.sidebarNav });
+        }
+
+        function renderHeader() {
+            const progress = ((currentSlideIndex + 1) / SLIDES.length) * 100;
+            ui.progressBar.style.width = `${progress}%`;
+            ui.slideCounter.textContent = `${currentSlideIndex + 1} / ${SLIDES.length}`;
+            
+            ui.btnPrev.disabled = currentSlideIndex === 0;
+            ui.btnNext.disabled = currentSlideIndex === SLIDES.length - 1;
+        }
+
+        function updateLineNumbers() {
+            const lines = ui.codeEditor.value.split('\n').length;
+            ui.lineNumbers.innerHTML = Array(lines).fill(0).map((_, i) => `<div>${i + 1}</div>`).join('');
+            
+            // Sync scrolling
+            ui.lineNumbers.style.transform = `translateY(-${ui.codeEditor.scrollTop}px)`;
+        }
+
+        function updateOutputConsole(slideId) {
+            const status = outputs[slideId];
+            const slide = SLIDES.find(s => s.id === slideId);
+
+            if (!status) {
+                ui.outputConsole.innerHTML = `<div class="text-slate-600 italic">Click "Run Code" to execute the script...</div>`;
+                ui.btnRun.disabled = false;
+                ui.runIcon.setAttribute('data-lucide', 'play');
+                ui.runIcon.classList.remove('animate-spin');
+                ui.runText.textContent = 'Run Code';
+            } else if (status === 'running') {
+                ui.outputConsole.innerHTML = `
+                    <div class="text-blue-400 flex items-center gap-2">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4 animate-spin"></i>
+                        Computing...
+                    </div>
+                `;
+                ui.btnRun.disabled = true;
+                ui.runIcon.setAttribute('data-lucide', 'rotate-ccw');
+                ui.runIcon.classList.add('animate-spin');
+                ui.runText.textContent = 'Executing...';
+            } else if (status === 'success') {
+                ui.outputConsole.innerHTML = slide.mockOutput;
+                ui.btnRun.disabled = false;
+                ui.runIcon.setAttribute('data-lucide', 'play');
+                ui.runIcon.classList.remove('animate-spin');
+                ui.runText.textContent = 'Run Code';
+            }
+            lucide.createIcons({ root: ui.btnRun.parentElement });
+            lucide.createIcons({ root: ui.outputConsole });
+        }
+
+        function renderMain() {
+            const slide = SLIDES[currentSlideIndex];
+
+            if (slide.type === 'content') {
+                ui.contentView.classList.remove('hidden-view');
+                ui.exerciseView.classList.add('hidden-view');
+                ui.contentContainer.innerHTML = slide.content;
+                lucide.createIcons({ root: ui.contentContainer });
+            } else {
+                ui.contentView.classList.add('hidden-view');
+                ui.exerciseView.classList.remove('hidden-view');
+                
+                ui.exerciseIconContainer.innerHTML = `<i data-lucide="${slide.icon}" class="w-6 h-6 ${slide.iconColor}"></i>`;
+                ui.exerciseTitle.textContent = slide.title;
+                ui.exerciseInstructions.innerHTML = slide.instructions;
+                
+                ui.codeEditor.value = codes[slide.id] || '';
+                updateLineNumbers();
+                updateOutputConsole(slide.id);
+                
+                lucide.createIcons({ root: ui.exerciseIconContainer });
+            }
+        }
+
+        function renderApp() {
+            renderHeader();
+            renderSidebar();
+            renderMain();
+            
+            // Ensure any scrolled view is reset to top on slide transitions
+            ui.exerciseView.scrollTop = 0;
+            ui.contentView.scrollTop = 0;
+        }
+
+        // --- EVENT HANDLERS ---
+        function goToSlide(index) {
+            if (index >= 0 && index < SLIDES.length) {
+                currentSlideIndex = index;
+                renderApp();
+            }
+        }
+
+        ui.btnPrev.addEventListener('click', () => goToSlide(currentSlideIndex - 1));
+        ui.btnNext.addEventListener('click', () => goToSlide(currentSlideIndex + 1));
+
+        ui.codeEditor.addEventListener('input', (e) => {
+            const slide = SLIDES[currentSlideIndex];
+            codes[slide.id] = e.target.value;
+            updateLineNumbers();
+        });
+
+        ui.codeEditor.addEventListener('scroll', () => {
+            ui.lineNumbers.style.transform = `translateY(-${ui.codeEditor.scrollTop}px)`;
+        });
+
+        ui.codeEditor.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                const value = e.target.value;
+                
+                const newCode = value.substring(0, start) + '    ' + value.substring(end);
+                
+                const slide = SLIDES[currentSlideIndex];
+                codes[slide.id] = newCode;
+                e.target.value = newCode;
+                
+                updateLineNumbers();
+                e.target.selectionStart = e.target.selectionEnd = start + 4;
+            }
+        });
+
+        ui.btnRun.addEventListener('click', () => {
+            const slideId = SLIDES[currentSlideIndex].id;
+            outputs[slideId] = 'running';
+            updateOutputConsole(slideId);
+            
+            setTimeout(() => {
+                outputs[slideId] = 'success';
+                // Only update if we are still on the same slide
+                if (SLIDES[currentSlideIndex].id === slideId) {
+                    updateOutputConsole(slideId);
+                }
+            }, 1200);
+        });
+
+        ui.btnReset.addEventListener('click', () => {
+            const slide = SLIDES[currentSlideIndex];
+            codes[slide.id] = slide.defaultCode;
+            outputs[slide.id] = null;
+            
+            ui.codeEditor.value = codes[slide.id];
+            updateLineNumbers();
+            updateOutputConsole(slide.id);
+        });
+
+        // --- INIT ---
+        lucide.createIcons();
+        renderApp();
+    </script>
+</body>
+</html>

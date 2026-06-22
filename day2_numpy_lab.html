@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive NumPy Presentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        npblue: '#4DABCF',
+                        npyellow: '#F7D046',
+                        dark: '#0B1120',
+                        glass: 'rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B1120;
+            color: #f8fafc;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(77, 171, 207, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(247, 208, 70, 0.1) 0px, transparent 50%);
+        }
+
+        .slide {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.98);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 4rem;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            z-index: 10;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Code styling */
+        pre {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+        .keyword { color: #c678dd; }
+        .function { color: #61afef; }
+        .string { color: #98c379; }
+        .comment { color: #5c6370; font-style: italic; }
+        .number { color: #d19a66; }
+
+        /* Progress bar */
+        #progress-bar {
+            transition: width 0.3s ease;
+        }
+
+        /* Memory blocks animation */
+        .mem-block { transition: all 0.5s ease; }
+        
+        .array-cell { transition: all 0.4s ease; }
+    </style>
+</head>
+<body class="h-screen w-screen font-sans antialiased selection:bg-npblue selection:text-white">
+
+    <!-- Header / Progress -->
+    <div class="fixed top-0 left-0 w-full z-50">
+        <div class="h-1 bg-slate-800">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-npblue to-npyellow w-0"></div>
+        </div>
+        <div class="flex justify-between items-center p-6 mix-blend-difference text-white">
+            <div class="font-bold text-xl tracking-wider flex items-center gap-2">
+                <i class="fa-brands fa-python text-npblue"></i> NumPy
+            </div>
+            <div id="slide-counter" class="font-mono text-sm opacity-60">1 / 10</div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="fixed bottom-8 right-8 z-50 flex gap-4">
+        <button onclick="prevSlide()" class="p-4 rounded-full glass-panel hover:bg-slate-700 transition-colors group">
+            <i class="fa-solid fa-chevron-left text-slate-300 group-hover:text-white"></i>
+        </button>
+        <button onclick="nextSlide()" class="p-4 rounded-full glass-panel hover:bg-slate-700 transition-colors group">
+            <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-white"></i>
+        </button>
+    </div>
+
+    <!-- Slides Container -->
+    <div id="slides-container" class="relative w-full h-full max-w-7xl mx-auto">
+
+        <!-- Slide 1: Title -->
+        <div class="slide active justify-center items-center text-center">
+            <div class="mb-6 animate-bounce">
+                <i class="fa-brands fa-python text-8xl text-npblue drop-shadow-[0_0_15px_rgba(77,171,207,0.5)]"></i>
+            </div>
+            <h1 class="text-7xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
+                Mastering NumPy
+            </h1>
+            <p class="text-2xl text-slate-400 max-w-2xl font-light">
+                The fundamental library for scientific computing and array processing in Python.
+            </p>
+            <div class="mt-12 text-slate-500 font-mono text-sm animate-pulse">
+                Press Space or <i class="fa-solid fa-arrow-right mx-1"></i> to begin
+            </div>
+        </div>
+
+        <!-- Slide 2: What is NumPy -->
+        <div class="slide justify-center">
+            <h2 class="text-5xl font-bold mb-12 text-npblue">What is NumPy?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-panel p-8 transform hover:-translate-y-2 transition-transform">
+                    <div class="text-4xl text-npyellow mb-4"><i class="fa-solid fa-cubes"></i></div>
+                    <h3 class="text-xl font-bold mb-3">Numerical Python</h3>
+                    <p class="text-slate-300">A powerful Python library used for working with high-performance arrays and matrices.</p>
+                </div>
+                <div class="glass-panel p-8 transform hover:-translate-y-2 transition-transform">
+                    <div class="text-4xl text-npyellow mb-4"><i class="fa-solid fa-calculator"></i></div>
+                    <h3 class="text-xl font-bold mb-3">Mathematical Domain</h3>
+                    <p class="text-slate-300">Provides extensive functions for linear algebra, fourier transforms, and complex mathematical operations.</p>
+                </div>
+                <div class="glass-panel p-8 transform hover:-translate-y-2 transition-transform">
+                    <div class="text-4xl text-npyellow mb-4"><i class="fa-solid fa-code-branch"></i></div>
+                    <h3 class="text-xl font-bold mb-3">Open Source</h3>
+                    <p class="text-slate-300">Created in 2005 by Travis Oliphant. Maintained by a vibrant community on GitHub under a BSD license.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Why Use NumPy -->
+        <div class="slide justify-center">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <div class="w-full md:w-1/2">
+                    <h2 class="text-5xl font-bold mb-8 text-npblue">Why Use NumPy?</h2>
+                    <ul class="space-y-6 text-xl text-slate-300">
+                        <li class="flex items-start gap-4">
+                            <i class="fa-solid fa-bolt text-npyellow mt-1"></i>
+                            <div><strong>Up to 50x Faster:</strong> Traditional Python lists are versatile but incredibly slow for processing large datasets.</div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="fa-solid fa-box text-npyellow mt-1"></i>
+                            <div><strong>The <span class="font-mono text-npblue bg-slate-800 px-2 py-1 rounded">ndarray</span> Object:</strong> NumPy's core object provides numerous supporting functions that make array manipulation effortless.</div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="fa-solid fa-chart-network text-npyellow mt-1"></i>
+                            <div><strong>Data Science Core:</strong> Arrays are frequently used in Data Science, where speed and resource management are critical.</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="w-full md:w-1/2 glass-panel p-8">
+                    <h3 class="text-2xl font-bold mb-6 border-b border-slate-700 pb-4">Memory Layout Comparison</h3>
+                    
+                    <p class="text-sm text-slate-400 mb-2">Python List (Scattered, Heterogeneous)</p>
+                    <div class="flex flex-wrap gap-2 mb-8">
+                        <div class="w-8 h-8 rounded bg-red-500/20 border border-red-500/50 flex items-center justify-center text-xs">1</div>
+                        <div class="w-8 h-8 rounded bg-transparent"></div>
+                        <div class="w-8 h-8 rounded bg-blue-500/20 border border-blue-500/50 flex items-center justify-center text-xs">'a'</div>
+                        <div class="w-8 h-8 rounded bg-transparent"></div>
+                        <div class="w-8 h-8 rounded bg-transparent"></div>
+                        <div class="w-8 h-8 rounded bg-green-500/20 border border-green-500/50 flex items-center justify-center text-xs">3.1</div>
+                    </div>
+
+                    <p class="text-sm text-slate-400 mb-2">NumPy Array (Contiguous, Homogeneous)</p>
+                    <div class="flex gap-1">
+                        <div class="w-10 h-10 rounded-sm bg-npblue/40 border border-npblue flex items-center justify-center font-mono">1</div>
+                        <div class="w-10 h-10 rounded-sm bg-npblue/40 border border-npblue flex items-center justify-center font-mono">2</div>
+                        <div class="w-10 h-10 rounded-sm bg-npblue/40 border border-npblue flex items-center justify-center font-mono">3</div>
+                        <div class="w-10 h-10 rounded-sm bg-npblue/40 border border-npblue flex items-center justify-center font-mono">4</div>
+                        <div class="w-10 h-10 rounded-sm bg-npblue/40 border border-npblue flex items-center justify-center font-mono">5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Interactive Speed Benchmark -->
+        <div class="slide justify-center">
+            <h2 class="text-5xl font-bold mb-4 text-npblue">The Speed Advantage</h2>
+            <p class="text-xl text-slate-400 mb-8">NumPy integrates C/C++ codes, processing homogeneous data in contiguous memory parallelly.</p>
+            
+            <div class="glass-panel p-8 w-full max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-4">
+                    <h3 class="text-2xl font-bold">Live Benchmark Simulator</h3>
+                    <div class="flex gap-2">
+                        <button onclick="runBench('dot')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm font-semibold transition-colors">Dot Product</button>
+                        <button onclick="runBench('add')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm font-semibold transition-colors">Addition</button>
+                        <button onclick="runBench('del')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm font-semibold transition-colors">Deletion</button>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <!-- Python List Bar -->
+                    <div>
+                        <div class="flex justify-between text-sm font-mono mb-2">
+                            <span class="text-red-400"><i class="fa-brands fa-python mr-2"></i>Python Lists</span>
+                            <span id="time-list" class="text-slate-400">0.0000 s</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-4 overflow-hidden relative">
+                            <div id="bar-list" class="bg-red-500 h-full w-0 transition-all duration-1000 ease-out"></div>
+                        </div>
+                    </div>
+
+                    <!-- NumPy Bar -->
+                    <div>
+                        <div class="flex justify-between text-sm font-mono mb-2">
+                            <span class="text-npblue"><i class="fa-solid fa-bolt mr-2"></i>NumPy Arrays</span>
+                            <span id="time-np" class="text-slate-400">0.0000 s</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-4 overflow-hidden relative">
+                            <div id="bar-np" class="bg-npblue h-full w-0 transition-all duration-1000 ease-out"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="bench-conclusion" class="mt-8 text-center text-npyellow font-bold h-6 opacity-0 transition-opacity">
+                    NumPy is ~43x faster for this operation!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Getting Started -->
+        <div class="slide justify-center">
+            <h2 class="text-5xl font-bold mb-10 text-npblue">Getting Started</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass-panel p-8">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center gap-3"><i class="fa-solid fa-download text-npyellow"></i> Installation</h3>
+                    <p class="text-slate-300 mb-4">If Python and PIP are installed, installation is a breeze.</p>
+                    <pre class="font-mono text-sm shadow-inner"><span class="comment"># In your command prompt / terminal</span>
+<span class="keyword">&gt;</span> pip install numpy</pre>
+                    <p class="text-sm text-slate-400 mt-4"><i class="fa-solid fa-circle-info mr-1"></i> Pre-installed in distributions like Anaconda, Spyder.</p>
+                </div>
+
+                <div class="glass-panel p-8">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center gap-3"><i class="fa-solid fa-file-import text-npyellow"></i> Importing</h3>
+                    <p class="text-slate-300 mb-4">NumPy is usually imported under the <code class="bg-slate-800 px-1 rounded">np</code> alias.</p>
+                    <pre class="font-mono text-sm shadow-inner"><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># Create an array</span>
+arr = np.<span class="function">array</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>])
+
+<span class="function">print</span>(arr)
+<span class="comment"># Output: [1 2 3 4 5]</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Dimensions & Creation -->
+        <div class="slide justify-center">
+            <h2 class="text-5xl font-bold mb-8 text-npblue">Array Dimensions</h2>
+            
+            <div class="flex gap-6 h-96">
+                <!-- Tabs Menu -->
+                <div class="w-1/4 flex flex-col gap-2">
+                    <button onclick="showDim(0)" id="btn-dim-0" class="dim-btn text-left p-4 glass-panel bg-slate-700 border-l-4 border-npblue font-bold">0-D (Scalar)</button>
+                    <button onclick="showDim(1)" id="btn-dim-1" class="dim-btn text-left p-4 glass-panel hover:bg-slate-800 border-l-4 border-transparent text-slate-400">1-D Array</button>
+                    <button onclick="showDim(2)" id="btn-dim-2" class="dim-btn text-left p-4 glass-panel hover:bg-slate-800 border-l-4 border-transparent text-slate-400">2-D Array</button>
+                    <button onclick="showDim(3)" id="btn-dim-3" class="dim-btn text-left p-4 glass-panel hover:bg-slate-800 border-l-4 border-transparent text-slate-400">High Dimensional</button>
+                </div>
+                
+                <!-- Tab Content -->
+                <div class="w-3/4 glass-panel p-8 relative overflow-hidden">
+                    <!-- 0D -->
+                    <div id="content-dim-0" class="dim-content absolute inset-8 transition-opacity duration-300">
+                        <h3 class="text-2xl font-bold mb-4">0-D Arrays</h3>
+                        <p class="mb-4 text-slate-300">Also known as Scalars. These are the single elements in an array. Each value is a 0-D array.</p>
+                        <pre class="font-mono text-sm"><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+a = np.<span class="function">array</span>(<span class="number">42</span>)
+<span class="function">print</span>(a.ndim) <span class="comment"># Output: 0</span></pre>
+                        <div class="mt-6 flex justify-center"><div class="w-16 h-16 bg-npblue text-white rounded flex items-center justify-center text-2xl font-bold">42</div></div>
+                    </div>
+                    <!-- 1D -->
+                    <div id="content-dim-1" class="dim-content absolute inset-8 opacity-0 pointer-events-none transition-opacity duration-300">
+                        <h3 class="text-2xl font-bold mb-4">1-D Arrays</h3>
+                        <p class="mb-4 text-slate-300">An array that has 0-D arrays as its elements. (Uni-dimensional)</p>
+                        <pre class="font-mono text-sm">b = np.<span class="function">array</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>])
+<span class="function">print</span>(b.ndim) <span class="comment"># Output: 1</span></pre>
+                        <div class="mt-6 flex justify-center gap-2">
+                            <div class="w-12 h-12 border-2 border-npblue text-npblue rounded flex items-center justify-center text-xl">1</div>
+                            <div class="w-12 h-12 border-2 border-npblue text-npblue rounded flex items-center justify-center text-xl">2</div>
+                            <div class="w-12 h-12 border-2 border-npblue text-npblue rounded flex items-center justify-center text-xl">3</div>
+                        </div>
+                    </div>
+                    <!-- 2D -->
+                    <div id="content-dim-2" class="dim-content absolute inset-8 opacity-0 pointer-events-none transition-opacity duration-300">
+                        <h3 class="text-2xl font-bold mb-4">2-D Arrays</h3>
+                        <p class="mb-4 text-slate-300">An array that has 1-D arrays as its elements. Often used to represent matrices.</p>
+                        <pre class="font-mono text-sm">c = np.<span class="function">array</span>([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]])
+<span class="function">print</span>(c.ndim) <span class="comment"># Output: 2</span></pre>
+                        <div class="mt-6 flex flex-col items-center gap-2">
+                            <div class="flex gap-2">
+                                <div class="w-10 h-10 bg-slate-800 text-white rounded flex items-center justify-center">1</div>
+                                <div class="w-10 h-10 bg-slate-800 text-white rounded flex items-center justify-center">2</div>
+                                <div class="w-10 h-10 bg-slate-800 text-white rounded flex items-center justify-center">3</div>
+                            </div>
+                            <div class="flex gap-2">
+                                <div class="w-10 h-10 bg-slate-800 text-white rounded flex items-center justify-center">4</div>
+                                <div class="w-10 h-10 bg-slate-800 text-white rounded flex items-center justify-center">5</div>
+                                <div class="w-10 h-10 bg-slate-800 text-white rounded flex items-center justify-center">6</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- High D -->
+                    <div id="content-dim-3" class="dim-content absolute inset-8 opacity-0 pointer-events-none transition-opacity duration-300">
+                        <h3 class="text-2xl font-bold mb-4">Higher Dimensional Arrays</h3>
+                        <p class="mb-4 text-slate-300">Define the number of dimensions explicitly using <code class="text-npyellow">ndmin</code>.</p>
+                        <pre class="font-mono text-sm">arr = np.<span class="function">array</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], ndmin=<span class="number">5</span>)
+
+<span class="function">print</span>(arr)
+<span class="comment"># [[[[[1 2 3 4]]]]]</span>
+<span class="function">print</span>(arr.shape) 
+<span class="comment"># (1, 1, 1, 1, 4)</span></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Indexing & Shape -->
+        <div class="slide justify-center">
+            <h2 class="text-5xl font-bold mb-10 text-npblue">Indexing & Shape</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Indexing -->
+                <div class="glass-panel p-8">
+                    <h3 class="text-2xl font-bold mb-4">Array Indexing</h3>
+                    <p class="text-slate-300 mb-4">Accessing an array element by referring to its index number. Negative indexing supported!</p>
+                    <pre class="font-mono text-sm shadow-inner mb-4">arr = np.<span class="function">array</span>([
+  [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], 
+  [<span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>]
+])
+
+<span class="comment"># 5th element on 2nd row</span>
+<span class="function">print</span>(arr[<span class="number">1</span>, <span class="number">4</span>]) <span class="comment"># Output: 10</span>
+
+<span class="comment"># Negative Indexing (Last element)</span>
+<span class="function">print</span>(arr[<span class="number">1</span>, <span class="number">-1</span>]) <span class="comment"># Output: 10</span></pre>
+                </div>
+
+                <!-- Shape -->
+                <div class="glass-panel p-8">
+                    <h3 class="text-2xl font-bold mb-4">Array Shape</h3>
+                    <p class="text-slate-300 mb-4">The <code class="text-npyellow">shape</code> attribute returns a tuple representing the number of elements in each dimension.</p>
+                    <pre class="font-mono text-sm shadow-inner">arr = np.<span class="function">array</span>([
+  [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], 
+  [<span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>]
+])
+
+<span class="function">print</span>(arr.shape)
+<span class="comment"># Output: (2, 4)</span>
+<span class="comment"># Means: 2 dimensions (rows), </span>
+<span class="comment">#        4 elements per dim (columns).</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Interactive Reshaping -->
+        <div class="slide justify-center">
+            <h2 class="text-5xl font-bold mb-6 text-npblue">Array Reshaping</h2>
+            <p class="text-xl text-slate-400 mb-8">Changing the shape of an array. You can add/remove dimensions, provided the total number of elements remains identical.</p>
+            
+            <div class="glass-panel p-8 flex flex-col items-center">
+                <div class="flex gap-4 mb-8">
+                    <button onclick="reshapeGrid(1, 12)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded">1D: (12)</button>
+                    <button onclick="reshapeGrid(4, 3)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded border border-npblue">reshape(4, 3)</button>
+                    <button onclick="reshapeGrid(3, 4)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded border border-npyellow">reshape(3, 4)</button>
+                    <button onclick="reshapeGrid(2, 6)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded border border-green-500">reshape(2, 6)</button>
+                    <button onclick="reshapeError()" class="px-4 py-2 bg-red-900/50 hover:bg-red-800 rounded text-red-300 border border-red-500">reshape(3, 3) ⚠️</button>
+                </div>
+
+                <div id="reshape-error-msg" class="text-red-400 mb-4 h-6 opacity-0 font-mono text-sm">ValueError: cannot reshape array of size 12 into shape (3,3)</div>
+
+                <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 min-h-[200px] flex items-center justify-center w-full">
+                    <div id="demo-grid" class="grid gap-2 transition-all duration-500" style="grid-template-columns: repeat(12, minmax(0, 1fr));">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Iterating -->
+        <div class="slide justify-center">
+            <h2 class="text-5xl font-bold mb-10 text-npblue">Iterating Arrays</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass-panel p-8">
+                    <h3 class="text-2xl font-bold mb-4">Standard For Loop</h3>
+                    <p class="text-slate-300 mb-4">Iterating iterates over the 1st dimension (rows in 2D).</p>
+                    <pre class="font-mono text-sm shadow-inner mb-4">arr = np.<span class="function">array</span>([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])
+
+<span class="keyword">for</span> x <span class="keyword">in</span> arr:
+    <span class="function">print</span>(x)
+
+<span class="comment"># Output:</span>
+<span class="comment"># [1 2]</span>
+<span class="comment"># [3 4]</span></pre>
+                    <p class="text-sm text-slate-400 italic">Notice how it prints the arrays, not the scalar values. You'd need nested loops for that.</p>
+                </div>
+
+                <div class="glass-panel p-8">
+                    <h3 class="text-2xl font-bold mb-4 text-npyellow">The <code class="font-mono text-white">nditer()</code> Function</h3>
+                    <p class="text-slate-300 mb-4">A powerful helper function to efficiently iterate through all scalars across any dimensions without nesting loops.</p>
+                    <pre class="font-mono text-sm shadow-inner mb-4">arr = np.<span class="function">array</span>([[[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]]])
+
+<span class="keyword">for</span> x <span class="keyword">in</span> np.<span class="function">nditer</span>(arr):
+    <span class="function">print</span>(x)
+
+<span class="comment"># Output:</span>
+<span class="comment"># 1</span>
+<span class="comment"># 2</span>
+<span class="comment"># 3</span>
+<span class="comment"># 4</span></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Sorting -->
+        <div class="slide justify-center">
+            <h2 class="text-5xl font-bold mb-6 text-npblue">Sorting Data</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold mb-2"><code class="text-npblue">np.sort(a)</code></h3>
+                    <ul class="text-sm text-slate-300 space-y-2 list-disc pl-5">
+                        <li>Returns a sorted <strong>copy</strong> of the array.</li>
+                        <li>Can specify <code class="text-npyellow">axis</code> (default: last axis).</li>
+                        <li><code class="text-npyellow">axis=None</code> flattens the array before sorting.</li>
+                    </ul>
+                </div>
+                
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold mb-2"><code class="text-npyellow">sorted(a)</code> (Python Built-in)</h3>
+                    <ul class="text-sm text-slate-300 space-y-2 list-disc pl-5">
+                        <li>Returns a standard Python <code class="text-npyellow">list</code>.</li>
+                        <li>Slower than NumPy's sort.</li>
+                        <li>Occupies more memory.</li>
+                    </ul>
+                </div>
+
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold mb-2"><code class="text-npblue">np.argsort(a)</code></h3>
+                    <p class="text-sm text-slate-300 mb-2">Returns the <strong>indices</strong> that would sort the array.</p>
+                    <pre class="font-mono text-xs shadow-inner">a = np.<span class="function">array</span>([<span class="number">9</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">7</span>])
+<span class="function">print</span>(np.<span class="function">argsort</span>(a))
+<span class="comment"># Output: [2 1 3 0] (Indices)</span></pre>
+                </div>
+
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold mb-2"><code class="text-npblue">np.lexsort()</code></h3>
+                    <p class="text-sm text-slate-300 mb-2">Indirect stable sort using multiple keys. Sorts by the last key passed first.</p>
+                    <pre class="font-mono text-xs shadow-inner">colA = [<span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>] <span class="comment"># First column</span>
+colB = [<span class="number">9</span>, <span class="number">0</span>, <span class="number">3</span>] <span class="comment"># Second column</span>
+<span class="comment"># Sort by A, then B</span>
+idx = np.<span class="function">lexsort</span>((colB, colA))</pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        // Slide Navigation Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progress-bar');
+        const counter = document.getElementById('slide-counter');
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                if(index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            
+            // Update progress
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            counter.innerText = `${currentSlide + 1} / ${slides.length}`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlides();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlides();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Interactive Benchmark (Slide 4)
+        const benchmarks = {
+            dot: { list: 0.179, np: 0.004, title: 'Dot Product', factor: 45 },
+            add: { list: 0.093, np: 0.005, title: 'Scalar Addition', factor: 18 },
+            del: { list: 0.012, np: 0.0001, title: 'Deletion', factor: 120 } // Exaggerated NP slightly for visibility in UI
+        };
+
+        function runBench(type) {
+            const data = benchmarks[type];
+            const maxTime = Math.max(data.list, data.np);
+            
+            const barList = document.getElementById('bar-list');
+            const barNp = document.getElementById('bar-np');
+            const timeList = document.getElementById('time-list');
+            const timeNp = document.getElementById('time-np');
+            const conc = document.getElementById('bench-conclusion');
+
+            // Reset
+            barList.style.width = '0%';
+            barNp.style.width = '0%';
+            conc.style.opacity = '0';
+            timeList.innerText = 'Testing...';
+            timeNp.innerText = 'Testing...';
+
+            setTimeout(() => {
+                const listPct = (data.list / maxTime) * 100;
+                const npPct = (data.np / maxTime) * 100;
+
+                barList.style.width = `${listPct}%`;
+                timeList.innerText = `${data.list.toFixed(3)} s`;
+
+                barNp.style.width = `${Math.max(npPct, 2)}%`; // Ensure it's at least visible
+                timeNp.innerText = `${data.np.toFixed(5)} s`;
+
+                conc.innerText = `NumPy is ~${data.factor}x faster for ${data.title}!`;
+                conc.style.opacity = '1';
+            }, 100);
+        }
+
+        // Interactive Dimensions (Slide 6)
+        function showDim(index) {
+            // Reset buttons
+            document.querySelectorAll('.dim-btn').forEach((btn, i) => {
+                if(i === index) {
+                    btn.classList.replace('text-slate-400', 'font-bold');
+                    btn.classList.replace('border-transparent', 'border-npblue');
+                    btn.classList.replace('hover:bg-slate-800', 'bg-slate-700');
+                } else {
+                    btn.classList.replace('font-bold', 'text-slate-400');
+                    btn.classList.replace('border-npblue', 'border-transparent');
+                    btn.classList.replace('bg-slate-700', 'hover:bg-slate-800');
+                }
+            });
+
+            // Reset contents
+            document.querySelectorAll('.dim-content').forEach((content, i) => {
+                if(i === index) {
+                    content.classList.remove('opacity-0', 'pointer-events-none');
+                } else {
+                    content.classList.add('opacity-0', 'pointer-events-none');
+                }
+            });
+        }
+
+        // Interactive Reshape (Slide 8)
+        const gridContainer = document.getElementById('demo-grid');
+        const elements = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        const errorMsg = document.getElementById('reshape-error-msg');
+        
+        // Initial setup
+        elements.forEach(el => {
+            const div = document.createElement('div');
+            div.className = 'array-cell w-12 h-12 flex items-center justify-center bg-slate-800 border border-slate-600 rounded text-lg font-mono';
+            div.innerText = el;
+            gridContainer.appendChild(div);
+        });
+
+        function reshapeGrid(rows, cols) {
+            errorMsg.style.opacity = '0';
+            gridContainer.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+            
+            // Colorizing based on shape
+            const cells = gridContainer.children;
+            let colorMap = '';
+            if(cols === 3) colorMap = 'border-npblue text-npblue';
+            else if(cols === 4) colorMap = 'border-npyellow text-npyellow';
+            else if(cols === 6) colorMap = 'border-green-500 text-green-400';
+            else colorMap = 'border-slate-600 text-white';
+
+            Array.from(cells).forEach(cell => {
+                cell.className = `array-cell w-12 h-12 flex items-center justify-center bg-slate-800 border rounded text-lg font-mono ${colorMap}`;
+            });
+        }
+
+        function reshapeError() {
+            errorMsg.style.opacity = '1';
+        }
+
+        // Initialize presentation
+        updateSlides();
+    </script>
+</body>
+</html>
