@@ -10,33 +10,61 @@ NC='\033[0m' # No Color
 
 echo -e "\n${BOLD}${BLUE}=== 🛡️  Running Slide Deck Pre-Commit Verification Pipeline  === ${NC}\n"
 
-# 1. Verify Part 1 HTML Slide Structure (Expected 31 slides)
+# 1. Verify Session 1 / Module 1 HTML Slide Structure (Expected 25 slides)
+python3 tools/validate_slides.py day1_session1_1.html 25
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session1_1.html failed structural slide validation.${NC}"
+    exit 1
+fi
+
+# 2. Verify Session 1 / Module 2 HTML Slide Structure (Expected 0 static slides)
+python3 tools/validate_slides.py day1_session1_2.html 0
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session1_2.html failed structural slide validation.${NC}"
+    exit 1
+fi
+
+# 3. Verify Session 2 / Part 1 HTML Slide Structure (Expected 31 slides)
 python3 tools/validate_slides.py day1_session2_1.html 31
 if [ $? -ne 0 ]; then
     echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session2_1.html failed structural slide validation.${NC}"
     exit 1
 fi
 
-# 2. Verify Part 2 HTML Slide Structure (Expected 37 slides)
+# 4. Verify Session 2 / Part 2 HTML Slide Structure (Expected 37 slides)
 python3 tools/validate_slides.py day1_session2_2.html 37
 if [ $? -ne 0 ]; then
     echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session2_2.html failed structural slide validation.${NC}"
     exit 1
 fi
 
-# 3. Verify Part 1 Inline JavaScript Compilation
+# 5. Verify Session 1 / Module 1 Inline JavaScript Compilation
+node tools/verify_javascript.js day1_session1_1.html
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session1_1.html has JavaScript syntax errors.${NC}"
+    exit 1
+fi
+
+# 6. Verify Session 1 / Module 2 Inline JavaScript Compilation
+node tools/verify_javascript.js day1_session1_2.html
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session1_2.html has JavaScript syntax errors.${NC}"
+    exit 1
+fi
+
+# 7. Verify Session 2 / Part 1 Inline JavaScript Compilation
 node tools/verify_javascript.js day1_session2_1.html
 if [ $? -ne 0 ]; then
     echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session2_1.html has JavaScript syntax errors.${NC}"
     exit 1
 fi
 
-# 4. Verify Part 2 Inline JavaScript Compilation
+# 8. Verify Session 2 / Part 2 Inline JavaScript Compilation
 node tools/verify_javascript.js day1_session2_2.html
 if [ $? -ne 0 ]; then
     echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day1_session2_2.html has JavaScript syntax errors.${NC}"
     exit 1
 fi
 
-echo -e "${BOLD}${GREEN}🎉 SUCCESS: All 2 slide decks passed structural and compilation checks! Committing changes...${NC}\n"
+echo -e "${BOLD}${GREEN}🎉 SUCCESS: All 4 slide decks passed structural and compilation checks! Committing changes...${NC}\n"
 exit 0

@@ -12,18 +12,34 @@ This repository hosts both the **Student & Instructor Course Portal** and the in
 
 The workshop is divided into two high-impact, widescreen-optimized presentation sessions:
 
-### 📊 [Part 1: ML Foundations & Regressions](https://drsnigdha.github.io/ml-outreach/day1_session2_1.html)
-Demystifies how computers learn from raw data without explicit programming.
+### 🌅 Session 1: AI Foundations & Real-World Impact
+
+#### 🎓 [Module 1: AI Foundations](https://drsnigdha.github.io/ml-outreach/day1_session1_1.html)
+Demystifies what AI is, how cognitive systems learn, and the conceptual boundaries of software.
+* **Core Concepts:** Defining Intelligence (Human vs. Artificial), Traditional Coding Limits, the AI Learning Cycle (Data → Model → Training → Prediction).
+* **Deep Concepts:** Hard vs. Soft Computing conceptual comparison (Calculator vs. ChatGPT).
+* **Interactive Widgets:** AI or Not AI Card Quiz, Train an AI Classification Simulator.
+
+#### 🚀 [Module 2: AI in the Real World](https://drsnigdha.github.io/ml-outreach/day1_session1_2.html)
+Explores how AI operates in daily life, historical breakthroughs, and responsible usage.
+* **Core Concepts:** A Typical Day with AI Timeline, Generative AI Revolution (2020-2026), Under the Hood of Recommendations (Netflix collaborative filtering) and Smart Assistants (voice vectors).
+* **Interactive Widgets:** Daily AI Checklist, Image Generation Prompt Playground.
+* **Ethics Checkpoint:** Responsible AI, Deepfakes, and Bias.
+
+### 🌇 Session 2: Machine Learning Deep Dive & Careers
+
+#### 📊 [Module 1: ML Foundations & Regressions](https://drsnigdha.github.io/ml-outreach/day1_session2_1.html)
+Demystifies how computers learn from data without explicit programming.
 * **Core Concepts:** Telemetry Data, Features vs. Labels, Training vs. Prediction loops.
 * **Mathematical Intuition:** Continuous vs. Discrete predictions (Regression vs. Classification).
-* **Validation:** Introduction to Train-Test Split and the concept of evaluating models on unseen data.
+* **Interactive Widgets:** Training Ratio Slider (80/20 vs 50/50), Decision Boundary Coordinate Grid Adjuster.
+* **Validation:** Train-Test Split and evaluating models on unseen data.
 
-### 🧠 [Part 2: NLP, Careers & Mindsets](https://drsnigdha.github.io/ml-outreach/day1_session2_2.html)
+#### 🧠 [Module 2: NLP, Careers & Mindsets](https://drsnigdha.github.io/ml-outreach/day1_session2_2.html)
 Explores how machines understand human text and guides students toward building a future in AI.
 * **Natural Language Processing (NLP):** Bag-of-Words text representation, Tokenization, and Sentiment Classification.
-* **AI Career Explorer:** Interactive walkthrough of roles like Data Scientist, ML Engineer, AI Researcher, and NLP Engineer.
-* **The 3 Human ML Superpowers:** Fosters an explorer mindset focused on Curiosity, Problem Solving, and Creativity.
-* **Grand Concept Quiz & Detective Challenge:** Interactive recap and a hands-on ML homework mission.
+* **Interactive Widgets:** Bag-of-Words Sentiment Classifier, AI Career Explorer Board.
+* **Mindset & Recap:** The 3 Human ML Superpowers (Curiosity, Problem Solving, Creativity), Card-Flipping Classroom Quiz, Detective Challenge homework.
 
 ---
 
@@ -31,11 +47,15 @@ Explores how machines understand human text and guides students toward building 
 
 To maximize student engagement, the presentation decks feature advanced, responsive interactive widgets built from scratch with pure client-side JavaScript:
 
-1. **Decision Boundary Adjuster (Part 1):** A live visual coordinate grid where students adjust a model's linear boundary boundary line to classify orange and blue data points in real time.
-2. **Interactive Training Ratio Slider (Part 1):** Simulates how altering the Train-Test Split ratio (e.g., 80/20 vs. 50/50) affects the number of training records and testing records.
-3. **Sentiment Analysis Classifier (Part 2):** A live text mining widget where students type reviews and watch the model tokenize the text, calculate a sentiment score using a Bag-of-Words dictionary, and classify the output as Positive, Negative, or Neutral.
-4. **AI Career Explorer Board (Part 2):** A dashboard where students select different AI careers to view their core objectives, daily duties, and direct connections to ML concepts.
-5. **Interactive Classroom Quiz (Part 2):** A card-flipping conceptual review quiz that reveals detailed answers upon selection.
+1. **AI or Not AI Card Quiz (Session 1, Module 1):** A card-flipping conceptual review quiz evaluating if everyday products use AI.
+2. **Train an AI Simulator (Session 1, Module 1):** An interactive playground simulating training a classification model by labeling items in real time.
+3. **Daily AI Checklist (Session 1, Module 2):** An interactive checklist calculating the student's personal daily AI interaction score.
+4. **Image Generation Prompt Playground (Session 1, Module 2):** A live visual simulator translating prompt descriptions into high-fidelity image outputs.
+5. **Decision Boundary Adjuster (Session 2, Module 1):** A coordinate grid where students adjust a model's linear boundary line to classify orange and blue data points.
+6. **Interactive Training Ratio Slider (Session 2, Module 1):** Simulates how altering the Train-Test Split ratio affects the training and testing records.
+7. **Sentiment Analysis Classifier (Session 2, Module 2):** A live text mining widget where students watch the model tokenize text and classify sentiment using a Bag-of-Words dictionary.
+8. **AI Career Explorer Board (Session 2, Module 2):** A dashboard displaying objectives, duties, and salaries for core AI professions.
+9. **Interactive Classroom Quiz (Session 2, Module 2):** A card-flipping conceptual review quiz.
 
 ---
 
