@@ -789,12 +789,56 @@ df[<span class="text-amber-300">'Date'</span>] = pd.to_datetime(df[<span class="
 
     // Keyboard controls handler
     document.addEventListener('keydown', (e) => {
+      const activeEl = document.activeElement;
+      const capturesArrowKeys = activeEl && (
+        (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+        activeEl.tagName === 'TEXTAREA' ||
+        activeEl.tagName === 'SELECT'
+      );
+      const capturesSpacebar = activeEl && (
+        activeEl.tagName === 'INPUT' ||
+        activeEl.tagName === 'TEXTAREA' ||
+        activeEl.tagName === 'SELECT' ||
+        activeEl.tagName === 'BUTTON' ||
+        activeEl.getAttribute('role') === 'button'
+      );
+
       if (e.key === 'ArrowRight' || e.key === ' ') {
-        e.preventDefault();
-        nextSlide();
+        if (!capturesSpacebar && !capturesArrowKeys) {
+          nextSlide();
+          e.preventDefault();
+        }
       } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        prevSlide();
+        if (!capturesArrowKeys) {
+          prevSlide();
+          e.preventDefault();
+        }
+      } else if (e.key === 'f' || e.key === 'F') {
+        const capturesTextKeys = activeEl && (
+          activeEl.tagName === 'INPUT' ||
+          activeEl.tagName === 'TEXTAREA'
+        );
+        if (!capturesTextKeys) {
+          toggleFullscreen();
+          e.preventDefault();
+        }
+      }
+    });
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(`Error enabling fullscreen: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    document.addEventListener('dblclick', (e) => {
+      const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+      if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+        toggleFullscreen();
       }
     });
 
