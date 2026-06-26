@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 4: Types of Prompts</title>
+    <!-- Tailwind CSS for modern utility-first layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans for premium presentation aesthetics -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for clean system and creative icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            slate: '#0b0f19',
+                            dark: '#111827',
+                            card: '#1e293b',
+                            accent: '#3b82f6',
+                            highlight: '#a855f7',
+                            lime: '#deff9a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        
+        /* Slide Transition Animations */
+        .slide {
+            display: none;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            opacity: 0;
+            transform: scale(0.98);
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* Glassmorphism utility */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Pulsing accent glowing dots */
+        .glow-accent {
+            box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.4);
+        }
+        .glow-lime {
+            box-shadow: 0 0 25px -5px rgba(222, 255, 154, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-brand-slate text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-brand-lime selection:text-brand-slate">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-brand-dark/80 backdrop-blur-md border-b border-slate-800/80 px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-accent to-brand-highlight flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <i class="fa-solid fa-wand-magic-sparkles text-white text-lg"></i>
+            </div>
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-brand-accent">Section 4</span>
+                <h1 class="text-sm font-extrabold text-white tracking-tight">Prompt Engineering Frameworks</h1>
+            </div>
+        </div>
+        <div class="flex items-center space-x-6">
+            <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300">
+                Section 4: Types of Prompts
+            </span>
+            <!-- Slide Quick Select Dropdown -->
+            <select id="slideSelect" onchange="jumpToSlide(parseInt(this.value))" class="bg-slate-800 text-slate-200 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-medium focus:ring-2 focus:ring-brand-accent focus:outline-none cursor-pointer">
+                <!-- Dynamically populated -->
+            </select>
+        </div>
+    </header>
+
+    <!-- Main Slide Workspace -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-8 max-w-7xl mx-auto w-full">
+        
+        <!-- ==================== SLIDE 1 ==================== -->
+        <div class="slide active flex-col w-full" id="slide-1">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full">
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest">
+                        <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                        <span>Slide 1</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        There Is <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-blue-400">More Than One Way</span> to Talk to AI
+                    </h2>
+                    <p class="text-slate-400 text-lg">
+                        Think about asking a teacher for help. Your style of communication changes the outcome completely. AI models process your instruction style in the exact same manner.
+                    </p>
+                    
+                    <!-- Interactive Comparison Selection -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                        <button onclick="selectIntroMethod(1)" id="method-btn-1" class="method-card p-4 rounded-xl text-left border border-slate-700/80 bg-slate-800/40 hover:bg-slate-800 transition duration-200 group active-scale">
+                            <span class="text-xs font-bold text-brand-accent tracking-wide uppercase">Method 1</span>
+                            <h4 class="font-bold text-white mt-1 group-hover:text-brand-accent transition">Ask Directly</h4>
+                            <p class="text-xs text-slate-400 mt-2">"Explain gravity in simple words."</p>
+                        </button>
+                        <button onclick="selectIntroMethod(2)" id="method-btn-2" class="method-card p-4 rounded-xl text-left border border-slate-700/80 bg-slate-800/40 hover:bg-slate-800 transition duration-200 group">
+                            <span class="text-xs font-bold text-brand-highlight tracking-wide uppercase">Method 2</span>
+                            <h4 class="font-bold text-white mt-1 group-hover:text-brand-highlight transition">Show Examples First</h4>
+                            <p class="text-xs text-slate-400 mt-2">Provide a pattern before asking the question.</p>
+                        </button>
+                        <button onclick="selectIntroMethod(3)" id="method-btn-3" class="method-card p-4 rounded-xl text-left border border-slate-700/80 bg-slate-800/40 hover:bg-slate-800 transition duration-200 group">
+                            <span class="text-xs font-bold text-brand-lime tracking-wide uppercase">Method 3</span>
+                            <h4 class="font-bold text-white mt-1 group-hover:text-brand-lime transition">Assign a Persona</h4>
+                            <p class="text-xs text-slate-400 mt-2">"Behave like an astrophysicist."</p>
+                        </button>
+                    </div>
+
+                    <!-- Dynamic Output Display based on click -->
+                    <div id="intro-explanation" class="p-4 rounded-xl border border-slate-800 bg-slate-900/60 flex items-start space-x-3 text-sm text-slate-300">
+                        <i class="fa-solid fa-circle-info text-brand-accent mt-0.5 text-base"></i>
+                        <span>Click any method above to explore how it directly translates to professional prompt engineering techniques today.</span>
+                    </div>
+                </div>
+
+                <!-- Custom Visual: Pathway graphic using SVG and modern glow -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative w-full max-w-[400px] aspect-square rounded-2xl glass-card flex flex-col items-center justify-center p-8 overflow-hidden glow-accent">
+                        <!-- Abstract Glowing Orbits -->
+                        <div class="absolute inset-0 bg-radial-gradient from-blue-500/10 to-transparent pointer-events-none"></div>
+                        <svg class="w-full h-48" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Paths -->
+                            <path d="M20,20 C80,20 100,60 170,60" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="4 4" class="animate-pulse" />
+                            <path d="M20,60 L170,60" stroke="#a855f7" stroke-width="2.5" />
+                            <path d="M20,100 C80,100 100,60 170,60" stroke="#deff9a" stroke-width="2.5" stroke-dasharray="4 4" />
+                            <!-- Nodes -->
+                            <circle cx="20" cy="20" r="6" fill="#3b82f6" />
+                            <circle cx="20" cy="60" r="6" fill="#a855f7" />
+                            <circle cx="20" cy="100" r="6" fill="#deff9a" />
+                            <!-- Target AI Node -->
+                            <rect x="160" y="45" width="30" height="30" rx="6" fill="#1e293b" stroke="#f8fafc" stroke-width="2"/>
+                            <text x="175" y="64" fill="#fff" font-size="12" font-family="sans-serif" text-anchor="middle" font-weight="bold">AI</text>
+                        </svg>
+                        <div class="text-center mt-6 z-10">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Cognitive Model</span>
+                            <p class="text-sm font-semibold text-white mt-1">Different Pathways → Highly Custom Outcomes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 2 ==================== -->
+        <div class="slide flex-col w-full" id="slide-2">
+            <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest mb-6">
+                <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                <span>Slide 2</span>
+            </div>
+            <h2 class="text-4xl font-black tracking-tight text-white mb-6">
+                Prompting Techniques <span class="text-brand-lime">Roadmap</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch w-full">
+                <!-- Roadmap Matrix -->
+                <div class="lg:col-span-8 flex flex-col justify-between">
+                    <div class="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50">
+                        <table class="min-w-full divide-y divide-slate-800">
+                            <thead class="bg-slate-800/80">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-300">Technique</th>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-300">What It Means</th>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-brand-lime">Cricket Analogy</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <tr class="hover:bg-slate-800/30 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-brand-accent">Zero-Shot</td>
+                                    <td class="px-6 py-4 text-sm text-slate-300">No examples provided. Direct instruction.</td>
+                                    <td class="px-6 py-4 text-sm text-slate-400">"Play cricket right now."</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-brand-highlight">One-Shot</td>
+                                    <td class="px-6 py-4 text-sm text-slate-300">Exactly one representative example.</td>
+                                    <td class="px-6 py-4 text-sm text-slate-400">Watch one textbook cover drive demonstration.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-brand-lime">Few-Shot</td>
+                                    <td class="px-6 py-4 text-sm text-slate-300">Multiple diverse examples.</td>
+                                    <td class="px-6 py-4 text-sm text-slate-400">Watch several matches & diverse shot types.</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-amber-400">Role-Based</td>
+                                    <td class="px-6 py-4 text-sm text-slate-300">Assign a specific expert persona.</td>
+                                    <td class="px-6 py-4 text-sm text-slate-400">Hire a professional, specialized national coach.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Interactive Analogy Graphic Card -->
+                <div class="lg:col-span-4 rounded-xl border border-slate-800 bg-slate-900/40 p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-lime text-xs font-bold uppercase tracking-wider mb-4">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>Interactive Predictor</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">Predict Output Success</h4>
+                        <p class="text-sm text-slate-400">Based on standard prompt configurations, which technique is estimated to provide the highest stylistic match?</p>
+                        
+                        <!-- Mini Poll -->
+                        <div class="space-y-2 mt-4" id="poll-roadmap">
+                            <button onclick="answerRoadmapPoll(this, 'Few-Shot / Role-Based')" class="w-full text-left p-3 rounded-lg border border-slate-700 bg-slate-800/50 hover:border-brand-accent text-xs font-semibold text-slate-200 transition">
+                                Zero-Shot Prompting
+                            </button>
+                            <button onclick="answerRoadmapPoll(this, 'Few-Shot / Role-Based')" class="w-full text-left p-3 rounded-lg border border-slate-700 bg-slate-800/50 hover:border-brand-accent text-xs font-semibold text-slate-200 transition">
+                                One-Shot Prompting
+                            </button>
+                            <button onclick="answerRoadmapPoll(this, 'Few-Shot / Role-Based', true)" class="w-full text-left p-3 rounded-lg border border-slate-700 bg-slate-800/50 hover:border-brand-lime text-xs font-semibold text-slate-200 transition flex justify-between items-center">
+                                <span>Few-Shot / Role-Based</span>
+                                <span class="text-[10px] bg-brand-lime/10 border border-brand-lime/20 text-brand-lime px-1.5 py-0.5 rounded">Expert Choice</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="roadmap-poll-feedback" class="mt-4 text-xs p-3 rounded bg-slate-950 border border-slate-800/80 text-slate-400 min-h-[48px] flex items-center">
+                        Select a technique above to test your initial intuition.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 3 ==================== -->
+        <div class="slide flex-col w-full" id="slide-3">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full">
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest">
+                        <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                        <span>Slide 3</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        Zero-Shot Prompting: <br><span class="text-brand-accent">Direct Commands</span>
+                    </h2>
+                    <p class="text-slate-400 text-lg">
+                        Zero-shot prompting refers to the concept of providing a target instruction to an AI model <strong>without giving any examples</strong> of how the task should be performed.
+                    </p>
+                    
+                    <div class="p-6 rounded-xl border border-slate-800 bg-slate-900/60 space-y-3">
+                        <h4 class="font-bold text-slate-300 text-sm flex items-center">
+                            <i class="fa-solid fa-terminal text-brand-accent mr-2"></i>
+                            Raw Zero-Shot Execution
+                        </h4>
+                        <div class="font-mono bg-slate-950 p-4 rounded-lg border border-slate-800 text-xs text-brand-lime">
+                            <span class="text-slate-500">// System accepts instruction instantly</span><br>
+                            PROMPT: <span class="text-white">"Explain Machine Learning."</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual: Simulated AI Engine response -->
+                <div class="lg:col-span-5">
+                    <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <span class="text-xs font-extrabold tracking-wider text-slate-400 uppercase">Interactive Workspace</span>
+                            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        </div>
+                        <p class="text-sm text-slate-300">How does the AI process a zero-shot prompt?</p>
+                        
+                        <div class="bg-slate-950 p-4 rounded-lg border border-slate-800/80 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-slate-400 tracking-wider">AI Internal Weights</span>
+                                <span class="text-xs font-mono text-emerald-400">Knowledge: 100%</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                "The model traverses its existing parameters and decodes semantic connections without tuning variables via in-context demonstrations."
+                            </p>
+                        </div>
+                        
+                        <div class="text-center p-3 rounded-lg border border-slate-800 bg-slate-900/60">
+                            <span class="text-[11px] text-slate-400 block font-semibold mb-2">Are you ready to test out some daily real-world Zero-Shot patterns?</span>
+                            <button onclick="jumpToSlide(4)" class="text-xs font-bold px-4 py-2 rounded bg-brand-accent hover:bg-blue-600 transition text-white">
+                                View Use-Cases
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 4 ==================== -->
+        <div class="slide flex-col w-full" id="slide-4">
+            <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest mb-6">
+                <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                <span>Slide 4</span>
+            </div>
+            <h2 class="text-4xl font-black tracking-tight text-white mb-6">
+                Zero-Shot <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Everyday Examples</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+                <!-- Example 1 -->
+                <div class="p-6 rounded-xl border border-slate-800 bg-slate-900/40 space-y-4 hover:border-brand-accent transition">
+                    <div class="h-10 w-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-brand-accent">
+                        <i class="fa-solid fa-feather-pointed"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Creative Tasks</h3>
+                    <div class="p-3 bg-slate-950 rounded border border-slate-900 text-xs text-slate-300 font-mono">
+                        "Write a poem about friendship."
+                    </div>
+                </div>
+                <!-- Example 2 -->
+                <div class="p-6 rounded-xl border border-slate-800 bg-slate-900/40 space-y-4 hover:border-brand-accent transition">
+                    <div class="h-10 w-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-brand-highlight">
+                        <i class="fa-solid fa-file-contract"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Summarization</h3>
+                    <div class="p-3 bg-slate-950 rounded border border-slate-900 text-xs text-slate-300 font-mono">
+                        "Summarize this long article."
+                    </div>
+                </div>
+                <!-- Example 3 -->
+                <div class="p-6 rounded-xl border border-slate-800 bg-slate-900/40 space-y-4 hover:border-brand-accent transition">
+                    <div class="h-10 w-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-list"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Action Lists</h3>
+                    <div class="p-3 bg-slate-950 rounded border border-slate-900 text-xs text-slate-300 font-mono">
+                        "List five healthy habits."
+                    </div>
+                </div>
+                <!-- Example 4 -->
+                <div class="p-6 rounded-xl border border-slate-800 bg-slate-900/40 space-y-4 hover:border-brand-accent transition">
+                    <div class="h-10 w-10 rounded-lg bg-brand-lime/10 border border-brand-lime/20 flex items-center justify-center text-brand-lime">
+                        <i class="fa-solid fa-apple-whole"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Direct Q&A</h3>
+                    <div class="p-3 bg-slate-950 rounded border border-slate-900 text-xs text-slate-300 font-mono">
+                        "Explain Newton's laws."
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strengths and Weaknesses Evaluation -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 w-full">
+                <div class="flex items-start space-x-4 p-4 rounded-xl border border-emerald-500/10 bg-emerald-500/5">
+                    <div class="bg-emerald-500/10 text-emerald-400 p-2 rounded-lg mt-1">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-400">Key Strengths</h4>
+                        <p class="text-sm text-slate-400 mt-1">Extremely fast execution, zero boilerplate setup, completely simple to operate for daily casual queries.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-4 p-4 rounded-xl border border-rose-500/10 bg-rose-500/5">
+                    <div class="bg-rose-500/10 text-rose-400 p-2 rounded-lg mt-1">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-rose-400">Primary Limitations</h4>
+                        <p class="text-sm text-slate-400 mt-1">Highly prone to generic output. Model may easily misunderstand intent or structure constraints.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 5 ==================== -->
+        <div class="slide flex-col w-full" id="slide-5">
+            <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest mb-6">
+                <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                <span>Slide 5</span>
+            </div>
+            <h2 class="text-4xl font-black tracking-tight text-white mb-6">
+                Zero-Shot <span class="text-brand-lime">Prompt Playground</span>
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch w-full">
+                <!-- Sandbox Controls -->
+                <div class="lg:col-span-6 space-y-6">
+                    <p class="text-slate-400 text-base">
+                        Let's experience Zero-Shot firsthand. Choose one of the topics below to formulate a command with absolutely zero design hints.
+                    </p>
+                    <div class="space-y-3">
+                        <button onclick="setZeroShotTemplate('History')" class="w-full p-4 text-left rounded-xl border border-slate-700 hover:border-brand-accent bg-slate-800/40 flex items-center justify-between group transition">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl text-brand-accent"><i class="fa-solid fa-landmark"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">Learning History Template</h4>
+                                    <p class="text-xs text-slate-400 mt-0.5">Generate historical facts about a country.</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-brand-accent font-bold">Use <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                        </button>
+                        
+                        <button onclick="setZeroShotTemplate('Python')" class="w-full p-4 text-left rounded-xl border border-slate-700 hover:border-brand-highlight bg-slate-800/40 flex items-center justify-between group transition">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl text-brand-highlight"><i class="fa-solid fa-code"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">Learning Python Template</h4>
+                                    <p class="text-xs text-slate-400 mt-0.5">Request a functional programming script.</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-brand-highlight font-bold">Use <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                        </button>
+
+                        <button onclick="setZeroShotTemplate('Algebra')" class="w-full p-4 text-left rounded-xl border border-slate-700 hover:border-brand-lime bg-slate-800/40 flex items-center justify-between group transition">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xl text-brand-lime"><i class="fa-solid fa-calculator"></i></span>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">Learning Algebra Template</h4>
+                                    <p class="text-xs text-slate-400 mt-0.5">Solve algebraic polynomial equations.</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-brand-lime font-bold">Use <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sandbox Workspace Playground -->
+                <div class="lg:col-span-6 flex flex-col justify-between rounded-xl border border-slate-800 bg-slate-900/30 p-6">
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Your Constructed Zero-Shot Prompt</label>
+                        <textarea id="zeroshot-input" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-white font-mono focus:ring-1 focus:ring-brand-accent focus:outline-none" placeholder="Select a template or start typing directly..."></textarea>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-slate-500 font-semibold italic">Rule constraint: No examples allowed!</span>
+                            <button onclick="simulateZeroShotResponse()" class="bg-brand-accent text-white font-bold text-xs px-4 py-2 rounded-lg hover:bg-blue-600 active:scale-95 transition">
+                                Simulate AI Execution
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Output Console Simulated -->
+                    <div class="mt-6">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Simulated Prompt Response Output</label>
+                        <div id="zeroshot-output" class="bg-slate-950 p-4 rounded-lg border border-slate-800/80 min-h-[100px] text-xs text-slate-300 font-mono whitespace-pre-line">
+                            No processing has run. Output is currently idle.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 6 ==================== -->
+        <div class="slide flex-col w-full" id="slide-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full">
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest">
+                        <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                        <span>Slide 6</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        One-Shot Prompting: <br><span class="text-brand-highlight">A Single Guide</span>
+                    </h2>
+                    <p class="text-slate-400 text-lg">
+                        Instead of expecting the model to infer rules on its own, we supply <strong>exactly one demonstration</strong> of the format, style, or structure we want.
+                    </p>
+                    
+                    <!-- Code block comparison -->
+                    <div class="p-6 rounded-xl border border-slate-800 bg-slate-900/60 space-y-3">
+                        <h4 class="font-bold text-slate-300 text-sm flex items-center">
+                            <i class="fa-solid fa-code-compare text-brand-highlight mr-2"></i>
+                            One-Shot Format Blueprint
+                        </h4>
+                        <div class="font-mono bg-slate-950 p-4 rounded-lg border border-slate-800 text-xs text-brand-lime leading-relaxed">
+                            <span class="text-slate-500">// Example demonstration:</span><br>
+                            Positive Review &rarr; Positive<br>
+                            Negative Review &rarr; Negative<br>
+                            <span class="text-slate-500">// Task to evaluate:</span><br>
+                            Review: <span class="text-white">"This movie was amazing."</span><br>
+                            Classify: <span class="text-white">?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphic Visual: The single anchor element pattern -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="w-full max-w-[400px] aspect-square rounded-2xl glass-card flex flex-col justify-between p-8 overflow-hidden glow-accent border-brand-highlight/20">
+                        <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                            <span class="text-xs font-extrabold tracking-wider text-brand-highlight uppercase">Cognitive Schema</span>
+                            <span class="text-[10px] bg-brand-highlight/10 px-2 py-0.5 rounded text-brand-highlight">One-Shot</span>
+                        </div>
+                        
+                        <!-- Visual Jigsaw representation in SVG -->
+                        <div class="flex items-center justify-center py-6">
+                            <svg class="h-32 w-32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Base Model Connection Points -->
+                                <circle cx="50" cy="50" r="35" stroke="#334155" stroke-width="4" stroke-dasharray="3 3"/>
+                                <!-- Key Shot Demonstration Component -->
+                                <rect x="35" y="35" width="30" height="30" rx="6" fill="#a855f7" class="animate-bounce" style="animation-duration: 3s;"/>
+                                <!-- Flow Arrows -->
+                                <path d="M15,50 L30,50" stroke="#f8fafc" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M70,50 L85,50" stroke="#deff9a" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+
+                        <div class="text-center">
+                            <span class="text-xs font-bold text-slate-400 block mb-1">Human Cognitive Equivalent</span>
+                            <p class="text-sm font-semibold text-white">Seeing the teacher solve one question on the board before completing your homework sheets.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 7 ==================== -->
+        <div class="slide flex-col w-full" id="slide-7">
+            <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest mb-6">
+                <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                <span>Slide 7</span>
+            </div>
+            <h2 class="text-4xl font-black tracking-tight text-white mb-4">
+                Pattern <span class="text-brand-lime">Inference Simulator</span> (One-Shot Activity)
+            </h2>
+            <p class="text-slate-400 text-base mb-8 max-w-3xl">
+                The AI system monitors relationships between inputs. Below is our single example. Click the target to run the internal inference and see how the AI derives the class.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                <!-- Anchor Example 1 -->
+                <div class="p-6 rounded-xl border border-slate-700 bg-slate-800/40 space-y-3 relative overflow-hidden">
+                    <span class="absolute top-4 right-4 text-xs font-bold bg-slate-700 text-slate-300 px-2.5 py-0.5 rounded">Demonstration (1)</span>
+                    <h3 class="text-lg font-bold text-brand-lime">Dog</h3>
+                    <p class="text-sm text-slate-400">Classified Output Attribute:</p>
+                    <div class="p-3 bg-slate-950 rounded border border-slate-900 text-sm font-mono text-white text-center">
+                        Animal
+                    </div>
+                </div>
+
+                <!-- Anchor Example 2 -->
+                <div class="p-6 rounded-xl border border-slate-700 bg-slate-800/40 space-y-3 relative overflow-hidden">
+                    <span class="absolute top-4 right-4 text-xs font-bold bg-slate-700 text-slate-300 px-2.5 py-0.5 rounded">Demonstration (2)</span>
+                    <h3 class="text-lg font-bold text-brand-highlight">Rose</h3>
+                    <p class="text-sm text-slate-400">Classified Output Attribute:</p>
+                    <div class="p-3 bg-slate-950 rounded border border-slate-900 text-sm font-mono text-white text-center">
+                        Flower
+                    </div>
+                </div>
+
+                <!-- Target to Classify -->
+                <div class="p-6 rounded-xl border border-brand-lime/30 bg-slate-800/25 space-y-3 relative overflow-hidden glow-lime">
+                    <span class="absolute top-4 right-4 text-xs font-bold bg-brand-lime/10 border border-brand-lime/20 text-brand-lime px-2.5 py-0.5 rounded">Evaluate Target</span>
+                    <h3 class="text-lg font-bold text-white">Mango</h3>
+                    <p class="text-sm text-slate-400">Classified Output Attribute:</p>
+                    <button onclick="revealOneShotClassification()" id="oneshot-classification-btn" class="w-full py-3 bg-brand-lime text-slate-950 font-bold text-sm rounded-lg hover:brightness-110 active:scale-95 transition">
+                        Run Inference
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pattern explanation reveal area -->
+            <div id="oneshot-pattern-feedback" class="w-full mt-8 p-4 rounded-xl border border-slate-800 bg-slate-950/60 font-mono text-xs text-slate-400 min-h-[64px] flex items-center justify-center text-center">
+                Click "Run Inference" on the target above to run the pattern simulation.
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 8 ==================== -->
+        <div class="slide flex-col w-full" id="slide-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full">
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest">
+                        <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                        <span>Slide 8</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        Few-Shot Prompting: <br><span class="text-brand-lime">Multiple Benchmarks</span>
+                    </h2>
+                    <p class="text-slate-400 text-lg">
+                        Some tasks are too complex, styling guidelines too intricate, or syntax structures too specific to establish using only a single shot. <strong>Few-Shot Prompting provides several examples</strong> to guide formatting.
+                    </p>
+                    
+                    <div class="p-6 rounded-xl border border-slate-800 bg-slate-900/60 space-y-3">
+                        <h4 class="font-bold text-slate-300 text-sm flex items-center">
+                            <i class="fa-solid fa-list-ol text-brand-lime mr-2"></i>
+                            Few-Shot Pattern Setup
+                        </h4>
+                        <div class="font-mono bg-slate-950 p-4 rounded-lg border border-slate-800 text-xs text-brand-lime leading-relaxed">
+                            Cat &rarr; Animal<br>
+                            Dog &rarr; Animal<br>
+                            Rose &rarr; Flower<br>
+                            Lily &rarr; Flower<br>
+                            <span class="text-slate-500">// Evaluated Instance:</span><br>
+                            Mango &rarr; <span class="text-white">?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Few Shot Sandbox Card -->
+                <div class="lg:col-span-5">
+                    <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <span class="text-xs font-extrabold tracking-wider text-slate-400 uppercase">Interactive Build</span>
+                            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                        </div>
+                        <p class="text-sm text-slate-300">How do multiple examples boost AI accuracy?</p>
+                        
+                        <!-- Interactive Selector -->
+                        <div class="space-y-2">
+                            <button onclick="toggleFewShotExplanation(1)" class="w-full text-left p-3 rounded-lg border border-slate-700 bg-slate-800/40 hover:border-brand-accent text-xs font-semibold text-slate-200 transition">
+                                Reduce Multi-Class Ambiguity
+                            </button>
+                            <button onclick="toggleFewShotExplanation(2)" class="w-full text-left p-3 rounded-lg border border-slate-700 bg-slate-800/40 hover:border-brand-accent text-xs font-semibold text-slate-200 transition">
+                                Lock in Formatting Constraints
+                            </button>
+                            <button onclick="toggleFewShotExplanation(3)" class="w-full text-left p-3 rounded-lg border border-slate-700 bg-slate-800/40 hover:border-brand-accent text-xs font-semibold text-slate-200 transition">
+                                Enforce Specific Styles
+                            </button>
+                        </div>
+                        
+                        <div id="fewshot-interactive-box" class="p-3 bg-slate-950 border border-slate-800 text-xs text-slate-400 leading-relaxed rounded min-h-[80px] flex items-center">
+                            Select one of the benefits above to study why multiple shots yield optimal execution.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 9 ==================== -->
+        <div class="slide flex-col w-full animate-fade-in" id="slide-9">
+            <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest mb-6">
+                <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                <span>Slide 9</span>
+            </div>
+            <h2 class="text-4xl font-black tracking-tight text-white mb-4">
+                Why Few-Shot <span class="text-brand-lime">Prompting Works</span>
+            </h2>
+            <p class="text-slate-400 text-base mb-8 max-w-3xl">
+                Let's use a real-world analog: <strong>Learning to Dance.</strong> Click through the demonstration switch to compare instructional volume.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch w-full">
+                <!-- Toggle switcher -->
+                <div class="lg:col-span-5 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <button onclick="toggleDanceAnalogy('single')" id="dance-btn-single" class="w-full p-4 rounded-xl text-left border border-brand-accent bg-brand-accent/5 flex items-center justify-between transition group">
+                            <div>
+                                <h4 class="font-bold text-white text-sm">One Single Demonstration</h4>
+                                <p class="text-xs text-slate-400 mt-1">Watching a complex flip only once.</p>
+                            </div>
+                            <span class="text-xl text-brand-accent"><i class="fa-solid fa-person-falling"></i></span>
+                        </button>
+                        
+                        <button onclick="toggleDanceAnalogy('multi')" id="dance-btn-multi" class="w-full p-4 rounded-xl text-left border border-slate-700 hover:border-brand-lime bg-slate-800/20 flex items-center justify-between transition group">
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Five Diverse Demonstrations</h4>
+                                <p class="text-xs text-slate-400 mt-1">Watching different angles, speeds, & adjustments.</p>
+                            </div>
+                            <span class="text-xl text-brand-lime"><i class="fa-solid fa-people-group"></i></span>
+                        </button>
+                    </div>
+
+                    <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/60 text-sm text-slate-400 leading-relaxed">
+                        <i class="fa-solid fa-lightbulb text-brand-lime mr-2"></i>
+                        Establishing multiple examples constructs context boundaries in standard language models.
+                    </div>
+                </div>
+
+                <!-- Dynamic display output -->
+                <div class="lg:col-span-7 rounded-xl border border-slate-800 bg-slate-900/40 p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-slate-800/80 pb-3 mb-4">
+                            <span class="text-xs font-extrabold tracking-wider text-slate-400 uppercase">Analogy Playground Simulator</span>
+                            <span id="dance-state-badge" class="text-[10px] bg-brand-accent/10 border border-brand-accent/20 text-brand-accent font-bold px-2.5 py-0.5 rounded">One-Shot Mode</span>
+                        </div>
+                        
+                        <!-- Mini visual container -->
+                        <div class="h-44 rounded-lg bg-slate-950 flex items-center justify-center relative overflow-hidden border border-slate-900">
+                            <!-- Graphical depiction of student response -->
+                            <div id="dance-visual" class="text-center space-y-2">
+                                <span class="text-5xl">😕</span>
+                                <p class="text-sm text-slate-300 font-bold">Uncertain & Confused</p>
+                                <p class="text-xs text-slate-500">"Was that first step a left turn or right turn? Did I spin?"</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="dance-summary" class="mt-4 p-4 rounded bg-slate-950 border border-slate-900 text-xs text-slate-400">
+                        A single demonstration presents structural context but fails to offer boundaries for diverse real-time modifications.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 10 ==================== -->
+        <div class="slide flex-col w-full" id="slide-10">
+            <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest mb-6">
+                <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                <span>Slide 10</span>
+            </div>
+            <h2 class="text-4xl font-black tracking-tight text-white mb-4">
+                Few-Shot <span class="text-brand-lime">Classroom Lab Exercise</span>
+            </h2>
+            <p class="text-slate-400 text-base mb-8 max-w-3xl">
+                Observe the pattern established by the instructor dataset. Challenge your neural capabilities. What belongs in the evaluated instance?
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch w-full">
+                <!-- Training Dataset -->
+                <div class="lg:col-span-6 rounded-xl border border-slate-800 bg-slate-900/40 p-6 space-y-4">
+                    <h3 class="text-xs font-bold tracking-wider text-slate-400 uppercase border-b border-slate-800 pb-2">Training Demonstration Set</h3>
+                    
+                    <div class="space-y-2 font-mono text-sm text-slate-300">
+                        <div class="p-2 rounded bg-slate-950/60 border border-slate-900 flex justify-between">
+                            <span class="text-brand-accent">Example 1:</span>
+                            <span>India &rarr; New Delhi</span>
+                        </div>
+                        <div class="p-2 rounded bg-slate-950/60 border border-slate-900 flex justify-between">
+                            <span class="text-brand-accent">Example 2:</span>
+                            <span>France &rarr; Paris</span>
+                        </div>
+                        <div class="p-2 rounded bg-slate-950/60 border border-slate-900 flex justify-between">
+                            <span class="text-brand-accent">Example 3:</span>
+                            <span>Japan &rarr; Tokyo</span>
+                        </div>
+                        <div class="p-2 rounded bg-slate-950/60 border border-slate-900 flex justify-between">
+                            <span class="text-brand-accent">Example 4:</span>
+                            <span>Germany &rarr; Berlin</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Input Interface -->
+                <div class="lg:col-span-6 rounded-xl border border-slate-800 bg-slate-900/40 p-6 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-xs font-bold tracking-wider text-slate-400 uppercase border-b border-slate-800 pb-2 mb-4">Evaluated Instance Target</h3>
+                        
+                        <div class="p-4 rounded-xl border border-brand-lime/20 bg-brand-lime/5 text-center space-y-4">
+                            <span class="text-sm text-slate-300 font-bold block">Input Query</span>
+                            <span class="text-3xl font-black text-white block">Australia &rarr; <span class="border-b-2 border-dashed border-white px-4">?</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Choices for Student Match -->
+                    <div class="grid grid-cols-3 gap-2 mt-4">
+                        <button onclick="checkFewShotCapital('Sydney', false)" class="capital-btn p-3 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg transition active:scale-95">Sydney</button>
+                        <button onclick="checkFewShotCapital('Canberra', true)" class="capital-btn p-3 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg transition active:scale-95">Canberra</button>
+                        <button onclick="checkFewShotCapital('Melbourne', false)" class="capital-btn p-3 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg transition active:scale-95">Melbourne</button>
+                    </div>
+
+                    <div id="fewshot-exercise-feedback" class="mt-4 p-3 bg-slate-950 border border-slate-900 rounded text-xs text-slate-400 text-center min-h-[40px] flex items-center justify-center">
+                        Select your answer based on pattern matching parameters.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 11 ==================== -->
+        <div class="slide flex-col w-full" id="slide-11">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full">
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest">
+                        <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                        <span>Slide 11</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        Role-Based Prompting: <br><span class="text-brand-highlight">Expert Personas</span>
+                    </h2>
+                    <p class="text-slate-400 text-lg">
+                        Role Prompting tells the AI exactly <strong>who</strong> it should act as. By giving the AI a persona, we drastically restrict its behavioral weights, shaping its tone, style, and boundaries.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/40 space-y-2">
+                            <span class="text-xs font-bold text-brand-accent uppercase"><i class="fa-solid fa-graduation-cap"></i> Tone</span>
+                            <p class="text-sm text-slate-300">Determines vocabulary complex vs friendly.</p>
+                        </div>
+                        <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/40 space-y-2">
+                            <span class="text-xs font-bold text-brand-highlight uppercase"><i class="fa-solid fa-shield-halved"></i> Constraints</span>
+                            <p class="text-sm text-slate-300">Ensures professional ethics boundaries are active.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Persona Switcher Visual -->
+                <div class="lg:col-span-5">
+                    <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <span class="text-xs font-extrabold tracking-wider text-slate-400 uppercase">Persona Configurator</span>
+                            <span class="h-2 w-2 rounded-full bg-indigo-500"></span>
+                        </div>
+                        
+                        <div class="text-center py-4 bg-slate-950 rounded-lg border border-slate-900 flex flex-col items-center">
+                            <div class="h-16 w-16 rounded-full bg-brand-highlight/20 border border-brand-highlight flex items-center justify-center text-brand-highlight text-2xl mb-3 animate-pulse">
+                                <i id="persona-icon animate-spin" class="fa-solid fa-user-tie"></i>
+                            </div>
+                            <span id="persona-title" class="text-lg font-bold text-white">Default Assistant Persona</span>
+                            <span id="persona-desc" class="text-xs text-slate-400 mt-1">Ready to adjust context attributes.</span>
+                        </div>
+                        
+                        <!-- Persona choices selectors -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setPersona('Teacher', 'fa-graduation-cap', 'Teacher Persona Active', 'Adopts a structured, simple, supportive educational tone.')" class="p-2.5 bg-slate-800 text-xs font-bold text-slate-200 rounded-lg transition hover:bg-slate-700">Teacher</button>
+                            <button onclick="setPersona('Developer', 'fa-code', 'Software Engineer Active', 'Adopts high-efficiency technical formatting & structures.')" class="p-2.5 bg-slate-800 text-xs font-bold text-slate-200 rounded-lg transition hover:bg-slate-700">Engineer</button>
+                            <button onclick="setPersona('Doctor', 'fa-user-doctor', 'Medical Expert Active', 'Focuses on clinical terminology & safety constraints.')" class="p-2.5 bg-slate-800 text-xs font-bold text-slate-200 rounded-lg transition hover:bg-slate-700">Medical Doc</button>
+                            <button onclick="setPersona('Historian', 'fa-landmark', 'World Historian Active', 'Focuses heavily on precise context, chronology, & sources.')" class="p-2.5 bg-slate-800 text-xs font-bold text-slate-200 rounded-lg transition hover:bg-slate-700">Historian</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 12 ==================== -->
+        <div class="slide flex-col w-full animate-fade-in" id="slide-12">
+            <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest mb-6">
+                <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                <span>Slide 12</span>
+            </div>
+            <h2 class="text-4xl font-black tracking-tight text-white mb-4">
+                Role Prompting <span class="text-brand-lime">in Action</span>
+            </h2>
+            <p class="text-slate-400 text-base mb-8 max-w-3xl">
+                We pose the exact same question: <strong>"What is exercise?"</strong> Watch how the AI completely alters its explanation style based on the role assigned.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+                <!-- Role 1 -->
+                <button onclick="showRolePerspective('Doctor')" class="role-perspective-card p-6 rounded-xl border border-slate-800 bg-slate-900/40 text-left hover:border-brand-accent hover:bg-slate-900/50 transition">
+                    <span class="text-xs font-bold text-brand-accent uppercase"><i class="fa-solid fa-user-doctor mr-1"></i> Role 1</span>
+                    <h4 class="font-extrabold text-white text-lg mt-1">Medical Doctor</h4>
+                    <p class="text-xs text-slate-400 mt-2">Focus on physical safety guidelines, metrics, and disease prevention patterns.</p>
+                </button>
+                
+                <!-- Role 2 -->
+                <button onclick="showRolePerspective('Trainer')" class="role-perspective-card p-6 rounded-xl border border-slate-800 bg-slate-900/40 text-left hover:border-brand-highlight hover:bg-slate-900/50 transition">
+                    <span class="text-xs font-bold text-brand-highlight uppercase"><i class="fa-solid fa-dumbbell mr-1"></i> Role 2</span>
+                    <h4 class="font-extrabold text-white text-lg mt-1">Fitness Trainer</h4>
+                    <p class="text-xs text-slate-400 mt-2">Focus on athletic conditioning regimens, calorie burns, sets, reps, and physical hypertrophy.</p>
+                </button>
+                
+                <!-- Role 3 -->
+                <button onclick="showRolePerspective('Biologist')" class="role-perspective-card p-6 rounded-xl border border-slate-800 bg-slate-900/40 text-left hover:border-brand-lime hover:bg-slate-900/50 transition">
+                    <span class="text-xs font-bold text-brand-lime uppercase"><i class="fa-solid fa-microscope mr-1"></i> Role 3</span>
+                    <h4 class="font-extrabold text-white text-lg mt-1">Biology Teacher</h4>
+                    <p class="text-xs text-slate-400 mt-2">Focus on lactic acid thresholds, mitochondria performance, and metabolic processes.</p>
+                </button>
+
+                <!-- Role 4 -->
+                <button onclick="showRolePerspective('Historian')" class="role-perspective-card p-6 rounded-xl border border-slate-800 bg-slate-900/40 text-left hover:border-amber-400 hover:bg-slate-900/50 transition">
+                    <span class="text-xs font-bold text-amber-400 uppercase"><i class="fa-solid fa-landmark mr-1"></i> Role 4</span>
+                    <h4 class="font-extrabold text-white text-lg mt-1">Sports Coach</h4>
+                    <p class="text-xs text-slate-400 mt-2">Focus on strategic field execution, endurance, mental grit, and team gameplay mechanics.</p>
+                </button>
+            </div>
+
+            <!-- Perspectives interactive display console -->
+            <div class="w-full mt-8 p-6 rounded-xl border border-slate-800 bg-slate-950/60 flex items-start space-x-4 min-h-[110px]">
+                <div class="h-10 w-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-white shrink-0 mt-1">
+                    <i id="perspective-display-icon" class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <div>
+                    <h4 id="perspective-display-role" class="font-bold text-white">Select a Persona Perspective</h4>
+                    <p id="perspective-display-text" class="text-sm text-slate-400 mt-1 leading-relaxed">Click any of the expert roles above to simulate how they answer "What is exercise?".</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 13 ==================== -->
+        <div class="slide flex-col w-full" id="slide-13">
+            <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest mb-6">
+                <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                <span>Slide 13</span>
+            </div>
+            <h2 class="text-4xl font-black tracking-tight text-white mb-6">
+                Which Prompting Technique <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-brand-highlight">Should We Use?</span>
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch w-full">
+                <!-- Comparison matrix and select guidelines -->
+                <div class="lg:col-span-8 flex flex-col justify-between space-y-4">
+                    <p class="text-slate-400 text-base">
+                        There is no "best" technique. Professional engineers choose strategies systematically based on accuracy requirements and context constraints.
+                    </p>
+                    
+                    <div class="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50">
+                        <table class="min-w-full divide-y divide-slate-800">
+                            <thead class="bg-slate-800/80">
+                                <tr>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-300">Target Scenario</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-300">Optimal Technique</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-300">Implementation Model</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800 text-sm">
+                                <tr class="hover:bg-slate-800/20 transition">
+                                    <td class="px-6 py-4 text-slate-300">"Quick questions & general facts query"</td>
+                                    <td class="px-6 py-4 text-brand-accent font-bold">Zero-Shot</td>
+                                    <td class="px-6 py-4 font-mono text-xs text-slate-400">Direct Command</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/20 transition">
+                                    <td class="px-6 py-4 text-slate-300">"Classifications with small parameters"</td>
+                                    <td class="px-6 py-4 text-brand-highlight font-bold">One-Shot</td>
+                                    <td class="px-6 py-4 font-mono text-xs text-slate-400">Single Example</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/20 transition">
+                                    <td class="px-6 py-4 text-slate-300">"Formatting complex structured arrays"</td>
+                                    <td class="px-6 py-4 text-brand-lime font-bold">Few-Shot</td>
+                                    <td class="px-6 py-4 font-mono text-xs text-slate-400">Multiple Examples</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/20 transition">
+                                    <td class="px-6 py-4 text-slate-300">"Expert consultation & content tone adjustments"</td>
+                                    <td class="px-6 py-4 text-amber-400 font-bold">Role-Based</td>
+                                    <td class="px-6 py-4 font-mono text-xs text-slate-400">Persona Assignment</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Live Decision Tree Selector Helper -->
+                <div class="lg:col-span-4 rounded-xl border border-slate-800 bg-slate-900/40 p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-accent text-xs font-bold uppercase tracking-wider mb-3">
+                            <i class="fa-solid fa-tree"></i>
+                            <span>In-Class Decision Helper</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-white mb-2">Find Your Target Match</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">Are you working with complex output formats or a general inquiry?</p>
+                        
+                        <div class="space-y-2">
+                            <button onclick="matchBestTechnique('general')" class="w-full text-left p-3 rounded-lg border border-slate-700 bg-slate-800/30 hover:border-brand-accent text-xs font-semibold text-slate-200 transition">
+                                "I need general answers quickly."
+                            </button>
+                            <button onclick="matchBestTechnique('formatting')" class="w-full text-left p-3 rounded-lg border border-slate-700 bg-slate-800/30 hover:border-brand-highlight text-xs font-semibold text-slate-200 transition">
+                                "I have specific formatting rules."
+                            </button>
+                            <button onclick="matchBestTechnique('expert')" class="w-full text-left p-3 rounded-lg border border-slate-700 bg-slate-800/30 hover:border-brand-lime text-xs font-semibold text-slate-200 transition">
+                                "I want a specific authoritative tone."
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="decision-tree-feedback" class="mt-4 p-3 bg-slate-950 border border-slate-800 text-xs text-slate-300 min-h-[50px] flex items-center justify-center text-center rounded">
+                        Choose your operational goal to view the recommended technique.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 14 ==================== -->
+        <div class="slide flex-col w-full" id="slide-14">
+            <div class="inline-flex items-center space-x-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-xs font-bold text-brand-accent uppercase tracking-widest mb-4">
+                <span class="flex h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+                <span>Slide 14 (Consolidation Quiz)</span>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch w-full">
+                <!-- Detective Console Questions -->
+                <div class="lg:col-span-7 space-y-4">
+                    <h2 class="text-3xl font-black text-white">Interactive Quiz: <span class="text-brand-lime">Prompt Detective</span></h2>
+                    <p class="text-sm text-slate-400">Read each prompt setup below and match them with the correct technique style.</p>
+                    
+                    <div class="space-y-2">
+                        <!-- Detective Question A -->
+                        <div id="detective-card-A" class="p-4 rounded-xl border border-slate-800 bg-slate-900/50 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400">Prompt A</span>
+                                <p class="text-sm font-bold text-white mt-0.5">"Explain photosynthesis."</p>
+                            </div>
+                            <div class="flex space-x-1.5">
+                                <button onclick="answerDetective('A', 'Zero-Shot')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">Zero-Shot</button>
+                                <button onclick="answerDetective('A', 'Few-Shot')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">Few-Shot</button>
+                                <button onclick="answerDetective('A', 'Role-Based')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">Role-Based</button>
+                            </div>
+                        </div>
+
+                        <!-- Detective Question B -->
+                        <div id="detective-card-B" class="p-4 rounded-xl border border-slate-800 bg-slate-900/50 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400">Prompt B</span>
+                                <p class="text-sm font-bold text-white mt-0.5">"Cat &rarr; Animal. Dog &rarr; Animal. Mango &rarr; ?"</p>
+                            </div>
+                            <div class="flex space-x-1.5">
+                                <button onclick="answerDetective('B', 'Few-Shot')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">Few-Shot</button>
+                                <button onclick="answerDetective('B', 'One-Shot')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">One-Shot</button>
+                                <button onclick="answerDetective('B', 'Zero-Shot')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">Zero-Shot</button>
+                            </div>
+                        </div>
+
+                        <!-- Detective Question C -->
+                        <div id="detective-card-C" class="p-4 rounded-xl border border-slate-800 bg-slate-900/50 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400">Prompt C</span>
+                                <p class="text-sm font-bold text-white mt-0.5">"You are a science teacher. Explain gravity."</p>
+                            </div>
+                            <div class="flex space-x-1.5">
+                                <button onclick="answerDetective('C', 'Role-Based')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">Role-Based</button>
+                                <button onclick="answerDetective('C', 'Zero-Shot')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">Zero-Shot</button>
+                                <button onclick="answerDetective('C', 'One-Shot')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">One-Shot</button>
+                            </div>
+                        </div>
+
+                        <!-- Detective Question D -->
+                        <div id="detective-card-D" class="p-4 rounded-xl border border-slate-800 bg-slate-900/50 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400">Prompt D</span>
+                                <p class="text-sm font-bold text-white mt-0.5">"Review: Excellent &rarr; Pos. Review: Terrible &rarr; ?"</p>
+                            </div>
+                            <div class="flex space-x-1.5">
+                                <button onclick="answerDetective('D', 'One-Shot')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">One-Shot</button>
+                                <button onclick="answerDetective('D', 'Few-Shot')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">Few-Shot</button>
+                                <button onclick="answerDetective('D', 'Zero-Shot')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-bold rounded">Zero-Shot</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detective Console Visual Board & Stats -->
+                <div class="lg:col-span-5 rounded-xl border border-slate-800 bg-slate-900/40 p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                            <span class="text-xs font-extrabold tracking-wider text-slate-400 uppercase">Detective Status Log</span>
+                            <span class="h-2.5 w-2.5 rounded-full bg-brand-lime animate-ping"></span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-950 p-4 rounded border border-slate-900 text-center">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 block">Identified Cards</span>
+                                <span id="detective-score" class="text-4xl font-black text-brand-lime">0 / 4</span>
+                            </div>
+                            <div class="bg-slate-950 p-4 rounded border border-slate-900 text-center">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 block">Target Threshold</span>
+                                <span class="text-4xl font-black text-white">100%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="detective-summary-box" class="mt-4 p-4 rounded bg-slate-950 border border-slate-900 text-xs text-slate-300 min-h-[100px] flex items-center justify-center text-center leading-relaxed">
+                        Assess Prompt A through D on the left workspace. Click the optimal technique button to begin cataloging cases.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Interactive Navigation Controller Footer -->
+    <footer class="bg-brand-dark/90 border-t border-slate-800/80 px-8 py-5 flex items-center justify-between sticky bottom-0 z-50">
+        <div class="flex items-center space-x-4">
+            <button onclick="prevSlide()" class="h-10 w-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition active:scale-95">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <button onclick="nextSlide()" class="h-10 w-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition active:scale-95">
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <div class="text-xs font-semibold text-slate-400 hidden sm:block">
+                <span>Use keyboard left/right arrow keys or spacebar</span>
+            </div>
+        </div>
+
+        <!-- Visual Slide Progress Bar -->
+        <div class="flex-grow max-w-md mx-8 hidden md:block">
+            <div class="flex justify-between text-[11px] font-bold text-slate-500 mb-2">
+                <span id="current-slide-label">Slide 1</span>
+                <span>Slide 14</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="progressBar" class="bg-gradient-to-r from-brand-accent to-brand-highlight h-full w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <span id="slideCounter" class="text-sm font-extrabold text-white">1 / 14</span>
+            <button onclick="togglePresenterMode()" class="h-10 px-4 rounded-xl bg-brand-accent/15 border border-brand-accent/20 text-brand-accent hover:bg-brand-accent hover:text-white text-xs font-bold transition flex items-center space-x-2">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                <span class="hidden sm:inline">Presenter Notes</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Presenter Notes Dialog Modal Overlay -->
+    <div id="presenter-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-6 hidden">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl flex flex-col justify-between">
+            <div class="p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h3 class="text-lg font-black text-white flex items-center">
+                        <i class="fa-solid fa-clipboard text-brand-lime mr-2"></i>
+                        Speaker Notes
+                    </h3>
+                    <button onclick="togglePresenterMode()" class="text-slate-400 hover:text-white transition">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <div id="presenter-notes-content" class="text-slate-300 text-sm leading-relaxed max-h-[300px] overflow-y-auto pr-2">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+            <div class="bg-slate-950 p-4 border-t border-slate-800 flex justify-end">
+                <button onclick="togglePresenterMode()" class="bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-slate-700 transition">
+                    Close Sheet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Presentation Engine Operations -->
+    <script>
+        // Core Config
+        const startSlide = 1;
+        const endSlide = 14;
+        let currentSlide = startSlide;
+
+        const speakerNotes = {
+            1: `Connect back to Slide 18. Remember Students A, B, and C? Each was unknowingly using a different prompting strategy. Today we learn why those strategies matter. 
+                 \n\nActivity/Discussion: Ask: "If you needed help learning math, would you prefer instructions, examples, or a tutor?"`,
+            2: `All these techniques help AI understand our expectations. Some tasks need only instructions. Others benefit greatly from examples.
+                 \n\nActivity/Discussion: Ask students to predict: Which technique will likely produce the best results?`,
+            3: `Most people use Zero-Shot Prompting without realizing it. Every time you ask ChatGPT a direct question, you are using Zero-Shot Prompting.
+                 \n\nActivity/Discussion: Ask students: What are some Zero-Shot prompts you use daily?`,
+            4: `Zero-Shot is often sufficient for simple tasks. But when tasks become more complex, we may need additional guidance.
+                 \n\nActivity/Discussion: Ask students to identify whether sample prompts are Zero-Shot.`,
+            5: `Students should understand that Zero-Shot means direct instruction only.
+                 \n\nActivity: Students write prompts individually.
+                 \n\nDiscussion Questions: Was it easy? What limitations did you notice?`,
+            6: `Sometimes one example is enough to communicate expectations. Humans learn this way too.
+                 \n\nActivity/Discussion: Ask: Have you ever learned something from seeing just one example?`,
+            7: `Students begin seeing how examples guide AI.
+                 \n\nActivity: Groups create their own One-Shot prompts.
+                 \n\nDiscussion Questions: Why did the example help? Would more examples improve accuracy?`,
+            8: `Few-Shot Prompting is extremely powerful because examples reduce ambiguity.
+                 \n\nActivity/Discussion: Ask students: Would you trust one example or several examples?`,
+            9: `This analogy is very relatable for school students. The more examples we see, the easier it becomes to understand expectations.
+                 \n\nActivity: Think-Pair-Share. Give everyday examples.`,
+            10: `Use several examples and let students observe how AI learns patterns.
+                 \n\nActivity: Students create a Few-Shot prompt for another subject.`,
+            11: `Role prompting is one of the most widely used prompting techniques. It helps AI understand how it should respond.
+                 \n\nActivity: Students suggest new roles.`,
+            12: `Role changes perspective. This is why role prompting is so effective.
+                 \n\nActivity: Students predict how responses differ.`,
+            13: `There is no universally best technique. The best technique depends on the task.
+                 \n\nActivity: Students match scenarios to techniques.`,
+            14: `Students should now confidently identify prompt types.
+                 \n\nActivity: Class quiz.
+                 \n\nDiscussion Questions: Which technique seems most useful? Which technique would you use most often?`
+        };
+
+        // Populate dropdown
+        const slideSelect = document.getElementById('slideSelect');
+        for (let i = startSlide; i <= endSlide; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.innerHTML = `Slide ${i}: ${getSlideTitle(i)}`;
+            slideSelect.appendChild(opt);
+        }
+
+        function getSlideTitle(index) {
+            const titles = {
+                1: 'Talk to AI',
+                2: 'Techniques Roadmap',
+                3: 'Zero-Shot Intro',
+                4: 'Zero-Shot Examples',
+                5: 'Zero-Shot Activity',
+                6: 'One-Shot Intro',
+                7: 'One-Shot Activity',
+                8: 'Few-Shot Intro',
+                9: 'Why Few-Shot Works',
+                10: 'Few-Shot Activity',
+                11: 'Role-Based Intro',
+                12: 'Role-Based Activity',
+                13: 'Technique Comparison',
+                14: 'Prompt Detective Quiz'
+            };
+            return titles[index] || 'Slide';
+        }
+
+        function updateSlideUI() {
+            // Hide all slides
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            
+            // Show current active slide
+            const activeSlide = document.getElementById(`slide-${currentSlide}`);
+            if (activeSlide) activeSlide.classList.add('active');
+
+            // Update bottom stats & counter
+            document.getElementById('slideCounter').innerText = `${currentSlide} / ${endSlide}`;
+            document.getElementById('current-slide-label').innerText = `Slide ${currentSlide}`;
+            slideSelect.value = currentSlide;
+
+            // Progress Bar compute
+            const progressPct = ((currentSlide - startSlide) / (endSlide - startSlide)) * 100;
+            document.getElementById('progressBar').style.width = `${progressPct}%`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < endSlide) {
+                currentSlide++;
+                updateSlideUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > startSlide) {
+                currentSlide--;
+                updateSlideUI();
+            }
+        }
+
+        function jumpToSlide(num) {
+            currentSlide = num;
+            updateSlideUI();
+        }
+
+        // Fullscreen API Helper
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Keyboard Navigation Support
+        document.addEventListener('keydown', (e) => {
+            const activeEl = document.activeElement;
+            const capturesTextKeys = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.getAttribute('contenteditable') === 'true'
+            );
+            const capturesArrowKeys = activeEl && (
+                (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT'
+            );
+            const capturesSpacebar = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.tagName === 'BUTTON' ||
+                activeEl.getAttribute('role') === 'button'
+            );
+
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Space') {
+                if (!capturesSpacebar && !capturesArrowKeys) {
+                    nextSlide();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (!capturesArrowKeys) {
+                    prevSlide();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'f' || e.key === 'F') {
+                if (!capturesTextKeys) {
+                    toggleFullscreen();
+                    e.preventDefault();
+                }
+            }
+        });
+
+        document.addEventListener('dblclick', (e) => {
+            const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+            if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+                toggleFullscreen();
+            }
+        });
+
+        // Presenter Notes Modal management
+        function togglePresenterMode() {
+            const modal = document.getElementById('presenter-modal');
+            const content = document.getElementById('presenter-notes-content');
+            
+            if (modal.classList.contains('hidden')) {
+                content.innerText = speakerNotes[currentSlide] || 'No notes prepared for this slide.';
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // ==================== Slide 1: Interactive System ====================
+        function selectIntroMethod(id) {
+            document.querySelectorAll('.method-card').forEach(c => {
+                c.classList.remove('border-brand-accent', 'border-brand-highlight', 'border-brand-lime', 'bg-slate-800');
+            });
+            
+            const btn = document.getElementById(`method-btn-${id}`);
+            const panel = document.getElementById('intro-explanation');
+
+            if (id === 1) {
+                btn.classList.add('border-brand-accent', 'bg-slate-800');
+                panel.innerHTML = `<i class="fa-solid fa-circle-info text-brand-accent mt-0.5 text-base"></i>
+                                   <span><strong>Method 1 maps to Zero-Shot Prompting.</strong> We ask the AI model cleanly and directly without setting up samples. Quick and effective, but relies heavily on the AI's standard default knowledge models.</span>`;
+            } else if (id === 2) {
+                btn.classList.add('border-brand-highlight', 'bg-slate-800');
+                panel.innerHTML = `<i class="fa-solid fa-circle-info text-brand-highlight mt-0.5 text-base"></i>
+                                   <span><strong>Method 2 maps to One-Shot / Few-Shot Prompting.</strong> Providing mock structure examples lets the AI parse your stylistic preferences before delivering output, drastically reducing error rates.</span>`;
+            } else if (id === 3) {
+                btn.classList.add('border-brand-lime', 'bg-slate-800');
+                panel.innerHTML = `<i class="fa-solid fa-circle-info text-brand-lime mt-0.5 text-base"></i>
+                                   <span><strong>Method 3 maps to Role-Based Prompting.</strong> Giving AI a specific, authoritative job title restricts its conversational scope and forces it to respond with industry-appropriate semantics and terminology.</span>`;
+            }
+        }
+
+        // ==================== Slide 2: Interactive Poll ====================
+        function answerRoadmapPoll(btn, text, isCorrect = false) {
+            const feedback = document.getElementById('roadmap-poll-feedback');
+            
+            // Highlight button
+            document.querySelectorAll('#poll-roadmap button').forEach(b => {
+                b.classList.remove('border-brand-lime', 'border-brand-accent', 'bg-slate-700');
+            });
+            btn.classList.add(isCorrect ? 'border-brand-lime' : 'border-brand-accent');
+            
+            if (isCorrect) {
+                feedback.innerHTML = `<span class="text-brand-lime font-bold">Excellent Deduction!</span> Few-Shot and Role-Based configs restrict the statistical sample weights, forcing high-fidelity answers.`;
+            } else {
+                feedback.innerHTML = `<span class="text-brand-accent font-bold">Intriguing Option!</span> While ${text} works well, more robust structures like Few-Shot or Role-Based typically yield the most stylistically precise results.`;
+            }
+        }
+
+        // ==================== Slide 5: Interactive Playground ====================
+        function setZeroShotTemplate(topic) {
+            const input = document.getElementById('zeroshot-input');
+            const outputs = {
+                History: "Tell me exactly who founded ancient Rome and the date.",
+                Python: "Write a high-performance Python script to find prime numbers.",
+                Algebra: "Solve this equation: 3x + 15 = 45. Provide only the value of x."
+            };
+            input.value = outputs[topic] || "";
+        }
+
+        function simulateZeroShotResponse() {
+            const input = document.getElementById('zeroshot-input').value.trim();
+            const output = document.getElementById('zeroshot-output');
+            
+            if (!input) {
+                output.innerText = "Error: Input query is empty. Please enter some text or click a template.";
+                return;
+            }
+            
+            output.innerText = "Parsing Weights... Decoding instruction sequence...";
+            
+            setTimeout(() => {
+                let simulatedText = "";
+                if (input.toLowerCase().includes('rome')) {
+                    simulatedText = "AI Engine Output:\nAncient Rome was historically founded according to legend by Romulus and Remus on April 21, 753 BC.";
+                } else if (input.toLowerCase().includes('python')) {
+                    simulatedText = "AI Engine Output:\ndef is_prime(n):\n    if n <= 1: return False\n    for i in range(2, int(n**0.5)+1):\n        if n % i == 0: return False\n    return True\nprint([x for x in range(100) if is_prime(x)])";
+                } else if (input.toLowerCase().includes('algebra') || input.toLowerCase().includes('3x')) {
+                    simulatedText = "AI Engine Output:\nValue: x = 10.\n(Calculation: 3x = 45 - 15 -> 3x = 30 -> x = 10)";
+                } else {
+                    simulatedText = `AI Engine Output:\nBased on Zero-shot parsing rules, here is the immediate answer to: "${input}"\n\nProcessing complete without formatting presets.`;
+                }
+                output.innerText = simulatedText;
+            }, 800);
+        }
+
+        // ==================== Slide 7: One-Shot Activity ====================
+        function revealOneShotClassification() {
+            const feedback = document.getElementById('oneshot-pattern-feedback');
+            const btn = document.getElementById('oneshot-classification-btn');
+            
+            btn.innerText = "Fruit";
+            btn.classList.remove('bg-brand-lime', 'text-slate-950');
+            btn.classList.add('bg-slate-950', 'text-brand-lime', 'border', 'border-brand-lime');
+            
+            feedback.innerHTML = `<strong>Inference Result: Fruit.</strong> Why? The model analyzed the pattern [Noun &rarr; Natural Classification]. It matched 'Dog' to 'Animal' (living mammal), 'Rose' to 'Flower' (flora), and automatically resolved 'Mango' to 'Fruit' (produce).`;
+        }
+
+        // ==================== Slide 8: Few-Shot Benefit Viewer ====================
+        function toggleFewShotExplanation(id) {
+            const box = document.getElementById('fewshot-interactive-box');
+            if (id === 1) {
+                box.innerHTML = `<strong>Reduce Multi-Class Ambiguity:</strong> If you write "Mango &rarr; ?", does it mean Food, Fruit, Organic, or import? Providing multiple items locks down the classification precision.`;
+            } else if (id === 2) {
+                box.innerHTML = `<strong>Lock in Formatting Constraints:</strong> Perfect for coding or database outputs. It tells the AI: "Always output in JSON format exactly like these examples."`;
+            } else if (id === 3) {
+                box.innerHTML = `<strong>Enforce Specific Styles:</strong> Want all emails to start with "Howdy Partner!" and end with "Regards, Texas Tech"? Few-shot matches custom cultural voice footprints effortlessly.`;
+            }
+        }
+
+        // ==================== Slide 9: Dance Analogy Swapper ====================
+        function toggleDanceAnalogy(type) {
+            const visual = document.getElementById('dance-visual');
+            const badge = document.getElementById('dance-state-badge');
+            const summary = document.getElementById('dance-summary');
+            
+            const btnSingle = document.getElementById('dance-btn-single');
+            const btnMulti = document.getElementById('dance-btn-multi');
+
+            if (type === 'single') {
+                btnSingle.classList.add('border-brand-accent', 'bg-brand-accent/5');
+                btnSingle.classList.remove('border-slate-700', 'bg-slate-800/20');
+                btnMulti.classList.add('border-slate-700', 'bg-slate-800/20');
+                btnMulti.classList.remove('border-brand-lime', 'bg-slate-800/20');
+
+                badge.innerText = "One-Shot Mode";
+                badge.className = "text-[10px] bg-brand-accent/10 border border-brand-accent/20 text-brand-accent font-bold px-2.5 py-0.5 rounded";
+                visual.innerHTML = `<span class="text-5xl">😕</span>
+                                    <p class="text-sm text-slate-300 font-bold">Uncertain & Confused</p>
+                                    <p class="text-xs text-slate-500">"Was that first step a left turn or right turn? Did I spin?"</p>`;
+                summary.innerText = "A single demonstration presents structural context but fails to offer boundaries for diverse real-time modifications.";
+            } else {
+                btnMulti.classList.add('border-brand-lime', 'bg-slate-800/20');
+                btnMulti.classList.remove('border-slate-700');
+                btnSingle.classList.add('border-slate-700', 'bg-slate-800/20');
+                btnSingle.classList.remove('border-brand-accent', 'bg-brand-accent/5');
+
+                badge.innerText = "Few-Shot Mode";
+                badge.className = "text-[10px] bg-brand-lime/10 border border-brand-lime/20 text-brand-lime font-bold px-2.5 py-0.5 rounded";
+                visual.innerHTML = `<span class="text-5xl">😊</span>
+                                    <p class="text-sm text-brand-lime font-bold">Highly Coordinated & Smooth</p>
+                                    <p class="text-xs text-slate-400">"I understand the flow, the timing transitions, and exact patterns."</p>`;
+                summary.innerText = "Multiple reference frames construct an explicit logical envelope, meaning minimal margin for structural drift.";
+            }
+        }
+
+        // ==================== Slide 10: Capital City Matcher ====================
+        function checkFewShotCapital(choice, isCorrect) {
+            const feedback = document.getElementById('fewshot-exercise-feedback');
+            document.querySelectorAll('.capital-btn').forEach(b => {
+                b.classList.remove('bg-emerald-600', 'bg-rose-600', 'bg-slate-800');
+                if (b.innerText === choice) {
+                    b.classList.add(isCorrect ? 'bg-emerald-600' : 'bg-rose-600');
+                } else {
+                    b.classList.add('bg-slate-800');
+                }
+            });
+
+            if (isCorrect) {
+                feedback.innerHTML = `<span class="text-brand-lime font-bold">Correct! Canberra</span> is the administrative capital of Australia, which conforms perfectly to the established dataset logic pattern.`;
+            } else {
+                feedback.innerHTML = `<span class="text-rose-400 font-bold">Incorrent. ${choice}</span> is a prominent city, but does not match the established "Country &rarr; Capital City" pattern structure. Try Canberra!`;
+            }
+        }
+
+        // ==================== Slide 11: Persona Configurator ====================
+        function setPersona(role, icon, titleText, descText) {
+            document.getElementById('persona-icon animate-spin').className = `fa-solid ${icon}`;
+            document.getElementById('persona-title').innerText = titleText;
+            document.getElementById('persona-desc').innerText = descText;
+        }
+
+        // ==================== Slide 12: Exercise Persona perspectives ====================
+        function showRolePerspective(role) {
+            const icon = document.getElementById('perspective-display-icon');
+            const title = document.getElementById('perspective-display-role');
+            const txt = document.getElementById('perspective-display-text');
+
+            if (role === 'Doctor') {
+                icon.className = "fa-solid fa-user-doctor";
+                title.innerText = "Medical Doctor Perspective";
+                txt.innerText = `"Exercise refers to regular physical exertion structured systematically to maintain cardiorespiratory output, minimize insulin resistance risks, and combat systemic biomechanical deterioration."`;
+            } else if (role === 'Trainer') {
+                icon.className = "fa-solid fa-dumbbell";
+                title.innerText = "Fitness Coach Perspective";
+                txt.innerText = `"Exercise is all about active muscle load, hitting hypertrophy parameters, burning excess caloric reserves, and keeping functional athletic posture sharp. Put on the weights!"`;
+            } else if (role === 'Biologist') {
+                icon.className = "fa-solid fa-microscope";
+                title.innerText = "Biology Instructor Perspective";
+                txt.innerText = `"Exercise refers to physiological strain that triggers accelerated cellular respiration, requiring rapid ATP chemical synthesis and stimulating mitochondrial adaptation."`;
+            } else if (role === 'Historian') {
+                icon.className = "fa-solid fa-people-group";
+                title.innerText = "Sports Coach Perspective";
+                txt.innerText = `"Exercise is tactical physical drills meant to optimize team cohesion, build cardiovascular endurance limit parameters, and keep players mentally prepared to execute sports playbooks."`;
+            }
+        }
+
+        // ==================== Slide 13: Match Finder Decision Helper ====================
+        function matchBestTechnique(type) {
+            const block = document.getElementById('decision-tree-feedback');
+            if (type === 'general') {
+                block.innerHTML = `Use <strong class="text-brand-accent">Zero-Shot Prompting</strong>.<br><span class="text-xs text-slate-400">Direct query is optimal and keeps the workflow quick.</span>`;
+            } else if (type === 'formatting') {
+                block.innerHTML = `Use <strong class="text-brand-lime">Few-Shot Prompting</strong>.<br><span class="text-xs text-slate-400">Providing 3-4 structural examples prevents the AI from breaking syntax.</span>`;
+            } else if (type === 'expert') {
+                block.innerHTML = `Use <strong class="text-amber-400">Role-Based Prompting</strong>.<br><span class="text-xs text-slate-400">Defining the persona locks down high-end vocabulary and authoritative style.</span>`;
+            }
+        }
+
+        // ==================== Slide 14: Detective Game Code ====================
+        const detectiveAnswers = {
+            A: 'Zero-Shot',
+            B: 'Few-Shot',
+            C: 'Role-Based',
+            D: 'One-Shot'
+        };
+        let detectiveScore = 0;
+        let solvedList = { A: false, B: false, C: false, D: false };
+
+        function answerDetective(cardId, selection) {
+            const card = document.getElementById(`detective-card-${cardId}`);
+            const summary = document.getElementById('detective-summary-box');
+            
+            if (solvedList[cardId]) return; // Stop infinite score exploits
+
+            const isCorrect = detectiveAnswers[cardId] === selection;
+
+            if (isCorrect) {
+                solvedList[cardId] = true;
+                detectiveScore++;
+                card.classList.add('border-emerald-500/40', 'bg-emerald-950/20');
+                card.querySelectorAll('button').forEach(btn => btn.disabled = true);
+                
+                document.getElementById('detective-score').innerText = `${detectiveScore} / 4`;
+                summary.innerHTML = `<span class="text-brand-lime font-bold">Excellent Cataloging!</span> You successfully diagnosed Prompt ${cardId} as using ${selection} mechanics. Keep going!`;
+            } else {
+                summary.innerHTML = `<span class="text-rose-400 font-bold">Clue Mismatch!</span> Prompt ${cardId} does not seem to utilize ${selection} traits. Look closely at the examples or presence of roles.`;
+            }
+
+            if (detectiveScore === 4) {
+                summary.innerHTML = `<div class="space-y-2">
+                                        <p class="text-brand-lime font-bold text-sm"><i class="fa-solid fa-trophy mr-1"></i> Master Prompt Engineer Confirmed!</p>
+                                        <p class="text-xs">All cases solved successfully. You have shown deep logical command over prompt modeling constraints.</p>
+                                     </div>`;
+            }
+        }
+
+        // Initialize display configuration state
+        updateSlideUI();
+    </script>
+</body>
+</html>

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Science Libraries Mastery Quiz</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for elevated visual hierarchy -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for professional modern icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Urbanist', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        accent: {
+                            DEFAULT: '#deff9a',
+                            dark: '#c4ef73',
+                            light: '#f1ffcf',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050505;
+            color: #f3f4f6;
+        }
+        /* Sleek custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262626;
+            border-radius: 9999px;
+            border: 2px solid #0f0f0f;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden antialiased selection:bg-accent selection:text-black">
+
+    <!-- Navigation HUD Bar -->
+    <header class="w-full border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-0 z-50 px-4 sm:px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent font-bold text-lg">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg leading-none tracking-tight">DATA SCIENCE MASTERY</h1>
+                    <span class="text-[10px] text-neutral-400 font-medium uppercase tracking-widest">Interactive Assessment</span>
+                </div>
+            </div>
+            
+            <!-- Mid-Header Progress Tracker (Reveals only during quiz) -->
+            <div id="quiz-header-tracker" class="hidden md:flex items-center gap-6">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-neutral-400 uppercase tracking-widest font-semibold">Progress</span>
+                    <span id="current-question-num" class="text-accent font-bold text-xs bg-accent/10 px-2 py-0.5 rounded-md border border-accent/20 font-mono">1/10</span>
+                </div>
+                <div class="w-32 lg:w-48 bg-neutral-800 h-2 rounded-full overflow-hidden border border-neutral-700">
+                    <div id="header-progress-bar" class="bg-accent h-full transition-all duration-300" style="width: 10%;"></div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-neutral-400 uppercase tracking-widest font-semibold">Running Score</span>
+                    <span id="header-score" class="text-emerald-400 font-bold text-xs bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20 font-mono">0/10</span>
+                </div>
+            </div>
+
+            <!-- Quiz Timer Badge -->
+            <div class="flex items-center gap-2 text-neutral-400 font-mono text-xs sm:text-sm bg-neutral-900/85 px-3 py-1.5 rounded-lg border border-white/5 shadow-inner">
+                <i class="fa-regular fa-clock text-accent"></i>
+                <span id="timer-display">30:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Slide Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex items-center justify-center">
+        
+        <!-- INTRO & SYNOPSIS SLIDE -->
+        <section id="slide-intro" class="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch transition-opacity duration-300">
+            <!-- Left Panel: Summary & Info -->
+            <div class="lg:col-span-7 flex flex-col justify-between bg-neutral-950 p-6 sm:p-8 rounded-2xl border border-white/5 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                    <i class="fa-solid fa-code text-9xl"></i>
+                </div>
+                
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold uppercase tracking-wider mb-6">
+                        <i class="fa-solid fa-graduation-cap"></i> Dynamic Skills Assessment
+                    </div>
+                    <h2 class="text-4xl sm:text-5xl font-extrabold text-white leading-tight mb-4">
+                        Python Stack <br><span class="text-accent">Practical Quiz</span>
+                    </h2>
+                    <p class="text-neutral-400 text-lg leading-relaxed mb-6 max-w-xl">
+                        A rigorous 10-question evaluation crafted to test hands-on mechanics in <span class="text-white font-semibold">NumPy</span>, <span class="text-white font-semibold">pandas</span>, <span class="text-white font-semibold">scikit-learn</span>, and <span class="text-white font-semibold">Matplotlib</span>.
+                    </p>
+                    
+                    <!-- Meta Metrics -->
+                    <div class="grid grid-cols-3 gap-4 border-y border-white/10 py-6 mb-8">
+                        <div>
+                            <span class="block text-xs text-neutral-500 uppercase font-bold tracking-wider mb-1">Pass Score</span>
+                            <span class="text-xl font-bold text-emerald-400">70% <span class="text-xs text-neutral-400 font-normal">(7/10)</span></span>
+                        </div>
+                        <div>
+                            <span class="block text-xs text-neutral-500 uppercase font-bold tracking-wider mb-1">Time Limit</span>
+                            <span class="text-xl font-bold text-white font-mono">30 Mins</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs text-neutral-500 uppercase font-bold tracking-wider mb-1">Focus Areas</span>
+                            <span class="text-xl font-bold text-accent">4 Libraries</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button onclick="startQuiz()" class="flex-grow sm:flex-none inline-flex items-center justify-center gap-3 px-8 py-4 bg-accent hover:bg-accent-dark text-black font-extrabold rounded-xl transition-all shadow-lg hover:shadow-accent/20 active:scale-95 group">
+                        Begin Evaluation
+                        <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel: Visualizer & Process Flow Diagram -->
+            <div class="lg:col-span-5 flex flex-col gap-6">
+                <!-- Syllabus Coverage Breakdown -->
+                <div class="bg-neutral-950 border border-white/5 rounded-2xl p-6">
+                    <h3 class="text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-accent"></i> Core Distribution
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-neutral-300 font-semibold">NumPy</span>
+                                <span class="text-accent font-semibold">30%</span>
+                            </div>
+                            <div class="w-full bg-neutral-900 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-accent h-full rounded-full" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-neutral-300 font-semibold">pandas</span>
+                                <span class="text-indigo-400 font-semibold">20%</span>
+                            </div>
+                            <div class="w-full bg-neutral-900 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-indigo-400 h-full rounded-full" style="width: 20%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-neutral-300 font-semibold">scikit-learn</span>
+                                <span class="text-sky-400 font-semibold">20%</span>
+                            </div>
+                            <div class="w-full bg-neutral-900 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-sky-400 h-full rounded-full" style="width: 20%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-neutral-300 font-semibold">Matplotlib</span>
+                                <span class="text-emerald-400 font-semibold">30%</span>
+                            </div>
+                            <div class="w-full bg-neutral-900 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-emerald-400 h-full rounded-full" style="width: 30%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Workflow Diagram inside Card -->
+                <div class="bg-neutral-950 border border-white/5 rounded-2xl p-6 flex-grow flex flex-col justify-between">
+                    <h3 class="text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-arrows-spin text-accent"></i> Workflow Lifecycle
+                    </h3>
+                    
+                    <div class="grid grid-cols-5 items-center gap-1 text-center py-4 bg-black/30 rounded-xl border border-white/5 px-2">
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-lg bg-neutral-900 border border-white/10 flex items-center justify-center text-accent text-sm mb-2">
+                                <i class="fa-solid fa-gears"></i>
+                            </div>
+                            <span class="text-[9px] text-neutral-400 uppercase tracking-tight">1. Prep</span>
+                        </div>
+                        <div class="text-neutral-700"><i class="fa-solid fa-angle-right"></i></div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-lg bg-accent/15 border border-accent/40 flex items-center justify-center text-accent text-sm mb-2">
+                                <i class="fa-solid fa-vial"></i>
+                            </div>
+                            <span class="text-[9px] text-accent uppercase tracking-tight font-semibold">2. Solve</span>
+                        </div>
+                        <div class="text-neutral-700"><i class="fa-solid fa-angle-right"></i></div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-lg bg-neutral-900 border border-white/10 flex items-center justify-center text-neutral-400 text-sm mb-2">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <span class="text-[9px] text-neutral-400 uppercase tracking-tight">3. Grade</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVE QUIZ LAYOUT SLIDE -->
+        <section id="slide-quiz" class="hidden w-full transition-all duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Column: Code Window & Visual Canvas Sandbox -->
+                <div class="lg:col-span-6 flex flex-col gap-6">
+                    <!-- Library Tag, Title & Core Statement -->
+                    <div class="bg-neutral-950 p-6 rounded-2xl border border-white/5 shadow-xl flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <span id="quiz-library-badge" class="px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase">NUMPY</span>
+                            <span id="quiz-difficulty-badge" class="px-2.5 py-0.5 rounded text-[11px] font-semibold uppercase tracking-wider">Medium</span>
+                        </div>
+                        <h2 id="quiz-question-title" class="text-xl sm:text-2xl font-bold leading-tight text-white"></h2>
+                        <p id="quiz-question-desc" class="text-neutral-400 text-sm"></p>
+                    </div>
+
+                    <!-- Sandbox Code Block Component -->
+                    <div id="quiz-code-panel" class="bg-zinc-950 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                        <div class="bg-neutral-900/60 px-5 py-3 border-b border-white/5 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-green-500/80"></span>
+                                <span class="text-xs text-neutral-400 ml-2 font-mono">sandbox.py</span>
+                            </div>
+                            <button onclick="copyCode()" class="text-neutral-400 hover:text-white transition-colors text-xs flex items-center gap-1.5 font-medium">
+                                <i class="fa-regular fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div class="p-5 sm:p-6 overflow-x-auto">
+                            <pre class="font-mono text-xs sm:text-sm text-zinc-100 leading-relaxed"><code id="quiz-code-block" class="language-python"></code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Sandbox Visualizer Panel -->
+                    <div class="bg-neutral-950 border border-white/5 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-neutral-400 flex items-center gap-2">
+                            <i class="fa-solid fa-compass-drafting text-accent"></i> Logic Visualization
+                        </h3>
+                        <div id="visualizer-content" class="w-full min-h-[160px] bg-black/50 rounded-xl border border-white/5 flex items-center justify-center p-4"></div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Form Options & Explanatory Feedback -->
+                <div class="lg:col-span-6 flex flex-col gap-6">
+                    <div class="bg-neutral-950 border border-white/5 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-neutral-400">Select the correct choice:</h3>
+                        <div id="options-container" class="space-y-3"></div>
+                    </div>
+
+                    <div id="feedback-panel" class="hidden bg-neutral-950 border border-white/5 rounded-2xl p-6 shadow-xl transition-all flex flex-col gap-4">
+                        <div class="flex items-center gap-3">
+                            <div id="feedback-icon-container" class="w-10 h-10 rounded-xl flex items-center justify-center">
+                                <i id="feedback-icon" class="fa-solid"></i>
+                            </div>
+                            <div>
+                                <h4 id="feedback-heading" class="font-bold text-base sm:text-lg"></h4>
+                                <p id="feedback-sub" class="text-[10px] text-neutral-400 uppercase tracking-widest font-semibold"></p>
+                            </div>
+                        </div>
+                        <p id="feedback-explanation" class="text-neutral-300 text-sm leading-relaxed border-t border-white/10 pt-4"></p>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-4 mt-2">
+                        <button id="btn-prev" onclick="navigateQuestion(-1)" class="px-5 py-3.5 bg-neutral-900 hover:bg-neutral-800 border border-white/5 text-white text-xs sm:text-sm font-semibold rounded-xl transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-left"></i> Previous
+                        </button>
+                        <button id="btn-next" onclick="navigateQuestion(1)" class="px-6 py-3.5 bg-accent hover:bg-accent-dark text-black text-xs sm:text-sm font-extrabold rounded-xl transition-all flex items-center gap-2 disabled:opacity-40 disabled:pointer-events-none ml-auto group">
+                            Next Question <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPLETED RESULTS SLIDE -->
+        <section id="slide-results" class="hidden w-full max-w-4xl mx-auto flex flex-col gap-8 transition-opacity duration-300">
+            <div id="score-hero-card" class="bg-neutral-950 p-6 sm:p-8 rounded-3xl border border-white/5 flex flex-col md:flex-row items-center gap-8 justify-between relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                    <i class="fa-solid fa-award text-9xl text-accent"></i>
+                </div>
+                
+                <div class="flex flex-col gap-3 text-center md:text-left">
+                    <div id="badge-pass" class="hidden inline-flex self-center md:self-start items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-bold uppercase tracking-widest">
+                        <i class="fa-regular fa-circle-check"></i> Passed Cutoff
+                    </div>
+                    <div id="badge-fail" class="hidden inline-flex self-center md:self-start items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-bold uppercase tracking-widest">
+                        <i class="fa-regular fa-circle-xmark"></i> Below Threshold
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Assessment Complete</h2>
+                    <p class="text-neutral-400 text-sm max-w-sm">Performance summary for NumPy, pandas, scikit-learn, and Matplotlib.</p>
+                </div>
+
+                <div class="relative w-36 h-36 flex items-center justify-center">
+                    <svg class="absolute inset-0 w-full h-full -rotate-90">
+                        <circle cx="72" cy="72" r="64" stroke="#171717" stroke-width="8" fill="transparent"/>
+                        <circle id="score-meter-circle" cx="72" cy="72" r="64" stroke="#deff9a" stroke-width="8" fill="transparent" stroke-dasharray="402" stroke-dashoffset="402" stroke-linecap="round" class="transition-all duration-1000 ease-out"/>
+                    </svg>
+                    <div class="flex flex-col items-center">
+                        <span id="result-score-ratio" class="text-3xl font-extrabold tracking-tight font-mono">0/10</span>
+                        <span id="result-score-pct" class="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-neutral-950 p-6 rounded-2xl border border-white/5 flex flex-col gap-4">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-neutral-400">Library Performance</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-neutral-300 font-medium">NumPy</span>
+                                <span id="mastery-numpy" class="font-bold text-accent font-mono">0/3</span>
+                            </div>
+                            <div class="w-full bg-neutral-900 h-2 rounded-full overflow-hidden"><div id="bar-numpy" class="bg-accent h-full" style="width: 0%;"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-neutral-300 font-medium">pandas</span>
+                                <span id="mastery-pandas" class="font-bold text-indigo-400 font-mono">0/2</span>
+                            </div>
+                            <div class="w-full bg-neutral-900 h-2 rounded-full overflow-hidden"><div id="bar-pandas" class="bg-indigo-400 h-full" style="width: 0%;"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-neutral-300 font-medium">scikit-learn</span>
+                                <span id="mastery-sklearn" class="font-bold text-sky-400 font-mono">0/2</span>
+                            </div>
+                            <div class="w-full bg-neutral-900 h-2 rounded-full overflow-hidden"><div id="bar-sklearn" class="bg-sky-400 h-full" style="width: 0%;"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-neutral-300 font-medium">Matplotlib</span>
+                                <span id="mastery-matplotlib" class="font-bold text-emerald-400 font-mono">0/3</span>
+                            </div>
+                            <div class="w-full bg-neutral-900 h-2 rounded-full overflow-hidden"><div id="bar-matplotlib" class="bg-emerald-400 h-full" style="width: 0%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-neutral-950 p-6 rounded-2xl border border-white/5 flex flex-col justify-between gap-6">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-neutral-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-accent"></i> Action Plan
+                        </h3>
+                        <p id="action-plan-text" class="text-sm text-neutral-300 leading-relaxed"></p>
+                    </div>
+                    <div class="flex flex-wrap gap-4 mt-auto">
+                        <button onclick="restartQuiz()" class="flex-grow inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-accent hover:bg-accent-dark text-black text-xs font-extrabold rounded-xl transition-all"><i class="fa-solid fa-rotate-left"></i> Retake</button>
+                        <button onclick="goToIntro()" class="flex-grow sm:flex-grow-0 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-neutral-900 hover:bg-neutral-800 border border-white/5 text-white text-xs font-semibold rounded-xl transition-all">Home</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-full border-t border-white/5 bg-black py-8 px-6 text-center text-[10px] text-neutral-500 uppercase tracking-widest">
+        &copy; 2026 Data Science Mastery Canvas &bull; Python 3.11 Compatible API Specs
+    </footer>
+
+    <script>
+        const QUESTIONS = [
+            { 
+                id: 1, 
+                library: "NumPy", 
+                difficulty: "Easy", 
+                time: "2 min", 
+                title: "Array Dimensions (ndim)", 
+                desc: "What does the ndim attribute return for a 2x3 array?", 
+                code: "import numpy as np\narr = np.array([[7, 8, 9], [10, 11, 12]])\nprint(arr.ndim)", 
+                options: [
+                    { key: "A", text: "1 – prints number of elements total", correct: false }, 
+                    { key: "B", text: "2 – prints number of dimensions", correct: true }, 
+                    { key: "C", text: "6 – prints total elements", correct: false },
+                    { key: "D", text: "Error – syntax invalid", correct: false }
+                ], 
+                explanation: "The ndim attribute returns the number of axes (dimensions) of the array. For a 2x3 array, ndim is 2.", 
+                visual: '<svg viewBox="0 0 400 150" class="w-full max-w-[300px]"><rect x="20" y="40" width="100" height="40" fill="none" stroke="#deff9a" /><rect x="130" y="40" width="100" height="40" fill="none" stroke="#deff9a" /><path d="M 20 100 L 230 100" stroke="#666" marker-end="url(#arrow)" /><text x="125" y="115" fill="#666" font-size="10">Axis 1</text><path d="M 260 40 L 260 80" stroke="#666" marker-end="url(#arrow)" /><text x="290" y="65" fill="#666" font-size="10">Axis 0</text></svg>' 
+            },
+            { 
+                id: 2, 
+                library: "NumPy", 
+                difficulty: "Medium", 
+                time: "3 min", 
+                title: "Broadcasting Rules", 
+                desc: "What happens when adding arrays of shapes (3,) and (2,)?", 
+                code: "import numpy as np\na = np.array([1, 2, 3])\nb = np.array([4, 5])\nprint(a + b)", 
+                options: [
+                    { key: "A", text: "[5 7 8] (elementwise add, with 0 for missing)", correct: false }, 
+                    { key: "B", text: "[5 7] (ignores last element)", correct: false }, 
+                    { key: "C", text: "[5 7 3] (adds first two, leaves last unchanged)", correct: false },
+                    { key: "D", text: "Error (ValueError due to shape mismatch)", correct: true }
+                ], 
+                explanation: "Shapes (3,) and (2,) are incompatible. NumPy broadcasting requires dimensions to be equal or one to be 1.", 
+                visual: '<svg viewBox="0 0 400 150" class="w-full max-w-[300px]"><text x="50" y="50" fill="#deff9a" font-size="14">[1, 2, 3]</text><text x="120" y="50" fill="#f87171" font-size="14">+</text><text x="150" y="50" fill="#f87171" font-size="14">[4, 5]</text><text x="100" y="90" fill="#f87171" font-size="12">⚠️ Dimension Incompatibility</text></svg>' 
+            },
+            { 
+                id: 3, 
+                library: "NumPy", 
+                difficulty: "Medium", 
+                time: "3 min", 
+                title: "Views vs Copies", 
+                desc: "Does 'b = a' create a copy or a reference in NumPy?", 
+                code: "import numpy as np\na = np.array([1, 2, 3])\nb = a\na[1] = 20\nprint(b)", 
+                options: [
+                    { key: "A", text: "[1 2 3] (since b is a copy of a)", correct: false }, 
+                    { key: "B", text: "[1 20 3] (b is a view)", correct: true },
+                    { key: "C", text: "[1 20] (only first two elements)", correct: false },
+                    { key: "D", text: "Error (cannot assign new value)", correct: false }
+                ], 
+                explanation: "Simple assignment 'b = a' creates a view. Both variables point to the same memory.", 
+                visual: '<svg viewBox="0 0 400 150" class="w-full max-w-[300px]"><text x="50" y="40" fill="#fff">a</text><text x="50" y="90" fill="#fff">b</text><path d="M 70 40 L 150 65" stroke="#deff9a" marker-end="url(#arrow)"/><path d="M 70 90 L 150 65" stroke="#deff9a" marker-end="url(#arrow)"/><rect x="160" y="45" width="100" height="40" fill="#111" stroke="#deff9a"/><text x="210" y="70" fill="#deff9a" text-anchor="middle">Shared Data</text></svg>' 
+            },
+            { 
+                id: 4, 
+                library: "pandas", 
+                difficulty: "Medium", 
+                time: "3 min", 
+                title: "Cleaning Missing Data", 
+                desc: "How to permanently remove NaNs from a DataFrame?", 
+                code: "# Permanent removal without reassignment\ndf.dropna(inplace=True)", 
+                options: [
+                    { key: "A", text: "df = df.dropna() – creates a new DataFrame without NA", correct: false }, 
+                    { key: "B", text: "df.dropna(inplace=True) – modifies in place", correct: true }, 
+                    { key: "C", text: "df.dropna() – returns a new, unmodified DataFrame", correct: false },
+                    { key: "D", text: "df.fillna(0) – replaces NAs with 0", correct: false }
+                ], 
+                explanation: "inplace=True modifies the original object. Without it, dropna() returns a new cleaned copy.", 
+                visual: '<svg viewBox="0 0 400 150" class="w-full max-w-[300px]"><rect x="20" y="40" width="120" height="80" fill="#111" stroke="#666"/><text x="80" y="85" fill="#f87171">NaN</text><path d="M 160 80 L 220 80" stroke="#deff9a" marker-end="url(#arrow)"/><rect x="240" y="50" width="120" height="60" fill="#111" stroke="#deff9a"/><text x="300" y="85" fill="#deff9a">Clean</text></svg>' 
+            },
+            { 
+                id: 5, 
+                library: "pandas", 
+                difficulty: "Medium", 
+                time: "3 min", 
+                title: "loc Indexing", 
+                desc: "Is the end index inclusive in df.loc[1:3]?", 
+                code: "import pandas as pd\ndf = pd.DataFrame({'A': [10,20,30,40]}, index=[0,1,2,3])\nprint(df.loc[1:3])", 
+                options: [
+                    { key: "A", text: "Rows 1, 2 (exclusive of 3)", correct: false }, 
+                    { key: "B", text: "Rows 1, 2, 3 (inclusive)", correct: true },
+                    { key: "C", text: "Rows 2, 3", correct: false },
+                    { key: "D", text: "Error (slice indices out of range)", correct: false }
+                ], 
+                explanation: "Unlike Python slices, loc label-based slicing includes both endpoints.", 
+                visual: '<svg viewBox="0 0 400 150" class="w-full max-w-[300px]"><rect x="100" y="30" width="200" height="100" fill="none" stroke="#333"/><rect x="100" y="55" width="200" height="50" fill="#deff9a" fill-opacity="0.1"/><text x="110" y="50" fill="#666">0</text><text x="110" y="75" fill="#deff9a">1</text><text x="110" y="100" fill="#deff9a">2</text><text x="110" y="125" fill="#deff9a">3</text></svg>' 
+            },
+            { 
+                id: 6, 
+                library: "scikit-learn", 
+                difficulty: "Easy", 
+                time: "2 min", 
+                title: "Classifier Selection", 
+                desc: "Which class is appropriate for categorical targets?", 
+                code: "from sklearn.linear_model import LogisticRegression\nmodel = LogisticRegression()", 
+                options: [
+                    { key: "A", text: "LinearRegression – continuous regression model", correct: false }, 
+                    { key: "B", text: "LogisticRegression – classifier for discrete outcomes", correct: true }, 
+                    { key: "C", text: "DecisionTreeRegressor – regressor target modeling", correct: false },
+                    { key: "D", text: "MinMaxScaler – feature space normalization preprocessing", correct: false }
+                ], 
+                explanation: "LogisticRegression is used for classification tasks. LinearRegression is for continuous regression.", 
+                visual: '<svg viewBox="0 0 400 150" class="w-full max-w-[300px]"><circle cx="100" cy="50" r="15" fill="#666"/><rect x="280" y="80" width="30" height="30" fill="#deff9a"/><line x1="50" y1="120" x2="350" y2="30" stroke="#deff9a" stroke-dasharray="4"/></svg>' 
+            },
+            { 
+                id: 7, 
+                library: "scikit-learn", 
+                difficulty: "Easy", 
+                time: "2 min", 
+                title: "Train/Test Splitting", 
+                desc: "What is the primary function of train_test_split?", 
+                code: "from sklearn.model_selection import train_test_split\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)", 
+                options: [
+                    { key: "A", text: "Randomly splits data into train and test subsets", correct: true }, 
+                    { key: "B", text: "Merges feature X and target y into a single array", correct: false },
+                    { key: "C", text: "Trains the model on 70% of data", correct: false },
+                    { key: "D", text: "Scales features X between 0 and 1", correct: false }
+                ], 
+                explanation: "It partitions arrays into random training and testing sets based on the specified size.", 
+                visual: '<svg viewBox="0 0 400 150" class="w-full max-w-[300px]"><rect x="20" y="40" width="360" height="40" stroke="#333" fill="none"/><rect x="20" y="40" width="250" height="40" fill="#deff9a" fill-opacity="0.2"/><text x="145" y="65" fill="#deff9a">Train (70%)</text><text x="315" y="65" fill="#60a5fa">Test</text></svg>' 
+            },
+            { 
+                id: 8, 
+                library: "Matplotlib", 
+                difficulty: "Medium", 
+                time: "3 min", 
+                title: "Pie Chart Percentages", 
+                desc: "Which argument displays numeric percentage labels?", 
+                code: "plt.pie(sizes, labels=labels, autopct='%1.1f%%')", 
+                options: [
+                    { key: "A", text: "colors – sets wedge color scales", correct: false }, 
+                    { key: "B", text: "labels – sets textual names to slices", correct: false },
+                    { key: "C", text: "autopct – formats and shows slice percentages", correct: true },
+                    { key: "D", text: "shadow – applies a subtle layout drop-shadow", correct: false }
+                ], 
+                explanation: "autopct calculates and formats the string representation of the percentage on each slice.", 
+                visual: '<svg viewBox="0 0 400 150" class="w-full max-w-[300px]"><circle cx="200" cy="75" r="50" fill="none" stroke="#333"/><path d="M 200 75 L 200 25 A 50 50 0 0 1 250 75 Z" fill="#deff9a"/><text x="215" y="60" fill="#000" font-size="10">25%</text></svg>' 
+            },
+            { 
+                id: 9, 
+                library: "Matplotlib", 
+                difficulty: "Medium", 
+                time: "3 min", 
+                title: "Scatter Visuals", 
+                desc: "Which function creates dots with variable size and color?", 
+                code: "plt.scatter(x, y, s=area, c=colors, alpha=0.5)", 
+                options: [
+                    { key: "A", text: "plt.plot() – connected line formatting", correct: false }, 
+                    { key: "B", text: "plt.scatter() – points with customizable attributes", correct: true },
+                    { key: "C", text: "plt.bar() – vertical histograms", correct: false },
+                    { key: "D", text: "plt.hist() – statistical bin distributions", correct: false }
+                ], 
+                explanation: "scatter() is designed for point clouds where each point can have distinct properties like size (s) and color (c).", 
+                visual: '<svg viewBox="0 0 400 150" class="w-full max-w-[300px]"><circle cx="100" cy="50" r="15" fill="#deff9a" fill-opacity="0.5"/><circle cx="200" cy="100" r="8" fill="#60a5fa"/><circle cx="300" cy="40" r="22" fill="#f87171" fill-opacity="0.5"/></svg>' 
+            },
+            { 
+                id: 10, 
+                library: "Matplotlib", 
+                difficulty: "Easy", 
+                time: "2 min", 
+                title: "New Figure Context", 
+                desc: "Which function explicitly creates a fresh drawing area?", 
+                code: "import matplotlib.pyplot as plt\nplt.figure()", 
+                options: [
+                    { key: "A", text: "plt.subplot() – designs coordinate grids", correct: false }, 
+                    { key: "B", text: "plt.show() – triggers screen output displays", correct: false },
+                    { key: "C", text: "plt.figure() – instantiates blank canvas figures", correct: true },
+                    { key: "D", text: "plt.new() – non-existent dummy API function", correct: false }
+                ], 
+                explanation: "plt.figure() initializes a new Figure object or makes an existing one active.", 
+                visual: '<svg viewBox="0 0 400 150" class="w-full max-w-[300px]"><rect x="100" y="30" width="200" height="100" fill="none" stroke="#deff9a"/><text x="200" y="85" fill="#deff9a" text-anchor="middle">Figure Canvas</text></svg>' 
+            }
+        ];
+
+        let currentIdx = 0;
+        let selectedAnswers = Array(QUESTIONS.length).fill(null);
+        let timerSeconds = 30 * 60;
+        let timerInterval = null;
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timerSeconds <= 0) { clearInterval(timerInterval); finishQuiz(); return; }
+                timerSeconds--;
+                const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+                const secs = (timerSeconds % 60).toString().padStart(2, '0');
+                document.getElementById('timer-display').innerText = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function startQuiz() {
+            currentIdx = 0;
+            selectedAnswers = Array(QUESTIONS.length).fill(null);
+            document.getElementById('slide-intro').classList.add('hidden');
+            document.getElementById('slide-quiz').classList.remove('hidden');
+            document.getElementById('quiz-header-tracker').classList.remove('hidden');
+            renderQuestion();
+            startTimer();
+        }
+
+        function renderQuestion() {
+            const q = QUESTIONS[currentIdx];
+            document.getElementById('current-question-num').innerText = `${currentIdx + 1}/${QUESTIONS.length}`;
+            document.getElementById('header-progress-bar').style.width = `${((currentIdx + 1)/QUESTIONS.length)*100}%`;
+            
+            document.getElementById('quiz-library-badge').innerText = q.library;
+            document.getElementById('quiz-difficulty-badge').innerText = `${q.difficulty} (${q.time})`;
+            document.getElementById('quiz-question-title').innerText = q.title;
+            document.getElementById('quiz-question-desc').innerText = q.desc;
+            document.getElementById('quiz-code-block').innerText = q.code;
+            document.getElementById('visualizer-content').innerHTML = q.visual;
+
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+            const saved = selectedAnswers[currentIdx];
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 rounded-xl border transition-all flex items-start gap-4 group ${saved ? 'cursor-default' : 'hover:border-accent/40'}`;
+                
+                let bulletClass = "bg-neutral-900 border-white/10 text-neutral-400";
+                if (saved) {
+                    btn.disabled = true;
+                    if (opt.correct) {
+                        btn.classList.add("border-emerald-500/50", "bg-emerald-500/5");
+                        bulletClass = "bg-emerald-500 text-black border-emerald-400";
+                    } else if (saved === opt.key) {
+                        btn.classList.add("border-red-500/50", "bg-red-500/5");
+                        bulletClass = "bg-red-500 text-white border-red-400";
+                    } else {
+                        btn.classList.add("opacity-40");
+                    }
+                }
+
+                btn.innerHTML = `<div class="w-7 h-7 rounded-lg border flex items-center justify-center font-bold font-mono text-xs ${bulletClass}">${opt.key}</div><p class="font-medium text-xs sm:text-sm">${opt.text}</p>`;
+                if (!saved) btn.onclick = () => selectOption(opt.key);
+                optContainer.appendChild(btn);
+            });
+
+            const panel = document.getElementById('feedback-panel');
+            if (saved) {
+                panel.classList.remove('hidden');
+                const isCorrect = q.options.find(o => o.key === saved).correct;
+                document.getElementById('feedback-icon-container').className = `w-10 h-10 rounded-xl flex items-center justify-center ${isCorrect ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`;
+                document.getElementById('feedback-icon').className = isCorrect ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark";
+                document.getElementById('feedback-heading').innerText = isCorrect ? "Correct Match" : "Logic Conflict";
+                document.getElementById('feedback-heading').className = `font-bold text-base ${isCorrect ? 'text-emerald-400' : 'text-red-400'}`;
+                document.getElementById('feedback-sub').innerText = isCorrect ? "Verified" : "API Mismatch";
+                document.getElementById('feedback-explanation').innerText = q.explanation;
+            } else { panel.classList.add('hidden'); }
+
+            document.getElementById('btn-prev').disabled = currentIdx === 0;
+            document.getElementById('btn-next').disabled = !saved;
+            document.getElementById('btn-next').innerHTML = currentIdx === QUESTIONS.length - 1 ? "Finish" : "Next";
+        }
+
+        function selectOption(key) {
+            if (selectedAnswers[currentIdx]) return;
+            selectedAnswers[currentIdx] = key;
+            updateScore();
+            renderQuestion();
+        }
+
+        function navigateQuestion(dir) {
+            if (dir === 1 && currentIdx === QUESTIONS.length - 1) { finishQuiz(); return; }
+            currentIdx += dir;
+            renderQuestion();
+        }
+
+        // --- KEYBOARD NAVIGATION ENABLED ---
+        document.addEventListener('keydown', (e) => {
+            // Only toggle if the quiz slide is active
+            if (document.getElementById('slide-quiz').classList.contains('hidden')) return;
+
+            if (e.key === 'ArrowRight') {
+                // Advance only if answered
+                if (selectedAnswers[currentIdx]) navigateQuestion(1);
+            } else if (e.key === 'ArrowLeft') {
+                if (currentIdx > 0) navigateQuestion(-1);
+            }
+        });
+
+        function updateScore() {
+            let score = 0;
+            selectedAnswers.forEach((ans, i) => {
+                if (ans && QUESTIONS[i].options.find(o => o.key === ans).correct) score++;
+            });
+            document.getElementById('header-score').innerText = `${score}/${QUESTIONS.length}`;
+            return score;
+        }
+
+        function finishQuiz() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.getElementById('slide-quiz').classList.add('hidden');
+            document.getElementById('slide-results').classList.remove('hidden');
+            document.getElementById('quiz-header-tracker').classList.add('hidden');
+            
+            const score = updateScore();
+            const pct = (score / QUESTIONS.length) * 100;
+            document.getElementById('result-score-ratio').innerText = `${score}/${QUESTIONS.length}`;
+            document.getElementById('result-score-pct').innerText = `${pct}%`;
+            document.getElementById('score-meter-circle').style.strokeDashoffset = 402 - (402 * (pct / 100));
+            
+            const isPass = pct >= 70;
+            document.getElementById('badge-pass').classList.toggle('hidden', !isPass);
+            document.getElementById('badge-fail').classList.toggle('hidden', isPass);
+            document.getElementById('score-meter-circle').style.stroke = isPass ? "#34d399" : "#f43f5e";
+            document.getElementById('action-plan-text').innerText = isPass ? "Excellent proficiency! You demonstrate high operational competency." : "Review the fundamentals of memory views and broadcasting rules.";
+
+            const breakdown = { NumPy: {c:0, t:0}, pandas: {c:0, t:0}, "scikit-learn": {c:0, t:0}, Matplotlib: {c:0, t:0} };
+            QUESTIONS.forEach((q, i) => {
+                breakdown[q.library].t++;
+                if (selectedAnswers[i] === q.options.find(o => o.correct).key) breakdown[q.library].c++;
+            });
+            ['numpy', 'pandas', 'sklearn', 'matplotlib'].forEach(id => {
+                const lib = id === 'sklearn' ? 'scikit-learn' : id.charAt(0).toUpperCase() + id.slice(1);
+                document.getElementById(`mastery-${id}`).innerText = `${breakdown[lib].c}/${breakdown[lib].t}`;
+                document.getElementById(`bar-${id}`).style.width = `${(breakdown[lib].c/breakdown[lib].t)*100}%`;
+            });
+        }
+
+        function restartQuiz() { location.reload(); }
+        function goToIntro() { location.reload(); }
+
+        function copyCode() {
+            const el = document.createElement('textarea');
+            el.value = QUESTIONS[currentIdx].code;
+            document.body.appendChild(el); el.select();
+            document.execCommand('copy'); document.body.removeChild(el);
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-8 right-8 bg-neutral-900 border border-accent/20 text-accent px-4 py-2 rounded-lg text-xs transition-opacity";
+            toast.innerText = "Code copied";
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI: Interactive Learning Journey</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom scrollbar for notes and overlays */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.5);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.8);
+        }
+        /* Page transition effects */
+        .slide-container {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+        }
+        /* Glowing neon shadows */
+        .glow-indigo {
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 h-full flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Header Navigation Bar -->
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between z-40 shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white glow-indigo">
+                <i class="fa-solid fa-wand-magic-sparkles text-lg animate-pulse"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-300 bg-clip-text text-transparent">
+                    Generative AI Filmmaking & Real-World Application
+                </h1>
+                <p class="text-xs text-slate-400 font-medium">Class interactive presentation suite</p>
+            </div>
+        </div>
+        
+        <!-- Live Quick Stats Counter & Control Station -->
+        <div class="flex items-center gap-4">
+            <div class="hidden md:flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-400">
+                <span class="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>Interactive Presentation Enabled</span>
+            </div>
+            <button onclick="toggleSidebar()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition text-xs font-semibold flex items-center gap-2 border border-slate-700">
+                <i class="fa-solid fa-list-ul"></i> Slide List
+            </button>
+            <button onclick="toggleNotes()" class="px-3 py-1.5 rounded-lg bg-indigo-950/40 hover:bg-indigo-900/40 text-indigo-300 transition text-xs font-semibold flex items-center gap-2 border border-indigo-900/60">
+                <i class="fa-regular fa-comments"></i> Presenter Notes
+            </button>
+        </div>
+    </header>
+
+    <!-- Side Slide List Drawer (Collapsible) -->
+    <div id="slideDrawer" class="fixed top-0 left-0 h-full w-80 bg-slate-900/95 backdrop-blur-lg border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl p-6 flex flex-col justify-between">
+        <div>
+            <div class="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
+                <span class="text-sm font-bold tracking-wider uppercase text-indigo-400 flex items-center gap-2">
+                    <i class="fa-solid fa-compass"></i> Index Navigator
+                </span>
+                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-2 max-h-[70vh] overflow-y-auto pr-1">
+                <button onclick="goToSlide(13)" class="slide-nav-btn w-full text-left p-3 rounded-lg flex gap-3 items-center transition bg-slate-800 border-l-4 border-indigo-500 text-white" id="nav-13">
+                    <span class="text-xs font-mono font-bold bg-indigo-950 text-indigo-300 px-2 py-1 rounded">S13</span>
+                    <span class="text-sm font-medium">AI as a Filmmaker</span>
+                </button>
+                <button onclick="goToSlide(14)" class="slide-nav-btn w-full text-left p-3 rounded-lg flex gap-3 items-center transition hover:bg-slate-800/50 text-slate-300" id="nav-14">
+                    <span class="text-xs font-mono font-bold bg-slate-950 text-slate-400 px-2 py-1 rounded">S14</span>
+                    <span class="text-sm font-medium">How AI Builds a Video</span>
+                </button>
+                <button onclick="goToSlide(15)" class="slide-nav-btn w-full text-left p-3 rounded-lg flex gap-3 items-center transition hover:bg-slate-800/50 text-slate-300" id="nav-15">
+                    <span class="text-xs font-mono font-bold bg-slate-950 text-slate-400 px-2 py-1 rounded">S15</span>
+                    <span class="text-sm font-medium">Case Studies Hub</span>
+                </button>
+                <button onclick="goToSlide(16)" class="slide-nav-btn w-full text-left p-3 rounded-lg flex gap-3 items-center transition hover:bg-slate-800/50 text-slate-300" id="nav-16">
+                    <span class="text-xs font-mono font-bold bg-slate-950 text-slate-400 px-2 py-1 rounded">S16</span>
+                    <span class="text-sm font-medium">Meet the AI Toolbox</span>
+                </button>
+                <button onclick="goToSlide(17)" class="slide-nav-btn w-full text-left p-3 rounded-lg flex gap-3 items-center transition hover:bg-slate-800/50 text-slate-300" id="nav-17">
+                    <span class="text-xs font-mono font-bold bg-slate-950 text-slate-400 px-2 py-1 rounded">S17</span>
+                    <span class="text-sm font-medium">AI Tool Challenge</span>
+                </button>
+                <button onclick="goToSlide(18)" class="slide-nav-btn w-full text-left p-3 rounded-lg flex gap-3 items-center transition hover:bg-slate-800/50 text-slate-300" id="nav-18">
+                    <span class="text-xs font-mono font-bold bg-slate-950 text-slate-400 px-2 py-1 rounded">S18</span>
+                    <span class="text-sm font-medium">Day of an AI Creator</span>
+                </button>
+                <button onclick="goToSlide(19)" class="slide-nav-btn w-full text-left p-3 rounded-lg flex gap-3 items-center transition hover:bg-slate-800/50 text-slate-300" id="nav-19">
+                    <span class="text-xs font-mono font-bold bg-slate-950 text-slate-400 px-2 py-1 rounded">S19</span>
+                    <span class="text-sm font-medium">AI in Education</span>
+                </button>
+                <button onclick="goToSlide(20)" class="slide-nav-btn w-full text-left p-3 rounded-lg flex gap-3 items-center transition hover:bg-slate-800/50 text-slate-300" id="nav-20">
+                    <span class="text-xs font-mono font-bold bg-slate-950 text-slate-400 px-2 py-1 rounded">S20</span>
+                    <span class="text-sm font-medium">AI in Healthcare</span>
+                </button>
+                <button onclick="goToSlide(21)" class="slide-nav-btn w-full text-left p-3 rounded-lg flex gap-3 items-center transition hover:bg-slate-800/50 text-slate-300" id="nav-21">
+                    <span class="text-xs font-mono font-bold bg-slate-950 text-slate-400 px-2 py-1 rounded">S21</span>
+                    <span class="text-sm font-medium">AI in Entrepreneurship</span>
+                </button>
+                <button onclick="goToSlide(22)" class="slide-nav-btn w-full text-left p-3 rounded-lg flex gap-3 items-center transition hover:bg-slate-800/50 text-slate-300" id="nav-22">
+                    <span class="text-xs font-mono font-bold bg-slate-950 text-slate-400 px-2 py-1 rounded">S22</span>
+                    <span class="text-sm font-medium">Social Media & Daily Life</span>
+                </button>
+            </div>
+        </div>
+        <div class="border-t border-slate-800 pt-4 text-xs text-slate-400 text-center">
+            Use Left/Right arrow keys to navigate.
+        </div>
+    </div>
+
+    <!-- Main Dynamic Content Presentation Window -->
+    <main class="relative flex-1 overflow-hidden">
+        
+        <!-- SLIDE 13 CONTAINER -->
+        <section id="slide-13" class="slide-container absolute inset-0 p-6 md:p-12 overflow-y-auto flex flex-col justify-between bg-slate-950">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start my-auto">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-video text-xs"></i> Slide 13: Emerging Capabilities
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        AI as a Filmmaker:<br><span class="bg-gradient-to-r from-indigo-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">Videos from Words</span>
+                    </h2>
+                    
+                    <div class="bg-slate-900/60 backdrop-blur border border-slate-800 p-5 rounded-2xl space-y-4">
+                        <p class="text-sm text-slate-300 leading-relaxed font-medium">
+                            First we had <span class="text-cyan-400 font-semibold">Text-to-Text</span>, then <span class="text-emerald-400 font-semibold text-nowrap">Text-to-Image</span>. Now, witness the revolutionary evolution:
+                        </p>
+                        <!-- Prompt evolution graphic -->
+                        <div class="flex items-center justify-between text-xs font-mono bg-slate-950 p-4 rounded-xl border border-slate-800/80 gap-2">
+                            <span class="bg-indigo-950 text-indigo-400 px-2 py-1.5 rounded border border-indigo-800/30">Prompt</span>
+                            <span class="text-slate-500"><i class="fa-solid fa-arrow-right"></i></span>
+                            <span class="bg-slate-900 text-slate-300 px-2 py-1.5 rounded border border-slate-800">Words</span>
+                            <span class="text-slate-500"><i class="fa-solid fa-arrow-right"></i></span>
+                            <span class="bg-cyan-950/60 text-cyan-400 px-2 py-1.5 rounded border border-cyan-800/30">Image</span>
+                            <span class="text-slate-500"><i class="fa-solid fa-arrow-right"></i></span>
+                            <span class="bg-teal-950 text-teal-400 px-2.5 py-1.5 rounded border border-teal-800/30 animate-pulse glow-cyan">AI Video</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs uppercase font-bold tracking-wider text-slate-500">Traditional vs AI Effort:</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-red-950/20 border border-red-900/30 p-3.5 rounded-xl">
+                                <span class="text-xs font-bold text-red-400 block mb-1">Traditional Method</span>
+                                <p class="text-xs text-slate-400">Cameras, Actors, Animators, weeks of editing & planning.</p>
+                            </div>
+                            <div class="bg-emerald-950/20 border border-emerald-900/30 p-3.5 rounded-xl">
+                                <span class="text-xs font-bold text-emerald-400 block mb-1">Generative AI</span>
+                                <p class="text-xs text-slate-400">Specify prompt, wait minutes or seconds, obtain 4K rendering.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side Interactive Panel: Prompt Video Sandbox -->
+                <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs uppercase font-bold tracking-wider text-slate-400 flex items-center gap-1.5">
+                            <span class="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-ping"></span> AI Prompt Video Sandbox
+                        </span>
+                        <div class="flex gap-2">
+                            <span class="h-2 w-2 rounded-full bg-slate-700"></span>
+                            <span class="h-2 w-2 rounded-full bg-slate-700"></span>
+                        </div>
+                    </div>
+
+                    <!-- Prompt Selector -->
+                    <div class="space-y-2">
+                        <label class="text-xs text-slate-400 font-semibold">Choose a Creative Prompt Idea:</label>
+                        <select id="promptSelector" onchange="updateVideoPreview()" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-sm font-medium text-slate-200 focus:outline-none focus:border-indigo-500 transition">
+                            <option value="panda">"A panda riding a bicycle through a futuristic city at sunset while flying cars move overhead."</option>
+                            <option value="dino">"A friendly dinosaur attending an online class from its modern tech-filled cave."</option>
+                            <option value="underwater">"A glowing bioluminescent marine city under the deep ocean with robotic sea turtles."</option>
+                        </select>
+                    </div>
+
+                    <!-- Video Simulator Display Window -->
+                    <div class="relative bg-slate-950 rounded-2xl aspect-video border border-slate-800 overflow-hidden flex items-center justify-center glow-indigo">
+                        <canvas id="promptCanvas" class="absolute inset-0 w-full h-full object-cover"></canvas>
+                        
+                        <!-- HUD Elements Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/40 p-4 flex flex-col justify-between pointer-events-none">
+                            <div class="flex justify-between items-start">
+                                <span class="bg-indigo-600/95 text-[10px] uppercase font-bold font-mono tracking-widest text-white px-2 py-1 rounded">RENDER ENGINE v1.4</span>
+                                <span class="text-[10px] font-mono text-cyan-400 bg-slate-950/80 px-2 py-1 rounded" id="canvasFps">FPS: 30</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-indigo-300 font-mono italic" id="canvasPromptDisplay">"A panda riding a bicycle through a futuristic city at sunset..."</p>
+                            </div>
+                        </div>
+
+                        <!-- Render Loading Screen Overlay -->
+                        <div id="renderOverlay" class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center gap-4 opacity-0 pointer-events-none transition-all duration-300">
+                            <div class="h-12 w-12 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin"></div>
+                            <div class="text-center">
+                                <p class="text-sm font-bold text-white tracking-wide">AI Processing Prompt</p>
+                                <p class="text-xs text-slate-400 font-mono" id="renderSteps">Analyzing prompt semantics...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button onclick="triggerRender()" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 text-white font-semibold text-sm hover:from-indigo-500 hover:to-cyan-400 transition-all duration-200 shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Video
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 13 Engagement Panel -->
+            <div class="max-w-7xl mx-auto w-full mt-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div class="flex items-center gap-3">
+                    <span class="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center border border-orange-500/20 font-bold text-sm">💡</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Interactive Challenge: Prediction Match</h4>
+                        <p class="text-xs text-slate-400">Ask class: What funny events occur when "A dinosaur attends an online class"? Try choosing it above!</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('discussion-13')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
+                        Discussion Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 14 CONTAINER -->
+        <section id="slide-14" class="slide-container absolute inset-0 p-6 md:p-12 overflow-y-auto flex flex-col justify-between bg-slate-950 hidden">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start my-auto">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-layer-group text-xs"></i> Slide 14: Core Prediction
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        How AI Builds Video:<br><span class="bg-gradient-to-r from-cyan-400 via-indigo-400 to-indigo-600 bg-clip-text text-transparent">One Frame at a Time</span>
+                    </h2>
+                    
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 text-sm text-slate-300">
+                        <p class="leading-relaxed font-medium">
+                            A cartoon isn't magic—it's just a sequence of <span class="text-cyan-400 font-bold">many individual static images</span> displayed rapidly so our brains perceive seamless motion.
+                        </p>
+                        <div class="border-l-2 border-indigo-500 pl-4 space-y-1">
+                            <span class="text-xs font-bold text-indigo-400 uppercase">The Predictor Metaphor:</span>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Text generators predict words. Image generators predict pixels. <b class="text-slate-300">Video models predict the next complete image.</b>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs uppercase font-bold tracking-wider text-slate-500">Key Generation Challenges:</h4>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="flex items-center gap-2 bg-slate-900/50 p-2.5 rounded-lg border border-slate-800">
+                                <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                                <span>Consistent Background</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-900/50 p-2.5 rounded-lg border border-slate-800">
+                                <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                                <span>Unchanging Character</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-900/50 p-2.5 rounded-lg border border-slate-800">
+                                <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                                <span>Stable Lighting</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-900/50 p-2.5 rounded-lg border border-slate-800">
+                                <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                                <span>Natural Gravity/Speed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Board: Storyboard & Motion Controller -->
+                <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs uppercase font-bold tracking-wider text-slate-400">
+                            <i class="fa-solid fa-photo-film text-indigo-400 mr-2"></i> Storyboard & Motion Controller
+                        </span>
+                        <div class="flex items-center gap-2 text-xs font-mono text-slate-400 bg-slate-950 px-3 py-1 rounded border border-slate-800">
+                            Speed: <span id="speedValue" class="text-indigo-400 font-bold">12</span> FPS
+                        </div>
+                    </div>
+
+                    <!-- Preview Frame sequence -->
+                    <div class="grid grid-cols-5 gap-2">
+                        <div onclick="selectStoryboardFrame(0)" id="sb-0" class="cursor-pointer border-2 border-indigo-500 bg-slate-950 p-1.5 rounded-xl text-center space-y-1 transition duration-200">
+                            <div class="aspect-square bg-slate-900 rounded-lg flex items-center justify-center text-xl text-slate-500" id="sb-img-0"><i class="fa-solid fa-child"></i></div>
+                            <span class="text-[10px] font-mono block text-indigo-400">Frame 1</span>
+                        </div>
+                        <div onclick="selectStoryboardFrame(1)" id="sb-1" class="cursor-pointer border border-slate-800 bg-slate-950 p-1.5 rounded-xl text-center space-y-1 transition duration-200">
+                            <div class="aspect-square bg-slate-900 rounded-lg flex items-center justify-center text-xl text-slate-500" id="sb-img-1"><i class="fa-solid fa-child"></i></div>
+                            <span class="text-[10px] font-mono block text-slate-500">Frame 2</span>
+                        </div>
+                        <div onclick="selectStoryboardFrame(2)" id="sb-2" class="cursor-pointer border border-slate-800 bg-slate-950 p-1.5 rounded-xl text-center space-y-1 transition duration-200">
+                            <div class="aspect-square bg-slate-900 rounded-lg flex items-center justify-center text-xl text-slate-500" id="sb-img-2"><i class="fa-solid fa-child"></i></div>
+                            <span class="text-[10px] font-mono block text-slate-500">Frame 3</span>
+                        </div>
+                        <div onclick="selectStoryboardFrame(3)" id="sb-3" class="cursor-pointer border border-slate-800 bg-slate-950 p-1.5 rounded-xl text-center space-y-1 transition duration-200">
+                            <div class="aspect-square bg-slate-900 rounded-lg flex items-center justify-center text-xl text-slate-500" id="sb-img-3"><i class="fa-solid fa-child"></i></div>
+                            <span class="text-[10px] font-mono block text-slate-500">Frame 4</span>
+                        </div>
+                        <div onclick="selectStoryboardFrame(4)" id="sb-4" class="cursor-pointer border border-slate-800 bg-slate-950 p-1.5 rounded-xl text-center space-y-1 transition duration-200">
+                            <div class="aspect-square bg-slate-900 rounded-lg flex items-center justify-center text-xl text-slate-500" id="sb-img-4"><i class="fa-solid fa-child"></i></div>
+                            <span class="text-[10px] font-mono block text-slate-500">Frame 5</span>
+                        </div>
+                    </div>
+
+                    <!-- Central Simulated Cinema Viewer -->
+                    <div class="relative bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center h-64 overflow-hidden">
+                        <canvas id="animatorCanvas" class="max-h-full aspect-video border border-slate-900 rounded-lg bg-slate-900"></canvas>
+                        
+                        <!-- Overlay overlay indicator -->
+                        <div class="absolute bottom-6 bg-slate-950/80 border border-slate-800 text-[11px] font-mono py-1 px-3 rounded-full text-indigo-400">
+                            Now playing: <span id="currentFrameBadge">Frame 1</span>
+                        </div>
+                    </div>
+
+                    <!-- Speed & Playback controls -->
+                    <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <button onclick="togglePlayback()" id="playBtn" class="flex-1 md:flex-none px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center justify-center gap-2 transition">
+                                <i class="fa-solid fa-play"></i> Run Simulation
+                            </button>
+                            <button onclick="stepAnimation()" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition">
+                                <i class="fa-solid fa-forward-step"></i> Step
+                            </button>
+                        </div>
+                        <div class="w-full md:w-60 flex items-center gap-3">
+                            <span class="text-xs text-slate-400">Slow</span>
+                            <input type="range" id="speedSlider" min="2" max="24" value="12" class="flex-1 accent-indigo-500" oninput="changeAnimSpeed(this.value)">
+                            <span class="text-xs text-slate-400">Fast</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 14 Engagement Panel -->
+            <div class="max-w-7xl mx-auto w-full mt-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div class="flex items-center gap-3">
+                    <span class="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center border border-orange-500/20 font-bold text-sm">👥</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Activity: Human Video Generator</h4>
+                        <p class="text-xs text-slate-400">Get 5 volunteers to step through Frame 1 to 5: Stand, Walk, Run, Jump, Celebrate. Connect acting with AI prediction!</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('discussion-14')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
+                        Discussion Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 15 CONTAINER -->
+        <section id="slide-15" class="slide-container absolute inset-0 p-6 md:p-12 overflow-y-auto flex flex-col justify-between bg-slate-950 hidden">
+            <div class="max-w-7xl mx-auto w-full space-y-8 my-auto">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5 mb-2">
+                            <i class="fa-solid fa-briefcase text-xs"></i> Slide 15: Practical Utility
+                        </span>
+                        <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                            Real-World Video Generation:<br><span class="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Key Industry Case Studies</span>
+                        </h2>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl max-w-sm">
+                        <span class="text-xs font-bold text-slate-400 block mb-0.5"><i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Core Insight</span>
+                        <p class="text-[11px] text-slate-400">Video is shifting from a premium entertainment-only output to an immediate daily communication utility.</p>
+                    </div>
+                </div>
+
+                <!-- 4-Panel Case Study Selector Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Tab 1: Education -->
+                    <button onclick="selectCaseStudy('edu')" id="btn-case-edu" class="case-tab-btn border-2 border-indigo-500 bg-slate-900 p-5 rounded-2xl text-left transition duration-200 shadow-lg flex flex-col justify-between gap-4">
+                        <div class="h-10 w-10 rounded-xl bg-indigo-950 text-indigo-400 flex items-center justify-center border border-indigo-800/40">
+                            <i class="fa-solid fa-graduation-cap text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest font-mono">CASE 01</span>
+                            <h3 class="text-lg font-bold text-white">Education & Tutoring</h3>
+                        </div>
+                    </button>
+                    <!-- Tab 2: Business -->
+                    <button onclick="selectCaseStudy('biz')" id="btn-case-biz" class="case-tab-btn border border-slate-800 bg-slate-900/40 p-5 rounded-2xl text-left transition duration-200 hover:border-slate-700 flex flex-col justify-between gap-4">
+                        <div class="h-10 w-10 rounded-xl bg-slate-950 text-slate-500 flex items-center justify-center border border-slate-800/60">
+                            <i class="fa-solid fa-chart-line text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest font-mono">CASE 02</span>
+                            <h3 class="text-lg font-bold text-slate-300">Business & Adverts</h3>
+                        </div>
+                    </button>
+                    <!-- Tab 3: Social Media -->
+                    <button onclick="selectCaseStudy('social')" id="btn-case-social" class="case-tab-btn border border-slate-800 bg-slate-900/40 p-5 rounded-2xl text-left transition duration-200 hover:border-slate-700 flex flex-col justify-between gap-4">
+                        <div class="h-10 w-10 rounded-xl bg-slate-950 text-slate-500 flex items-center justify-center border border-slate-800/60">
+                            <i class="fa-solid fa-photo-film text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest font-mono">CASE 03</span>
+                            <h3 class="text-lg font-bold text-slate-300">Social Media Content</h3>
+                        </div>
+                    </button>
+                    <!-- Tab 4: Healthcare -->
+                    <button onclick="selectCaseStudy('med')" id="btn-case-med" class="case-tab-btn border border-slate-800 bg-slate-900/40 p-5 rounded-2xl text-left transition duration-200 hover:border-slate-700 flex flex-col justify-between gap-4">
+                        <div class="h-10 w-10 rounded-xl bg-slate-950 text-slate-500 flex items-center justify-center border border-slate-800/60">
+                            <i class="fa-solid fa-heart-pulse text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest font-mono">CASE 04</span>
+                            <h3 class="text-lg font-bold text-slate-300">Healthcare Awareness</h3>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Case Study Simulated Workspace Viewport -->
+                <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center" id="caseStudyDetail">
+                    <!-- Left detail text -->
+                    <div class="lg:col-span-6 space-y-4">
+                        <div class="space-y-1">
+                            <span id="caseDetailSubtitle" class="text-xs font-mono font-bold text-indigo-400 uppercase tracking-wider">Education</span>
+                            <h3 id="caseDetailTitle" class="text-2xl font-bold text-white">Visualizing The Water Cycle</h3>
+                        </div>
+                        <p id="caseDetailDesc" class="text-sm text-slate-400 leading-relaxed">
+                            Creating customized science animations traditionally takes multiple layout artists, audio techs, and engineers several days. Today, simple natural-language inputs generate short explainer content instantly.
+                        </p>
+                        <div class="space-y-2 p-4 bg-slate-950 rounded-xl border border-slate-800">
+                            <span class="text-xs font-bold text-indigo-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-keyboard"></i> Simulated AI System Prompt Input:
+                            </span>
+                            <p id="caseDetailPrompt" class="text-xs text-slate-300 font-mono italic">
+                                "Create a 30-second animation showing evaporation, condensation, and rainfall for school students."
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right visualization display -->
+                    <div class="lg:col-span-6">
+                        <div class="relative aspect-video rounded-xl border border-slate-800 bg-slate-950 overflow-hidden flex items-center justify-center">
+                            <div class="absolute inset-0 bg-indigo-500/5 animate-pulse"></div>
+                            
+                            <!-- Simple custom visualization layers representing different industries dynamically toggled by JS -->
+                            <div id="caseView-edu" class="case-view-panel text-center space-y-4 p-6 flex flex-col items-center justify-center h-full">
+                                <div class="relative h-20 w-40 border border-indigo-500/20 bg-indigo-950/20 rounded-xl flex items-center justify-center">
+                                    <i class="fa-solid fa-cloud-showers-water text-4xl text-indigo-400 animate-bounce"></i>
+                                    <div class="absolute -top-4 text-[10px] font-mono bg-indigo-900 px-2 py-0.5 rounded text-indigo-200">Precipitation</div>
+                                </div>
+                                <span class="text-xs font-mono text-slate-400 bg-slate-900 px-3 py-1 rounded border border-slate-800">Rendering Evaporation Stage...</span>
+                            </div>
+
+                            <div id="caseView-biz" class="case-view-panel hidden text-center space-y-4 p-6 flex flex-col items-center justify-center h-full">
+                                <div class="h-20 w-40 border border-emerald-500/20 bg-emerald-950/20 rounded-xl flex flex-col items-center justify-center p-3 gap-2">
+                                    <i class="fa-solid fa-sack-dollar text-3xl text-emerald-400"></i>
+                                    <span class="text-[9px] font-mono text-emerald-300">Conversion Rate +240%</span>
+                                </div>
+                                <span class="text-xs font-mono text-slate-400 bg-slate-900 px-3 py-1 rounded border border-slate-800">Campaign rendering complete.</span>
+                            </div>
+
+                            <div id="caseView-social" class="case-view-panel hidden text-center space-y-4 p-6 flex flex-col items-center justify-center h-full">
+                                <div class="h-20 w-40 border border-rose-500/20 bg-rose-950/20 rounded-xl flex items-center justify-center gap-4">
+                                    <i class="fa-solid fa-heart text-rose-400 animate-pulse text-2xl"></i>
+                                    <i class="fa-solid fa-comments text-cyan-400 text-2xl"></i>
+                                </div>
+                                <span class="text-xs font-mono text-slate-400 bg-slate-900 px-3 py-1 rounded border border-slate-800">Video uploaded. Reels simulation active.</span>
+                            </div>
+
+                            <div id="caseView-med" class="case-view-panel hidden text-center space-y-4 p-6 flex flex-col items-center justify-center h-full">
+                                <div class="h-20 w-40 border border-cyan-500/20 bg-cyan-950/20 rounded-xl flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-wave-square text-cyan-400 animate-pulse text-3xl"></i>
+                                </div>
+                                <span class="text-xs font-mono text-slate-400 bg-slate-900 px-3 py-1 rounded border border-slate-800">Patient-friendly Diabetes animation.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 15 Engagement Panel -->
+            <div class="max-w-7xl mx-auto w-full mt-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div class="flex items-center gap-3">
+                    <span class="h-8 w-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20 font-bold text-sm">💡</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Think-Pair-Share challenge: School video generator</h4>
+                        <p class="text-xs text-slate-400">If given full video creation tool access, what interactive lesson animations would you create? Historical events?</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('discussion-15')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
+                        Discussion Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 16 CONTAINER -->
+        <section id="slide-16" class="slide-container absolute inset-0 p-6 md:p-12 overflow-y-auto flex flex-col justify-between bg-slate-950 hidden">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start my-auto">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-toolbox text-xs"></i> Slide 16: Category Mapping
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        Meet the AI Toolbox:<br><span class="bg-gradient-to-r from-pink-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">Specialized Assistants</span>
+                    </h2>
+                    
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4">
+                        <p class="text-sm text-slate-300 leading-relaxed font-medium">
+                            If you want to cut paper, you don't grab a heavy hammer. <span class="text-indigo-400 font-bold">Generative AI contains specialized utilities.</span> Match the correct task to the best physical tool!
+                        </p>
+                    </div>
+
+                    <!-- Toolbox Graphic -->
+                    <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-xl flex items-center gap-4">
+                        <div class="h-16 w-16 rounded-xl bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center">
+                            <i class="fa-solid fa-screwdriver-wrench text-2xl"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-xs font-bold text-slate-300 uppercase">Interactive Concept Map</span>
+                            <p class="text-xs text-slate-400">Identify tool capabilities to construct powerful composite workflows.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Panel: Drag / Click matching game -->
+                <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs uppercase font-bold tracking-wider text-slate-400">
+                            <i class="fa-solid fa-gamepad text-indigo-400 mr-2"></i> Toolbox Matchmaker Game
+                        </span>
+                        <div class="text-xs font-mono text-slate-400 bg-slate-950 px-3 py-1 rounded border border-slate-800">
+                            Score: <span id="gameScore" class="text-emerald-400 font-bold">0</span>/4
+                        </div>
+                    </div>
+
+                    <!-- Left: Tasks -->
+                    <div class="space-y-3">
+                        <span class="text-xs text-slate-400 font-bold">Step 1: Choose a Creative Goal</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="gameTaskContainer">
+                            <button onclick="selectGameTask('write')" id="task-write" class="game-task-btn p-3 rounded-xl border border-slate-800 bg-slate-950 text-left text-xs text-slate-300 hover:border-indigo-500 transition duration-150">
+                                <span class="font-bold text-indigo-400 block mb-1">Write a Speech</span>
+                                Create historical presentation text.
+                            </button>
+                            <button onclick="selectGameTask('logo')" id="task-logo" class="game-task-btn p-3 rounded-xl border border-slate-800 bg-slate-950 text-left text-xs text-slate-300 hover:border-indigo-500 transition duration-150">
+                                <span class="font-bold text-pink-400 block mb-1">Create a Logo</span>
+                                Design beautiful environment posters.
+                            </button>
+                            <button onclick="selectGameTask('anim')" id="task-anim" class="game-task-btn p-3 rounded-xl border border-slate-800 bg-slate-950 text-left text-xs text-slate-300 hover:border-indigo-500 transition duration-150">
+                                <span class="font-bold text-cyan-400 block mb-1">Create an Animation</span>
+                                Build 30-second science movement video.
+                            </button>
+                            <button onclick="selectGameTask('code')" id="task-code" class="game-task-btn p-3 rounded-xl border border-slate-800 bg-slate-950 text-left text-xs text-slate-300 hover:border-indigo-500 transition duration-150">
+                                <span class="font-bold text-emerald-400 block mb-1">Fix Code Errors</span>
+                                Fix compiler problems in JavaScript.
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Tool types -->
+                    <div class="space-y-3">
+                        <span class="text-xs text-slate-400 font-bold">Step 2: Assign the Correct AI Category Drawer</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <button onclick="matchToolCategory('text')" class="tool-cat-btn border border-indigo-500/20 bg-indigo-950/20 p-4 rounded-xl text-center space-y-2 hover:bg-indigo-900/30 transition duration-150">
+                                <i class="fa-solid fa-file-pen text-xl text-indigo-400"></i>
+                                <span class="text-[10px] font-bold block text-indigo-300">Text Gen</span>
+                            </button>
+                            <button onclick="matchToolCategory('image')" class="tool-cat-btn border border-pink-500/20 bg-pink-950/20 p-4 rounded-xl text-center space-y-2 hover:bg-pink-900/30 transition duration-150">
+                                <i class="fa-solid fa-palette text-xl text-pink-400"></i>
+                                <span class="text-[10px] font-bold block text-pink-300">Image Gen</span>
+                            </button>
+                            <button onclick="matchToolCategory('video')" class="tool-cat-btn border border-cyan-500/20 bg-cyan-950/20 p-4 rounded-xl text-center space-y-2 hover:bg-cyan-900/30 transition duration-150">
+                                <i class="fa-solid fa-clapperboard text-xl text-cyan-400"></i>
+                                <span class="text-[10px] font-bold block text-cyan-300">Video Gen</span>
+                            </button>
+                            <button onclick="matchToolCategory('code')" class="tool-cat-btn border border-emerald-500/20 bg-emerald-950/20 p-4 rounded-xl text-center space-y-2 hover:bg-emerald-900/30 transition duration-150">
+                                <i class="fa-solid fa-code text-xl text-emerald-400"></i>
+                                <span class="text-[10px] font-bold block text-emerald-300">Code Assistant</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Game Notification Panel -->
+                    <div id="gameNotification" class="bg-slate-950 border border-slate-800 p-4 rounded-xl text-center min-h-[56px] flex items-center justify-center">
+                        <span class="text-xs text-slate-400"><i class="fa-solid fa-circle-question mr-1.5 text-indigo-400"></i> Select a creative task first, then assign its appropriate AI Category.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 16 Engagement Panel -->
+            <div class="max-w-7xl mx-auto w-full mt-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div class="flex items-center gap-3">
+                    <span class="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center border border-orange-500/20 font-bold text-sm">💡</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Toolbox Matching Challenge</h4>
+                        <p class="text-xs text-slate-400">Can students name specialized tools for each category? (ChatGPT, Gemini, Midjourney, Sora, Cursor...)</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('discussion-16')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
+                        Discussion Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 17 CONTAINER -->
+        <section id="slide-17" class="slide-container absolute inset-0 p-6 md:p-12 overflow-y-auto flex flex-col justify-between bg-slate-950 hidden">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start my-auto">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-clipboard-question text-xs"></i> Slide 17: Multi-Tool workflows
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        Which AI Tool<br><span class="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-500 bg-clip-text text-transparent">Would You Choose?</span>
+                    </h2>
+                    
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4">
+                        <p class="text-sm text-slate-300 leading-relaxed font-medium">
+                            Real-world production projects rarely rely on a single system. Creative directors combine specialized elements to design stunning workflows.
+                        </p>
+                        <div class="p-3 bg-indigo-950/20 border border-indigo-900/30 rounded-xl text-xs text-indigo-300">
+                            💡 <b>Key Tip:</b> Always assess the output asset. Written text = Language model. Complex motion = Video model. Static branding = Vector generator.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario Deck Card Selector -->
+                <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs uppercase font-bold tracking-wider text-slate-400">
+                            <i class="fa-solid fa-gamepad text-indigo-400 mr-2"></i> Scenario Challenge Desk
+                        </span>
+                        <div class="text-xs font-mono text-slate-400 bg-slate-950 px-3 py-1 rounded border border-slate-800">
+                            Active Card: <span id="scenarioIndexBadge" class="text-indigo-400 font-bold">1</span>/5
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Card Deck -->
+                    <div class="bg-slate-950 border border-slate-800/80 p-6 rounded-2xl space-y-4 glow-indigo">
+                        <div class="flex justify-between items-start">
+                            <span class="bg-slate-900 border border-slate-800 text-[10px] font-mono px-2.5 py-1 rounded-md text-indigo-400" id="scenarioCategory">SCENARIO 1</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-white leading-snug" id="scenarioHeading">You must prepare an environmental campaign speech for the school annual function.</h4>
+                        
+                        <!-- Dynamic Multi-Choice buttons -->
+                        <div class="space-y-2" id="scenarioChoices">
+                            <!-- Injected by script -->
+                        </div>
+                    </div>
+
+                    <!-- Navigation controls for quiz -->
+                    <div class="flex justify-between items-center">
+                        <button onclick="prevScenario()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-left"></i> Previous
+                        </button>
+                        <button onclick="nextScenario()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition flex items-center gap-2">
+                            Next Scenario <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 17 Engagement Panel -->
+            <div class="max-w-7xl mx-auto w-full mt-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div class="flex items-center gap-3">
+                    <span class="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center border border-orange-500/20 font-bold text-sm">💡</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Think-Pair-Share challenge</h4>
+                        <p class="text-xs text-slate-400">Organize students in small pairs. Have them pick Scenario 5 and evaluate why composite tool pipelines are critical.</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('discussion-17')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
+                        Discussion Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 18 CONTAINER -->
+        <section id="slide-18" class="slide-container absolute inset-0 p-6 md:p-12 overflow-y-auto flex flex-col justify-between bg-slate-950 hidden">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start my-auto">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-diagram-next text-xs"></i> Slide 18: Integrated Pipelines
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        A Day in the Life of<br><span class="bg-gradient-to-r from-teal-400 via-indigo-400 to-indigo-600 bg-clip-text text-transparent">an AI Creator</span>
+                    </h2>
+                    
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4">
+                        <p class="text-sm text-slate-300 leading-relaxed font-medium">
+                            Arjun is a young student entrepreneur launching an educational astronomy channel. Observe how he orchestrates different tools step-by-step.
+                        </p>
+                        <!-- Human-in-the-loop emphasis -->
+                        <div class="border-l-2 border-amber-500 pl-4 space-y-1">
+                            <span class="text-xs font-bold text-amber-500 uppercase">Human-Centric Core:</span>
+                            <p class="text-xs text-slate-400">
+                                Arjun controls topics, aesthetics, edits, and targets. AI serves as a tireless executive companion.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step-by-Step creator simulation -->
+                <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs uppercase font-bold tracking-wider text-slate-400">
+                            <i class="fa-solid fa-road text-indigo-400 mr-2"></i> Arjun's Workflow Progression
+                        </span>
+                        <div class="text-xs font-mono text-slate-400 bg-slate-950 px-3 py-1 rounded border border-slate-800">
+                            Active Step: <span id="creatorStepBadge" class="text-indigo-400 font-bold">1</span>/4
+                        </div>
+                    </div>
+
+                    <!-- Main step card panel -->
+                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-4 relative overflow-hidden">
+                        <div class="flex justify-between items-center">
+                            <span id="creatorStepTitle" class="text-xs font-mono text-indigo-400 font-bold uppercase tracking-widest bg-slate-900 px-3 py-1 rounded">STEP 1: GENERATE CONCEPTS</span>
+                            <span id="creatorStepTool" class="text-xs font-semibold text-slate-400 bg-indigo-950/20 px-2 py-1 border border-indigo-900/50 rounded flex items-center gap-1"><i class="fa-solid fa-file-pen"></i> Text Gen</span>
+                        </div>
+                        <p id="creatorStepPrompt" class="text-xs text-indigo-300 font-mono italic p-3 bg-slate-900 rounded-lg border border-slate-800/50">
+                            "Suggest 10 interesting science topics for teenagers."
+                        </p>
+                        <div class="border-t border-slate-800/80 pt-4">
+                            <span class="text-xs font-bold text-slate-400 uppercase block mb-2">Simulated Live Output:</span>
+                            <div id="creatorStepOutput" class="bg-slate-900/40 border border-slate-850 p-3 rounded-lg text-xs text-slate-300 leading-relaxed font-mono">
+                                1. Black Hole Gravitational Pull Explained Simply<br>2. Photosynthesis Using Cricket Metaphor<br>3. Quantum Mechanics for Amateurs
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workflow roadmap bubbles -->
+                    <div class="flex justify-between items-center relative py-2">
+                        <div class="absolute left-0 right-0 h-0.5 bg-slate-800 z-0"></div>
+                        <button onclick="goToCreatorStep(1)" id="step-dot-1" class="creator-step-dot h-8 w-8 rounded-full border-2 border-indigo-500 bg-slate-950 text-indigo-400 flex items-center justify-center font-bold text-xs relative z-10">1</button>
+                        <button onclick="goToCreatorStep(2)" id="step-dot-2" class="creator-step-dot h-8 w-8 rounded-full border border-slate-800 bg-slate-950 text-slate-500 flex items-center justify-center font-bold text-xs relative z-10">2</button>
+                        <button onclick="goToCreatorStep(3)" id="step-dot-3" class="creator-step-dot h-8 w-8 rounded-full border border-slate-800 bg-slate-950 text-slate-500 flex items-center justify-center font-bold text-xs relative z-10">3</button>
+                        <button onclick="goToCreatorStep(4)" id="step-dot-4" class="creator-step-dot h-8 w-8 rounded-full border border-slate-800 bg-slate-950 text-slate-500 flex items-center justify-center font-bold text-xs relative z-10">4</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 18 Engagement Panel -->
+            <div class="max-w-7xl mx-auto w-full mt-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div class="flex items-center gap-3">
+                    <span class="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center border border-orange-500/20 font-bold text-sm">💡</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Arjun's Workflow Discussion</h4>
+                        <p class="text-xs text-slate-400">Discuss: Which steps still require absolute human intervention, taste, and control? Why is Arjun's branding irreplaceable?</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('discussion-18')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
+                        Discussion Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 19 CONTAINER -->
+        <section id="slide-19" class="slide-container absolute inset-0 p-6 md:p-12 overflow-y-auto flex flex-col justify-between bg-slate-950 hidden">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start my-auto">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-graduation-cap text-xs"></i> Slide 19: Real-World Use Case 1
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        Generative AI in Education:<br><span class="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-500 bg-clip-text text-transparent">Your Study Partner</span>
+                    </h2>
+                    
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 text-sm text-slate-300">
+                        <p class="leading-relaxed">
+                            Meet Ananya. She has a high-stakes biology exam tomorrow and needs to understand complex cellular processes in only one evening.
+                        </p>
+                        <div class="p-3 bg-red-950/20 border border-red-900/30 rounded-xl text-xs text-slate-400">
+                            <b>Traditional route:</b> Leafing through pages, static diagrams, seeking videos online (Takes hours).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning sandbox simulator -->
+                <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs uppercase font-bold tracking-wider text-slate-400">
+                            <i class="fa-solid fa-terminal text-indigo-400 mr-2"></i> Ananya's Interactive Console
+                        </span>
+                    </div>
+
+                    <!-- Prompt Sandbox Inputs -->
+                    <div class="space-y-4 bg-slate-950 border border-slate-800/80 p-5 rounded-2xl glow-indigo">
+                        <span class="text-xs font-bold text-slate-400 block"><i class="fa-solid fa-keyboard text-indigo-400 mr-2"></i> Prompt selected:</span>
+                        <p class="text-xs text-indigo-300 font-mono italic p-3 bg-slate-900/60 rounded-xl border border-slate-800">
+                            "Explain photosynthesis to a Class IX student using a cricket analogy."
+                        </p>
+                        
+                        <div class="border-t border-slate-800/80 pt-4 space-y-2">
+                            <span class="text-xs font-bold text-slate-400 block uppercase">Simulated AI Response:</span>
+                            <div class="min-h-36 bg-slate-900/60 rounded-xl p-4 text-xs font-mono text-slate-300 leading-relaxed overflow-y-auto" id="educationConsole">
+                                <span class="text-slate-500">// Press below to execute prompt...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="runEducationPrompt()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-semibold text-xs transition duration-150 flex items-center justify-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-terminal"></i> Execute AI Explanation Prompt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 19 Engagement Panel -->
+            <div class="max-w-7xl mx-auto w-full mt-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div class="flex items-center gap-3">
+                    <span class="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center border border-orange-500/20 font-bold text-sm">💡</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Live Prompt Challenge</h4>
+                        <p class="text-xs text-slate-400">Ask a volunteer: Pick a tough topic (Newton's laws, World War II) and draft a prompt to explain it using game or sport analogies.</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('discussion-19')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
+                        Discussion Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 20 CONTAINER -->
+        <section id="slide-20" class="slide-container absolute inset-0 p-6 md:p-12 overflow-y-auto flex flex-col justify-between bg-slate-950 hidden">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start my-auto">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-heart-pulse text-xs"></i> Slide 20: Real-World Use Case 2
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        Generative AI in Healthcare:<br><span class="bg-gradient-to-r from-cyan-400 via-teal-400 to-indigo-400 bg-clip-text text-transparent">Assisting Doctors</span>
+                    </h2>
+                    
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 text-sm text-slate-300">
+                        <p class="leading-relaxed">
+                            Meet Dr. Mehta. He treats dozens of patients every day and experiences heavy documentation and education backlogs.
+                        </p>
+                        <div class="p-3 bg-cyan-950/20 border border-cyan-900/30 rounded-xl text-xs text-cyan-300">
+                            <b>AI Support Advantage:</b> Generate friendly medical explanations, summary charts, dietary guidelines, and multilingual alerts in seconds.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Healthcare simulation dashboard -->
+                <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs uppercase font-bold tracking-wider text-slate-400 flex items-center gap-1.5">
+                            <span class="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-ping"></span> Dr. Mehta's Medical Dashboard
+                        </span>
+                        <div class="flex gap-1">
+                            <span class="h-2 w-2 rounded-full bg-slate-700"></span>
+                            <span class="h-2 w-2 rounded-full bg-slate-700"></span>
+                        </div>
+                    </div>
+
+                    <!-- Layout of dashboard -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <!-- Patient summary cards -->
+                        <div class="md:col-span-5 space-y-2">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Patient Inquiries</span>
+                            <button onclick="selectPatientCase('diabetes')" id="patient-btn-diabetes" class="patient-btn w-full p-3 rounded-xl border-2 border-indigo-500 bg-slate-950 text-left transition duration-150">
+                                <span class="text-xs font-bold text-white block">"What is Diabetes?"</span>
+                                <span class="text-[10px] text-slate-400">Class IX student inquiry</span>
+                            </button>
+                            <button onclick="selectPatientCase('vaccines')" id="patient-btn-vaccines" class="patient-btn w-full p-3 rounded-xl border border-slate-850 bg-slate-900/40 text-left transition duration-150 hover:border-slate-700">
+                                <span class="text-xs font-bold text-slate-300 block">"Are vaccines safe?"</span>
+                                <span class="text-[10px] text-slate-500">Parent explanation card</span>
+                            </button>
+                            <button onclick="selectPatientCase('nutrition')" id="patient-btn-nutrition" class="patient-btn w-full p-3 rounded-xl border border-slate-850 bg-slate-900/40 text-left transition duration-150 hover:border-slate-700">
+                                <span class="text-xs font-bold text-slate-300 block">"How to explain nutrition?"</span>
+                                <span class="text-[10px] text-slate-500">Elderly flyer summary</span>
+                            </button>
+                        </div>
+
+                        <!-- Result output screen -->
+                        <div class="md:col-span-7 bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col justify-between h-64 overflow-y-auto text-xs space-y-3">
+                            <div class="border-b border-slate-850 pb-2 flex justify-between items-center text-[10px] font-mono text-indigo-400">
+                                <span>OUTPUT REPORT METRIC</span>
+                                <span class="bg-cyan-950 px-2 py-0.5 rounded text-cyan-300">Reviewed by Dr. Mehta</span>
+                            </div>
+                            <div id="patientOutputText" class="space-y-2 text-slate-300 leading-relaxed font-mono">
+                                <b>What is Diabetes?</b><br>
+                                Imagine your body is a fancy car. Energy is the fuel. Diabetes is a minor problem in the car's fuel injector (insulin system). We can fix it via exercise and proper food choice!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 20 Engagement Panel -->
+            <div class="max-w-7xl mx-auto w-full mt-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div class="flex items-center gap-3">
+                    <span class="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center border border-orange-500/20 font-bold text-sm">💡</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Healthcare Guardrails Discussion</h4>
+                        <p class="text-xs text-slate-400">Can AI replace licensed doctors? What occurs if wrong information gets outputted? Why is human doctor review required?</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('discussion-20')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
+                        Discussion Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 21 CONTAINER -->
+        <section id="slide-21" class="slide-container absolute inset-0 p-6 md:p-12 overflow-y-auto flex flex-col justify-between bg-slate-950 hidden">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start my-auto">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-briefcase text-xs"></i> Slide 21: Real-World Use Case 3
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        Generative AI in Business:<br><span class="bg-gradient-to-r from-orange-400 via-pink-400 to-indigo-500 bg-clip-text text-transparent">Eco-Bottle Startup</span>
+                    </h2>
+                    
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 text-sm text-slate-300">
+                        <p class="leading-relaxed font-medium">
+                            Meet Rahul. He is launching a sustainable lifestyle brand selling beautifully styled eco-friendly water bottles.
+                        </p>
+                        <div class="p-3.5 bg-indigo-950/20 border border-indigo-900/30 rounded-xl text-xs text-indigo-300">
+                            <b>Startup Challenges:</b> Traditional startups spend thousands of dollars on logo creation, copywriting, and promotional shoots. Rahul utilizes AI.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive business panel simulator -->
+                <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs uppercase font-bold tracking-wider text-slate-400">
+                            <i class="fa-solid fa-toolbox text-indigo-400 mr-2"></i> Rahul's Startup Asset Workshop
+                        </span>
+                        <div class="flex gap-2">
+                            <span class="h-2 w-2 rounded-full bg-slate-700"></span>
+                            <span class="h-2 w-2 rounded-full bg-slate-700"></span>
+                        </div>
+                    </div>
+
+                    <!-- Asset choices tabs -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="selectStartupAsset('logo')" id="asset-btn-logo" class="asset-tab-btn border-2 border-indigo-500 bg-slate-950 text-slate-200 py-2.5 px-2 rounded-xl text-xs font-semibold transition flex flex-col items-center gap-1.5">
+                            <i class="fa-solid fa-palette text-sm"></i> Logo Asset
+                        </button>
+                        <button onclick="selectStartupAsset('copy')" id="asset-btn-copy" class="asset-tab-btn border border-slate-850 bg-slate-900/40 text-slate-400 py-2.5 px-2 rounded-xl text-xs font-semibold transition hover:border-slate-700 flex flex-col items-center gap-1.5">
+                            <i class="fa-solid fa-file-pen text-sm"></i> Product Description
+                        </button>
+                        <button onclick="selectStartupAsset('ad')" id="asset-btn-ad" class="asset-tab-btn border border-slate-850 bg-slate-900/40 text-slate-400 py-2.5 px-2 rounded-xl text-xs font-semibold transition hover:border-slate-700 flex flex-col items-center gap-1.5">
+                            <i class="fa-solid fa-video text-sm"></i> Video Promo Campaign
+                        </button>
+                    </div>
+
+                    <!-- Preview of simulated asset generated -->
+                    <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl aspect-video flex flex-col justify-center items-center relative overflow-hidden glow-indigo">
+                        <div id="startupLogoView" class="startup-view text-center space-y-3">
+                            <div class="h-16 w-16 bg-gradient-to-tr from-emerald-500 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-3xl font-black mx-auto">🌱</div>
+                            <span class="text-xs text-emerald-400 font-mono font-bold tracking-widest block uppercase">ECO-SPARK BRANDING</span>
+                            <p class="text-[10px] text-slate-500">AI Prompt: Minimalist emerald plant leaf geometric emblem logo.</p>
+                        </div>
+                        <div id="startupCopyView" class="startup-view hidden text-left space-y-2 max-w-md">
+                            <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider font-mono">Simulated Product Copy:</span>
+                            <p class="text-xs text-slate-300 leading-relaxed italic font-mono bg-slate-900 p-3 rounded-lg border border-slate-800">
+                                "Sip pure, live green. The Eco-Spark water bottle represents beautiful volcanic durability constructed entirely using ocean-bound bamboo materials."
+                            </p>
+                        </div>
+                        <div id="startupAdView" class="startup-view hidden text-center space-y-2">
+                            <i class="fa-solid fa-video text-3xl text-cyan-400 animate-pulse"></i>
+                            <span class="text-xs font-bold text-slate-300 block">Promotional Video Animation Draft</span>
+                            <p class="text-[10px] text-slate-500">"Animated water bottle emerging from moss rock landscape with gentle waterfalls."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 21 Engagement Panel -->
+            <div class="max-w-7xl mx-auto w-full mt-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div class="flex items-center gap-3">
+                    <span class="h-8 w-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20 font-bold text-sm">💡</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Startup Challenge</h4>
+                        <p class="text-xs text-slate-400">How could AI help students run their own small gaming, study, or local services business? What boundaries occur?</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('discussion-21')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
+                        Discussion Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 22 CONTAINER -->
+        <section id="slide-22" class="slide-container absolute inset-0 p-6 md:p-12 overflow-y-auto flex flex-col justify-between bg-slate-950 hidden">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start my-auto">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-users text-xs"></i> Slide 22: Everyday Integration
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                        Social Media & Daily Life:<br><span class="bg-gradient-to-r from-teal-400 to-indigo-400 bg-clip-text text-transparent">AI Is Around You</span>
+                    </h2>
+                    
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 text-sm text-slate-300">
+                        <p class="leading-relaxed">
+                            Think AI is future sci-fi? It is already running silently in your pocket. From recommended scroll feeds to caption suggestions, you interact with it daily.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Daily Life interactive slider checklist -->
+                <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs uppercase font-bold tracking-wider text-slate-400">
+                            <i class="fa-regular fa-clock text-indigo-400 mr-2"></i> Student's 24-Hour AI Routine
+                        </span>
+                        <div class="text-xs font-mono text-slate-400 bg-slate-950 px-3 py-1 rounded border border-slate-800">
+                            Time: <span id="timeBadge" class="text-indigo-400 font-bold">08:00 AM</span>
+                        </div>
+                    </div>
+
+                    <!-- Clock slider controller -->
+                    <div class="space-y-3 bg-slate-950 p-5 rounded-2xl border border-slate-800/80 glow-indigo">
+                        <input type="range" id="daySlider" min="0" max="4" value="0" class="w-full accent-indigo-500" oninput="updateDayTimeline(this.value)">
+                        
+                        <div class="grid grid-cols-5 text-center text-[10px] text-slate-500 font-semibold uppercase">
+                            <span>Morning</span>
+                            <span>School</span>
+                            <span>Afternoon</span>
+                            <span>Evening</span>
+                            <span>Night</span>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic scenario info -->
+                    <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 flex items-start gap-4">
+                        <div class="h-12 w-12 rounded-xl bg-indigo-950/50 text-indigo-400 border border-indigo-900/50 flex items-center justify-center text-xl shrink-0" id="timeIcon">
+                            <i class="fa-solid fa-mug-hot"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="text-sm font-bold text-white" id="timelineTitle">Morning Routine</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed" id="timelineDesc">
+                                AI algorithm recommends music playlists matching your workout velocity. Weather assistant crafts conversational forecast reports.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 22 Engagement Panel -->
+            <div class="max-w-7xl mx-auto w-full mt-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div class="flex items-center gap-3">
+                    <span class="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center border border-orange-500/20 font-bold text-sm">💬</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wide">Quick Classroom Hands Poll</h4>
+                        <p class="text-xs text-slate-400">Ask: How many of you used smart auto-corrections, facial recognition filters, or recommendation loops today?</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('discussion-22')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">
+                        Discussion Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Collapsible Speaker / Presenter Notes Panel -->
+    <div id="presenterNotes" class="bg-slate-900 border-t border-slate-800 px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 z-40 relative shrink-0">
+        <div class="flex gap-3 items-start flex-1 max-w-4xl">
+            <span class="h-8 w-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20 text-sm shrink-0 mt-0.5">
+                <i class="fa-regular fa-comments"></i>
+            </span>
+            <div class="space-y-1">
+                <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Speaker Notes (1–2 Minutes)</span>
+                <p id="speakerNotesText" class="text-xs text-slate-300 leading-relaxed">
+                    Creating a video is significantly more difficult than creating an image because videos require consistent frame-by-frame physics. Lighting, characters, and backgrounds must stay unified over time.
+                </p>
+            </div>
+        </div>
+        <button onclick="toggleNotes()" class="text-xs text-slate-400 hover:text-white transition font-medium border border-slate-700 px-2.5 py-1.5 rounded-lg bg-slate-800 self-end md:self-auto shrink-0">
+            Collapse Notes
+        </button>
+    </div>
+
+    <!-- Slide Navigation Footer Control Panel -->
+    <footer class="bg-slate-950 border-t border-slate-900 px-6 py-4 flex items-center justify-between z-40 shrink-0">
+        <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-slate-500">SLIDE PROGRESS:</span>
+            <div class="h-2 w-32 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                <div id="progressBar" class="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 w-[10%] transition-all duration-300"></div>
+            </div>
+            <span id="progressBadge" class="text-xs font-mono font-bold text-indigo-400 bg-indigo-950/50 border border-indigo-900/30 px-2 py-0.5 rounded ml-1">13 / 22</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button onclick="prevSlide()" class="h-10 w-24 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 flex items-center justify-center gap-1.5 transition text-xs font-bold">
+                <i class="fa-solid fa-angle-left"></i> Back
+            </button>
+            <button onclick="nextSlide()" class="h-10 w-24 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center gap-1.5 transition text-xs font-bold">
+                Next <i class="fa-solid fa-angle-right"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Custom Dialog Modals for Discussion Questions (Slide-specific) -->
+    <div id="modalOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-6 hidden">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl max-w-xl w-full space-y-6 shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-xl bg-indigo-600/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20">
+                    <i class="fa-solid fa-comments text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white" id="modalTitle">Discussion Questions</h3>
+                    <p class="text-xs text-slate-400">Class facilitation questions</p>
+                </div>
+            </div>
+            <div class="space-y-4 text-sm text-slate-300 max-h-80 overflow-y-auto pr-2" id="modalContent">
+                <!-- Injected via Script -->
+            </div>
+            <div class="flex justify-end pt-2 border-t border-slate-800">
+                <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition">
+                    Back to Slide
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Presentation logic -->
+    <script>
+        // Presentation State Engine
+        let currentSlide = 13;
+        const totalSlidesStart = 13;
+        const totalSlidesEnd = 22;
+
+        // Presentation Speaker Notes Dictionary
+        const slideNotes = {
+            13: "Creating a video is significantly more difficult than creating an image. Why? Because videos require consistency. If a character appears in one frame, it should remain similar in the next frame. Objects must move naturally, and lighting should remain consistent. Students should notice that the same principle still applies: A prompt remains the starting point. Only the output has changed.",
+            14: "Students often imagine AI creating videos all at once. A useful way to think about it is as a sequence of connected images. The AI predicts what should happen next in the scene. Just as language models predict the next word, video models predict the next frame. The difference lies in what is being predicted: Text models predict words, image models predict pixels, and video models predict frames.",
+            15: "When students first see AI-generated videos, they often focus on entertainment. However, many of the most valuable applications involve education and communication. Imagine a science teacher generating custom animations for every topic, or a doctor explaining a medical procedure visually. The ability to quickly convert ideas into visual stories can significantly improve learning.",
+            16: "Students often ask: 'Which AI tool is the best?' The answer is usually: 'It depends on what you want to do.' Just as you would not use a calculator to edit a video, you would not use a video-generation tool to write an essay. The Generative AI ecosystem contains many specialized tools. The most successful users often combine multiple AI tools together.",
+            17: "In professional environments, people rarely use only one AI tool. Consider a startup founder. They may use a text generator for marketing content, an image generator for logos, and a video generator for advertisements. The future is not about knowing a single tool. It is about knowing how to combine tools effectively, which is becoming a valuable workplace skill.",
+            18: "This example demonstrates how AI tools are increasingly becoming part of creative workflows. Notice something important: The human remains at the center. Arjun chooses the topic, the audience, the style, and the final content. AI helps execute ideas more efficiently. In reality, the best outcomes usually emerge from collaboration between humans and AI.",
+            19: "Education is one of the most promising applications of Generative AI. Imagine every student having access to a tutor available 24 hours a day. Students can ask questions repeatedly without hesitation. However, students must be careful. The goal is not to let AI do all the work; the goal is to use AI as a learning partner rather than as a shortcut.",
+            20: "Healthcare professionals spend significant time on documentation and communication. Generative AI can help reduce this burden. For example, doctors may use AI to create patient-friendly explanations of medical conditions. However, healthcare is a high-stakes environment where mistakes can have serious consequences. Therefore, AI-generated content must always be reviewed by professionals.",
+            21: "Historically, launching a business often required access to specialists. Today, AI can help individuals perform many creative and communication tasks independently. This does not eliminate the need for expertise. Instead, it increases productivity. Entrepreneurs can spend more time solving problems and less time on repetitive tasks.",
+            22: "Many students assume AI is something used only by researchers or large technology companies. In reality, AI is already embedded in many everyday experiences. From social media recommendations to content creation tools, AI influences how information is created and consumed. This widespread adoption introduces opportunities but also introduces new challenges."
+        };
+
+        // Modal Discussion Questions Dictionary
+        const discussionDatabase = {
+            13: [
+                "What kinds of videos would you create?",
+                "Could AI help students make educational videos?",
+                "Would you watch an AI-generated movie?"
+            ],
+            14: [
+                "Why is video generation harder than image generation?",
+                "What mistakes might AI make while generating movement?",
+                "Could AI-generated videos eventually become indistinguishable from real videos?"
+            ],
+            15: [
+                "Which industry benefits most from AI video generation?",
+                "What educational videos would you create?",
+                "Could AI-generated videos improve learning outcomes?"
+            ],
+            16: [
+                "Why do different tools exist?",
+                "Could one tool eventually do everything?",
+                "Which category interests you most?"
+            ],
+            17: [
+                "Can one tool solve every problem?",
+                "Why might organizations use multiple AI tools?",
+                "Which tool category seems most useful for students?"
+            ],
+            18: [
+                "Which step still requires human creativity?",
+                "Could AI independently run an entire business?",
+                "What role does the human play in an AI-assisted workflow?"
+            ],
+            19: [
+                "Would you use AI as a study partner?",
+                "Could AI make learning more personalized?",
+                "When does AI assistance become over-dependence?"
+            ],
+            20: [
+                "Should AI ever make medical decisions on its own?",
+                "What are the benefits of AI in healthcare?",
+                "What risks might arise if AI information is incorrect?"
+            ],
+            21: [
+                "Could AI help students become entrepreneurs?",
+                "Which business tasks are easiest to automate?",
+                "What skills remain uniquely human?"
+            ],
+            22: [
+                "How often do you think you interact with AI each day?",
+                "Can you always recognize AI-generated content?",
+                "Is AI making daily life easier?"
+            ]
+        };
+
+        // Initialize Application
+        window.onload = function() {
+            goToSlide(13);
+            initSlide13Canvas();
+            initSlide14Canvas();
+            setupScenarioDeck();
+            
+            // Fullscreen API helper
+            function toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.error(`Error enabling fullscreen: ${err.message}`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+
+            // Slide transition event listeners (Keyboard Navigation & Fullscreen)
+            document.addEventListener('keydown', function(event) {
+                const activeEl = document.activeElement;
+                const capturesTextKeys = activeEl && (
+                    activeEl.tagName === 'INPUT' ||
+                    activeEl.tagName === 'TEXTAREA' ||
+                    activeEl.getAttribute('contenteditable') === 'true'
+                );
+                const capturesArrowKeys = activeEl && (
+                    (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+                    activeEl.tagName === 'TEXTAREA' ||
+                    activeEl.tagName === 'SELECT'
+                );
+                const capturesSpacebar = activeEl && (
+                    activeEl.tagName === 'INPUT' ||
+                    activeEl.tagName === 'TEXTAREA' ||
+                    activeEl.tagName === 'SELECT' ||
+                    activeEl.tagName === 'BUTTON' ||
+                    activeEl.getAttribute('role') === 'button'
+                );
+
+                if (event.key === 'ArrowRight' || event.key === ' ' || event.key === 'Space') {
+                    if (!capturesSpacebar && !capturesArrowKeys) {
+                        nextSlide();
+                        event.preventDefault();
+                    }
+                } else if (event.key === 'ArrowLeft') {
+                    if (!capturesArrowKeys) {
+                        prevSlide();
+                        event.preventDefault();
+                    }
+                } else if (event.key === 'f' || event.key === 'F') {
+                    if (!capturesTextKeys) {
+                        toggleFullscreen();
+                        event.preventDefault();
+                    }
+                }
+            });
+
+            document.addEventListener('dblclick', (e) => {
+                const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+                if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+                    toggleFullscreen();
+                }
+            });
+        };
+
+        // Navigation Controller
+        function goToSlide(slideNum) {
+            if (slideNum < totalSlidesStart || slideNum > totalSlidesEnd) return;
+            
+            // Hide all slides
+            for (let i = totalSlidesStart; i <= totalSlidesEnd; i++) {
+                const el = document.getElementById(`slide-${i}`);
+                if (el) el.classList.add('hidden');
+                
+                const navEl = document.getElementById(`nav-${i}`);
+                if (navEl) {
+                    navEl.classList.remove('bg-slate-800', 'border-l-4', 'border-indigo-500', 'text-white');
+                    navEl.classList.add('hover:bg-slate-800/50', 'text-slate-300');
+                }
+            }
+
+            // Show active slide
+            const activeEl = document.getElementById(`slide-${slideNum}`);
+            if (activeEl) {
+                activeEl.classList.remove('hidden');
+                activeEl.style.opacity = 0;
+                setTimeout(() => activeEl.style.opacity = 1, 50);
+            }
+
+            // Update navigator drawer
+            const activeNavEl = document.getElementById(`nav-${slideNum}`);
+            if (activeNavEl) {
+                activeNavEl.classList.add('bg-slate-800', 'border-l-4', 'border-indigo-500', 'text-white');
+                activeNavEl.classList.remove('hover:bg-slate-800/50', 'text-slate-300');
+            }
+
+            currentSlide = slideNum;
+            
+            // Update presenter notes
+            document.getElementById('speakerNotesText').textContent = slideNotes[slideNum];
+            
+            // Update slide stats and progress bar
+            const percentage = ((slideNum - totalSlidesStart) / (totalSlidesEnd - totalSlidesStart)) * 100;
+            document.getElementById('progressBar').style.width = `${Math.max(percentage, 5)}%`;
+            document.getElementById('progressBadge').textContent = `${slideNum} / 22`;
+
+            // Canvas Redraw adjustments
+            if (slideNum === 13) {
+                setTimeout(triggerRender, 200);
+            } else if (slideNum === 14) {
+                setTimeout(stepAnimation, 200);
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlidesEnd) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > totalSlidesStart) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        function toggleSidebar() {
+            const drawer = document.getElementById('slideDrawer');
+            drawer.classList.toggle('-translate-x-full');
+        }
+
+        function toggleNotes() {
+            const notes = document.getElementById('presenterNotes');
+            notes.classList.toggle('hidden');
+        }
+
+        // Custom Modal Generator
+        function openModal(type) {
+            const parts = type.split('-');
+            const num = parts[1];
+            const title = `Slide ${num} Discussion`;
+            const list = discussionDatabase[num];
+
+            let html = '<ol class="space-y-3 list-decimal list-inside text-slate-300">';
+            list.forEach(q => {
+                html += `<li class="p-3 bg-slate-950/50 rounded-xl border border-slate-850 hover:border-slate-800 transition">${q}</li>`;
+            });
+            html += '</ol>';
+
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalContent').innerHTML = html;
+            document.getElementById('modalOverlay').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.add('hidden');
+        }
+
+        // Slide 13 Canvas: Video Rendering Engine Mock Simulation
+        let canvas13Interval;
+        let p13Canvas, p13Ctx;
+        let animationFrameCount = 0;
+
+        function initSlide13Canvas() {
+            p13Canvas = document.getElementById('promptCanvas');
+            p13Ctx = p13Canvas.getContext('2d');
+            p13Canvas.width = 640;
+            p13Canvas.height = 360;
+        }
+
+        function updateVideoPreview() {
+            const val = document.getElementById('promptSelector').value;
+            let displayPrompt = '';
+            if (val === 'panda') displayPrompt = "A panda riding a bicycle through a futuristic city at sunset...";
+            else if (val === 'dino') displayPrompt = "A friendly dinosaur attending an online class from its modern tech-filled cave...";
+            else displayPrompt = "A glowing bioluminescent marine city under the deep ocean...";
+
+            document.getElementById('canvasPromptDisplay').textContent = `"${displayPrompt}"`;
+            triggerRender();
+        }
+
+        function triggerRender() {
+            const overlay = document.getElementById('renderOverlay');
+            const renderSteps = document.getElementById('renderSteps');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            
+            const steps = [
+                "Deconstructing prompt semantic tags...",
+                "Drawing background layout layers...",
+                "Synthesizing characters & dynamic objects...",
+                "Generating consecutive movie frames...",
+                "Finalizing render compile output..."
+            ];
+
+            let stepIdx = 0;
+            const stepInterval = setInterval(() => {
+                if (stepIdx < steps.length) {
+                    renderSteps.textContent = steps[stepIdx];
+                    stepIdx++;
+                } else {
+                    clearInterval(stepInterval);
+                    overlay.classList.add('opacity-0', 'pointer-events-none');
+                    startP13MockVideo();
+                }
+            }, 500);
+        }
+
+        function startP13MockVideo() {
+            if (canvas13Interval) clearInterval(canvas13Interval);
+            const promptType = document.getElementById('promptSelector').value;
+
+            canvas13Interval = setInterval(() => {
+                p13Ctx.fillStyle = '#020617'; // Background slate
+                p13Ctx.fillRect(0, 0, p13Canvas.width, p13Canvas.height);
+                
+                animationFrameCount++;
+                const time = animationFrameCount * 0.05;
+
+                if (promptType === 'panda') {
+                    // Sunset background gradient
+                    const grad = p13Ctx.createLinearGradient(0, 0, 0, p13Canvas.height);
+                    grad.addColorStop(0, '#f97316'); // Orange
+                    grad.addColorStop(1, '#6366f1'); // Violet
+                    p13Ctx.fillStyle = grad;
+                    p13Ctx.fillRect(0, 0, p13Canvas.width, p13Canvas.height);
+
+                    // Sun
+                    p13Ctx.beginPath();
+                    p13Ctx.arc(p13Canvas.width / 2, p13Canvas.height / 2 + Math.sin(time)*10, 40, 0, Math.PI * 2);
+                    p13Ctx.fillStyle = '#fef08a';
+                    p13Ctx.fill();
+
+                    // Modern Flying vehicles
+                    p13Ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    p13Ctx.fillRect((time * 80) % p13Canvas.width, 100, 30, 8);
+                    p13Ctx.fillRect(((time * 120) + 100) % p13Canvas.width, 140, 20, 6);
+
+                    // Bicycle Panda (SVG-like geometric shapes)
+                    p13Ctx.fillStyle = '#ffffff';
+                    p13Ctx.beginPath();
+                    const pandaX = p13Canvas.width / 2 + Math.sin(time) * 15;
+                    const pandaY = p13Canvas.height / 2 + 50;
+                    p13Ctx.arc(pandaX, pandaY, 20, 0, Math.PI * 2); // Body
+                    p13Ctx.arc(pandaX + 5, pandaY - 20, 12, 0, Math.PI * 2); // Head
+                    p13Ctx.fill();
+
+                    p13Ctx.fillStyle = '#000000';
+                    p13Ctx.beginPath();
+                    p13Ctx.arc(pandaX - 3, pandaY - 22, 3, 0, Math.PI * 2); // Eye
+                    p13Ctx.arc(pandaX - 2, pandaY - 27, 4, 0, Math.PI * 2); // Ear
+                    p13Ctx.arc(pandaX, pandaY, 8, 0, Math.PI * 2); // Arm
+                    p13Ctx.fill();
+
+                    // Bicycle wheels
+                    p13Ctx.strokeStyle = '#cbd5e1';
+                    p13Ctx.lineWidth = 3;
+                    p13Ctx.beginPath();
+                    p13Ctx.arc(pandaX - 20, pandaY + 30, 15, 0, Math.PI * 2);
+                    p13Ctx.arc(pandaX + 20, pandaY + 30, 15, 0, Math.PI * 2);
+                    p13Ctx.stroke();
+                } else if (promptType === 'dino') {
+                    // Computer cave background
+                    p13Ctx.fillStyle = '#1e293b';
+                    p13Ctx.fillRect(0, 0, p13Canvas.width, p13Canvas.height);
+
+                    // Stalactites
+                    p13Ctx.fillStyle = '#0f172a';
+                    p13Ctx.beginPath();
+                    p13Ctx.moveTo(50, 0); p13Ctx.lineTo(70, 60); p13Ctx.lineTo(90, 0);
+                    p13Ctx.moveTo(250, 0); p13Ctx.lineTo(280, 80); p13Ctx.lineTo(310, 0);
+                    p13Ctx.fill();
+
+                    // Laptop glowing light
+                    p13Ctx.fillStyle = 'rgba(6, 182, 212, 0.15)';
+                    p13Ctx.beginPath();
+                    p13Ctx.moveTo(400, 280); p13Ctx.lineTo(200, 150); p13Ctx.lineTo(350, 100);
+                    p13Ctx.fill();
+
+                    // Dino
+                    p13Ctx.fillStyle = '#10b981'; // Green Dino
+                    p13Ctx.beginPath();
+                    p13Ctx.arc(200, 220 + Math.sin(time*2)*4, 30, 0, Math.PI * 2); // Body
+                    p13Ctx.arc(230, 190 + Math.sin(time*2)*4, 18, 0, Math.PI * 2); // Head
+                    p13Ctx.fill();
+
+                    // Laptop
+                    p13Ctx.fillStyle = '#334155';
+                    p13Ctx.fillRect(140, 230, 35, 6);
+                    p13Ctx.fillRect(145, 210, 4, 20);
+                } else {
+                    // Marine bioluminescence
+                    p13Ctx.fillStyle = '#020617';
+                    p13Ctx.fillRect(0, 0, p13Canvas.width, p13Canvas.height);
+
+                    // Jellyfish
+                    p13Ctx.fillStyle = 'rgba(6, 182, 212, 0.5)';
+                    const jx = p13Canvas.width / 2 + Math.cos(time) * 40;
+                    const jy = p13Canvas.height / 2 + Math.sin(time) * 20;
+                    p13Ctx.beginPath();
+                    p13Ctx.arc(jx, jy, 16, Math.PI, 0);
+                    p13Ctx.fill();
+
+                    // Sea turtles
+                    p13Ctx.fillStyle = '#115e59';
+                    p13Ctx.beginPath();
+                    p13Ctx.arc(200 + (time * 20) % 300, 120 + Math.sin(time)*10, 12, 0, Math.PI * 2);
+                    p13Ctx.fill();
+                }
+            }, 33);
+        }
+
+        // Slide 14 Storyboard Interaction logic
+        let p14Canvas, p14Ctx;
+        let isPlaying = false;
+        let animSpeed = 12;
+        let animFrameIndex = 0;
+        let lastFrameTime = 0;
+
+        function initSlide14Canvas() {
+            p14Canvas = document.getElementById('animatorCanvas');
+            p14Ctx = p14Canvas.getContext('2d');
+            p14Canvas.width = 300;
+            p14Canvas.height = 180;
+        }
+
+        function selectStoryboardFrame(idx) {
+            animFrameIndex = idx;
+            isPlaying = false;
+            document.getElementById('playBtn').innerHTML = `<i class="fa-solid fa-play"></i> Run Simulation`;
+            updateP14Visuals();
+        }
+
+        function togglePlayback() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('playBtn');
+            if (isPlaying) {
+                btn.innerHTML = `<i class="fa-solid fa-pause"></i> Pause Animation`;
+                requestAnimationFrame(animationLoop);
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-play"></i> Run Simulation`;
+            }
+        }
+
+        function stepAnimation() {
+            isPlaying = false;
+            document.getElementById('playBtn').innerHTML = `<i class="fa-solid fa-play"></i> Run Simulation`;
+            animFrameIndex = (animFrameIndex + 1) % 5;
+            updateP14Visuals();
+        }
+
+        function changeAnimSpeed(val) {
+            animSpeed = parseInt(val);
+            document.getElementById('speedValue').textContent = val;
+        }
+
+        function animationLoop(timestamp) {
+            if (!isPlaying) return;
+
+            if (!lastFrameTime) lastFrameTime = timestamp;
+            const elapsed = timestamp - lastFrameTime;
+            const frameDuration = 1000 / animSpeed;
+
+            if (elapsed >= frameDuration) {
+                animFrameIndex = (animFrameIndex + 1) % 5;
+                updateP14Visuals();
+                lastFrameTime = timestamp;
+            }
+
+            requestAnimationFrame(animationLoop);
+        }
+
+        function updateP14Visuals() {
+            // Update active storyboard badge border
+            for (let i = 0; i < 5; i++) {
+                const el = document.getElementById(`sb-${i}`);
+                if (el) {
+                    if (i === animFrameIndex) {
+                        el.classList.add('border-indigo-500');
+                        el.classList.remove('border-slate-800');
+                    } else {
+                        el.classList.remove('border-indigo-500');
+                        el.classList.add('border-slate-800');
+                    }
+                }
+            }
+
+            document.getElementById('currentFrameBadge').textContent = `Frame ${animFrameIndex + 1}`;
+
+            // Draw on canvas
+            p14Ctx.fillStyle = '#0f172a';
+            p14Ctx.fillRect(0, 0, p14Canvas.width, p14Canvas.height);
+
+            // Ground floor
+            p14Ctx.fillStyle = '#334155';
+            p14Ctx.fillRect(0, 140, p14Canvas.width, 40);
+
+            // Stick figure movement frames
+            p14Ctx.strokeStyle = '#ffffff';
+            p14Ctx.lineWidth = 4;
+            p14Ctx.lineCap = 'round';
+
+            const cx = 50 + animFrameIndex * 50; // Horizontal forward movement position
+            const cy = 100;
+
+            // Head
+            p14Ctx.beginPath();
+            p14Ctx.arc(cx, cy - 25, 8, 0, Math.PI * 2);
+            p14Ctx.stroke();
+
+            // Spine
+            p14Ctx.beginPath();
+            p14Ctx.moveTo(cx, cy - 17);
+            p14Ctx.lineTo(cx, cy + 10);
+            p14Ctx.stroke();
+
+            // Arms based on frame sequence
+            p14Ctx.beginPath();
+            if (animFrameIndex === 0) { // Standing
+                p14Ctx.moveTo(cx, cy - 10); p14Ctx.lineTo(cx - 10, cy + 5);
+                p14Ctx.moveTo(cx, cy - 10); p14Ctx.lineTo(cx + 10, cy + 5);
+            } else if (animFrameIndex === 1) { // Walking
+                p14Ctx.moveTo(cx, cy - 10); p14Ctx.lineTo(cx - 15, cy + 1);
+                p14Ctx.moveTo(cx, cy - 10); p14Ctx.lineTo(cx + 12, cy + 3);
+            } else if (animFrameIndex === 2) { // Running
+                p14Ctx.moveTo(cx, cy - 10); p14Ctx.lineTo(cx - 20, cy - 5);
+                p14Ctx.moveTo(cx, cy - 10); p14Ctx.lineTo(cx + 18, cy + 8);
+            } else if (animFrameIndex === 3) { // Jumping
+                p14Ctx.moveTo(cx, cy - 10); p14Ctx.lineTo(cx - 15, cy - 15);
+                p14Ctx.moveTo(cx, cy - 10); p14Ctx.lineTo(cx + 15, cy - 15);
+            } else { // Celebrating
+                p14Ctx.moveTo(cx, cy - 10); p14Ctx.lineTo(cx - 12, cy - 25);
+                p14Ctx.moveTo(cx, cy - 10); p14Ctx.lineTo(cx + 12, cy - 25);
+            }
+            p14Ctx.stroke();
+
+            // Legs based on frame sequence
+            p14Ctx.beginPath();
+            if (animFrameIndex === 0) { // Standing
+                p14Ctx.moveTo(cx, cy + 10); p14Ctx.lineTo(cx - 8, cy + 40);
+                p14Ctx.moveTo(cx, cy + 10); p14Ctx.lineTo(cx + 8, cy + 40);
+            } else if (animFrameIndex === 1) { // Walking
+                p14Ctx.moveTo(cx, cy + 10); p14Ctx.lineTo(cx - 12, cy + 38);
+                p14Ctx.moveTo(cx, cy + 10); p14Ctx.lineTo(cx + 14, cy + 38);
+            } else if (animFrameIndex === 2) { // Running
+                p14Ctx.moveTo(cx, cy + 10); p14Ctx.lineTo(cx - 18, cy + 30);
+                p14Ctx.moveTo(cx, cy + 10); p14Ctx.lineTo(cx + 22, cy + 32);
+            } else if (animFrameIndex === 3) { // Jumping
+                p14Ctx.moveTo(cx, cy + 10); p14Ctx.lineTo(cx - 10, cy + 25);
+                p14Ctx.moveTo(cx, cy + 10); p14Ctx.lineTo(cx + 10, cy + 25);
+            } else { // Celebrating
+                p14Ctx.moveTo(cx, cy + 10); p14Ctx.lineTo(cx - 6, cy + 40);
+                p14Ctx.moveTo(cx, cy + 10); p14Ctx.lineTo(cx + 6, cy + 40);
+            }
+            p14Ctx.stroke();
+        }
+
+        // Slide 15 Case Study Tab Changer
+        function selectCaseStudy(type) {
+            // Remove active classes
+            const btns = document.querySelectorAll('.case-tab-btn');
+            btns.forEach(b => {
+                b.classList.remove('border-indigo-500', 'bg-slate-900', 'text-white');
+                b.classList.add('border-slate-800', 'bg-slate-900/40', 'text-slate-300');
+            });
+
+            // Add active styles
+            const activeBtn = document.getElementById(`btn-case-${type}`);
+            activeBtn.classList.remove('border-slate-800', 'bg-slate-900/40', 'text-slate-300');
+            activeBtn.classList.add('border-indigo-500', 'bg-slate-900', 'text-white');
+
+            const title = document.getElementById('caseDetailTitle');
+            const desc = document.getElementById('caseDetailDesc');
+            const prompt = document.getElementById('caseDetailPrompt');
+            const sub = document.getElementById('caseDetailSubtitle');
+
+            // Hide case panel visuals
+            document.querySelectorAll('.case-view-panel').forEach(v => v.classList.add('hidden'));
+
+            if (type === 'edu') {
+                sub.textContent = "Education Case Study";
+                title.textContent = "Visualizing the Complex Water Cycle";
+                desc.textContent = "Traditionally, generating accurate explanations requires full animation designers. Today, teachers quickly produce custom explainer videos using basic prompt commands.";
+                prompt.textContent = '"Create a 30-second animation showing evaporation, condensation, and rainfall for school students."';
+                document.getElementById('caseView-edu').classList.remove('hidden');
+            } else if (type === 'biz') {
+                sub.textContent = "Business & Adverts Case Study";
+                title.textContent = "Lowering Ad campaign budgets";
+                desc.textContent = "Instead of renting studios and hiring actors, start-ups input dynamic text parameters to generate high-resolution ads, maximizing rapid prototyping.";
+                prompt.textContent = '"Generate a promotional clip for organic steel flasks floating in clear glacier waters under beautiful sunrise lighting."';
+                document.getElementById('caseView-biz').classList.remove('hidden');
+            } else if (type === 'social') {
+                sub.textContent = "Social Media Case Study";
+                title.textContent = "Accelerating Content Volume";
+                desc.textContent = "Content creators produce consistent reels and short animated storytelling chunks at rapid schedules without having to design multiple manual scenes.";
+                prompt.textContent = '"Create a fast-paced energetic character reel discussing galaxy exploration for teenage audiences."';
+                document.getElementById('caseView-social').classList.remove('hidden');
+            } else {
+                sub.textContent = "Healthcare Case Study";
+                title.textContent = "Explaining Medical Guidelines Simply";
+                desc.textContent = "Hospitals convert medical terminology sheets into visually digestible animated guide cards, enhancing client safety and healthy living advice.";
+                prompt.textContent = '"Produce a patient-friendly 3D diagram explaining how insulin functions to guide children diagnosed with diabetes."';
+                document.getElementById('caseView-med').classList.remove('hidden');
+            }
+        }
+
+        // Slide 16 Tool Matchmaker Game state
+        let activeTask = '';
+        let gamePoints = 0;
+
+        function selectGameTask(task) {
+            // Reset background highlight borders
+            document.querySelectorAll('.game-task-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-500', 'glow-indigo');
+            });
+
+            activeTask = task;
+            document.getElementById(`task-${task}`).classList.add('border-indigo-500', 'glow-indigo');
+            
+            document.getElementById('gameNotification').innerHTML = `
+                <span class="text-xs text-indigo-400 font-bold animate-pulse">Now Choose the correct specialized AI Category from step 2!</span>
+            `;
+        }
+
+        function matchToolCategory(category) {
+            if (!activeTask) {
+                document.getElementById('gameNotification').innerHTML = `
+                    <span class="text-xs text-red-400 font-semibold"><i class="fa-solid fa-circle-exclamation"></i> Please select a task from Step 1 first!</span>
+                `;
+                return;
+            }
+
+            let correct = false;
+            let explanation = '';
+
+            if (activeTask === 'write' && category === 'text') {
+                correct = true;
+                explanation = "Speech writing is perfect for Text Generators like Gemini!";
+            } else if (activeTask === 'logo' && category === 'image') {
+                correct = true;
+                explanation = "Logos and artwork align with Image Generators like Midjourney!";
+            } else if (activeTask === 'anim' && category === 'video') {
+                correct = true;
+                explanation = "Animations require high-end Video Generators like Sora!";
+            } else if (activeTask === 'code' && category === 'code') {
+                correct = true;
+                explanation = "Finding programmatic bugs is resolved via specialized Coding Assistants!";
+            }
+
+            const notif = document.getElementById('gameNotification');
+            if (correct) {
+                gamePoints++;
+                document.getElementById('gameScore').textContent = gamePoints;
+                notif.innerHTML = `<span class="text-xs text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check"></i> Correct! ${explanation}</span>`;
+                // Remove task so it is complete
+                document.getElementById(`task-${activeTask}`).classList.add('opacity-40', 'pointer-events-none');
+                activeTask = '';
+            } else {
+                notif.innerHTML = `<span class="text-xs text-rose-400 font-semibold"><i class="fa-solid fa-circle-xmark"></i> Incorrect. Try assigning a matching specialized utility!</span>`;
+            }
+        }
+
+        // Slide 17 Challenge Scenarios Database
+        const scenarioList = [
+            {
+                cat: "SCENARIO 1",
+                head: "You must prepare an emotional, compelling speech for the school annual function.",
+                choices: [
+                    { text: "Video Generation Tool", correct: false },
+                    { text: "Text Generation Tool (Gemini / ChatGPT)", correct: true },
+                    { text: "Coding Assistant Model", correct: false }
+                ],
+                tip: "Writing, detailing, and structural phrasing are optimal for Large Language Models."
+            },
+            {
+                cat: "SCENARIO 2",
+                head: "You need a high-fidelity visual poster for an environmental campaign.",
+                choices: [
+                    { text: "Image Generation Tool (Midjourney / Firefly)", correct: true },
+                    { text: "Text Generation Tool", correct: false },
+                    { text: "Video Generator", correct: false }
+                ],
+                tip: "Creative drawings, logos, and layouts are built via diffusion image models."
+            },
+            {
+                cat: "SCENARIO 3",
+                head: "You want to create a short animation explaining gravity to small kids.",
+                choices: [
+                    { text: "Image Generation Tool", correct: false },
+                    { text: "Coding Model", correct: false },
+                    { text: "Video Generation Tool (Sora / Runway)", correct: true }
+                ],
+                tip: "Continuous physics and motion outputs are processed by video models."
+            },
+            {
+                cat: "SCENARIO 4",
+                head: "You need help identifying compile errors in a school Python project.",
+                choices: [
+                    { text: "Coding Assistants (Cursor / Copilot)", correct: true },
+                    { text: "Image Generator", correct: false },
+                    { text: "Video Generator", correct: false }
+                ],
+                tip: "Debugging syntaxes and compiling procedures are aligned with code assistants."
+            },
+            {
+                cat: "SCENARIO 5",
+                head: "Rahul's startup launch requires: A Logo, a Promotional Video, and Product descriptions. Which tool applies?",
+                choices: [
+                    { text: "Solely one Image Generator", correct: false },
+                    { text: "A composite combination of specialized AI tools", correct: true },
+                    { text: "Solely a basic text generator", correct: false }
+                ],
+                tip: "Composite pipelines yield high-quality assets. Don't use a hammer to cut paper!"
+            }
+        ];
+
+        let activeScenarioIndex = 0;
+
+        function setupScenarioDeck() {
+            const sc = scenarioList[activeScenarioIndex];
+            document.getElementById('scenarioCategory').textContent = sc.cat;
+            document.getElementById('scenarioHeading').textContent = sc.head;
+            document.getElementById('scenarioIndexBadge').textContent = activeScenarioIndex + 1;
+
+            const container = document.getElementById('scenarioChoices');
+            container.innerHTML = '';
+
+            sc.choices.forEach(ch => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-3 rounded-xl border border-slate-800 bg-slate-900/40 text-left text-xs font-semibold text-slate-300 hover:border-indigo-500 hover:bg-slate-900 transition flex items-center justify-between";
+                btn.innerHTML = `<span>${ch.text}</span> <i class="fa-solid fa-chevron-right text-slate-500 text-[10px]"></i>`;
+                btn.onclick = () => checkScenarioAnswer(ch.correct, sc.tip);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkScenarioAnswer(isCorrect, tipText) {
+            const container = document.getElementById('scenarioChoices');
+            if (isCorrect) {
+                container.innerHTML = `
+                    <div class="bg-emerald-950/20 border border-emerald-900/30 p-4 rounded-xl space-y-2">
+                        <span class="text-xs font-bold text-emerald-400 block"><i class="fa-solid fa-circle-check"></i> Correct Choice Selected!</span>
+                        <p class="text-xs text-slate-300 leading-relaxed">${tipText}</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="bg-red-950/20 border border-red-900/30 p-4 rounded-xl space-y-2">
+                        <span class="text-xs font-bold text-red-400 block"><i class="fa-solid fa-circle-xmark"></i> Incorrect Choice.</span>
+                        <p class="text-xs text-slate-300 leading-relaxed">Consider: ${tipText}</p>
+                        <button onclick="setupScenarioDeck()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-[10px] font-bold transition">Try Scenario Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        function nextScenario() {
+            activeScenarioIndex = (activeScenarioIndex + 1) % scenarioList.length;
+            setupScenarioDeck();
+        }
+
+        function prevScenario() {
+            activeScenarioIndex = (activeScenarioIndex - 1 + scenarioList.length) % scenarioList.length;
+            setupScenarioDeck();
+        }
+
+        // Slide 18 Arjun Creator Steps
+        const creatorStepsList = {
+            1: {
+                title: "STEP 1: GENERATE CONCEPTS",
+                tool: "Text Gen",
+                prompt: '"Suggest 10 interesting science topics for teenagers."',
+                output: "1. Black Hole Gravitational Pull Explained Simply<br>2. Photosynthesis Using Cricket Metaphor<br>3. Quantum Mechanics for Amateurs"
+            },
+            2: {
+                title: "STEP 2: CREATE THUMBNAIL IMAGES",
+                tool: "Image Gen",
+                prompt: '"An artistic colorful physics lab with futuristic floating galaxy holograms, cinematic volumetric lighting."',
+                output: "[Simulating Graphic Image Generation... Completed 4K file: 'astronomy_lab_hq.png']"
+            },
+            3: {
+                title: "STEP 3: ASSEMBLE DYNAMIC VIDEO",
+                tool: "Video Gen",
+                prompt: '"A beautiful animated sequence demonstrating gravitational curvature of space-time around a massive star."',
+                output: "[Processing 60 dynamic video frames... Render output compilation complete (30-sec explanation video)]"
+            },
+            4: {
+                title: "STEP 4: PROMOTE SOCIAL CONTENT",
+                tool: "Text Gen",
+                prompt: '"Write highly engaging social captions and clickbait titles for an educational video about gravity."',
+                output: '"🚀 Think you know gravity? Think again! Watch how stars warp fabric space-time under 30 seconds!" #ScienceFacts'
+            }
+        };
+
+        function goToCreatorStep(num) {
+            // Reset active dots
+            document.querySelectorAll('.creator-step-dot').forEach(dot => {
+                dot.classList.remove('border-indigo-500', 'text-indigo-400');
+                dot.classList.add('border-slate-800', 'text-slate-500');
+            });
+
+            // Highlight dot
+            const activeDot = document.getElementById(`step-dot-${num}`);
+            activeDot.classList.add('border-indigo-500', 'text-indigo-400');
+            activeDot.classList.remove('border-slate-800', 'text-slate-500');
+
+            // Set data
+            const step = creatorStepsList[num];
+            document.getElementById('creatorStepTitle').textContent = step.title;
+            document.getElementById('creatorStepTool').innerHTML = `<i class="fa-solid fa-sliders text-[10px]"></i> ${step.tool}`;
+            document.getElementById('creatorStepPrompt').textContent = step.prompt;
+            document.getElementById('creatorStepOutput').innerHTML = step.output;
+            document.getElementById('creatorStepBadge').textContent = num;
+        }
+
+        // Slide 19 Learning Console typewriter effect
+        function runEducationPrompt() {
+            const consoleEl = document.getElementById('educationConsole');
+            consoleEl.innerHTML = '';
+            
+            const explanationText = `[AI System Response Generation...]\n\n"Hey! Think of Photosynthesis as an intense Cricket Match.\n\n🏏 The Ground: The Green Leaf (Chloroplast).\n☀️ The Sun: The Batting Captain (Providing all critical Energy inputs).\n💦 Soil Water + Air Carbon: Players assembling on field.\n\nWhen the Sun strikes the soil-water players with photons, they score a massive boundary - creating Sugar (glucose energy) and Oxygen (which gets released into space!)."\n\n[Prompt run successful. 0.04s]`;
+            
+            let idx = 0;
+            const timer = setInterval(() => {
+                if (idx < explanationText.length) {
+                    consoleEl.innerHTML += explanationText[idx] === '\n' ? '<br>' : explanationText[idx];
+                    idx++;
+                    consoleEl.scrollTop = consoleEl.scrollHeight; // Auto-scroll
+                } else {
+                    clearInterval(timer);
+                }
+            }, 15);
+        }
+
+        // Slide 20 Doctor's Case study simulation
+        const patientCases = {
+            diabetes: {
+                title: "What is Diabetes?",
+                desc: "Imagine your body is a fancy car. Energy is the fuel. Diabetes is a minor problem in the car's fuel injector (insulin system). We can fix it via exercise and proper food choice!"
+            },
+            vaccines: {
+                title: "Are Vaccines Safe?",
+                desc: "Think of a vaccine as a safe 'wanted poster' given to your immune defense team. It shows them how the bad virus looks so they can prepare shields before it actually approaches."
+            },
+            nutrition: {
+                title: "How to explain nutrition?",
+                desc: "To keep our machinery operating at prime velocity, we require top-tier components. Proteins build the frame, healthy carbs fuel the motor, and minerals maintain oil gears!"
+            }
+        };
+
+        function selectPatientCase(type) {
+            document.querySelectorAll('.patient-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-500', 'bg-slate-950');
+                btn.classList.add('border-slate-850', 'bg-slate-900/40');
+            });
+
+            const activeBtn = document.getElementById(`patient-btn-${type}`);
+            activeBtn.classList.remove('border-slate-850', 'bg-slate-900/40');
+            activeBtn.classList.add('border-indigo-500', 'bg-slate-950');
+
+            const data = patientCases[type];
+            document.getElementById('patientOutputText').innerHTML = `
+                <b>${data.title}</b><br><br>${data.desc}
+            `;
+        }
+
+        // Slide 21 Startup Asset Panel switcher
+        function selectStartupAsset(type) {
+            document.querySelectorAll('.asset-tab-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-500', 'bg-slate-950');
+                btn.classList.add('border-slate-850', 'bg-slate-900/40');
+            });
+
+            const activeBtn = document.getElementById(`asset-btn-${type}`);
+            activeBtn.classList.remove('border-slate-850', 'bg-slate-900/40');
+            activeBtn.classList.add('border-indigo-500', 'bg-slate-950');
+
+            document.querySelectorAll('.startup-view').forEach(v => v.classList.add('hidden'));
+
+            if (type === 'logo') {
+                document.getElementById('startupLogoView').classList.remove('hidden');
+            } else if (type === 'copy') {
+                document.getElementById('startupCopyView').classList.remove('hidden');
+            } else {
+                document.getElementById('startupAdView').classList.remove('hidden');
+            }
+        }
+
+        // Slide 22 24-Hour clock routine timeline state
+        const dayTimelineData = [
+            {
+                time: "08:00 AM",
+                title: "Morning Routine",
+                desc: "AI algorithms process your velocity metrics to recommend optimal workout playlists. Voice assistant summaries present personalized briefings.",
+                icon: '<i class="fa-solid fa-mug-hot"></i>'
+            },
+            {
+                time: "11:00 AM",
+                title: "School Study Hub",
+                desc: "Ananya consults classroom AI interfaces to generate quick practice quizzes and simplify dense cell structure textbooks.",
+                icon: '<i class="fa-solid fa-graduation-cap"></i>'
+            },
+            {
+                time: "03:00 PM",
+                title: "Afternoon Projects",
+                desc: "Arjun maps workflow tasks across different generators to assemble media campaign videos and visual charts.",
+                icon: '<i class="fa-solid fa-laptop-code"></i>'
+            },
+            {
+                time: "07:00 PM",
+                title: "Evening Leisure",
+                desc: "Recommender bots evaluate content feeds to suggest targeted short reels, social media posts, and interactive gaming trailers.",
+                icon: '<i class="fa-solid fa-gamepad"></i>'
+            },
+            {
+                time: "10:00 PM",
+                title: "Night Revision",
+                desc: "Dr. Mehta's medical dashboard processes hospital records, exporting customized client summaries and dietary outlines.",
+                icon: '<i class="fa-regular fa-moon"></i>'
+            }
+        ];
+
+        function updateDayTimeline(val) {
+            const index = parseInt(val);
+            const data = dayTimelineData[index];
+
+            document.getElementById('timeBadge').textContent = data.time;
+            document.getElementById('timelineTitle').textContent = data.title;
+            document.getElementById('timelineDesc').textContent = data.desc;
+            document.getElementById('timeIcon').innerHTML = data.icon;
+        }
+    </script>
+</body>
+</html>

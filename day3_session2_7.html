@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 7: Real-World Applications & Case Studies</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Urbanist & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Urbanist', 'sans-serif'],
+                    },
+                    colors: {
+                        darkBg: '#0b0f19',
+                        darkCard: '#151c2c',
+                        brandCyan: '#06b6d4',
+                        brandGreen: '#10b981',
+                        brandViolet: '#8b5cf6',
+                        brandOrange: '#f97316'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth Custom Transitions */
+        .slide {
+            display: none;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            opacity: 0;
+            transform: scale(0.98);
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+        /* Custom scrollbar for speaker notes */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-hidden selection:bg-brandCyan/30 selection:text-white">
+
+    <!-- Top Progress Bar -->
+    <div class="w-full h-1.5 bg-slate-800/80 relative z-50">
+        <div id="progressBar" class="h-full bg-gradient-to-r from-brandCyan via-brandViolet to-brandGreen transition-all duration-300" style="width: 8.33%"></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="px-8 py-4 flex justify-between items-center bg-slate-950/40 backdrop-blur-md border-b border-white/5 relative z-50">
+        <div class="flex items-center gap-3">
+            <span class="px-3 py-1 text-xs font-bold uppercase tracking-widest bg-brandCyan/10 text-brandCyan rounded-full border border-brandCyan/20">Section 7</span>
+            <h2 class="text-sm font-semibold tracking-wider text-slate-400 font-display uppercase hidden sm:block">Real-World Applications & Case Studies</h2>
+        </div>
+        <div class="flex items-center gap-4">
+            <span id="slideCounter" class="text-sm font-mono text-slate-400 bg-slate-900/80 px-3 py-1 rounded-md border border-white/5">01 / 12</span>
+            <button onclick="toggleSpeakerNotes()" class="p-2 text-slate-400 hover:text-white bg-slate-900/80 hover:bg-slate-800 rounded-md border border-white/5 transition-all" title="Toggle Speaker Notes">
+                <i class="fa-solid fa-microphone-lines"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Presentation Workspace -->
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10">
+        
+        <!-- Background Ambient Glow -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(6,182,212,0.08),transparent_50%)] pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(139,92,246,0.08),transparent_50%)] pointer-events-none"></div>
+
+        <!-- Presentation Container -->
+        <div class="w-full max-w-6xl aspect-[16/9] min-h-[580px] bg-darkCard/50 backdrop-blur-xl rounded-2xl border border-white/10 p-8 flex flex-col justify-between shadow-2xl shadow-black/50 relative overflow-hidden">
+            
+            <!-- Slides Container -->
+            <div class="flex-grow flex flex-col justify-center">
+
+                <!-- SLIDE 1: Title Slide -->
+                <div id="slide-1" class="slide active flex-col items-center justify-center text-center space-y-6">
+                    <div class="animate-bounce p-4 bg-brandCyan/10 rounded-full border border-brandCyan/20 text-brandCyan">
+                        <i class="fa-solid fa-wand-magic-sparkles text-4xl"></i>
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-extrabold font-display tracking-tight leading-tight">
+                        Real-World Applications <br/>
+                        <span class="bg-gradient-to-r from-brandCyan via-brandViolet to-brandGreen bg-clip-text text-transparent">& Case Studies</span>
+                    </h1>
+                    <p class="text-lg text-slate-400 max-w-xl mx-auto font-light leading-relaxed">
+                        Connecting prompt engineering to industry solutions, careers, and everyday intelligence.
+                    </p>
+                    <div class="flex items-center gap-6 pt-4 text-xs tracking-widest text-slate-400 uppercase font-mono">
+                        <span><i class="fa-regular fa-clock mr-1.5 text-brandCyan"></i> 10-12 Minutes</span>
+                        <span class="h-3 w-[1px] bg-white/10"></span>
+                        <span><i class="fa-solid fa-layer-group mr-1.5 text-brandViolet"></i> Slides 51–55</span>
+                    </div>
+                </div>
+
+                <!-- SLIDE 2: Learning Outcomes -->
+                <div id="slide-2" class="slide flex-col space-y-6">
+                    <div class="border-l-4 border-brandCyan pl-4">
+                        <span class="text-xs font-mono text-brandCyan uppercase tracking-widest">Section Goals</span>
+                        <h2 class="text-3xl font-bold font-display text-white mt-1">Learning Outcomes</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                        <div class="bg-slate-900/60 p-5 rounded-xl border border-white/5 flex items-start gap-4 hover:border-brandCyan/30 transition-all">
+                            <div class="p-3 bg-brandCyan/10 text-brandCyan rounded-lg"><i class="fa-solid fa-eye text-lg"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white mb-1">Real-World Mastery</h3>
+                                <p class="text-sm text-slate-400">See exactly how Prompt Engineering applies to complex, authentic modern scenarios.</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900/60 p-5 rounded-xl border border-white/5 flex items-start gap-4 hover:border-brandViolet/30 transition-all">
+                            <div class="p-3 bg-brandViolet/10 text-brandViolet rounded-lg"><i class="fa-solid fa-user-tie text-lg"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white mb-1">Professional Workflows</h3>
+                                <p class="text-sm text-slate-400">Understand the deep strategies industry leaders use to interact seamlessly with AI models.</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900/60 p-5 rounded-xl border border-white/5 flex items-start gap-4 hover:border-brandGreen/30 transition-all">
+                            <div class="p-3 bg-brandGreen/10 text-brandGreen rounded-lg"><i class="fa-solid fa-briefcase text-lg"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white mb-1">AI Career Mapping</h3>
+                                <p class="text-sm text-slate-400">Connect strategic prompt design skills to upcoming careers and entrepreneurial advantages.</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900/60 p-5 rounded-xl border border-white/5 flex items-start gap-4 hover:border-brandOrange/30 transition-all">
+                            <div class="p-3 bg-brandOrange/10 text-brandOrange rounded-lg"><i class="fa-solid fa-heart-pulse text-lg"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white mb-1">Practical Daily Value</h3>
+                                <p class="text-sm text-slate-400">Appreciate prompt optimization as a massive accelerator for tasks in your daily life.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 3: Design Philosophy -->
+                <div id="slide-3" class="slide flex-col space-y-6">
+                    <div class="border-l-4 border-brandViolet pl-4">
+                        <span class="text-xs font-mono text-brandViolet uppercase tracking-widest">Bridging Theory & Practice</span>
+                        <h2 class="text-3xl font-bold font-display text-white mt-1">Design Philosophy: "What's in it for me?"</h2>
+                    </div>
+                    <p class="text-slate-400 max-w-3xl">
+                        AI discussions are often too theoretical. To demonstrate instant utility, every case study follows a strict, results-oriented framework:
+                    </p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-white/5 text-center flex flex-col justify-center items-center">
+                            <div class="w-10 h-10 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center mb-2 font-bold font-mono">1</div>
+                            <span class="font-bold text-white block">Problem</span>
+                            <span class="text-xs text-slate-500 mt-1">Real-world friction</span>
+                        </div>
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-white/5 text-center flex flex-col justify-center items-center">
+                            <div class="w-10 h-10 rounded-full bg-brandCyan/10 text-brandCyan flex items-center justify-center mb-2 font-bold font-mono">2</div>
+                            <span class="font-bold text-white block">AI Solution</span>
+                            <span class="text-xs text-slate-500 mt-1">The smart pivot</span>
+                        </div>
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-white/5 text-center flex flex-col justify-center items-center">
+                            <div class="w-10 h-10 rounded-full bg-brandViolet/10 text-brandViolet flex items-center justify-center mb-2 font-bold font-mono">3</div>
+                            <span class="font-bold text-white block">Prompt Example</span>
+                            <span class="text-xs text-slate-500 mt-1">How we ask</span>
+                        </div>
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-white/5 text-center flex flex-col justify-center items-center">
+                            <div class="w-10 h-10 rounded-full bg-brandGreen/10 text-brandGreen flex items-center justify-center mb-2 font-bold font-mono">4</div>
+                            <span class="font-bold text-white block">Outcome</span>
+                            <span class="text-xs text-slate-500 mt-1">The actual value</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 4: Slide 51 - Case Study 1: AI in Education -->
+                <div id="slide-4" class="slide flex-col space-y-4">
+                    <div class="border-l-4 border-brandCyan pl-4 flex justify-between items-start w-full">
+                        <div>
+                            <span class="text-xs font-mono text-brandCyan uppercase tracking-widest">Slide 51 • Case Study 1</span>
+                            <h2 class="text-3xl font-bold font-display text-white mt-1">AI in Education</h2>
+                        </div>
+                        <div class="text-right hidden sm:block">
+                            <span class="text-xs font-bold text-brandGreen/80 bg-brandGreen/10 px-2.5 py-1 rounded border border-brandGreen/20 uppercase">Interactive Screen</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                        <!-- Left Data column -->
+                        <div class="lg:col-span-7 space-y-3 flex flex-col justify-between">
+                            <div class="bg-slate-900/60 p-4 rounded-xl border border-white/5 space-y-2">
+                                <p class="text-sm text-slate-400"><strong class="text-red-400">Problem:</strong> Textbooks are long, dry, and lack dynamic feedback loops.</p>
+                                <p class="text-sm text-slate-400"><strong class="text-brandCyan">AI Assisted Approach:</strong> Personalized instant-adaptation 24/7 tutor using structured roles.</p>
+                            </div>
+                            <div class="bg-slate-950/80 p-4 rounded-xl border border-brandCyan/20 border relative group">
+                                <span class="absolute top-2 right-3 text-xs font-mono text-brandCyan">Prompt Template</span>
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"><i class="fa-solid fa-terminal mr-2 text-brandCyan"></i>Structured Prompt:</h4>
+                                <p class="text-sm text-slate-200 italic">"You are a science teacher. Explain Newton's Laws to a Class IX student using simple language, real-life examples, and a short quiz."</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <span class="bg-slate-900/50 p-2 rounded border border-white/5"><i class="fa-regular fa-circle-check text-brandGreen mr-1.5"></i> Concept Revision</span>
+                                <span class="bg-slate-900/50 p-2 rounded border border-white/5"><i class="fa-regular fa-circle-check text-brandGreen mr-1.5"></i> Custom Practice Questions</span>
+                                <span class="bg-slate-900/50 p-2 rounded border border-white/5"><i class="fa-regular fa-circle-check text-brandGreen mr-1.5"></i> Instant Doubt Resolution</span>
+                                <span class="bg-slate-900/50 p-2 rounded border border-white/5"><i class="fa-regular fa-circle-check text-brandGreen mr-1.5"></i> Language Learning</span>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Right visual column -->
+                        <div class="lg:col-span-5 flex flex-col bg-slate-900/80 rounded-xl border border-white/5 p-4 justify-between">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2"><i class="fa-solid fa-sliders mr-1 text-brandCyan"></i> AI Tutor Dynamic Simulator</span>
+                            
+                            <!-- Before/After interactive visualizer -->
+                            <div class="flex-grow flex flex-col justify-center space-y-4">
+                                <div class="flex justify-around items-center gap-2">
+                                    <button id="eduBeforeBtn" onclick="toggleEduMode('before')" class="flex-1 py-2 text-center text-xs font-bold rounded bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-all">
+                                        Before (Confused Student)
+                                    </button>
+                                    <button id="eduAfterBtn" onclick="toggleEduMode('after')" class="flex-1 py-2 text-center text-xs font-bold rounded bg-slate-800 border border-white/10 text-slate-400 hover:bg-brandGreen/10 hover:border-brandGreen/30 transition-all">
+                                        After (AI Enabled)
+                                    </button>
+                                </div>
+
+                                <div id="eduSimulationDisplay" class="bg-slate-950 p-4 rounded-lg h-40 flex flex-col justify-center items-center text-center space-y-2 border border-white/5">
+                                    <!-- Confused Student Content (Default) -->
+                                    <div id="eduBeforeContent" class="space-y-2">
+                                        <div class="text-3xl text-red-400"><i class="fa-solid fa-face-frown"></i></div>
+                                        <p class="text-sm text-slate-300 font-semibold">"This 80-page chapter on physics makes zero sense."</p>
+                                        <p class="text-xs text-slate-500">Stuck rereading textbooks repeatedly with no dynamic help.</p>
+                                    </div>
+                                    <!-- AI Active Content -->
+                                    <div id="eduAfterContent" class="hidden space-y-2">
+                                        <div class="text-3xl text-brandGreen animate-pulse"><i class="fa-solid fa-face-smile"></i></div>
+                                        <p class="text-sm text-brandGreen font-bold">"Ah! Newton's First Law is like a sliding soccer ball!"</p>
+                                        <p class="text-xs text-slate-400">Dynamic explanations, interactive quizzes & rapid breakthroughs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 5: Slide 51 Activity - Dynamic Prompt Improver -->
+                <div id="slide-5" class="slide flex-col space-y-4">
+                    <div class="border-l-4 border-brandGreen pl-4">
+                        <span class="text-xs font-mono text-brandGreen uppercase tracking-widest">Slide 51 • Interactive Exercise</span>
+                        <h2 class="text-3xl font-bold font-display text-white mt-1">Prompt Evolution: Teach Me Chemistry</h2>
+                    </div>
+                    <p class="text-sm text-slate-400">How do we optimize a vague, simple prompt into a highly tailored professional command?</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <!-- Stage 1 -->
+                        <div class="bg-red-500/5 p-4 rounded-xl border border-red-500/20 flex flex-col justify-between">
+                            <div>
+                                <span class="px-2 py-0.5 text-[10px] uppercase font-bold text-red-400 bg-red-400/15 rounded">Standard Level</span>
+                                <h4 class="text-sm font-bold text-white mt-2">Vague & Simple</h4>
+                                <div class="bg-black/40 p-3 rounded-lg font-mono text-xs text-red-300 mt-2 italic">"Teach me chemistry."</div>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-4">Result: The AI drops an overly academic textbook dump or basic description.</p>
+                        </div>
+
+                        <!-- Stage 2 -->
+                        <div class="bg-brandViolet/5 p-4 rounded-xl border border-brandViolet/20 flex flex-col justify-between">
+                            <div>
+                                <span class="px-2 py-0.5 text-[10px] uppercase font-bold text-brandViolet bg-brandViolet/15 rounded">Developing Level</span>
+                                <h4 class="text-sm font-bold text-white mt-2">Role & Context Added</h4>
+                                <div class="bg-black/40 p-3 rounded-lg font-mono text-xs text-brandViolet mt-2 italic">"You are an organic chemistry professor. Teach me high school-level chemical reactions."</div>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-4">Result: Better tone adjustment and accurate difficulty level sizing.</p>
+                        </div>
+
+                        <!-- Stage 3 -->
+                        <div class="bg-brandGreen/5 p-4 rounded-xl border border-brandGreen/20 flex flex-col justify-between">
+                            <div>
+                                <span class="px-2 py-0.5 text-[10px] uppercase font-bold text-brandGreen bg-brandGreen/15 rounded">Elite Prompt Level</span>
+                                <h4 class="text-sm font-bold text-white mt-2">Perfect Formula Block</h4>
+                                <div class="bg-black/40 p-3 rounded-lg font-mono text-xs text-brandGreen mt-2 italic">"You are a master chemistry tutor. Explain ionic bonding using baking ingredients as an analogy, then give me 3 practice multiple choice questions."</div>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-4 font-semibold">Result: Maximum output customization, memorable analogies, and immediate quizzes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 6: Slide 52 - Case Study 2: AI in Healthcare -->
+                <div id="slide-6" class="slide flex-col space-y-4">
+                    <div class="border-l-4 border-brandViolet pl-4 flex justify-between items-start w-full">
+                        <div>
+                            <span class="text-xs font-mono text-brandViolet uppercase tracking-widest">Slide 52 • Case Study 2</span>
+                            <h2 class="text-3xl font-bold font-display text-white mt-1">AI in Healthcare</h2>
+                        </div>
+                        <div class="text-right hidden sm:block">
+                            <span class="text-xs font-bold text-brandCyan/80 bg-brandCyan/10 px-2.5 py-1 rounded border border-brandCyan/20 uppercase">Interactive Workspace</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                        <!-- Left Data -->
+                        <div class="lg:col-span-6 space-y-3 flex flex-col justify-between">
+                            <div class="bg-slate-900/60 p-4 rounded-xl border border-white/5 space-y-2">
+                                <p class="text-sm text-slate-400"><strong class="text-red-400">Challenge:</strong> Doctors spend upwards of 30% of their workday typing and processing consultation notes.</p>
+                                <p class="text-sm text-slate-400"><strong class="text-brandViolet">AI Assisted Solution:</strong> Automatically summarizing patient narratives into concise clinical reports.</p>
+                            </div>
+                            <div class="bg-slate-950/80 p-4 rounded-xl border border-brandViolet/20 border relative">
+                                <span class="absolute top-2 right-3 text-xs font-mono text-brandViolet">Prompt Template</span>
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"><i class="fa-solid fa-terminal mr-2 text-brandViolet"></i>Command:</h4>
+                                <p class="text-sm text-slate-200 italic">"You are a medical assistant. Summarize the following patient consultation transcript into concise, professional clinical notes."</p>
+                            </div>
+                            <div class="p-3 bg-red-500/10 rounded-lg border border-red-500/20 flex items-center gap-3">
+                                <i class="fa-solid fa-triangle-exclamation text-red-400 text-lg"></i>
+                                <span class="text-xs text-red-300 font-medium leading-normal">AI supports workflow efficiency. It does not make diagnostic decisions or replace licensed human medical doctors.</span>
+                            </div>
+                        </div>
+
+                        <!-- Right Live AI Generator -->
+                        <div class="lg:col-span-6 flex flex-col bg-slate-900/80 rounded-xl border border-white/5 p-4 justify-between">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2"><i class="fa-solid fa-brain mr-1.5 text-brandViolet"></i> Clinical Note Summarizer Engine</span>
+                            
+                            <div class="bg-slate-950 p-4 rounded-lg flex-grow flex flex-col justify-between space-y-4 border border-white/5">
+                                <div class="text-xs space-y-1">
+                                    <span class="text-slate-500 uppercase font-bold block">Patient Narrative Transcript:</span>
+                                    <p class="text-slate-300 italic bg-slate-900 p-2.5 rounded border border-white/5 leading-relaxed">
+                                        "Patient reports throbbing pain in the left knee after stepping off a ladder yesterday. Joint is tender, slight swelling observed. Range of motion slightly limited."
+                                    </p>
+                                </div>
+                                <div id="medicalSummaryOutput" class="text-xs min-h-[80px] bg-slate-950 border border-dashed border-white/10 p-2.5 rounded flex items-center justify-center text-slate-500">
+                                    Click "Generate Clinical Notes" to run the prompt simulation...
+                                </div>
+                                <button onclick="simulateMedicalSummary()" id="medicalBtn" class="w-full py-2 bg-brandViolet hover:bg-brandViolet/80 text-white text-xs font-bold uppercase rounded transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-microchip"></i> Generate Clinical Notes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 7: Slide 52 Activity - Critical Discussion -->
+                <div id="slide-7" class="slide flex-col space-y-5">
+                    <div class="border-l-4 border-brandOrange pl-4">
+                        <span class="text-xs font-mono text-brandOrange uppercase tracking-widest">Slide 52 • Collaborative Discussion</span>
+                        <h2 class="text-3xl font-bold font-display text-white mt-1">Healthcare Discussion: Ethics & Safety</h2>
+                    </div>
+                    <p class="text-slate-400 max-w-2xl">Let's debate: "What tasks in healthcare should always involve humans, and what is the limit of AI?"</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                        <div class="bg-red-500/5 p-5 rounded-xl border border-red-500/10 flex gap-4">
+                            <div class="p-3 bg-red-400/10 text-red-400 rounded-lg h-fit"><i class="fa-solid fa-ban text-xl"></i></div>
+                            <div>
+                                <h4 class="font-bold text-white mb-2">High-Risk Tasks (Human Only)</h4>
+                                <ul class="space-y-1.5 text-xs text-slate-400 list-disc pl-4">
+                                    <li>Primary treatment/diagnostic decisions</li>
+                                    <li>Delivering emotionally sensitive diagnoses</li>
+                                    <li>Custom surgeries & critical clinical calls</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="bg-brandGreen/5 p-5 rounded-xl border border-brandGreen/10 flex gap-4">
+                            <div class="p-3 bg-brandGreen/10 text-brandGreen rounded-lg h-fit"><i class="fa-solid fa-thumbs-up text-xl"></i></div>
+                            <div>
+                                <h4 class="font-bold text-white mb-2">Suitable AI Assisted Tasks</h4>
+                                <ul class="space-y-1.5 text-xs text-slate-400 list-disc pl-4">
+                                    <li>Drafting discharge letters and administrative summaries</li>
+                                    <li>Cross-checking pharmacological drug interactions</li>
+                                    <li>Translating complex medical papers into simplified formats</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 8: Slide 53 - Case Study 3: AI in Business -->
+                <div id="slide-8" class="slide flex-col space-y-4">
+                    <div class="border-l-4 border-brandGreen pl-4 flex justify-between items-start w-full">
+                        <div>
+                            <span class="text-xs font-mono text-brandGreen uppercase tracking-widest">Slide 53 • Case Study 3</span>
+                            <h2 class="text-3xl font-bold font-display text-white mt-1">AI in Business</h2>
+                        </div>
+                        <div class="text-right hidden sm:block">
+                            <span class="text-xs font-bold text-brandGreen/80 bg-brandGreen/10 px-2.5 py-1 rounded border border-brandGreen/20 uppercase">Interactive Slogans</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                        <!-- Left Data -->
+                        <div class="lg:col-span-7 space-y-3 flex flex-col justify-between">
+                            <div class="bg-slate-900/60 p-4 rounded-xl border border-white/5 space-y-2">
+                                <p class="text-sm text-slate-400"><strong class="text-red-400">Scenario:</strong> An energetic, green startup is launching an eco-friendly water bottle brand targeted specifically at college campuses.</p>
+                                <p class="text-sm text-slate-400"><strong class="text-brandGreen">AI Business Power:</strong> Accelerating rapid multi-platform content brainstorming, slogans, social media posts, and market research.</p>
+                            </div>
+                            <div class="bg-slate-950/80 p-4 rounded-xl border border-brandGreen/20 border relative">
+                                <span class="absolute top-2 right-3 text-xs font-mono text-brandGreen">Prompt Template</span>
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"><i class="fa-solid fa-terminal mr-2 text-brandGreen"></i>Creative Prompt:</h4>
+                                <p id="bizPromptText" class="text-sm text-slate-200 italic">"You are a marketing expert. Create five catchy slogans for an eco-friendly water bottle aimed at college students."</p>
+                            </div>
+                            <div class="grid grid-cols-4 gap-2 text-center text-[10px] font-bold tracking-wider uppercase">
+                                <button id="biz-slogans-btn" onclick="selectBusinessType('slogans')" class="p-2 rounded border border-brandGreen bg-brandGreen/10 text-slate-100 transition-all">Slogans</button>
+                                <button id="biz-social-btn" onclick="selectBusinessType('social')" class="p-2 rounded border border-white/5 bg-slate-900/60 text-slate-400 hover:border-brandGreen/50 transition-all">Social Ads</button>
+                                <button id="biz-emails-btn" onclick="selectBusinessType('emails')" class="p-2 rounded border border-white/5 bg-slate-900/60 text-slate-400 hover:border-brandGreen/50 transition-all">Cold Emails</button>
+                                <button id="biz-copy-btn" onclick="selectBusinessType('copy')" class="p-2 rounded border border-white/5 bg-slate-900/60 text-slate-400 hover:border-brandGreen/50 transition-all">Copywriting</button>
+                            </div>
+                        </div>
+
+                        <!-- Right Live Slogan Generator -->
+                        <div class="lg:col-span-5 flex flex-col bg-slate-900/80 rounded-xl border border-white/5 p-4 justify-between">
+                            <span id="bizEngineHeader" class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2"><i class="fa-solid fa-lightbulb mr-1.5 text-brandGreen"></i> Slogans Generation Engine</span>
+                            
+                            <div class="bg-slate-950 p-4 rounded-lg flex-grow flex flex-col justify-between space-y-4 border border-white/5">
+                                <div id="sloganOutput" class="space-y-2 flex-grow flex flex-col justify-center text-xs text-slate-400 italic">
+                                    <p class="text-center">Click below to query our marketing assistant simulation...</p>
+                                </div>
+                                <button onclick="generateSlogans()" id="sloganBtn" class="w-full py-2 bg-brandGreen hover:bg-brandGreen/80 text-white text-xs font-bold uppercase rounded transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Brainstorm Slogans
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 9: Slide 54 - Case Study 4: AI in Social Media -->
+                <div id="slide-9" class="slide flex-col space-y-4">
+                    <div class="border-l-4 border-brandCyan pl-4 flex justify-between items-start w-full">
+                        <div>
+                            <span class="text-xs font-mono text-brandCyan uppercase tracking-widest">Slide 54 • Case Study 4</span>
+                            <h2 class="text-3xl font-bold font-display text-white mt-1">AI in Social Media</h2>
+                        </div>
+                        <div class="text-right hidden sm:block">
+                            <span class="text-xs font-bold text-brandViolet/80 bg-brandViolet/10 px-2.5 py-1 rounded border border-brandViolet/20 uppercase">Interactive Creator Workspace</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                        <!-- Left Data -->
+                        <div class="lg:col-span-6 space-y-3 flex flex-col justify-between">
+                            <div class="bg-slate-900/60 p-4 rounded-xl border border-white/5 space-y-2">
+                                <p class="text-sm text-slate-400"><strong class="text-red-400">Content Creator Painpoints:</strong> Writer's block, intense pressure to post consistently, and formatting for dynamic visual algorithms.</p>
+                                <p class="text-sm text-slate-400"><strong class="text-brandCyan">The AI Content Assistant:</strong> Brainstorms script outlines, custom hooks, and hashtags tailored for teen demographics.</p>
+                            </div>
+                            <div class="bg-slate-950/80 p-4 rounded-xl border border-brandCyan/20 border relative">
+                                <span class="absolute top-2 right-3 text-xs font-mono text-brandCyan">Prompt Template</span>
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"><i class="fa-solid fa-terminal mr-2 text-brandCyan"></i>SMM Prompt:</h4>
+                                <p class="text-sm text-slate-200 italic">"You are a social media creator. Generate 10 Instagram post ideas about healthy living for teenagers."</p>
+                            </div>
+                        </div>
+
+                        <!-- Right Live Instagram Script Engine -->
+                        <div class="lg:col-span-6 flex flex-col bg-slate-900/80 rounded-xl border border-white/5 p-4 justify-between">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2"><i class="fa-brands fa-instagram mr-1.5 text-brandCyan"></i> AI Instagram Post Planner</span>
+                            
+                            <div class="bg-slate-950 p-4 rounded-lg flex-grow flex flex-col justify-between space-y-4 border border-white/5">
+                                <div id="socialOutput" class="space-y-1 text-xs text-slate-400 overflow-y-auto max-h-[140px] pr-1">
+                                    <p class="text-center italic mt-6">Click below to generate high-performing health post concepts...</p>
+                                </div>
+                                <button onclick="generateSocialContent()" id="socialBtn" class="w-full py-2 bg-gradient-to-r from-brandCyan to-brandViolet hover:opacity-90 text-white text-xs font-bold uppercase rounded transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-paper-plane"></i> Draft Content Calendar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 10: Slide 55 - Case Study 5: AI in Daily Life -->
+                <div id="slide-10" class="slide flex-col space-y-4">
+                    <div class="border-l-4 border-brandOrange pl-4 flex justify-between items-start w-full">
+                        <div>
+                            <span class="text-xs font-mono text-brandOrange uppercase tracking-widest">Slide 55 • Case Study 5</span>
+                            <h2 class="text-3xl font-bold font-display text-white mt-1">AI in Daily Life</h2>
+                        </div>
+                        <div class="text-right hidden sm:block">
+                            <span class="text-xs font-bold text-brandGreen/80 bg-brandGreen/10 px-2.5 py-1 rounded border border-brandGreen/20 uppercase">Interactive Wheel</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                        <!-- Left Data -->
+                        <div class="lg:col-span-6 space-y-3 flex flex-col justify-between">
+                            <div class="bg-slate-900/60 p-4 rounded-xl border border-white/5">
+                                <h3 class="text-sm font-bold text-white mb-1">Prompting is a Digital Life Skill</h3>
+                                <p class="text-sm text-slate-400">Prompting is no longer just for computer engineers or coding wizards. It is becoming a core piece of daily literacy for travelers, parents, and athletes alike.</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <button onclick="selectLifeUtility('travel')" id="life-travel-btn" class="p-3 rounded-lg border border-brandCyan bg-brandCyan/10 text-left transition-all">
+                                    <i class="fa-solid fa-plane mr-2 text-brandCyan"></i> Travel Planner
+                                </button>
+                                <button onclick="selectLifeUtility('workout')" id="life-workout-btn" class="p-3 rounded-lg border border-white/5 bg-slate-900/60 text-left hover:border-brandGreen/50 transition-all">
+                                    <i class="fa-solid fa-dumbbell mr-2 text-brandGreen"></i> Fitness Coach
+                                </button>
+                                <button onclick="selectLifeUtility('meal')" id="life-meal-btn" class="p-3 rounded-lg border border-white/5 bg-slate-900/60 text-left hover:border-brandOrange/50 transition-all">
+                                    <i class="fa-solid fa-utensils mr-2 text-brandOrange"></i> Meal Prep Planner
+                                </button>
+                                <button onclick="selectLifeUtility('budget')" id="life-budget-btn" class="p-3 rounded-lg border border-white/5 bg-slate-900/60 text-left hover:border-brandViolet/50 transition-all">
+                                    <i class="fa-solid fa-wallet mr-2 text-brandViolet"></i> Finance Assistant
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Live Screen -->
+                        <div class="lg:col-span-6 flex flex-col bg-slate-900/80 rounded-xl border border-white/5 p-4 justify-between">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2"><i class="fa-solid fa-sliders mr-1 text-brandOrange"></i> Life Utility Explorer</span>
+                            
+                            <div class="bg-slate-950 p-4 rounded-lg flex-grow flex flex-col justify-between space-y-3 border border-white/5 min-h-[180px]">
+                                <div class="text-xs space-y-1">
+                                    <span class="text-slate-500 uppercase font-bold block" id="lifeLabel">Selected Template: Travel Planner</span>
+                                    <div id="lifePromptText" class="bg-slate-900 p-2.5 rounded border border-white/5 font-mono text-slate-300 italic">
+                                        "You are an expert travel assistant. Design a step-by-step, budget-friendly 3-day travel itinerary for a family exploring the cultural sights of Jaipur."
+                                    </div>
+                                </div>
+                                <div class="text-[11px] text-slate-500 mt-1" id="lifeResult">
+                                    <strong>Impact:</strong> Avoids expensive planning services, automates mapping timelines, and minimizes travel plan friction instantly.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 11: Daily Life Activity - Automation Idea -->
+                <div id="slide-11" class="slide flex-col space-y-5">
+                    <div class="border-l-4 border-brandViolet pl-4">
+                        <span class="text-xs font-mono text-brandViolet uppercase tracking-widest">Slide 55 • Think-Pair-Share</span>
+                        <h2 class="text-3xl font-bold font-display text-white mt-1">Automating Your Week</h2>
+                    </div>
+                    <p class="text-slate-400 max-w-2xl">If you had a personalized, highly optimized AI assistant running for one entire week, which specific recurring task would you automate?</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-white/5">
+                            <span class="p-2 bg-brandCyan/10 text-brandCyan rounded text-sm font-bold uppercase">Idea 1</span>
+                            <h4 class="font-bold text-white mt-3 mb-1">Meal & Grocery Logic</h4>
+                            <p class="text-xs text-slate-400">Scan your pantry, auto-generate nutritional macro meals for the week, and compile matching grocery checklists.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-white/5">
+                            <span class="p-2 bg-brandGreen/10 text-brandGreen rounded text-sm font-bold uppercase">Idea 2</span>
+                            <h4 class="font-bold text-white mt-3 mb-1">Inbox Zero Assistant</h4>
+                            <p class="text-xs text-slate-400">Draft context-appropriate responses to personal, school, or work emails categorized automatically by priority.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-white/5">
+                            <span class="p-2 bg-brandOrange/10 text-brandOrange rounded text-sm font-bold uppercase">Idea 3</span>
+                            <h4 class="font-bold text-white mt-3 mb-1">Habit Tracking Integration</h4>
+                            <p class="text-xs text-slate-400">Evaluate sleep, hydration, and study metrics over the week and generate visual micro-adjustments for better output.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 12: Wrap Up & Q&A -->
+                <div id="slide-12" class="slide flex-col items-center justify-center text-center space-y-6">
+                    <div class="p-4 bg-brandGreen/10 rounded-full border border-brandGreen/20 text-brandGreen">
+                        <i class="fa-solid fa-comments text-4xl"></i>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-extrabold font-display tracking-tight leading-tight">
+                        Discussion & Questions
+                    </h1>
+                    <p class="text-base text-slate-400 max-w-xl mx-auto leading-relaxed">
+                        Prompt Engineering is a digital literacy superpower. What tasks will you automate tomorrow? Let's take any questions.
+                    </p>
+                    <div class="flex items-center gap-3 pt-4">
+                        <span class="px-4 py-2 bg-slate-900 rounded-lg border border-white/5 text-xs font-mono text-slate-400">Which usecase interested you most?</span>
+                        <span class="px-4 py-2 bg-slate-900 rounded-lg border border-white/5 text-xs font-mono text-slate-400">Which daily routine could AI speed up?</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Global Slide Controls (Bottom Section inside container) -->
+            <div class="mt-8 pt-4 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <button onclick="prevSlide()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-white/5 transition-all text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-chevron-left mr-1"></i> Prev
+                    </button>
+                    <button onclick="nextSlide()" class="px-4 py-2 bg-brandCyan text-slate-950 font-bold hover:bg-brandCyan/80 rounded-lg transition-all text-xs font-bold uppercase tracking-wider">
+                        Next <i class="fa-solid fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+                <!-- Dynamic slide-specific message overlay -->
+                <div id="interactiveMessage" class="text-xs font-mono text-slate-500 bg-slate-950 px-3 py-1.5 rounded-full border border-white/5 hidden sm:block">
+                    Tip: Use Left/Right Arrow keys on your keyboard to navigate slides.
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Slide-Out Speaker Notes Tray -->
+    <aside id="speakerNotesPanel" class="fixed right-0 top-[65px] bottom-0 w-80 bg-slate-950/95 backdrop-blur-md border-l border-white/10 p-6 z-40 transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
+        <div class="space-y-4 overflow-y-auto flex-grow pr-2">
+            <div class="flex justify-between items-center">
+                <h3 class="font-display font-bold text-brandCyan uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-user"></i> Speaker Notes
+                </h3>
+                <button onclick="toggleSpeakerNotes()" class="text-slate-500 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <!-- Dynamic Note Box -->
+            <div id="speakerNoteContent" class="text-xs text-slate-400 leading-relaxed space-y-3">
+                <!-- Notes injected by script -->
+            </div>
+        </div>
+        <div class="pt-4 border-t border-white/5 text-[10px] text-slate-600 uppercase tracking-widest font-mono text-center">
+            Private Instructor Pane
+        </div>
+    </aside>
+
+    <!-- Footer Credit -->
+    <footer class="px-8 py-3 bg-slate-950/40 text-center text-xs text-slate-500 border-t border-white/5">
+        Prompt Engineering Masterclass • Section 7: Case Studies
+    </footer>
+
+    <!-- Interactive Script Mechanics -->
+    <script>
+        const totalSlides = 12;
+        let currentSlide = 1;
+
+        // Speaker Notes Registry mapping slide id
+        const speakerNotes = {
+            1: `<p class="font-semibold text-slate-300">Welcome students to Section 7!</p>
+                <p>We are focusing entirely on practical scenarios here. This ensures they don't walk away with theoretical frameworks, but rather actionable life-skills.</p>
+                <p>Keep the pace fast and ask them to actively relate to the problems shown here.</p>`,
+            2: `<p class="font-semibold text-slate-300">Learning Objectives:</p>
+                <p>Briefly emphasize the shift from reading concepts to analyzing specific problems. This section aims to connect basic tools to immediate workflow enhancements.</p>`,
+            3: `<p class="font-semibold text-slate-300">The Problem-Solution-Outcome Structure:</p>
+                <p>Explain that high-quality outputs require breaking problem scopes down. This framework works for enterprise workflows and student studying alike.</p>`,
+            4: `<p class="font-semibold text-slate-300">Slide 51: AI in Education:</p>
+                <p>Most relatable slide. Highlight that an average prompt gets an average output. A highly customized, role-based tutor creates the optimal student assistant.</p>
+                <p class="mt-2 text-brandCyan">Interactive Goal: Click Before/After toggle options to demonstrate the conceptual breakthrough.</p>`,
+            5: `<p class="font-semibold text-slate-300">Evolution Challenge:</p>
+                <p>Guide students through this evolutionary chart. Notice how the length increases slightly, but specificity and quality double with each step.</p>`,
+            6: `<p class="font-semibold text-slate-300">Slide 52: AI in Healthcare:</p>
+                <p>Emphasize that healthcare is a rapidly adopting industry. AI saves up to 30% administrative fatigue.</p>
+                <p class="mt-2 text-brandViolet">Click "Generate Clinical Notes" in front of students to simulate instantaneous clinical processing.</p>`,
+            7: `<p class="font-semibold text-slate-300">Discussion Phase:</p>
+                <p>Open this up. Should AI make final treatment calls? Definitely not. Keep the human pilot at the controls.</p>`,
+            8: `<p class="font-semibold text-slate-300">Slide 53: AI in Business:</p>
+                <p>Firms are using this to bypass creative writer's block. Marketing experts can prompt for multiple campaigns in minutes.</p>
+                <p class="mt-2 text-brandGreen">Interactive: Run the brainstorm engine to see creative startup water bottle slogans.</p>`,
+            9: `<p class="font-semibold text-slate-300">Slide 54: AI in Social Media:</p>
+                <p>Social algorithms move extremely fast. AI is the ideal brainstorm partner for writing hooks, generating hashtag ideas, and outlining video structures.</p>`,
+            10: `<p class="font-semibold text-slate-300">Slide 55: AI in Daily Life:</p>
+                <p>Prompting is now a critical digital literacy skill. Use the clickable planner blocks on the left to show the varied templates.</p>`,
+            11: `<p class="font-semibold text-slate-300">Interactive Reflection:</p>
+                <p>Prompt students to turn to their neighbor and name one recurring activity they would immediately delegate to a personalized week-long assistant.</p>`,
+            12: `<p class="font-semibold text-slate-300">Concluding Q&A:</p>
+                <p>Leave plenty of space for conceptual questions. Challenge them to build a complex, multi-tiered prompt in their study workflow tonight.</p>`
+        };
+
+        // Navigation Controllers
+        function updatePresentation() {
+            // Hide all slides
+            for (let i = 1; i <= totalSlides; i++) {
+                const el = document.getElementById(`slide-${i}`);
+                if (el) el.classList.remove('active');
+            }
+            // Show active slide
+            const activeEl = document.getElementById(`slide-${currentSlide}`);
+            if (activeEl) activeEl.classList.add('active');
+
+            // Counter Update
+            document.getElementById('slideCounter').innerText = `${String(currentSlide).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+            
+            // Progress Bar Update
+            const percentage = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+
+            // Update speaker notes content
+            document.getElementById('speakerNoteContent').innerHTML = speakerNotes[currentSlide] || "No notes available for this slide.";
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updatePresentation();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updatePresentation();
+            }
+        }
+
+        // Toggle Speaker Notes panel
+        function toggleSpeakerNotes() {
+            const panel = document.getElementById('speakerNotesPanel');
+            panel.classList.toggle('translate-x-full');
+        }
+
+        // Slide 4: Interactive Education Controller
+        function toggleEduMode(mode) {
+            const beforeContent = document.getElementById('eduBeforeContent');
+            const afterContent = document.getElementById('eduAfterContent');
+            const beforeBtn = document.getElementById('eduBeforeBtn');
+            const afterBtn = document.getElementById('eduAfterBtn');
+
+            if (mode === 'before') {
+                beforeContent.classList.remove('hidden');
+                afterContent.classList.add('hidden');
+                beforeBtn.className = "flex-1 py-2 text-center text-xs font-bold rounded bg-red-500/10 border border-red-500/30 text-red-400 transition-all";
+                afterBtn.className = "flex-1 py-2 text-center text-xs font-bold rounded bg-slate-800 border border-white/10 text-slate-400 hover:bg-brandGreen/10 transition-all";
+            } else {
+                beforeContent.classList.add('hidden');
+                afterContent.classList.remove('hidden');
+                beforeBtn.className = "flex-1 py-2 text-center text-xs font-bold rounded bg-slate-800 border border-white/10 text-slate-400 hover:bg-red-500/10 transition-all";
+                afterBtn.className = "flex-1 py-2 text-center text-xs font-bold rounded bg-brandGreen/10 border border-brandGreen/30 text-brandGreen transition-all";
+            }
+        }
+
+        // Slide 6: Interactive Healthcare Summary Simulator
+        function simulateMedicalSummary() {
+            const outputBox = document.getElementById('medicalSummaryOutput');
+            const btn = document.getElementById('medicalBtn');
+            outputBox.innerHTML = "<span class='text-brandViolet animate-pulse'><i class='fa-solid fa-spinner animate-spin mr-2'></i>AI Assistant compiling notes...</span>";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                outputBox.innerHTML = `
+                    <div class="space-y-1.5 text-left w-full">
+                        <span class="text-[10px] uppercase tracking-wider font-bold text-brandViolet font-mono">Structured output:</span>
+                        <p class="text-xs text-slate-300"><strong>Subjective:</strong> Tenderness and minor swelling left knee. Mechanism: stepped off ladder yesterday.</p>
+                        <p class="text-xs text-slate-300"><strong>Assessment:</strong> Localized joint pain post-minor mechanical event. Limited mobility noted.</p>
+                    </div>
+                `;
+                btn.disabled = false;
+            }, 1200);
+        }
+
+        let currentBusinessType = 'slogans';
+        const businessData = {
+            slogans: {
+                label: "Slogans",
+                prompt: '"You are a marketing expert. Create five catchy slogans for an eco-friendly water bottle aimed at college students."',
+                outputs: [
+                    "1. Keep It Green, Keep It Cold.",
+                    "2. Sustain Your Lecture, Sustain Your Earth.",
+                    "3. Future Mindset, Zero Waste.",
+                    "4. Hydrate Smart. Campus Ready.",
+                    "5. Eco-Hydration for the Next Gen."
+                ],
+                btnText: "Brainstorm Slogans"
+            },
+            social: {
+                label: "Social Ads",
+                prompt: '"You are an ad copywriter. Write high-converting social copy for an eco-friendly water bottle targeting environmentally conscious freshmen."',
+                outputs: [
+                    "🌱 Meet the Campus Flask: keeps drinks ice-cold for 24 hours & saves 150 single-use bottles.",
+                    "🎒 Fits standard backpack slots. Built for heavy library study session marathons.",
+                    "👉 Use code 'CAMPUSGREEN' for 15% off free shipping!"
+                ],
+                btnText: "Generate Social Ads"
+            },
+            emails: {
+                label: "Cold Emails",
+                prompt: '"You are a business outreach specialist. Draft a brief, professional cold partnership email targeting campus bookstore merchandise managers."',
+                outputs: [
+                    "Subject: Sustainable custom merch for campus bookstore retail catalog",
+                    "Hi [Merchandise Director],",
+                    "I noticed your bookstore's initiatives pushing towards 2026 carbon neutrality targets. Our custom steel water bottles have yielded a 40% margin at neighboring schools.",
+                    "Would you be open to a quick 5-minute introductory call next week?"
+                ],
+                btnText: "Draft Cold Email"
+            },
+            copy: {
+                label: "Copywriting",
+                prompt: '"You are an elite conversion copywriter. Write a clean landing page header and sub-header emphasizing a lifetime leakproof guarantee."',
+                outputs: [
+                    "Headline: Built for College. Guaranteed for Life.",
+                    "Subheadline: The last container you'll ever buy. If your bottle leaks, scratches, or drops performance, we replace it instantly. No questions asked."
+                ],
+                btnText: "Create Page Copy"
+            }
+        };
+
+        function selectBusinessType(type) {
+            currentBusinessType = type;
+            const data = businessData[type];
+            
+            // Update labels and text elements on Left Column
+            document.getElementById('bizPromptText').innerText = data.prompt;
+            document.getElementById('bizEngineHeader').innerHTML = `<i class="fa-solid fa-lightbulb mr-1.5 text-brandGreen"></i> ${data.label} Generation Engine`;
+            document.getElementById('sloganBtn').innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> ${data.btnText}`;
+            
+            // Clear or set simulation state back to default preview
+            document.getElementById('sloganOutput').innerHTML = `<p class="text-center">Click below to query our marketing assistant simulation for ${data.label.toLowerCase()}...</p>`;
+
+            // Reset navigation tab styling active/inactive states
+            const types = ['slogans', 'social', 'emails', 'copy'];
+            types.forEach(t => {
+                const btn = document.getElementById(`biz-${t}-btn`);
+                if (t === type) {
+                    btn.className = "p-2 rounded border border-brandGreen bg-brandGreen/10 text-slate-100 transition-all";
+                } else {
+                    btn.className = "p-2 rounded border border-white/5 bg-slate-900/60 text-slate-400 hover:border-brandGreen/50 transition-all";
+                }
+            });
+        }
+
+        // Slide 8: Interactive Business Slogan/Utility Generator 
+        function generateSlogans() {
+            const outputBox = document.getElementById('sloganOutput');
+            const btn = document.getElementById('sloganBtn');
+            const activeData = businessData[currentBusinessType];
+            
+            outputBox.innerHTML = `<span class='text-brandGreen animate-pulse'><i class='fa-solid fa-spinner animate-spin mr-2'></i>Generating tailored ${activeData.label.toLowerCase()}...</span>`;
+            btn.disabled = true;
+
+            setTimeout(() => {
+                outputBox.innerHTML = `<div class="space-y-1.5 text-left w-full">
+                    <span class="text-[10px] uppercase tracking-wider font-bold text-brandGreen font-mono">Generated Output:</span>
+                    ${activeData.outputs.map(s => `<p class="text-slate-300 font-medium leading-relaxed">${s}</p>`).join('')}
+                </div>`;
+                btn.disabled = false;
+            }, 1000);
+        }
+
+        // Slide 9: Interactive Social Media Script Generator
+        function generateSocialContent() {
+            const outputBox = document.getElementById('socialOutput');
+            const btn = document.getElementById('socialBtn');
+            outputBox.innerHTML = "<span class='text-brandCyan animate-pulse'><i class='fa-solid fa-spinner animate-spin mr-2'></i>Drafting content calendar...</span>";
+            btn.disabled = true;
+
+            const posts = [
+                "🗓 Post 1: '5 Fast Superfood Snacks' (Carousel showing healthy micro-recipes).",
+                "🎥 Video Script: 'Why Blue Light kills your REM sleep' (15s Reel Hook included).",
+                "🗓 Post 2: 'Ditching the Soda Habit' (Fun interactive story poll prompt).",
+                "🏷 Tag Suggestions: #TeenWellness #SmartNutrition #MindBodyBalancing #StudyFocus"
+            ];
+
+            setTimeout(() => {
+                outputBox.innerHTML = `<div class="space-y-2 text-left w-full">
+                    ${posts.map(p => `<p class="text-slate-300 border-b border-white/5 pb-1">${p}</p>`).join('')}
+                </div>`;
+                btn.disabled = false;
+            }, 1400);
+        }
+
+        // Slide 10: Interactive Life Skill Planner Selector
+        const lifeSkilsData = {
+            travel: {
+                label: "Travel Planner",
+                prompt: '"You are an expert travel assistant. Design a step-by-step, budget-friendly 3-day travel itinerary for a family exploring the cultural sights of Jaipur."',
+                impact: "<strong>Impact:</strong> Bypasses expensive travel planning agencies, constructs customized timelines, and minimizes travel friction instantly."
+            },
+            workout: {
+                label: "Fitness Coach",
+                prompt: '"You are a fitness coach. Design a beginner workout plan that requires no equipment, emphasizing joints, core, and posture for teenagers."',
+                impact: "<strong>Impact:</strong> Provides custom physical training advice for free, structured to fit busy schedules safely."
+            },
+            meal: {
+                label: "Meal Prep Planner",
+                prompt: '"You are a nutritionist. Generate a 5-day vegetarian meal plan and automated grocery checklist based on high-protein, student budgets."',
+                impact: "<strong>Impact:</strong> Reduces hours spent deciding meals, organizes budget shopping lists, and ensures nutritional targets are hit."
+            },
+            budget: {
+                label: "Finance Assistant",
+                prompt: '"You are a financial advisor. Create a simple monthly budgeting spreadsheet template for a teenager starting their first part-time job."',
+                impact: "<strong>Impact:</strong> Cultivates long-term micro-savings habits, plans out recurring expenses, and automates tracking logic."
+            }
+        };
+
+        function selectLifeUtility(utility) {
+            // Update labels
+            document.getElementById('lifeLabel').innerText = `Selected Template: ${lifeSkilsData[utility].label}`;
+            document.getElementById('lifePromptText').innerText = lifeSkilsData[utility].prompt;
+            document.getElementById('lifeResult').innerHTML = lifeSkilsData[utility].impact;
+
+            // Reset buttons classes
+            const utilities = ['travel', 'workout', 'meal', 'budget'];
+            utilities.forEach(u => {
+                const button = document.getElementById(`life-${u}-btn`);
+                if (u === utility) {
+                    button.className = `p-3 rounded-lg border text-left transition-all ${
+                        utility === 'travel' ? 'border-brandCyan bg-brandCyan/10 text-slate-100' :
+                        utility === 'workout' ? 'border-brandGreen bg-brandGreen/10 text-slate-100' :
+                        utility === 'meal' ? 'border-brandOrange bg-brandOrange/10 text-slate-100' :
+                        'border-brandViolet bg-brandViolet/10 text-slate-100'
+                    }`;
+                } else {
+                    button.className = "p-3 rounded-lg border border-white/5 bg-slate-900/60 text-left hover:border-slate-500 transition-all text-slate-400";
+                }
+            });
+        }
+
+        // Fullscreen API Helper
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Global Key Listener for slide deck navigation
+        document.addEventListener('keydown', function(event) {
+            const activeEl = document.activeElement;
+            const capturesTextKeys = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.getAttribute('contenteditable') === 'true'
+            );
+            const capturesArrowKeys = activeEl && (
+                (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT'
+            );
+            const capturesSpacebar = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.tagName === 'BUTTON' ||
+                activeEl.getAttribute('role') === 'button'
+            );
+
+            if (event.key === 'ArrowRight' || event.key === ' ' || event.key === 'Space') {
+                if (!capturesSpacebar && !capturesArrowKeys) {
+                    nextSlide();
+                    event.preventDefault();
+                }
+            } else if (event.key === 'ArrowLeft') {
+                if (!capturesArrowKeys) {
+                    prevSlide();
+                    event.preventDefault();
+                }
+            } else if (event.key === 'f' || event.key === 'F') {
+                if (!capturesTextKeys) {
+                    toggleFullscreen();
+                    event.preventDefault();
+                }
+            }
+        });
+
+        document.addEventListener('dblclick', (e) => {
+            const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+            if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+                toggleFullscreen();
+            }
+        });
+
+        // Initialize first slide on load
+        window.onload = function() {
+            updatePresentation();
+        };
+    </script>
+</body>
+</html>

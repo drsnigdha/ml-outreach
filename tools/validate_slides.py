@@ -22,8 +22,8 @@ class SlideValidator(HTMLParser):
         class_attr = attrs_dict.get('class', '')
         classes = class_attr.split()
         
-        # Recognize both 'slide' (Part 2) and 'slide-transition' (Part 1)
-        is_slide = (tag_lower == 'div' and ('slide' in classes or 'slide-transition' in classes))
+        # Recognize various slide container elements and classes (both div and section)
+        is_slide = (tag_lower in ('div', 'section') and any(c in ('slide', 'slide-transition', 'slide-container', 'slide-fade') for c in classes))
         
         if is_slide:
             # Level 2 Check: Verify no slide is nested inside another slide

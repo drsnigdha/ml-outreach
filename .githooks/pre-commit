@@ -64,8 +64,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 8. Verify Day 2 Scikit-Learn Presentation Structure (Expected 0 static slides)
-python3 tools/validate_slides.py day2_scikit_learn_lab.html 0
+# 8. Verify Day 2 Scikit-Learn Presentation Structure (Expected 11 slides)
+python3 tools/validate_slides.py day2_scikit_learn_lab.html 11
 if [ $? -ne 0 ]; then
     echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day2_scikit_learn_lab.html failed structural slide validation.${NC}"
     exit 1
@@ -100,6 +100,93 @@ if [ $? -ne 0 ]; then
 fi
 
 
+# ==================== DAY 3 SLIDES & QUIZ VALIDATION ====================
+
+# 13. Verify Day 3 Mastery Quiz Structure (Expected 0 slides)
+python3 tools/validate_slides.py day3_data_science_mastery_quiz.html 0
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_data_science_mastery_quiz.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 14. Verify Day 3 Session 1 / Slide Deck 1 Structure (Expected 12 slides)
+python3 tools/validate_slides.py day3_session1_1.html 12
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session1_1.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 15. Verify Day 3 Session 1 / Slide Deck 2 Structure (Expected 10 slides)
+python3 tools/validate_slides.py day3_session1_2.html 10
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session1_2.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 16. Verify Day 3 Session 1 / Slide Deck 3 Structure (Expected 10 slides)
+python3 tools/validate_slides.py day3_session1_3.html 10
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session1_3.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 17. Verify Day 3 Session 2 / Slide Deck 1 Structure (Expected 6 slides)
+python3 tools/validate_slides.py day3_session2_1.html 6
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session2_1.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 18. Verify Day 3 Session 2 / Slide Deck 2 Structure (Expected 6 slides)
+python3 tools/validate_slides.py day3_session2_2.html 6
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session2_2.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 19. Verify Day 3 Session 2 / Slide Deck 3 Structure (Expected 6 slides)
+python3 tools/validate_slides.py day3_session2_3.html 6
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session2_3.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 20. Verify Day 3 Session 2 / Slide Deck 4 Structure (Expected 14 slides)
+python3 tools/validate_slides.py day3_session2_4.html 14
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session2_4.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 21. Verify Day 3 Session 2 / Slide Deck 5 Structure (Expected 10 slides)
+python3 tools/validate_slides.py day3_session2_5.html 10
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session2_5.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 22. Verify Day 3 Session 2 / Slide Deck 6 Structure (Expected 8 slides)
+python3 tools/validate_slides.py day3_session2_6.html 8
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session2_6.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 23. Verify Day 3 Session 2 / Slide Deck 7 Structure (Expected 12 slides)
+python3 tools/validate_slides.py day3_session2_7.html 12
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session2_7.html failed slide validation.${NC}"
+    exit 1
+fi
+
+# 24. Verify Day 3 Session 2 / Slide Deck 8 Structure (Expected 8 slides)
+python3 tools/validate_slides.py day3_session2_8.html 8
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: day3_session2_8.html failed slide validation.${NC}"
+    exit 1
+fi
+
+
 # ==================== JAVASCRIPT COMPILATION PIPELINE ====================
 
 # -- Day 1 Compilations --
@@ -126,5 +213,23 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo -e "${BOLD}${GREEN}🎉 SUCCESS: All 12 presentations and interactive lab workspaces passed structural and compilation checks! Committing changes...${NC}\n"
+# -- Day 3 Compilations --
+node tools/verify_javascript.js day3_data_science_mastery_quiz.html && \
+node tools/verify_javascript.js day3_session1_1.html && \
+node tools/verify_javascript.js day3_session1_2.html && \
+node tools/verify_javascript.js day3_session1_3.html && \
+node tools/verify_javascript.js day3_session2_1.html && \
+node tools/verify_javascript.js day3_session2_2.html && \
+node tools/verify_javascript.js day3_session2_3.html && \
+node tools/verify_javascript.js day3_session2_4.html && \
+node tools/verify_javascript.js day3_session2_5.html && \
+node tools/verify_javascript.js day3_session2_6.html && \
+node tools/verify_javascript.js day3_session2_7.html && \
+node tools/verify_javascript.js day3_session2_8.html
+if [ $? -ne 0 ]; then
+    echo -e "${BOLD}${RED}❌ COMMIT ABORTED: Day 3 inline JavaScript compilation failed.${NC}"
+    exit 1
+fi
+
+echo -e "${BOLD}${GREEN}🎉 SUCCESS: All presentations and interactive workspaces passed structural and compilation checks! Committing changes...${NC}\n"
 exit 0

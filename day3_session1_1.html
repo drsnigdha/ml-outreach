@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlocking Generative AI - Interactive Presentation</title>
+    <!-- Tailwind CSS for modern responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for premium typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome for high-quality descriptive icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(99, 102, 241, 0.2), 0 0 20px rgba(99, 102, 241, 0.1); }
+            to { box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), 0 0 30px rgba(168, 85, 247, 0.2); }
+        }
+        .slide-enter {
+            opacity: 0;
+            transform: scale(0.98) translateY(10px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+        .slide-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        /* Custom scrollbars for notes and code views */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(168, 85, 247, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans h-full overflow-hidden flex flex-col selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Navigation & Dashboard Bar -->
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between z-40 shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <i class="fa-solid fa-brain text-white text-lg animate-pulse-slow"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-base md:text-lg tracking-tight bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 bg-clip-text text-transparent">
+                    Generative AI Classroom
+                </h1>
+                <p class="text-xs text-slate-400 font-medium">Interactive Student Masterclass</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3 md:space-x-4">
+            <!-- Fullscreen toggle -->
+            <button onclick="toggleFullscreen()" class="p-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all duration-200 shadow-sm border border-slate-700/50" title="Toggle Fullscreen">
+                <i id="fs-icon" class="fa-solid fa-expand"></i>
+            </button>
+            <!-- Speaker notes layout toggle button -->
+            <button onclick="toggleNotesPanel()" class="px-4 py-2.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm transition-all duration-200 shadow-md shadow-indigo-600/10 flex items-center space-x-2 border border-indigo-500/30">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                <span class="hidden sm:inline">Presenter Companion</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="flex flex-1 overflow-hidden relative">
+        
+        <!-- Presentation Slide Canvas Area -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 flex items-center justify-center relative bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950">
+            <div class="w-full max-w-5xl h-full flex items-center justify-center">
+                
+                <!-- Slide 1: Welcome to the World of Generative AI -->
+                <div id="slide-1" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 my-auto items-center">
+                        <div class="lg:col-span-6 space-y-6">
+                            <span class="px-3 py-1 bg-indigo-500/10 text-indigo-400 text-xs font-bold rounded-full uppercase tracking-widest border border-indigo-500/20">Slide 1: Session Kickoff</span>
+                            <h2 class="text-4xl md:text-5xl font-extrabold text-white leading-tight">
+                                Welcome to the World of <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Generative AI</span>
+                            </h2>
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-semibold text-purple-300">Imagine This...</h3>
+                                <p class="text-slate-300 leading-relaxed text-sm md:text-base">
+                                    You wake up tomorrow and discover you have three extraordinary superpowers:
+                                </p>
+                                <div class="grid grid-cols-1 gap-3">
+                                    <div class="flex items-center space-x-3 p-3 bg-slate-900/50 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+                                        <span class="text-2xl">✍️</span>
+                                        <p class="text-sm font-medium text-slate-200">You can write masterclass stories in seconds.</p>
+                                    </div>
+                                    <div class="flex items-center space-x-3 p-3 bg-slate-900/50 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+                                        <span class="text-2xl">🎨</span>
+                                        <p class="text-sm font-medium text-slate-200">You can create breathtaking artwork without holding a brush.</p>
+                                    </div>
+                                    <div class="flex items-center space-x-3 p-3 bg-slate-900/50 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+                                        <span class="text-2xl">🎬</span>
+                                        <p class="text-sm font-medium text-slate-200">You can create cinematic movies without a camera.</p>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-indigo-300 font-semibold uppercase tracking-wider">Sounds impossible? Millions are doing this today using Generative AI.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Slide 1 Custom Interactive Visual Map -->
+                        <div class="lg:col-span-6 flex flex-col justify-center items-center">
+                            <div class="relative w-72 h-72 md:w-80 md:h-80 flex items-center justify-center bg-slate-900/20 rounded-full border border-slate-800/80 p-8 shadow-2xl">
+                                <!-- Orbiting Elements representing AI disciplines -->
+                                <div class="absolute inset-0 rounded-full border border-dashed border-indigo-500/20 animate-[spin_30s_linear_infinite]"></div>
+                                <div class="absolute inset-8 rounded-full border border-dashed border-purple-500/20 animate-[spin_20s_linear_infinite_reverse]"></div>
+                                
+                                <!-- Central Brain Orb -->
+                                <div class="relative z-10 w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex flex-col items-center justify-center shadow-lg shadow-indigo-500/40 animate-glow">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-3xl text-white mb-1"></i>
+                                    <span class="text-[10px] font-bold text-white tracking-widest uppercase">Gen AI</span>
+                                </div>
+                                
+                                <!-- Core features orbiting around -->
+                                <div class="absolute -top-4 bg-slate-900/90 border border-slate-700 rounded-xl px-3 py-2 flex items-center space-x-2 shadow-lg animate-float">
+                                    <span>✍️</span>
+                                    <span class="text-xs font-semibold">AI Stories</span>
+                                </div>
+                                <div class="absolute -right-4 bg-slate-900/90 border border-slate-700 rounded-xl px-3 py-2 flex items-center space-x-2 shadow-lg animate-float [animation-delay:1.5s]">
+                                    <span>🎨</span>
+                                    <span class="text-xs font-semibold">AI Artwork</span>
+                                </div>
+                                <div class="absolute -bottom-4 bg-slate-900/90 border border-slate-700 rounded-xl px-3 py-2 flex items-center space-x-2 shadow-lg animate-float [animation-delay:3s]">
+                                    <span>🎬</span>
+                                    <span class="text-xs font-semibold">AI Videos</span>
+                                </div>
+                                <div class="absolute -left-4 bg-slate-900/90 border border-slate-700 rounded-xl px-3 py-2 flex items-center space-x-2 shadow-lg animate-float [animation-delay:4.5s]">
+                                    <span>🧑‍💻</span>
+                                    <span class="text-xs font-semibold">Student UI</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Interactive opening poll widget -->
+                            <div class="mt-8 bg-slate-900/80 border border-slate-800 p-5 rounded-2xl w-full shadow-lg max-w-sm">
+                                <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-3 flex items-center">
+                                    <i class="fa-solid fa-square-poll-vertical mr-2"></i> Opening Classroom Poll
+                                </h4>
+                                <p class="text-sm font-semibold text-slate-200 mb-4">If you had an AI assistant for one day, what would you ask it to create?</p>
+                                <div class="space-y-2" id="poll-options-s1">
+                                    <button onclick="submitPoll('s1', 'movie')" class="w-full text-left text-xs bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 hover:border-indigo-500/50 p-2.5 rounded-lg transition duration-150 flex items-center justify-between">
+                                        <span>🎬 A Full Sci-Fi Movie</span>
+                                        <span class="text-slate-500 font-mono" id="poll-val-s1-movie">0%</span>
+                                    </button>
+                                    <button onclick="submitPoll('s1', 'game')" class="w-full text-left text-xs bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 hover:border-indigo-500/50 p-2.5 rounded-lg transition duration-150 flex items-center justify-between">
+                                        <span>🎮 A Custom Video Game</span>
+                                        <span class="text-slate-500 font-mono" id="poll-val-s1-game">0%</span>
+                                    </button>
+                                    <button onclick="submitPoll('s1', 'homework')" class="w-full text-left text-xs bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 hover:border-indigo-500/50 p-2.5 rounded-lg transition duration-150 flex items-center justify-between">
+                                        <span>📚 Visual Homework Notes</span>
+                                        <span class="text-slate-500 font-mono" id="poll-val-s1-homework">0%</span>
+                                    </button>
+                                    <button onclick="submitPoll('s1', 'song')" class="w-full text-left text-xs bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 hover:border-indigo-500/50 p-2.5 rounded-lg transition duration-150 flex items-center justify-between">
+                                        <span>🎵 A Custom Hit Song</span>
+                                        <span class="text-slate-500 font-mono" id="poll-val-s1-song">0%</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Why Should We Care About Generative AI? -->
+                <div id="slide-2" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-purple-500/10 text-purple-400 text-xs font-bold rounded-full uppercase tracking-widest border border-purple-500/20">Slide 2: Real-World Relevance</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white">Why Should We Care About Generative AI?</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                            <div class="md:col-span-7 space-y-4">
+                                <p class="text-slate-300 text-sm leading-relaxed">
+                                    AI is rapidly transforming how we live, study, create, and build. It's quickly transitioning into a foundational utility, just like electricity did a century ago.
+                                </p>
+                                
+                                <!-- Interactive "A Day Without AI" Simulator -->
+                                <div class="bg-slate-900/60 rounded-xl p-5 border border-slate-800 space-y-3">
+                                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                                        <h4 class="text-xs font-bold text-pink-400 uppercase tracking-wider flex items-center">
+                                            <i class="fa-solid fa-power-off mr-2"></i> Simulator: A Day Without AI
+                                        </h4>
+                                        <!-- Active toggle state slider -->
+                                        <button id="toggle-ai-btn" onclick="toggleAISimulator()" class="px-3 py-1 rounded-full text-xs font-bold transition duration-200 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                                            AI Active
+                                        </button>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3" id="ai-services-grid">
+                                        <div class="bg-slate-800/40 p-3 rounded-lg flex items-center space-x-2 transition-opacity duration-300" id="ai-srv-1">
+                                            <span class="text-emerald-400" id="ai-ico-1">✨</span>
+                                            <span class="text-xs font-semibold text-slate-200">Google Search Autocomplete</span>
+                                        </div>
+                                        <div class="bg-slate-800/40 p-3 rounded-lg flex items-center space-x-2 transition-opacity duration-300" id="ai-srv-2">
+                                            <span class="text-emerald-400" id="ai-ico-2">🎵</span>
+                                            <span class="text-xs font-semibold text-slate-200">Netflix & Spotify Recs</span>
+                                        </div>
+                                        <div class="bg-slate-800/40 p-3 rounded-lg flex items-center space-x-2 transition-opacity duration-300" id="ai-srv-3">
+                                            <span class="text-emerald-400" id="ai-ico-3">📱</span>
+                                            <span class="text-xs font-semibold text-slate-200">Social Media Filters & Captions</span>
+                                        </div>
+                                        <div class="bg-slate-800/40 p-3 rounded-lg flex items-center space-x-2 transition-opacity duration-300" id="ai-srv-4">
+                                            <span class="text-emerald-400" id="ai-ico-4">🦾</span>
+                                            <span class="text-xs font-semibold text-slate-200">Digital Smart Assistants</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 italic" id="ai-sim-note">Notice how standard daily workflows feel broken without micro-AI routines.</p>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div class="p-3 bg-slate-900/40 border border-slate-800 rounded-xl">
+                                        <span class="text-lg font-bold text-indigo-400">📚 Education</span>
+                                        <p class="text-xs text-slate-400 mt-1">Smarter summaries, customized note generation, and active study assistants.</p>
+                                    </div>
+                                    <div class="p-3 bg-slate-900/40 border border-slate-800 rounded-xl">
+                                        <span class="text-lg font-bold text-purple-400">🏥 Healthcare</span>
+                                        <p class="text-xs text-slate-400 mt-1">Accelerated drug discovery, clinical notes, and automated medical reports.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 2 Interactive Graphic & Slide Poll -->
+                            <div class="md:col-span-5 space-y-6">
+                                <!-- Interactive History Pipeline -->
+                                <div class="bg-slate-900/60 rounded-xl p-5 border border-slate-800">
+                                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Historical Revolutions Timeline</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-start space-x-3 group">
+                                            <div class="w-6 h-6 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-xs text-indigo-400 shrink-0 font-bold">1</div>
+                                            <div>
+                                                <h5 class="text-xs font-bold text-indigo-300">Electricity Revolution (1800s)</h5>
+                                                <p class="text-[11px] text-slate-400">Transformed all factories, lighting, and communication mechanisms globally.</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-3">
+                                            <div class="w-6 h-6 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-xs text-purple-400 shrink-0 font-bold">2</div>
+                                            <div>
+                                                <h5 class="text-xs font-bold text-purple-300">Internet Revolution (1990s)</h5>
+                                                <p class="text-[11px] text-slate-400">Decentralized global knowledge databases and brought instant connectivity.</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-3">
+                                            <div class="w-6 h-6 rounded-full bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-xs text-pink-400 shrink-0 font-bold animate-pulse">3</div>
+                                            <div>
+                                                <h5 class="text-xs font-bold text-pink-300">AI Revolution (Today)</h5>
+                                                <p class="text-[11px] text-slate-400 font-medium">Automating creative execution, structured content writing, and logical outputs.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Active Interactive Question Poll -->
+                                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl">
+                                    <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2 flex items-center">
+                                        <i class="fa-solid fa-square-poll-horizontal mr-2"></i> Global Sector Poll
+                                    </h4>
+                                    <p class="text-xs text-slate-300 mb-3">Which area will AI impact the most in the next 10 years?</p>
+                                    <div class="grid grid-cols-2 gap-2" id="poll-options-s2">
+                                        <button onclick="submitPoll('s2', 'edu')" class="text-left text-[11px] bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 p-2 rounded-lg transition flex justify-between">
+                                            <span>Edu</span> <span id="poll-val-s2-edu" class="text-indigo-400">0%</span>
+                                        </button>
+                                        <button onclick="submitPoll('s2', 'health')" class="text-left text-[11px] bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 p-2 rounded-lg transition flex justify-between">
+                                            <span>Health</span> <span id="poll-val-s2-health" class="text-indigo-400">0%</span>
+                                        </button>
+                                        <button onclick="submitPoll('s2', 'ent')" class="text-left text-[11px] bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 p-2 rounded-lg transition flex justify-between">
+                                            <span>Ent</span> <span id="poll-val-s2-ent" class="text-indigo-400">0%</span>
+                                        </button>
+                                        <button onclick="submitPoll('s2', 'space')" class="text-left text-[11px] bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 p-2 rounded-lg transition flex justify-between">
+                                            <span>Space</span> <span id="poll-val-s2-space" class="text-indigo-400">0%</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Meet Riya - A Student With a Problem -->
+                <div id="slide-3" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-rose-500/10 text-rose-400 text-xs font-bold rounded-full uppercase tracking-widest border border-rose-500/20">Slide 3: Creative Storytelling</span>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-6 space-y-5">
+                                <h2 class="text-3xl md:text-4xl font-extrabold text-white">Meet Riya: A Student with a Problem</h2>
+                                <p class="text-sm text-slate-300 leading-relaxed">
+                                    Riya is an ambitious Class XI student. She has exactly <span class="text-rose-400 font-bold">30 minutes</span> remaining before a major project submission deadline!
+                                </p>
+                                <div class="bg-rose-500/5 border border-rose-500/20 rounded-xl p-4 space-y-3">
+                                    <h4 class="text-xs font-bold text-rose-400 uppercase tracking-wider flex items-center">
+                                        <i class="fa-solid fa-clock-rotate-left mr-2"></i> Riya's Back-Breaking Checklist:
+                                    </h4>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <div class="bg-slate-900/60 p-2.5 rounded-lg text-center border border-slate-800">
+                                            <span class="text-lg">📄</span>
+                                            <p class="text-[11px] font-bold mt-1 text-slate-200">Climate Report</p>
+                                        </div>
+                                        <div class="bg-slate-900/60 p-2.5 rounded-lg text-center border border-slate-800">
+                                            <span class="text-lg">🎨</span>
+                                            <p class="text-[11px] font-bold mt-1 text-slate-200">Visual Poster</p>
+                                        </div>
+                                        <div class="bg-slate-900/60 p-2.5 rounded-lg text-center border border-slate-800">
+                                            <span class="text-lg">🎬</span>
+                                            <p class="text-[11px] font-bold mt-1 text-slate-200">Explanatory Video</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs pt-1">
+                                        <span class="text-slate-400">Traditional Working Path:</span>
+                                        <span class="text-rose-400 font-bold"><i class="fa-solid fa-hourglass-half mr-1"></i> 5 to 6 Hours Required</span>
+                                    </div>
+                                </div>
+                                <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4">
+                                    <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center mb-1">
+                                        <i class="fa-solid fa-bolt-lightning mr-2"></i> The AI Assistant Path
+                                    </h4>
+                                    <p class="text-xs text-slate-300 leading-relaxed">
+                                        Using generative models, Riya drafts her report skeleton, requests matching graphic structures, and plans a scripted video presentation in minutes. AI helps her work much faster without replacing her ideas!
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 3 Storyboard Comic & Group Timer -->
+                            <div class="lg:col-span-6 space-y-6">
+                                <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 space-y-4">
+                                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                                        <span>Riya's Journey Storyboard</span>
+                                        <span class="text-[10px] text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">Interactive Frames</span>
+                                    </h4>
+                                    
+                                    <!-- Interactive Frame Tabs -->
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <button onclick="switchComicFrame(1)" id="comic-tab-1" class="comic-btn text-[10px] py-1 px-2 font-bold rounded-md bg-indigo-600 text-white transition">Frame 1: Stress</button>
+                                        <button onclick="switchComicFrame(2)" id="comic-tab-2" class="comic-btn text-[10px] py-1 px-2 font-bold rounded-md bg-slate-800 text-slate-400 hover:bg-slate-700 transition">Frame 2: Discovery</button>
+                                        <button onclick="switchComicFrame(3)" id="comic-tab-3" class="comic-btn text-[10px] py-1 px-2 font-bold rounded-md bg-slate-800 text-slate-400 hover:bg-slate-700 transition">Frame 3: Success</button>
+                                    </div>
+                                    
+                                    <!-- Comic Viewport container -->
+                                    <div class="bg-slate-950/80 p-4 rounded-xl h-48 border border-slate-800 flex flex-col justify-center items-center text-center transition duration-200">
+                                        <div id="comic-visual" class="text-4xl mb-2 animate-float">😫</div>
+                                        <h5 id="comic-title" class="text-sm font-bold text-slate-200">Frame 1: Stressed and Overwhelmed</h5>
+                                        <p id="comic-desc" class="text-xs text-slate-400 mt-2 max-w-sm">30 minutes left, massive stack of folders, clock ticking, zero inspiration. Standard tools will cause missed deadlines.</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Group Activity Countdown Timer -->
+                                <div class="bg-gradient-to-r from-slate-900 to-indigo-950 border border-indigo-500/20 p-5 rounded-2xl flex items-center justify-between shadow-lg">
+                                    <div class="space-y-1">
+                                        <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider">Classroom Action Timer</h4>
+                                        <p class="text-[11px] text-slate-400">Think-Pair-Share: How much should students rely on AI assistance?</p>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="font-mono text-xl font-bold bg-slate-950 px-3 py-1.5 rounded-lg text-emerald-400 border border-slate-800" id="classroom-timer">02:00</div>
+                                        <button id="timer-btn" onclick="toggleTimer()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-2 rounded-lg font-bold transition">Start</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: What is Generative AI? -->
+                <div id="slide-4" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-cyan-500/10 text-cyan-400 text-xs font-bold rounded-full uppercase tracking-widest border border-cyan-500/20">Slide 4: Core Architecture Definition</span>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-6 space-y-4">
+                                <h2 class="text-3xl md:text-4xl font-extrabold text-white">What is Generative AI?</h2>
+                                <p class="text-sm text-slate-300 leading-relaxed">
+                                    Imagine showing a computer <span class="text-cyan-400 font-semibold">10,000 pictures of cats</span>. How would traditional AI models handle this data differently from generative AI?
+                                </p>
+                                
+                                <div class="space-y-3">
+                                    <div class="p-3.5 bg-slate-900/60 border-l-4 border-indigo-500 rounded-r-xl space-y-1">
+                                        <span class="text-xs font-bold uppercase text-indigo-400 tracking-wider">Traditional AI (Student A - The Classifier)</span>
+                                        <p class="text-xs text-slate-300">Analyzes and classifies input. "Is this email spam?", "Is this image a cat or dog?", "Will it rain tomorrow?" - Standard analysis.</p>
+                                    </div>
+                                    <div class="p-3.5 bg-slate-900/60 border-l-4 border-pink-500 rounded-r-xl space-y-1">
+                                        <span class="text-xs font-bold uppercase text-pink-400 tracking-wider">Generative AI (Student B - The Producer)</span>
+                                        <p class="text-xs text-slate-300">Creates something entirely new from patterns learned. Writing essays, sketching fresh graphics, creating songs, composing source code.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-4 bg-gradient-to-r from-cyan-950 to-slate-900 border border-cyan-500/20 rounded-xl">
+                                    <p class="text-xs font-semibold text-slate-200">
+                                        <span class="text-cyan-400 font-bold uppercase">Official Definition:</span> Generative AI is a branch of artificial intelligence designed to draft or produce novel assets (text, images, media, code) using structured rules recognized from massive, pre-existing training datasets.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 4 Interactive Matching Challenge -->
+                            <div class="lg:col-span-6 space-y-6">
+                                <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">AI Classification Challenge</h4>
+                                        <span class="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded font-bold">Interactive Game</span>
+                                    </div>
+                                    <p class="text-xs text-slate-300">Drag or map each scenario to the correct AI category to verify understanding.</p>
+                                    
+                                    <div class="space-y-2.5">
+                                        <div class="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
+                                            <span class="text-xs font-semibold text-slate-200">1. Netflix recommendation feeds</span>
+                                            <div class="flex space-x-1">
+                                                <button onclick="checkClassification(1, 'trad', this)" class="px-2 py-1 text-[10px] font-bold bg-slate-800 hover:bg-indigo-600 rounded text-slate-300 hover:text-white transition">Traditional</button>
+                                                <button onclick="checkClassification(1, 'gen', this)" class="px-2 py-1 text-[10px] font-bold bg-slate-800 hover:bg-pink-600 rounded text-slate-300 hover:text-white transition">Generative</button>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
+                                            <span class="text-xs font-semibold text-slate-200">2. AI generating custom poetry</span>
+                                            <div class="flex space-x-1">
+                                                <button onclick="checkClassification(2, 'trad', this)" class="px-2 py-1 text-[10px] font-bold bg-slate-800 hover:bg-indigo-600 rounded text-slate-300 hover:text-white transition">Traditional</button>
+                                                <button onclick="checkClassification(2, 'gen', this)" class="px-2 py-1 text-[10px] font-bold bg-slate-800 hover:bg-pink-600 rounded text-slate-300 hover:text-white transition">Generative</button>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
+                                            <span class="text-xs font-semibold text-slate-200">3. Smartphone Face Unlock Security</span>
+                                            <div class="flex space-x-1">
+                                                <button onclick="checkClassification(3, 'trad', this)" class="px-2 py-1 text-[10px] font-bold bg-slate-800 hover:bg-indigo-600 rounded text-slate-300 hover:text-white transition">Traditional</button>
+                                                <button onclick="checkClassification(3, 'gen', this)" class="px-2 py-1 text-[10px] font-bold bg-slate-800 hover:bg-pink-600 rounded text-slate-300 hover:text-white transition">Generative</button>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
+                                            <span class="text-xs font-semibold text-slate-200">4. Creating a cartoon image of Mars</span>
+                                            <div class="flex space-x-1">
+                                                <button onclick="checkClassification(4, 'trad', this)" class="px-2 py-1 text-[10px] font-bold bg-slate-800 hover:bg-indigo-600 rounded text-slate-300 hover:text-white transition">Traditional</button>
+                                                <button onclick="checkClassification(4, 'gen', this)" class="px-2 py-1 text-[10px] font-bold bg-slate-800 hover:bg-pink-600 rounded text-slate-300 hover:text-white transition">Generative</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="classification-feedback" class="text-center text-xs font-semibold h-4 text-emerald-400"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 5: How Does Generative AI Learn? -->
+                <div id="slide-5" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full uppercase tracking-widest border border-amber-500/20">Slide 5: Pattern Training Foundations</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white">How Does Generative AI Learn?</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-6 space-y-4">
+                                <p class="text-sm text-slate-300 leading-relaxed">
+                                    How do humans learn languages? By scanning grammar rules, reading novels, engaging in discussions, and noticing recurring vocabulary structures. AI systems learn in an analogous way.
+                                </p>
+                                
+                                <div class="bg-slate-900/60 rounded-xl p-5 border border-slate-800 space-y-4">
+                                    <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">The Secret: Predicting the Next Word</h4>
+                                    <p class="text-xs text-slate-300 leading-relaxed">
+                                        Large Language Models are master probability calculators. They look at historic contexts to compute the absolute most logical next element.
+                                    </p>
+                                    <div class="p-3.5 bg-slate-950 rounded-lg border border-slate-800 flex items-center justify-between">
+                                        <span class="text-xs font-medium text-slate-300">"The glowing sun rises in the ____"</span>
+                                        <span class="text-xs font-bold text-amber-400 animate-pulse bg-amber-500/10 px-2 py-1 rounded">East (99.8%)</span>
+                                    </div>
+                                </div>
+                                <p class="text-[11px] text-rose-300 italic">Core warning: AI has no sentience or direct knowledge. It understands mathematical correlations, not human values.</p>
+                            </div>
+                            
+                            <!-- Slide 5 Interactive Word Prediction Game -->
+                            <div class="lg:col-span-6 space-y-6">
+                                <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+                                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
+                                        <i class="fa-solid fa-gamepad mr-2 text-amber-400"></i> Interactive Prediction Simulator
+                                    </h4>
+                                    <p class="text-xs text-slate-300">Click a scenario, then choose the word you believe the AI's probability engine predicts next!</p>
+                                    
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <button onclick="loadPredictScenario(1)" id="pred-sc-1" class="text-[10px] py-1.5 font-bold rounded bg-indigo-600 text-white">Scenario 1</button>
+                                        <button onclick="loadPredictScenario(2)" id="pred-sc-2" class="text-[10px] py-1.5 font-bold rounded bg-slate-800 text-slate-400 hover:bg-slate-700">Scenario 2</button>
+                                        <button onclick="loadPredictScenario(3)" id="pred-sc-3" class="text-[10px] py-1.5 font-bold rounded bg-slate-800 text-slate-400 hover:bg-slate-700">Scenario 3</button>
+                                    </div>
+                                    
+                                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 text-center">
+                                        <p class="text-xs font-semibold text-slate-300 mb-4" id="predict-sentence">"Ice cream is usually served extremely ____"</p>
+                                        <div class="grid grid-cols-2 gap-2" id="predict-options">
+                                            <button onclick="checkPrediction('cold', true)" class="bg-slate-900 border border-slate-800 hover:border-amber-500 text-xs py-2 rounded text-slate-300 hover:text-white transition font-medium">Cold</button>
+                                            <button onclick="checkPrediction('spicy', false)" class="bg-slate-900 border border-slate-800 hover:border-amber-500 text-xs py-2 rounded text-slate-300 hover:text-white transition font-medium">Spicy</button>
+                                        </div>
+                                    </div>
+                                    <div id="prediction-result" class="text-center text-xs font-bold h-4 text-emerald-400"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 6: Text Generation - AI as a Writer -->
+                <div id="slide-6" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-full uppercase tracking-widest border border-emerald-500/20">Slide 6: Dynamic Writing Simulator</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white">Text Generation: AI as a Writer</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-5 space-y-4">
+                                <p class="text-sm text-slate-300 leading-relaxed">
+                                    Large language models generate emails, research proposals, structured code, poetry, and stories instantaneously. Everything starts with a clear, concise instruction called a <strong>prompt</strong>.
+                                </p>
+                                <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-800 space-y-2">
+                                    <h5 class="text-xs font-bold uppercase text-emerald-400 tracking-wider">How to Interface with Text AI:</h5>
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="bg-slate-800 px-2 py-1 rounded font-mono text-slate-300">Prompt</span>
+                                        <i class="fa-solid fa-arrow-right text-slate-500"></i>
+                                        <span class="bg-indigo-600/20 text-indigo-400 px-2 py-1 rounded font-bold border border-indigo-500/20">AI Engine</span>
+                                        <i class="fa-solid fa-arrow-right text-slate-500"></i>
+                                        <span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded font-bold border border-emerald-500/20">Generated Text</span>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-slate-400">The quality of the output is heavily determined by the detail, clarity, and context provided in the prompt.</p>
+                            </div>
+                            
+                            <!-- Slide 6 Interactive Prompt Terminal -->
+                            <div class="lg:col-span-7 space-y-4">
+                                <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center">
+                                            <i class="fa-solid fa-terminal mr-2"></i> Sandbox: Creative Text Generator
+                                        </h4>
+                                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Simulator</span>
+                                    </div>
+                                    
+                                    <div class="space-y-3">
+                                        <label class="block text-xs font-bold text-slate-400">Select or Customize Your Prompt Scenario:</label>
+                                        <select id="text-prompt-select" class="w-full bg-slate-950 border border-slate-800 text-slate-200 p-2.5 rounded-lg text-xs outline-none focus:border-emerald-500/50 transition">
+                                            <option value="story">Write a funny story about a dog astronaut discovering an alien pizza shop on Mars.</option>
+                                            <option value="speech">Write an inspiring, motivational speech for students nervous about school finals.</option>
+                                            <option value="robot">Write a sci-fi drama prompt about a class-teacher robot that starts learning human humor.</option>
+                                        </select>
+                                        <button onclick="runTextGeneration()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold py-2.5 rounded-lg transition shadow-md shadow-emerald-600/10">
+                                            Execute AI Prompt (Simulate Writer)
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800">
+                                        <div class="flex items-center justify-between border-b border-slate-900 pb-2 mb-2">
+                                            <span class="text-[10px] font-bold text-slate-500 uppercase">AI Terminal Output Console</span>
+                                            <div class="flex space-x-1">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                                                <span class="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+                                                <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
+                                            </div>
+                                        </div>
+                                        <div id="text-generation-terminal" class="text-xs font-mono text-slate-300 leading-relaxed h-48 overflow-y-auto whitespace-normal p-2 rounded bg-slate-950/80 border border-slate-900 scrollbar-thin">
+                                            <span class="text-emerald-400">user@genai-classroom:~$</span> <span class="text-slate-500">Select a prompt scenario and click "Execute AI Prompt" to generate...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 7: Why Some AI Answers Are Amazing (and Others Are Terrible) -->
+                <div id="slide-7" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-indigo-500/10 text-indigo-400 text-xs font-bold rounded-full uppercase tracking-widest border border-indigo-500/20">Slide 7: Prompt Optimization</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white">Why Some AI Answers Are Amazing (and Others Are Terrible)</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-5 space-y-4">
+                                <p class="text-sm text-slate-300 leading-relaxed">
+                                    If you ask a friend to "help with homework," they won't know where to start. But if you ask for "Physics Chapter 3 Question 5 step-by-step," you get exactly what you need. AI works identical to this.
+                                </p>
+                                <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
+                                    <h4 class="text-xs font-bold text-indigo-400 uppercase">The Gold Standard Formula:</h4>
+                                    <div class="inline-flex flex-wrap gap-1.5 text-[10px] font-bold">
+                                        <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded border border-indigo-500/20">Goal</span>
+                                        <span class="text-slate-500">+</span>
+                                        <span class="bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded border border-purple-500/20">Context</span>
+                                        <span class="text-slate-500">+</span>
+                                        <span class="bg-pink-500/10 text-pink-400 px-2 py-0.5 rounded border border-pink-500/20">Audience</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 leading-relaxed mt-1">
+                                        "Explain climate change to a Class IX student using a cricket analogy."
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 7 Interactive Prompt Quality Gauge -->
+                            <div class="lg:col-span-7 space-y-4">
+                                <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Calibration: Prompt Quality Meter</h4>
+                                        <span class="text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded font-bold">Interactive Slider</span>
+                                    </div>
+                                    
+                                    <!-- Interactive Range Input Slider -->
+                                    <div class="space-y-4">
+                                        <label class="block text-xs font-semibold text-slate-300">Drag to adjust the prompt complexity level:</label>
+                                        <input type="range" id="prompt-quality-slider" min="1" max="3" value="1" oninput="updatePromptMeter(this.value)" class="w-full h-2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-indigo-500 border border-slate-800">
+                                        <div class="flex justify-between text-[10px] font-bold text-slate-500">
+                                            <span>LEVEL 1: WEAK</span>
+                                            <span>LEVEL 2: STRONG</span>
+                                            <span>LEVEL 3: EXPERT</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Dynamic Meter Cards displaying relative prompt changes -->
+                                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3">
+                                        <div>
+                                            <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Prompt Evaluated</span>
+                                            <p id="meter-prompt-text" class="text-xs text-indigo-300 font-semibold italic mt-0.5">"Tell me about space."</p>
+                                        </div>
+                                        <div class="border-t border-slate-900 pt-2.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Generated Output Quality Preview</span>
+                                                <span id="meter-quality-badge" class="text-[9px] font-bold uppercase bg-red-500/10 text-red-400 px-2 py-0.5 rounded border border-red-500/20">Poor Results</span>
+                                            </div>
+                                            <p id="meter-preview-text" class="text-xs text-slate-300 leading-relaxed mt-2 h-20 overflow-y-auto">
+                                                "Space is huge and cold. It has stars and planets. We study it using high technology instruments and telescopes."
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 8: Hands-On Prompt Lab - Become the AI Director -->
+                <div id="slide-8" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-pink-500/10 text-pink-400 text-xs font-bold rounded-full uppercase tracking-widest border border-pink-500/20">Slide 8: Interactive Studio Sandbox</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white">Hands-On Prompt Lab: Become the AI Director</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-5 space-y-4">
+                                <p class="text-sm text-slate-300 leading-relaxed">
+                                    Consider yourself a film director instructing an actor. The more nuanced your directions (the Prompt Formula), the more compelling the outcome.
+                                </p>
+                                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                                    <h4 class="text-xs font-bold text-pink-400 uppercase tracking-widest">Universal Prompt Formula:</h4>
+                                    <div class="grid grid-cols-5 gap-1 text-[9px] font-bold text-center">
+                                        <div class="bg-indigo-500/10 text-indigo-400 p-1.5 rounded border border-indigo-500/20">Task</div>
+                                        <div class="bg-purple-500/10 text-purple-400 p-1.5 rounded border border-purple-500/20">Details</div>
+                                        <div class="bg-pink-500/10 text-pink-400 p-1.5 rounded border border-pink-500/20">Audience</div>
+                                        <div class="bg-amber-500/10 text-amber-400 p-1.5 rounded border border-amber-500/20">Style</div>
+                                        <div class="bg-emerald-500/10 text-emerald-400 p-1.5 rounded border border-emerald-500/20">Limits</div>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-slate-400">Assemble these factors visually to build a strong professional-grade system prompt.</p>
+                            </div>
+                            
+                            <!-- Slide 8 Interactive Formula Builder -->
+                            <div class="lg:col-span-7 space-y-4">
+                                <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-xs font-bold text-pink-400 uppercase tracking-wider">The Prompt Formula Builder</h4>
+                                        <span class="text-[10px] bg-pink-500/10 text-pink-400 px-2 py-0.5 rounded font-bold">Lab Sandbox</span>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-3 text-xs">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-400 mb-1">TASK (Action Verb)</label>
+                                            <select id="builder-task" onchange="buildFormulaPrompt()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 p-2 rounded-md outline-none focus:border-pink-500/50">
+                                                <option value="Write a motivational speech">Write a motivational speech</option>
+                                                <option value="Draft a science-fiction narrative">Draft a sci-fi narrative</option>
+                                                <option value="Explain quantum computers">Explain quantum computers</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-400 mb-1">AUDIENCE (Target User)</label>
+                                            <select id="builder-audience" onchange="buildFormulaPrompt()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 p-2 rounded-md outline-none focus:border-pink-500/50">
+                                                <option value="for Class XII high schoolers">for Class XII high schoolers</option>
+                                                <option value="for elementary school kids">for elementary kids</option>
+                                                <option value="for a corporate panel">for a corporate panel</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-400 mb-1">STYLE / TONE (Vibe)</label>
+                                            <select id="builder-style" onchange="buildFormulaPrompt()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 p-2 rounded-md outline-none focus:border-pink-500/50">
+                                                <option value="in an inspiring and energetic tone">inspiring and energetic</option>
+                                                <option value="in an academic, rigorous tone">academic and analytical</option>
+                                                <option value="in a highly comical, friendly tone">highly comical and friendly</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-400 mb-1">CONSTRAINTS (Length)</label>
+                                            <select id="builder-limits" onchange="buildFormulaPrompt()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 p-2 rounded-md outline-none focus:border-pink-500/50">
+                                                <option value="under exactly 100 words.">under 100 words</option>
+                                                <option value="in a 3-bullet-point summary.">in 3 bullet points</option>
+                                                <option value="using simple cricket analogies.">using cricket analogies</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Built Output Board -->
+                                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800">
+                                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Assembled Prompt Formula Output</span>
+                                        <p id="builder-prompt-preview" class="text-xs font-mono text-pink-300 font-semibold leading-relaxed">
+                                            Write a motivational speech for Class XII high schoolers in an inspiring and energetic tone under exactly 100 words.
+                                        </p>
+                                        <!-- Copy Button Simulator -->
+                                        <button onclick="copyFormulatedPrompt()" class="mt-3 flex items-center justify-center space-x-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-pink-500 text-slate-200 text-xs font-bold px-3 py-1.5 rounded transition">
+                                            <i class="fa-solid fa-copy"></i>
+                                            <span>Copy Custom Prompt</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 9: Quiz + The Secret Behind All Generative AI Tools -->
+                <div id="slide-9" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-violet-500/10 text-violet-400 text-xs font-bold rounded-full uppercase tracking-widest border border-violet-500/20">Slide 9: Knowledge Milestone Checkpoint</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white">Quiz & The Central Engine Secret</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-6 space-y-4">
+                                <p class="text-sm text-slate-300 leading-relaxed">
+                                    Whether generating text, complex images, raw audio files, animations, or source code, the fundamental pipeline is identical:
+                                </p>
+                                <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
+                                    <h4 class="text-xs font-bold text-violet-400 uppercase tracking-widest mb-4">Universal Generative AI Workflow</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-5 h-5 rounded-full bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-[10px] text-violet-400 shrink-0 font-bold">1</div>
+                                            <span class="text-xs text-slate-200 font-medium">Input detailed prompt instruction details.</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-5 h-5 rounded-full bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-[10px] text-violet-400 shrink-0 font-bold">2</div>
+                                            <span class="text-xs text-slate-200 font-medium">AI parses structure and patterns from datasets.</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-5 h-5 rounded-full bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-[10px] text-violet-400 shrink-0 font-bold">3</div>
+                                            <span class="text-xs text-slate-200 font-medium">The AI engine outputs initial visual or text assets.</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-5 h-5 rounded-full bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-[10px] text-violet-400 shrink-0 font-bold">4</div>
+                                            <span class="text-xs text-slate-200 font-medium">Refine, adjust details, and optimize variables.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 9 Class Quiz Widget -->
+                            <div class="lg:col-span-6 space-y-4">
+                                <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-xs font-bold text-violet-400 uppercase tracking-wider">Classroom Quick Quiz</h4>
+                                        <span class="text-[10px] bg-violet-500/10 text-violet-400 px-2 py-0.5 rounded font-bold">Interactive</span>
+                                    </div>
+                                    <p class="text-xs font-semibold text-slate-200">Which prompt will generate the highest quality visual image of a cat?</p>
+                                    
+                                    <div class="space-y-2">
+                                        <button onclick="checkQuizS9('A', false)" id="quiz-opt-s9-a" class="w-full text-left text-xs bg-slate-950 hover:bg-slate-900 border border-slate-800 p-3 rounded-xl transition flex justify-between items-center group">
+                                            <span>Option A: "Draw a cat."</span>
+                                            <i class="fa-solid fa-circle-question text-slate-600 group-hover:text-violet-500 transition"></i>
+                                        </button>
+                                        <button onclick="checkQuizS9('B', false)" id="quiz-opt-s9-b" class="w-full text-left text-xs bg-slate-950 hover:bg-slate-900 border border-slate-800 p-3 rounded-xl transition flex justify-between items-center group">
+                                            <span>Option B: "Draw a cat wearing human clothes."</span>
+                                            <i class="fa-solid fa-circle-question text-slate-600 group-hover:text-violet-500 transition"></i>
+                                        </button>
+                                        <button onclick="checkQuizS9('C', true)" id="quiz-opt-s9-c" class="w-full text-left text-xs bg-slate-950 hover:bg-slate-900 border border-slate-800 p-3 rounded-xl transition flex justify-between items-center group">
+                                            <span>Option C: "Cinematic photography of a realistic orange cat wearing a detective coat..."</span>
+                                            <i class="fa-solid fa-circle-question text-slate-600 group-hover:text-violet-500 transition"></i>
+                                        </button>
+                                    </div>
+                                    <div id="quiz-feedback-s9" class="text-center text-xs font-bold h-4 text-emerald-400"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 10: AI as an Artist - Creating Images with Words -->
+                <div id="slide-10" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-indigo-500/10 text-indigo-400 text-xs font-bold rounded-full uppercase tracking-widest border border-indigo-500/20">Slide 10: AI-Generated Artistry</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white">AI as an Artist: Creating Images with Words</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-5 space-y-4">
+                                <p class="text-sm text-slate-300 leading-relaxed">
+                                    What if I asked you to draw: <span class="text-indigo-300 italic">"A purple elephant riding a skateboard on the Moon while eating ice cream"</span>?
+                                </p>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Before AI, this visual required advanced drawing expertise, creative software, art supplies, and hours of work. Today, descriptive prompts render stunning details in seconds.
+                                </p>
+                                <div class="bg-indigo-500/5 border border-indigo-500/20 rounded-xl p-4">
+                                    <span class="text-xs font-bold uppercase text-indigo-400 tracking-wider">How Words Shape Pixels:</span>
+                                    <p class="text-xs text-slate-300 leading-relaxed mt-1">
+                                        Advanced Diffusion engines analyze text, establish noise patterns on canvases, and systematically assemble high-fidelity pixels to draft original imagery.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 10 Interactive Visual Canvas Sandbox -->
+                            <div class="lg:col-span-7 space-y-4">
+                                <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Text-to-Image Pipeline Canvas</h4>
+                                        <span class="text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded font-bold">Simulated Display</span>
+                                    </div>
+                                    
+                                    <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Your Creative Query</span>
+                                        <p class="text-xs font-mono text-indigo-300">"A futuristic city floating high above the clouds at sunset."</p>
+                                    </div>
+                                    
+                                    <!-- Interactive Simulator Display Rendering Simulated Visuals -->
+                                    <div class="relative rounded-2xl overflow-hidden h-52 border border-slate-800 bg-slate-950 flex flex-col justify-center items-center">
+                                        <div id="slide10-rendered-img" class="absolute inset-0 w-full h-full opacity-100 transition-opacity duration-300">
+                                            <!-- High-fidelity Sunset Floating City SVG Artwork -->
+                                            <svg viewBox="0 0 400 200" class="w-full h-full object-cover" xmlns="http://www.w3.org/2000/svg">
+                                                <defs>
+                                                    <linearGradient id="sunsetGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                        <stop offset="0%" stop-color="#4c1d95" />
+                                                        <stop offset="40%" stop-color="#9d174d" />
+                                                        <stop offset="80%" stop-color="#db2777" />
+                                                        <stop offset="100%" stop-color="#f59e0b" />
+                                                    </linearGradient>
+                                                    <linearGradient id="platformGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                        <stop offset="0%" stop-color="#1e1b4b" />
+                                                        <stop offset="100%" stop-color="#312e81" />
+                                                    </linearGradient>
+                                                </defs>
+                                                <rect width="100%" height="100%" fill="url(#sunsetGrad)"/>
+                                                <circle cx="200" cy="110" r="45" fill="#fef08a" opacity="0.9" filter="blur(1px)"/>
+                                                
+                                                <!-- Distant Floating Platforms -->
+                                                <path d="M 50,130 Q 80,100 110,130 Z" fill="#881337" opacity="0.7"/>
+                                                <path d="M 280,140 Q 310,110 340,140 Z" fill="#881337" opacity="0.7"/>
+                                                
+                                                <!-- Main Platform Base -->
+                                                <path d="M 120,130 L 280,130 L 250,170 L 150,170 Z" fill="url(#platformGrad)" stroke="#4338ca" stroke-width="1"/>
+                                                
+                                                <!-- Left High-tech spire -->
+                                                <rect x="140" y="70" width="12" height="60" fill="#312e81" stroke="#6366f1" stroke-width="1.5" rx="2"/>
+                                                <line x1="146" y1="70" x2="146" y2="40" stroke="#818cf8" stroke-width="1.5" />
+                                                <circle cx="146" cy="40" r="2" fill="#ec4899" />
+                                                <circle cx="146" cy="80" r="1" fill="#fef08a" />
+                                                <circle cx="146" cy="95" r="1" fill="#fef08a" />
+                                                <circle cx="146" cy="110" r="1" fill="#fef08a" />
+                                                
+                                                <!-- Center tower (Grand Spire) -->
+                                                <rect x="180" y="50" width="18" height="80" fill="#1e1b4b" stroke="#818cf8" stroke-width="2" rx="3"/>
+                                                <path d="M 175,50 L 203,50 L 189,20 Z" fill="#4f46e5" stroke="#818cf8" stroke-width="1.5"/>
+                                                <line x1="189" y1="20" x2="189" y2="5" stroke="#ec4899" stroke-width="2" />
+                                                <rect x="185" y="60" width="3" height="5" fill="#fef08a" rx="0.5"/>
+                                                <rect x="191" y="60" width="3" height="5" fill="#fef08a" rx="0.5"/>
+                                                <rect x="185" y="75" width="3" height="5" fill="#fef08a" rx="0.5"/>
+                                                <rect x="191" y="75" width="3" height="5" fill="#fef08a" rx="0.5"/>
+                                                <rect x="185" y="90" width="3" height="5" fill="#fef08a" rx="0.5"/>
+                                                <rect x="191" y="90" width="3" height="5" fill="#fef08a" rx="0.5"/>
+                                                
+                                                <!-- Right Dome Observatory -->
+                                                <rect x="220" y="85" width="25" height="45" fill="#312e81" stroke="#6366f1" stroke-width="1.5" rx="2"/>
+                                                <path d="M 220,85 A 12.5,12.5 0 0,1 245,85 Z" fill="#6366f1" opacity="0.8"/>
+                                                <circle cx="232.5" cy="100" r="3" fill="#fef08a" />
+                                                
+                                                <!-- Transit Tubes -->
+                                                <path d="M 152,90 Q 180,100 180,90" stroke="#a5b4fc" stroke-width="1.5" fill="none" opacity="0.7"/>
+                                                <path d="M 198,100 Q 220,105 220,100" stroke="#a5b4fc" stroke-width="1.5" fill="none" opacity="0.7"/>
+                                                
+                                                <!-- Transit Streams -->
+                                                <path d="M 100,80 Q 150,60 170,85" stroke="#fbbf24" stroke-dasharray="3,3" stroke-width="1" fill="none"/>
+                                                <path d="M 230,60 Q 280,75 320,50" stroke="#f43f5e" stroke-dasharray="4,2" stroke-width="1" fill="none"/>
+                                                
+                                                <!-- Cloud layers for high-fidelity sunset depth -->
+                                                <path d="M -20,150 Q 30,130 80,150 Q 130,140 180,160 Q 230,145 280,160 Q 330,135 380,155 Q 420,140 440,150 L 440,210 L -20,210 Z" fill="#fbcfe8" opacity="0.4"/>
+                                                <path d="M -10,175 Q 40,150 90,175 Q 140,160 190,180 Q 240,155 290,175 Q 340,160 390,185 Q 410,170 430,180 L 430,210 L -10,210 Z" fill="#ffffff" opacity="0.85"/>
+                                                
+                                                <!-- Overlay Information Panel labels -->
+                                                <rect x="10" y="10" width="180" height="30" rx="5" fill="#0f172a" fill-opacity="0.85" stroke="#334155" stroke-width="1"/>
+                                                <text x="18" y="28" font-family="system-ui, sans-serif" font-size="9" font-weight="bold" fill="#f3f4f6">City Floating Above Clouds</text>
+                                                <rect x="300" y="10" width="90" height="20" rx="5" fill="#db2777" fill-opacity="0.9"/>
+                                                <text x="310" y="23" font-family="system-ui, sans-serif" font-size="8" font-weight="bold" fill="#ffffff">Sunset Vibe</text>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 11: The Prompt-to-Image Workshop -->
+                <div id="slide-11" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full uppercase tracking-widest border border-amber-500/20">Slide 11: Prompt Optimization Sandbox</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white">The Prompt-to-Image Workshop</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-5 space-y-4">
+                                <p class="text-sm text-slate-300 leading-relaxed">
+                                    Let's analyze how incremental descriptors directly optimize image outputs. Watch how precision shapes the visual outcome:
+                                </p>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2.5 bg-slate-900/40 rounded-lg border border-slate-800">
+                                        <span class="font-bold text-red-400 block">Prompt A: "Dog"</span>
+                                        <span class="text-slate-400">Yields generic, standard visual assets.</span>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-900/40 rounded-lg border border-slate-800">
+                                        <span class="font-bold text-yellow-400 block">Prompt B: "Golden Retriever dog in a park"</span>
+                                        <span class="text-slate-400">Contextualizes environment, adding background depth.</span>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-900/40 rounded-lg border border-slate-800">
+                                        <span class="font-bold text-emerald-400 block">Prompt C: "Happy Golden Retriever dog running with sunglasses..."</span>
+                                        <span class="text-slate-400">Introduces specific action elements, style formats, and emotions.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 11 Interactive Dropdown Builder & Visual Canvas -->
+                            <div class="lg:col-span-7 space-y-4">
+                                <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Image Prompt Matrix Builder</h4>
+                                        <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">Creative Studio</span>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-3 text-xs">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-400 mb-1">SUBJECT (The Focus)</label>
+                                            <select id="img-subject" onchange="assembleImagePrompt()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 p-2 rounded-md outline-none focus:border-amber-500/50">
+                                                <option value="Happy Golden Retriever dog">Golden Retriever</option>
+                                                <option value="Steampunk mechanical rabbit">Steampunk Rabbit</option>
+                                                <option value="Futuristic robotic astronaut">Robot Astronaut</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-400 mb-1">ENVIRONMENT (Setting)</label>
+                                            <select id="img-env" onchange="assembleImagePrompt()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 p-2 rounded-md outline-none focus:border-amber-500/50">
+                                                <option value="running through a sunlit park during autumn">sunlit park in autumn</option>
+                                                <option value="exploring a dark cyberpunk alleyway">dark cyberpunk alley</option>
+                                                <option value="standing on Mars looking at Earth">Mars looking at Earth</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-400 mb-1">STYLE (Vibe/Medium)</label>
+                                            <select id="img-style" onchange="assembleImagePrompt()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 p-2 rounded-md outline-none focus:border-amber-500/50">
+                                                <option value="cinematic photography style">Cinematic Photo</option>
+                                                <option value="3D retro low-poly model art">Retro Low-Poly</option>
+                                                <option value="watercolor sketch canvas">Watercolor Sketch</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-400 mb-1">MOOD (Aesthetic Tone)</label>
+                                            <select id="img-mood" onchange="assembleImagePrompt()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 p-2 rounded-md outline-none focus:border-amber-500/50">
+                                                <option value="highly detailed, dramatic lighting.">dramatic lighting</option>
+                                                <option value="bright, happy morning sunshine atmosphere.">bright sunshine vibe</option>
+                                                <option value="mysterious neon glowing glow effects.">neon glowing effects</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Dynamic Color-Coded Realtime Live Preview (Replaced diagnostics canvas) -->
+                                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3">
+                                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Assembled Prompt Formula (Real-Time Breakdown)</span>
+                                        <div id="assembled-img-prompt" class="text-xs font-mono leading-relaxed p-3 bg-slate-900/40 rounded-lg border border-slate-900/60">
+                                            <span class="text-amber-300 font-bold">Happy Golden Retriever dog</span> 
+                                            <span class="text-indigo-300 font-medium">running through a sunlit park during autumn</span>, 
+                                            <span class="text-cyan-300 italic">cinematic photography style</span>, 
+                                            <span class="text-pink-300 font-semibold">highly detailed, dramatic lighting.</span>
+                                        </div>
+                                        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-900/60">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">Subject</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Environment</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Style</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold bg-pink-500/10 text-pink-400 border border-pink-500/20">Mood</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 12: Real-World Uses of AI Image Generation -->
+                <div id="slide-12" class="slide-container slide-enter w-full h-full flex flex-col justify-between hidden">
+                    <div class="space-y-6 my-auto">
+                        <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-full uppercase tracking-widest border border-emerald-500/20">Slide 12: Capstone Industry Integration</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white">Real-World Uses of AI Image Generation</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-5 space-y-4">
+                                <p class="text-sm text-slate-300 leading-relaxed">
+                                    Generative image tools are actively revolutionizing multiple fields beyond artistic play. Select an industry card on the right to review professional applications, sample tasks, and prompt structures.
+                                </p>
+                                <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                                    <span class="text-xs font-bold uppercase text-emerald-400 tracking-wider">Key Takeaway Milestone:</span>
+                                    <p class="text-xs text-slate-300 leading-relaxed mt-1">
+                                        Generative AI is not merely about crafting digital artwork—it's a critical tool for scaling communication, visual instruction, and creative production.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 12 Interactive Industry Dashboard -->
+                            <div class="lg:col-span-7 space-y-4">
+                                <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Interactive Industry Dashboard</h4>
+                                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Case Study</span>
+                                    </div>
+                                    
+                                    <!-- Dynamic Tabs representing different sectors -->
+                                    <div class="grid grid-cols-5 gap-1.5">
+                                        <button onclick="switchIndustrySector('edu')" id="ind-edu-btn" class="ind-btn text-[9px] font-bold py-1.5 px-1 rounded bg-emerald-600 text-white transition">Edu</button>
+                                        <button onclick="switchIndustrySector('biz')" id="ind-biz-btn" class="ind-btn text-[9px] font-bold py-1.5 px-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition">Business</button>
+                                        <button onclick="switchIndustrySector('health')" id="ind-health-btn" class="ind-btn text-[9px] font-bold py-1.5 px-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition">Medical</button>
+                                        <button onclick="switchIndustrySector('ent')" id="ind-ent-btn" class="ind-btn text-[9px] font-bold py-1.5 px-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition">Media</button>
+                                        <button onclick="switchIndustrySector('daily')" id="ind-daily-btn" class="ind-btn text-[9px] font-bold py-1.5 px-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition">Daily</button>
+                                    </div>
+                                    
+                                    <!-- Main Panel Display details -->
+                                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3 min-h-[140px]">
+                                        <div>
+                                            <h5 id="ind-title" class="text-sm font-bold text-slate-200">📚 Education Visuals</h5>
+                                            <p id="ind-desc" class="text-xs text-slate-400 mt-1">Teachers and students generate precise historical contexts or medical science models instantly.</p>
+                                        </div>
+                                        <div class="border-t border-slate-900 pt-2.5">
+                                            <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Real-World Case Example:</span>
+                                            <p id="ind-case" class="text-xs text-indigo-300 font-semibold mt-0.5">"Show the Solar System in cartoon style for Class VII science lessons."</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Collapsible Presenter Companion Panel Sidebar -->
+        <aside id="notes-sidebar" class="w-80 bg-slate-900 border-l border-slate-800 flex flex-col shrink-0 z-30 transition-all duration-300 overflow-hidden hidden">
+            <!-- Sidebar Header -->
+            <div class="p-4 border-b border-slate-800 bg-slate-950 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-graduation-cap text-indigo-400"></i>
+                    <h3 class="font-bold text-sm text-slate-200">Presenter Notes</h3>
+                </div>
+                <button onclick="toggleNotesPanel()" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <!-- Sidebar Scrollable Content Area -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-6">
+                <!-- Session Objective Section -->
+                <div class="space-y-2">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center">
+                        <i class="fa-solid fa-bullseye mr-1.5"></i> Lecture Objective
+                    </span>
+                    <p id="notes-objective" class="text-xs text-indigo-300 font-medium leading-relaxed bg-indigo-500/5 border border-indigo-500/10 p-3 rounded-lg">
+                        Create curiosity about Generative AI; help students understand model outputs and visual prompting pipelines.
+                    </p>
+                </div>
+                
+                <!-- Speaker Script section -->
+                <div class="space-y-2">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center">
+                        <i class="fa-solid fa-comment-dots mr-1.5"></i> Speaker Guide Notes
+                    </span>
+                    <p id="notes-speaker" class="text-xs text-slate-300 leading-relaxed whitespace-pre-line bg-slate-950 p-3.5 rounded-lg border border-slate-800">
+                        Introduce students to interactive widgets. Emphasize that AI goes beyond simple lookup answers; focus on creative generation elements.
+                    </p>
+                </div>
+                
+                <!-- Interactive Student Engagement activities -->
+                <div class="space-y-2">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center">
+                        <i class="fa-solid fa-users-viewfinder mr-1.5"></i> Student Action Activity
+                    </span>
+                    <p id="notes-activity" class="text-xs text-slate-300 leading-relaxed bg-slate-950 p-3.5 rounded-lg border border-slate-800">
+                        Gather initial show of hands tracking experiences with AI tools like ChatGPT, Gemini, and image generation interfaces.
+                    </p>
+                </div>
+                
+                <!-- Lesson Discussion Questions -->
+                <div class="space-y-2">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center">
+                        <i class="fa-solid fa-circle-question mr-1.5"></i> Discussion Prompts
+                    </span>
+                    <div id="notes-discussion" class="space-y-2">
+                        <!-- Instantiated via script -->
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Presentation Navigation & Progress Bottom Bar -->
+    <footer class="bg-slate-950 border-t border-slate-900 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 z-40 shrink-0">
+        <!-- Interactive Slide Control Stepper Buttons -->
+        <div class="flex items-center space-x-2">
+            <button onclick="navigateSlide('prev')" class="p-2 px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white transition font-semibold text-sm border border-slate-800 flex items-center space-x-1.5">
+                <i class="fa-solid fa-chevron-left text-xs"></i>
+                <span>Previous</span>
+            </button>
+            <div class="px-3 py-1.5 bg-slate-900 rounded-lg text-xs font-mono font-bold text-slate-400 border border-slate-800">
+                <span id="current-slide-num">1</span> / 12
+            </div>
+            <button onclick="navigateSlide('next')" class="p-2 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition font-semibold text-sm shadow-md flex items-center space-x-1.5">
+                <span>Next</span>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+        </div>
+        
+        <!-- Live Timeline Progress bar -->
+        <div class="w-full md:max-w-md bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
+            <div id="slide-progress-bar" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full w-1/12 transition-all duration-300"></div>
+        </div>
+        
+        <!-- Bottom branding -->
+        <div class="text-xs text-slate-500 font-medium">
+            Keyboard Controls: <span class="bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800 font-mono text-slate-400">←</span> Prev | <span class="bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800 font-mono text-slate-400">→</span> Next
+        </div>
+    </footer>
+
+    <script>
+        /* 
+         Complete presentation slide content dataset mapping Slide Content, 
+         Presenter Notes, Classroom Activities, and Discussion Questions.
+        */
+        const presentationData = {
+            1: {
+                objective: "Create curiosity about Generative AI. Help students realize that AI can create content, not just answer questions. Set the stage for the entire session.",
+                speaker: "Most students have already interacted with AI, whether through chatbots, recommendation systems, or social media. But something remarkable has happened in the last few years.\n\nAI is no longer limited to answering questions. Now AI can write stories, generate images, create videos, compose music, and build websites.\n\nThink about this: Twenty years ago, if you wanted a poster, you needed a designer. Today, you can simply describe what you want using words.",
+                activity: "Quick Show of Hands: Who has used ChatGPT? Gemini? AI stickers? AI image generators? AI social filters? Count responses and briefly discuss.",
+                discussion: [
+                    "What would you create if AI had no limitations?",
+                    "Do you think AI can be creative?",
+                    "Can a machine become an artist?"
+                ]
+            },
+            2: {
+                objective: "Establish relevance. Show students how AI already impacts their lives. Build motivation to learn.",
+                speaker: "Whenever a new technology arrives, people initially think it belongs only to experts.\n\nWhen computers appeared, many thought only scientists would use them. Today almost everyone carries a smartphone.\n\nGenerative AI is following a similar path. Whether students become engineers, doctors, designers, or entrepreneurs, they are likely to interact with AI tools in their careers.",
+                activity: "Interactive Poll: Which sector do you think AI will impact the most in the next 10 years? Gather hand raises for options.",
+                discussion: [
+                    "Would you trust AI to help with your homework?",
+                    "What jobs do you think AI will change?",
+                    "Is AI more exciting or more concerning?"
+                ]
+            },
+            3: {
+                objective: "Introduce Generative AI through storytelling. Create a relatable scenario that will continue throughout the lecture.",
+                speaker: "Throughout today's session, we'll follow Riya's journey. Many students face similar tight situations with homework and presentations.\n\nGenerative AI can significantly reduce the time required to create content. However, an important point must be emphasized: AI does not replace thinking. Riya still needs good ideas, judgment, and creativity.",
+                activity: "Think-Pair-Share Group Discussion (2 Minutes): Imagine you are Riya. You have 30 minutes. Discuss: Which task would AI help most with? Which task still requires human effort?",
+                discussion: [
+                    "Should students use AI for school assignments?",
+                    "Where should we draw the line between help and cheating?",
+                    "What parts of learning should always remain human?"
+                ]
+            },
+            4: {
+                objective: "Introduce the formal concept of Generative AI. Differentiate Generative AI from traditional AI. Build simple conceptual understanding.",
+                speaker: "Many people think all AI is the same, but there is an important difference. For many years, AI was mainly used to classify things (like face recognition or fraud detection).\n\nGenerative AI is different. It creates something that did not previously exist. If you ask ChatGPT to write a poem, it generates a completely new poem.",
+                activity: "Classification Challenge: Ask students to classify scenarios as Traditional AI vs Generative AI. Run the matching game live.",
+                discussion: [
+                    "Is creating content harder than recognizing content?",
+                    "Can a machine truly be creative?",
+                    "What types of content should AI create?"
+                ]
+            },
+            5: {
+                objective: "Explain AI learning using simple analogies. Remove the mystery around AI. Prepare students to understand prompting.",
+                speaker: "Students often imagine AI as a magical black box. In reality, AI learns from examples, just like children learn languages.\n\nNo child memorizes every possible sentence. Instead, they learn patterns and predict what word should come next. When you ask a question, AI predicts the appropriate response based on what it learned from billions of data points.",
+                activity: "Human Prediction Game: Complete sentences displayed on screen and explain how you automatically knew the correct missing words.",
+                discussion: [
+                    "Is prediction the same as understanding?",
+                    "Can someone predict answers without truly knowing the topic?",
+                    "Should we trust every prediction AI makes?"
+                ]
+            },
+            6: {
+                objective: "Introduce text generation. Demonstrate how prompts influence AI outputs. Conduct hands-on text sandbox simulation.",
+                speaker: "Text generation is one of the most widely used applications of Generative AI. Students use it for brainstorming and summarization.\n\nHowever, it is important to remember that AI-generated text is only a starting point. Humans still need to verify facts, improve clarity, and add personal insights.",
+                activity: "Live Prompt Challenge: Invite students to suggest custom keywords. Execute simulated stories in our live writing panel.",
+                discussion: [
+                    "Would you use AI to help write an assignment?",
+                    "What are the advantages of AI-generated text?",
+                    "What risks might occur if students copy AI output without checking it?"
+                ]
+            },
+            7: {
+                objective: "Introduce the concept of prompting. Demonstrate that AI quality depends heavily on user instructions. Build a reusable framework.",
+                speaker: "Many people believe AI is either intelligent or unintelligent. In reality, much of the quality depends on the user's prompt.\n\nIf you give vague instructions, you receive vague results. If you provide detailed instructions, you receive better results. This skill is called Prompt Engineering.",
+                activity: "Prompt Quality Challenge: Toggle slider to check Weak, Strong, and Expert prompts. Note how the model outputs scale in precision.",
+                discussion: [
+                    "Why does the Expert prompt work better?",
+                    "Does AI need context?",
+                    "Is asking good questions a valuable skill?"
+                ]
+            },
+            8: {
+                objective: "Allow students to practice prompt design. Demonstrate how small changes in prompts affect outputs.",
+                speaker: "Many students think AI magically produces good results. But AI behaves more like a creative assistant. The assistant needs direction.\n\nProfessional content creators often spend more time writing prompts than generating content. The same prompt-writing skills transfer across all tools.",
+                activity: "Universal Formula Builder: Change dropdown items to assemble custom prompts dynamically. Have students read assembled formulas aloud.",
+                discussion: [
+                    "Which added detail improved the prompt most?",
+                    "Did different groups create different prompts?",
+                    "Why might different prompts produce different outputs?"
+                ]
+            },
+            9: {
+                objective: "Reinforce prompting concepts. Connect prompting with upcoming sections on image generation. Create a mental bridge.",
+                speaker: "This may be the most important idea of the entire session. Students often think text AI and image AI are completely separate.\n\nWhile the technologies vary, they all follow the same pattern: You describe what you want, AI interprets and generates, you refine the instructions, and quality improves.",
+                activity: "Interactive Cat Quiz: Have students vote on the options to see which prompt renders the best output image.",
+                discussion: [
+                    "Could a good prompt outperform a better AI model with a poor prompt?",
+                    "Why might prompt-writing become an important future skill?",
+                    "What happens if instructions are unclear?"
+                ]
+            },
+            10: {
+                objective: "Introduce AI image generation. Demonstrate how text descriptions become high-fidelity images. Connect to visual modeling.",
+                speaker: "One of the reasons image generation became so popular is that it lowers the barrier to creativity. Traditionally, creating visual content required artistic skills or expensive software.\n\nAI changes that. Now, creativity is expressed through ideas and descriptions rather than drawing ability.",
+                activity: "Imagination Challenge: Ask students to brainstorm the most impossible image they can imagine (e.g. teaching tiger, floating school).",
+                discussion: [
+                    "Does creating an image require artistic skill anymore?",
+                    "Is imagination becoming more important than drawing ability?",
+                    "What kinds of images would you create?"
+                ]
+            },
+            11: {
+                objective: "Demonstrate how prompt quality affects image quality. Teach students how to write effective image prompts.",
+                speaker: "Students often assume AI automatically understands what they want. However, AI only knows what we tell it.\n\nA detailed prompt gives the AI more information. Professional designers spend significant time refining prompts because small changes alter the output.",
+                activity: "Image Prompt Workshop: Choose different options for Subject, setting, style, and mood. Generate beautiful custom preview compositions.",
+                discussion: [
+                    "Which prompt generated the best image?",
+                    "What details made the biggest difference?",
+                    "How much creativity comes from the user versus the AI?"
+                ]
+            },
+            12: {
+                objective: "Show practical applications of image generation. Move beyond entertainment into meaningful use cases. Connect to future careers.",
+                speaker: "Students often associate image generation with creating fun pictures. However, many of the most impactful applications are practical.\n\nA teacher can generate visual explanations of science concepts; a business can create marketing layouts without high budgets.",
+                activity: "Sector Exploration: Cycle through the interactive dashboard tabs to study education, medical, business, media, and daily use cases.",
+                discussion: [
+                    "Which industry benefits the most from AI-generated images?",
+                    "Should AI-generated images be labeled as AI-created?",
+                    "Could AI-generated visuals sometimes be misleading?"
+                ]
+            }
+        };
+
+        /* 
+         Core presentation system state variables
+        */
+        let currentSlide = 1;
+        const totalSlides = 12;
+
+        window.onload = function() {
+            // Display first slide initially
+            showSlide(currentSlide);
+            // Setup keyboard navigation triggers
+            document.addEventListener('keydown', handleKeyPress);
+            // Initialize touch gesture tracking
+            setupTouchGestures();
+            // Start classroom countdown initial state
+            resetTimer();
+        };
+
+        function showSlide(slideNum) {
+            // Hide all slides
+            for(let i = 1; i <= totalSlides; i++) {
+                const s = document.getElementById(`slide-${i}`);
+                if (s) {
+                    s.classList.add('hidden');
+                    s.classList.remove('slide-active');
+                }
+            }
+
+            // Show active slide
+            const activeSlide = document.getElementById(`slide-${slideNum}`);
+            if (activeSlide) {
+                activeSlide.classList.remove('hidden');
+                // Allow browser to register layout hidden toggle, then animate active transition
+                setTimeout(() => {
+                    activeSlide.classList.add('slide-active');
+                }, 50);
+            }
+
+            // Update presentation UI status indicators
+            document.getElementById('current-slide-num').innerText = slideNum;
+            const percentage = (slideNum / totalSlides) * 100;
+            document.getElementById('slide-progress-bar').style.width = `${percentage}%`;
+
+            // Update companion presenter notes panel
+            updatePresenterNotes(slideNum);
+        }
+
+        function navigateSlide(direction) {
+            if (direction === 'next') {
+                if (currentSlide < totalSlides) {
+                    currentSlide++;
+                    showSlide(currentSlide);
+                }
+            } else if (direction === 'prev') {
+                if (currentSlide > 1) {
+                    currentSlide--;
+                    showSlide(currentSlide);
+                }
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function handleKeyPress(e) {
+            const activeEl = document.activeElement;
+            const capturesTextKeys = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.getAttribute('contenteditable') === 'true'
+            );
+            const capturesArrowKeys = activeEl && (
+                (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT'
+            );
+            const capturesSpacebar = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.tagName === 'BUTTON' ||
+                activeEl.getAttribute('role') === 'button'
+            );
+
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Space') {
+                if (!capturesSpacebar && !capturesArrowKeys) {
+                    navigateSlide('next');
+                    e.preventDefault();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (!capturesArrowKeys) {
+                    navigateSlide('prev');
+                    e.preventDefault();
+                }
+            } else if (e.key === 'f' || e.key === 'F') {
+                if (!capturesTextKeys) {
+                    toggleFullscreen();
+                    e.preventDefault();
+                }
+            }
+        }
+
+        document.addEventListener('dblclick', (e) => {
+            const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+            if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+                toggleFullscreen();
+            }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function setupTouchGestures() {
+            const body = document.querySelector('body');
+            body.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            body.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+        }
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                navigateSlide('next'); // Swiped left
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                navigateSlide('prev'); // Swiped right
+            }
+        }
+
+        function toggleNotesPanel() {
+            const sidebar = document.getElementById('notes-sidebar');
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('hidden');
+            }
+        }
+
+        function toggleFullscreen() {
+            const fsIcon = document.getElementById('fs-icon');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    fsIcon.classList.remove('fa-expand');
+                    fsIcon.classList.add('fa-compress');
+                }).catch(err => {
+                    console.error("Fullscreen request failed", err);
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    fsIcon.classList.remove('fa-compress');
+                    fsIcon.classList.add('fa-expand');
+                });
+            }
+        }
+
+        function updatePresenterNotes(slideNum) {
+            const data = presentationData[slideNum];
+            if (!data) return;
+
+            document.getElementById('notes-objective').innerText = data.objective;
+            document.getElementById('notes-speaker').innerText = data.speaker;
+            document.getElementById('notes-activity').innerText = data.activity;
+
+            // Populate classroom discussion list
+            const discussionContainer = document.getElementById('notes-discussion');
+            discussionContainer.innerHTML = '';
+            data.discussion.forEach((item, index) => {
+                const discBox = document.createElement('div');
+                discBox.className = 'p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-300 flex items-start space-x-2';
+                discBox.innerHTML = `
+                    <span class="text-indigo-400 font-bold">${index + 1}.</span>
+                    <span>${item}</span>
+                `;
+                discussionContainer.appendChild(discBox);
+            });
+        }
+
+        const pollAnswers = {
+            s1: { movie: 35, game: 40, homework: 15, song: 10 },
+            s2: { edu: 30, health: 25, ent: 20, space: 25 }
+        };
+
+        function submitPoll(slideId, option) {
+            // Mock updating percentages by incrementing selected and adjusting scale
+            const keys = Object.keys(pollAnswers[slideId]);
+            keys.forEach(k => {
+                if (k === option) {
+                    pollAnswers[slideId][k] += 5;
+                } else {
+                    pollAnswers[slideId][k] = Math.max(2, pollAnswers[slideId][k] - 2);
+                }
+            });
+
+            // Normalize back to 100% total
+            let sum = keys.reduce((acc, k) => acc + pollAnswers[slideId][k], 0);
+            keys.forEach(k => {
+                pollAnswers[slideId][k] = Math.round((pollAnswers[slideId][k] / sum) * 100);
+            });
+
+            // Re-render UI elements to show modern styled graph/percentage
+            keys.forEach(k => {
+                const element = document.getElementById(`poll-val-${slideId}-${k}`);
+                if (element) {
+                    element.innerText = `${pollAnswers[slideId][k]}%`;
+                    element.className = "text-emerald-400 font-mono font-bold";
+                }
+            });
+        }
+
+        let aiActive = true;
+        function toggleAISimulator() {
+            aiActive = !aiActive;
+            const btn = document.getElementById('toggle-ai-btn');
+            const note = document.getElementById('ai-sim-note');
+            
+            const services = [
+                {id: 'ai-srv-1', ico: 'ai-ico-1', origIco: '✨', title: 'Google Search Autocomplete'},
+                {id: 'ai-srv-2', ico: 'ai-ico-2', origIco: '🎵', title: 'Netflix & Spotify Recs'},
+                {id: 'ai-srv-3', ico: 'ai-ico-3', origIco: '📱', title: 'Social Media Filters & Captions'},
+                {id: 'ai-srv-4', ico: 'ai-ico-4', origIco: '🦾', title: 'Digital Smart Assistants'}
+            ];
+
+            if (aiActive) {
+                btn.innerText = "AI Active";
+                btn.className = "px-3 py-1 rounded-full text-xs font-bold transition duration-200 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+                note.innerText = "Notice how standard daily workflows feel broken without micro-AI routines.";
+                note.className = "text-[10px] text-slate-400 italic";
+                
+                services.forEach(s => {
+                    const box = document.getElementById(s.id);
+                    const icoSpan = document.getElementById(s.ico);
+                    box.style.opacity = "1";
+                    icoSpan.innerText = s.origIco;
+                    icoSpan.className = "text-emerald-400";
+                });
+            } else {
+                btn.innerText = "AI Disabled";
+                btn.className = "px-3 py-1 rounded-full text-xs font-bold transition duration-200 bg-rose-500/10 text-rose-400 border border-rose-500/30";
+                note.innerText = "Autocompletes offline. Recommendations scrambled. Feed captions blank. Tools feel primitive!";
+                note.className = "text-[10px] text-rose-300 font-medium italic";
+
+                services.forEach(s => {
+                    const box = document.getElementById(s.id);
+                    const icoSpan = document.getElementById(s.ico);
+                    box.style.opacity = "0.4";
+                    icoSpan.innerText = "❌";
+                    icoSpan.className = "text-rose-500";
+                });
+            }
+        }
+
+        const comicData = {
+            1: { emoji: "😫", title: "Frame 1: Stress & Deadlines", desc: "Riya has 30 minutes left to submit a biology report, matching artwork poster, and video summary. Standard approaches will take 6 hours." },
+            2: { emoji: "💡", title: "Frame 2: AI Discovery", desc: "She opens a generative tool, types her outline queries, and formats a visual poster plan instantly using structured template guidelines." },
+            3: { emoji: "😎", title: "Frame 3: Perfect Success", desc: "Riya formats and refines her drafts, records her video with a clean generated layout script, and submits ahead of schedule!" }
+        };
+
+        function switchComicFrame(frameNum) {
+            // Update active frame tabs
+            const tabs = document.querySelectorAll('.comic-btn');
+            tabs.forEach((tab, index) => {
+                if (index + 1 === frameNum) {
+                    tab.className = "comic-btn text-[10px] py-1 px-2 font-bold rounded-md bg-indigo-600 text-white transition";
+                } else {
+                    tab.className = "comic-btn text-[10px] py-1 px-2 font-bold rounded-md bg-slate-800 text-slate-400 hover:bg-slate-700 transition";
+                }
+            });
+
+            // Update content viewport
+            const visual = document.getElementById('comic-visual');
+            const title = document.getElementById('comic-title');
+            const desc = document.getElementById('comic-desc');
+
+            visual.style.opacity = 0;
+            setTimeout(() => {
+                visual.innerText = comicData[frameNum].emoji;
+                title.innerText = comicData[frameNum].title;
+                desc.innerText = comicData[frameNum].desc;
+                visual.style.opacity = 1;
+            }, 100);
+        }
+
+        // Countdown Timer Logic
+        let timerInterval;
+        let timerSeconds = 120; // 2 minutes
+        let timerRunning = false;
+
+        function toggleTimer() {
+            const btn = document.getElementById('timer-btn');
+            if (timerRunning) {
+                clearInterval(timerInterval);
+                btn.innerText = "Resume";
+                timerRunning = false;
+            } else {
+                timerRunning = true;
+                btn.innerText = "Pause";
+                timerInterval = setInterval(() => {
+                    timerSeconds--;
+                    updateTimerUI();
+                    if (timerSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        timerRunning = false;
+                        btn.innerText = "Finished";
+                        document.getElementById('classroom-timer').className = "font-mono text-xl font-bold bg-slate-950 px-3 py-1.5 rounded-lg text-rose-500 border border-rose-500 animate-pulse";
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerSeconds = 120;
+            timerRunning = false;
+            updateTimerUI();
+        }
+
+        function updateTimerUI() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            const strMins = mins < 10 ? `0${mins}` : mins;
+            const strSecs = secs < 10 ? `0${secs}` : secs;
+            document.getElementById('classroom-timer').innerText = `${strMins}:${strSecs}`;
+        }
+
+        function checkClassification(itemNum, selection, btnElement) {
+            const answers = { 1: 'trad', 2: 'gen', 3: 'trad', 4: 'gen' };
+            const feedback = document.getElementById('classification-feedback');
+            
+            // Highlight button choice states
+            const parent = btnElement.parentElement;
+            const buttons = parent.querySelectorAll('button');
+            buttons.forEach(b => {
+                b.className = "px-2 py-1 text-[10px] font-bold bg-slate-800 text-slate-400 rounded transition";
+            });
+
+            if (selection === answers[itemNum]) {
+                btnElement.className = "px-2 py-1 text-[10px] font-bold bg-emerald-600 text-white rounded transition";
+                feedback.innerText = "Correct! Well spotted.";
+                feedback.className = "text-center text-xs font-semibold h-4 text-emerald-400 animate-pulse";
+            } else {
+                btnElement.className = "px-2 py-1 text-[10px] font-bold bg-rose-600 text-white rounded transition";
+                feedback.innerText = "Oops! Try that classification again.";
+                feedback.className = "text-center text-xs font-semibold h-4 text-rose-400 animate-pulse";
+            }
+        }
+
+        const predictionScenarios = {
+            1: { sentence: "Ice cream is usually served extremely ____", options: ["Cold", "Spicy"], correct: "cold" },
+            2: { sentence: "Wild forest birds can usually fly high in the ____", options: ["Ocean", "Sky"], correct: "sky" },
+            3: { sentence: "The capital city of beautiful France is ____", options: ["London", "Paris"], correct: "paris" }
+        };
+
+        let currentScenarioIdx = 1;
+
+        function loadPredictScenario(num) {
+            currentScenarioIdx = num;
+            const sc = predictionScenarios[num];
+            
+            // Reset state highlighting
+            for(let i=1; i<=3; i++) {
+                const btn = document.getElementById(`pred-sc-${i}`);
+                if (i === num) {
+                    btn.className = "text-[10px] py-1.5 font-bold rounded bg-indigo-600 text-white";
+                } else {
+                    btn.className = "text-[10px] py-1.5 font-bold rounded bg-slate-800 text-slate-400 hover:bg-slate-700";
+                }
+            }
+
+            document.getElementById('predict-sentence').innerText = `"${sc.sentence}"`;
+            const optionsContainer = document.getElementById('predict-options');
+            optionsContainer.innerHTML = '';
+            
+            sc.options.forEach(opt => {
+                const isCorrect = opt.toLowerCase() === sc.correct;
+                const optBtn = document.createElement('button');
+                optBtn.className = "bg-slate-900 border border-slate-800 hover:border-amber-500 text-xs py-2 rounded text-slate-300 hover:text-white transition font-medium";
+                optBtn.innerText = opt;
+                optBtn.onclick = () => checkPrediction(opt, isCorrect);
+                optionsContainer.appendChild(optBtn);
+            });
+
+            document.getElementById('prediction-result').innerText = '';
+        }
+
+        function checkPrediction(optName, isCorrect) {
+            const feedback = document.getElementById('prediction-result');
+            if (isCorrect) {
+                feedback.innerText = `Yes! AI learned standard patterns to predict: "${optName}" with over 98% probability!`;
+                feedback.className = "text-center text-xs font-bold h-4 text-emerald-400";
+            } else {
+                feedback.innerText = `Incorrect pattern logic. Try another predicted option.`;
+                feedback.className = "text-center text-xs font-bold h-4 text-rose-400";
+            }
+        }
+
+        const simulatedDrafts = {
+            story: `<div class="mb-2"><span class="text-indigo-400 font-bold">[SYSTEM]:</span> <span class="text-slate-400 italic">Act as a creative sci-fi comedy writer.</span></div>
+                    <div class="mb-2"><span class="text-emerald-400 font-bold">[PROMPT]:</span> <span class="text-slate-200">"Write a funny story about a dog astronaut discovering an alien pizza shop on Mars."</span></div>
+                    <hr class="border-slate-800 my-2"/>
+                    <div class="text-slate-300 font-sans leading-relaxed space-y-3">
+                        <p>🚀 <strong>Barnaby</strong>, a fluffy Golden Retriever with a tiny silver spacesuit, climbed into his rocket ship and barked proudly.</p>
+                        <p>He blasted past the moon and touched down on Mars, only to discover a neon sign: <span class="text-pink-400 font-bold">"BARNABY'S COFFEE & PIZZA."</span></p>
+                        <p>🍕 Inside, green-tentacled martians were tossing dough with dramatic Italian music playing on the jukebox! Barnaby wagged his tail and ordered a cosmic extra-cheese pepperoni pizza.</p>
+                    </div>`,
+            speech: `<div class="mb-2"><span class="text-indigo-400 font-bold">[SYSTEM]:</span> <span class="text-slate-400 italic">Act as an inspiring motivational speaker.</span></div>
+                     <div class="mb-2"><span class="text-emerald-400 font-bold">[PROMPT]:</span> <span class="text-slate-200">"Write an inspiring, motivational speech for students nervous about school finals."</span></div>
+                     <hr class="border-slate-800 my-2"/>
+                     <div class="text-slate-300 font-sans leading-relaxed space-y-3">
+                         <p>🎓 <em>Dear fellow classmates,</em></p>
+                         <p>I know finals can feel like a massive mountain to climb. But remember, <span class="text-emerald-400 font-semibold">every expert was once a complete beginner.</span></p>
+                         <p>This exam is not a metric of your core value or your inner light. Take deep breaths, review your formulas with confidence, and execute step-by-step. You've got this!</p>
+                     </div>`,
+            robot: `<div class="mb-2"><span class="text-indigo-400 font-bold">[SYSTEM]:</span> <span class="text-slate-400 italic">Act as a speculative fiction screenwriter.</span></div>
+                    <div class="mb-2"><span class="text-emerald-400 font-bold">[PROMPT]:</span> <span class="text-slate-200">"Write a sci-fi drama prompt about a class-teacher robot that starts learning human humor."</span></div>
+                    <hr class="border-slate-800 my-2"/>
+                    <div class="text-slate-300 font-sans leading-relaxed space-y-3">
+                        <p>🤖 The high-school robot model, <strong>Tutor-900</strong>, stood in front of Class VIII-B.</p>
+                        <p>"Why did the computer cross the highway?" it asked, eyes flashing purple. The students sat in complete silence.</p>
+                        <p>⚡ "To get to the other dataset!" it proclaimed, followed by simulated metallic laughter. Slow claps echoed. Tutor-900 realized its comedic program needed an urgent security patch.</p>
+                    </div>`
+        };
+
+        function runTextGeneration() {
+            const select = document.getElementById('text-prompt-select');
+            const targetVal = select.value;
+            const textToType = simulatedDrafts[targetVal] || "Simulation processing error.";
+            const terminal = document.getElementById('text-generation-terminal');
+            
+            terminal.innerHTML = "";
+            let idx = 0;
+            const typingSpeed = 6; // Fast typing experience
+
+            function typeChar() {
+                if (idx < textToType.length) {
+                    // Check if current char starts an HTML tag
+                    if (textToType.charAt(idx) === '<') {
+                        let tagEnd = textToType.indexOf('>', idx);
+                        if (tagEnd !== -1) {
+                            terminal.innerHTML += textToType.substring(idx, tagEnd + 1);
+                            idx = tagEnd + 1;
+                        } else {
+                            terminal.innerHTML += textToType.charAt(idx);
+                            idx++;
+                        }
+                    } else {
+                        terminal.innerHTML += textToType.charAt(idx);
+                        idx++;
+                    }
+                    terminal.scrollTop = terminal.scrollHeight;
+                    setTimeout(typeChar, typingSpeed);
+                } else {
+                    // Append a realistic flashing cursor when the stream is completed
+                    terminal.innerHTML += `<span class="inline-block w-2 h-4 bg-emerald-500 ml-1 animate-pulse" id="terminal-cursor"></span>`;
+                }
+            }
+            typeChar();
+        }
+
+        const meterStages = {
+            1: {
+                prompt: "Tell me about space.",
+                badge: "Poor Results",
+                badgeClass: "text-[9px] font-bold uppercase bg-red-500/10 text-red-400 px-2 py-0.5 rounded border border-red-500/20",
+                preview: "Space is huge and cold. It has stars and planets. We study it using high technology instruments and telescopes."
+            },
+            2: {
+                prompt: "Tell me about black holes in simple words.",
+                badge: "Strong Quality",
+                badgeClass: "text-[9px] font-bold uppercase bg-yellow-500/10 text-yellow-400 px-2 py-0.5 rounded border border-yellow-500/20",
+                preview: "A black hole is a spot in space where gravity is incredibly strong. It pulls in everything, even light. It forms when massive giant stars run out of fuel and collapse under their own weight."
+            },
+            3: {
+                prompt: "Explain black holes to a Class X student using a cricket analogy.",
+                badge: "Expert Level",
+                badgeClass: "text-[9px] font-bold uppercase bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20",
+                preview: "Imagine a celestial cricket match where the boundary rope has infinite gravity pulling power!\n\nOnce a cricket ball flies past the 'event horizon' boundary, it can never be hit or returned to the pitch—no matter how fast the bowler throws it. Not even light can escape the deep gravity of a massive collapsed stellar stadium!"
+            }
+        };
+
+        function updatePromptMeter(val) {
+            const stage = meterStages[val];
+            if (!stage) return;
+
+            document.getElementById('meter-prompt-text').innerText = `"${stage.prompt}"`;
+            document.getElementById('meter-quality-badge').innerText = stage.badge;
+            document.getElementById('meter-quality-badge').className = stage.badgeClass;
+            document.getElementById('meter-preview-text').innerText = stage.preview;
+        }
+
+        function buildFormulaPrompt() {
+            const task = document.getElementById('builder-task').value;
+            const audience = document.getElementById('builder-audience').value;
+            const style = document.getElementById('builder-style').value;
+            const limits = document.getElementById('builder-limits').value;
+
+            const fullPrompt = `${task} ${audience}, ${style}, keeping the response ${limits}`;
+            document.getElementById('builder-prompt-preview').innerText = fullPrompt;
+        }
+
+        function copyFormulatedPrompt() {
+            const textToCopy = document.getElementById('builder-prompt-preview').innerText;
+            
+            // Safe fallback standard copy mechanics for embedded classroom frames
+            const el = document.createElement('textarea');
+            el.value = textToCopy;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            const copyBtn = document.querySelector('[onclick="copyFormulatedPrompt()"] span');
+            copyBtn.innerText = "Prompt Copied!";
+            setTimeout(() => {
+                copyBtn.innerText = "Copy Custom Prompt";
+            }, 1500);
+        }
+
+        function checkQuizS9(option, isCorrect) {
+            const feedback = document.getElementById('quiz-feedback-s9');
+            
+            // Clear prior selection colors
+            const options = ['a', 'b', 'c'];
+            options.forEach(opt => {
+                const el = document.getElementById(`quiz-opt-s9-${opt}`);
+                el.className = "w-full text-left text-xs bg-slate-950 hover:bg-slate-900 border border-slate-800 p-3 rounded-xl transition flex justify-between items-center group";
+            });
+
+            const activeEl = document.getElementById(`quiz-opt-s9-${option.toLowerCase()}`);
+            if (isCorrect) {
+                activeEl.className = "w-full text-left text-xs bg-emerald-500/10 border border-emerald-500 p-3 rounded-xl transition flex justify-between items-center group";
+                feedback.innerText = "Correct! Option C provides clear subject, appearance, lighting context, environment, and style parameters!";
+                feedback.className = "text-center text-xs font-bold h-4 text-emerald-400";
+            } else {
+                activeEl.className = "w-full text-left text-xs bg-rose-500/10 border border-rose-500/50 p-3 rounded-xl transition flex justify-between items-center group";
+                feedback.innerText = "Not quite. This prompt is too generic for high quality details. Try C!";
+                feedback.className = "text-center text-xs font-bold h-4 text-rose-400";
+            }
+        }
+
+        function assembleImagePrompt() {
+            const sub = document.getElementById('img-subject').value;
+            const env = document.getElementById('img-env').value;
+            const style = document.getElementById('img-style').value;
+            const mood = document.getElementById('img-mood').value;
+
+            // Render instantly color-coded breakdown
+            const container = document.getElementById('assembled-img-prompt');
+            container.innerHTML = `
+                <span class="text-amber-300 font-bold">${sub}</span> 
+                <span class="text-indigo-300 font-medium">${env}</span>, 
+                <span class="text-cyan-300 italic">${style}</span>, 
+                <span class="text-pink-300 font-semibold">${mood}</span>
+            `;
+        }
+
+        const industrySectors = {
+            edu: {
+                title: "📚 Education Visuals",
+                desc: "Teachers and students generate precise historical contexts, visual map configurations, geographical diagrams, or space models instantly to simplify difficult topics.",
+                case: '"Show the Solar System in a clean retro 3D vector style for Class VII elementary science lessons."'
+            },
+            biz: {
+                title: "🏢 Business Advertisements",
+                desc: "Small startups draft original marketing templates, graphic poster mockups, product packaging, and customized banner designs without high design budgets.",
+                case: '"Highly professional cosmetic cream glass bottle mock-up standing on clean marble rocks, soft natural lighting."'
+            },
+            health: {
+                title: "🏥 Medical Care Awareness",
+                desc: "Hospitals prepare patient training worksheets, visually mapping human organs or public disease warnings to make safety guidelines highly digestible.",
+                case: '"Detailed medical illustration highlighting human lung oxygen cycles in simplified friendly cartoon styles."'
+            },
+            ent: {
+                title: "🎬 Entertainment Concept Art",
+                desc: "Indie game creators and filmmakers storyboard visual background concepts, futuristic cities, spaceship structures, or fantasy game characters.",
+                case: '"Sci-Fi gaming hero with cybernetic armor exploring lost neon temple ruins, cinematic wide frame concept art."'
+            },
+            daily: {
+                title: "📱 Everyday Student Creativity",
+                desc: "High schoolers optimize slide backgrounds, custom stickers, social profile avatars, or cover slides to present science presentations flawlessly.",
+                case: '"Abstract colorful 3D floating mathematical shapes, minimal dark mode slide background aesthetic."'
+            }
+        };
+
+        function switchIndustrySector(sector) {
+            // Adjust button highlight statuses
+            const buttons = document.querySelectorAll('.ind-btn');
+            buttons.forEach(btn => {
+                btn.className = "ind-btn text-[9px] font-bold py-1.5 px-1 rounded bg-slate-800 text-slate-400 hover:bg-slate-700 transition";
+            });
+
+            const activeBtn = document.getElementById(`ind-${sector}-btn`);
+            if (activeBtn) {
+                activeBtn.className = "ind-btn text-[9px] font-bold py-1.5 px-1 rounded bg-emerald-600 text-white transition";
+            }
+
+            const data = industrySectors[sector];
+            if (data) {
+                document.getElementById('ind-title').innerText = data.title;
+                document.getElementById('ind-desc').innerText = data.desc;
+                document.getElementById('ind-case').innerText = data.case;
+            }
+        }
+    </script>
+</body>
+</html>

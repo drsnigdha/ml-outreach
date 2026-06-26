@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Engineering: Welcome to the World of AI</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Poppins:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        ai: {
+                            900: '#0B0F19',
+                            800: '#111827',
+                            primary: '#6366F1',
+                            secondary: '#A855F7',
+                            accent: '#EC4899',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0B0F19;
+            color: #ffffff;
+        }
+        
+        .slide {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            transform: scale(0.95);
+        }
+        
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 10;
+            transform: scale(1);
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(to right, #6366F1, #A855F7, #EC4899);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Notes Drawer Transition */
+        #notes-drawer {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        #notes-drawer.open {
+            transform: translateX(0);
+        }
+
+        /* Custom Scrollbar for Notes */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4B5563;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6B7280;
+        }
+
+        .blur-secret {
+            filter: blur(8px);
+            transition: filter 0.5s ease;
+        }
+        .blur-secret.revealed {
+            filter: blur(0);
+        }
+    </style>
+</head>
+<body class="antialiased h-screen w-full relative">
+
+    <!-- Background Animated Blobs -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none opacity-40">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+        <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-pink-600 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <!-- Presentation Container -->
+    <main id="presentation" class="w-full h-full relative">
+
+        <!-- SLIDE 1 -->
+        <section class="slide active flex flex-col items-center justify-center p-8" id="slide-1">
+            <div class="max-w-6xl w-full flex flex-col lg:flex-row items-center gap-12">
+                <!-- Left: Content -->
+                <div class="flex-1 space-y-6 z-10">
+                    <div class="inline-block px-4 py-1 rounded-full border border-ai-primary/50 bg-ai-primary/10 text-ai-primary text-sm font-semibold mb-4">
+                        Section 1: Hook & Motivation
+                    </div>
+                    <h1 class="font-heading text-5xl md:text-6xl font-bold leading-tight">
+                        Welcome to the World of <br>
+                        <span class="text-gradient">AI Conversations</span>
+                    </h1>
+                    <p class="text-xl text-gray-300">Imagine Having a Super Assistant...</p>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+                        <div class="glass-panel p-4 rounded-xl flex items-center gap-3">
+                            <i class="ph ph-chat-centered-text text-2xl text-blue-400"></i>
+                            <span class="text-sm font-medium">Answer Instantly</span>
+                        </div>
+                        <div class="glass-panel p-4 rounded-xl flex items-center gap-3">
+                            <i class="ph ph-lightbulb text-2xl text-yellow-400"></i>
+                            <span class="text-sm font-medium">Explain Concepts</span>
+                        </div>
+                        <div class="glass-panel p-4 rounded-xl flex items-center gap-3">
+                            <i class="ph ph-exam text-2xl text-green-400"></i>
+                            <span class="text-sm font-medium">Help Study</span>
+                        </div>
+                        <div class="glass-panel p-4 rounded-xl flex items-center gap-3">
+                            <i class="ph ph-pen-nib text-2xl text-pink-400"></i>
+                            <span class="text-sm font-medium">Write Stories</span>
+                        </div>
+                        <div class="glass-panel p-4 rounded-xl flex items-center gap-3">
+                            <i class="ph ph-code text-2xl text-cyan-400"></i>
+                            <span class="text-sm font-medium">Help Coding</span>
+                        </div>
+                        <div class="glass-panel p-4 rounded-xl flex items-center gap-3">
+                            <i class="ph ph-airplane-tilt text-2xl text-orange-400"></i>
+                            <span class="text-sm font-medium">Plan Trips</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-6 glass-panel rounded-2xl border-l-4 border-ai-primary relative overflow-hidden group cursor-pointer" onclick="revealSecret()">
+                        <div class="absolute inset-0 bg-gradient-to-r from-ai-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <p class="text-gray-400 text-sm mb-2 uppercase tracking-wider font-semibold">The Secret (Click to Reveal)</p>
+                        <p id="secret-text" class="text-2xl font-heading font-bold blur-secret select-none">
+                            AI is only as helpful as the <span class="text-ai-accent">instructions</span> we give it.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Visuals -->
+                <div class="flex-1 relative h-[500px] w-full hidden md:block">
+                    <!-- Central AI Orb -->
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-[0_0_50px_rgba(168,85,247,0.5)] flex items-center justify-center animate-pulse-slow">
+                        <i class="ph ph-robot text-7xl text-white"></i>
+                    </div>
+                    
+                    <!-- Orbiting Icons -->
+                    <div class="absolute top-10 left-20 animate-float glass-panel p-4 rounded-2xl">
+                        <i class="ph ph-books text-3xl text-blue-400"></i>
+                    </div>
+                    <div class="absolute bottom-20 left-10 animate-float-delayed glass-panel p-4 rounded-2xl">
+                        <i class="ph ph-code-block text-3xl text-cyan-400"></i>
+                    </div>
+                    <div class="absolute top-20 right-10 animate-float-delayed glass-panel p-4 rounded-2xl">
+                        <i class="ph ph-palette text-3xl text-pink-400"></i>
+                    </div>
+                    <div class="absolute bottom-10 right-20 animate-float glass-panel p-4 rounded-2xl">
+                        <i class="ph ph-heartbeat text-3xl text-red-400"></i>
+                    </div>
+                    
+                    <!-- Connectors (SVG) -->
+                    <svg class="absolute inset-0 w-full h-full -z-10" pointer-events="none">
+                        <circle cx="50%" cy="50%" r="180" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="10 10" class="animate-[spin_60s_linear_infinite]" />
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2 -->
+        <section class="slide flex flex-col items-center justify-center p-8" id="slide-2">
+            <div class="max-w-6xl w-full text-center mb-10">
+                <h2 class="font-heading text-4xl md:text-5xl font-bold mb-4">The AI Revolution is <span class="text-gradient">Already Here</span></h2>
+                <p class="text-xl text-gray-300">AI is becoming as common as smartphones and the internet.</p>
+            </div>
+
+            <div class="relative w-full max-w-5xl h-[500px] flex items-center justify-center">
+                <!-- Center Node -->
+                <div class="z-20 w-32 h-32 rounded-full glass-panel border-2 border-ai-primary flex items-center justify-center shadow-[0_0_30px_rgba(99,102,241,0.5)]">
+                    <span class="font-heading text-3xl font-bold text-gradient">AI</span>
+                </div>
+
+                <!-- Connecting Branches & Cards -->
+                <div class="absolute w-full h-full">
+                    <!-- Education -->
+                    <div class="absolute top-0 left-1/4 transform -translate-x-1/2 group">
+                        <div class="glass-panel p-5 rounded-2xl w-64 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(59,130,246,0.3)] border-t-4 border-blue-500">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="ph ph-graduation-cap text-2xl text-blue-400"></i>
+                                <h3 class="font-bold text-lg">Education</h3>
+                            </div>
+                            <ul class="text-sm text-gray-300 space-y-2">
+                                <li>• Personalized tutoring</li>
+                                <li>• Homework assistance</li>
+                                <li>• Language learning</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Healthcare -->
+                    <div class="absolute top-10 right-1/4 transform translate-x-1/2 group">
+                        <div class="glass-panel p-5 rounded-2xl w-64 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(239,68,68,0.3)] border-t-4 border-red-500">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="ph ph-stethoscope text-2xl text-red-400"></i>
+                                <h3 class="font-bold text-lg">Healthcare</h3>
+                            </div>
+                            <ul class="text-sm text-gray-300 space-y-2">
+                                <li>• Medical image analysis</li>
+                                <li>• Disease prediction</li>
+                                <li>• Clinical documentation</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Business -->
+                    <div class="absolute bottom-10 right-1/4 transform translate-x-1/2 group">
+                        <div class="glass-panel p-5 rounded-2xl w-64 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(34,197,94,0.3)] border-t-4 border-green-500">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="ph ph-briefcase text-2xl text-green-400"></i>
+                                <h3 class="font-bold text-lg">Business</h3>
+                            </div>
+                            <ul class="text-sm text-gray-300 space-y-2">
+                                <li>• Customer support</li>
+                                <li>• Marketing campaigns</li>
+                                <li>• Data analysis</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Daily Life -->
+                    <div class="absolute bottom-0 left-1/4 transform -translate-x-1/2 group">
+                        <div class="glass-panel p-5 rounded-2xl w-64 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(234,179,8,0.3)] border-t-4 border-yellow-500">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="ph ph-house text-2xl text-yellow-400"></i>
+                                <h3 class="font-bold text-lg">Daily Life</h3>
+                            </div>
+                            <ul class="text-sm text-gray-300 space-y-2">
+                                <li>• Voice assistants</li>
+                                <li>• Navigation apps</li>
+                                <li>• Recommendation systems</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3 -->
+        <section class="slide flex flex-col items-center justify-center p-8" id="slide-3">
+            <div class="max-w-6xl w-full mb-8 text-center">
+                <h2 class="font-heading text-4xl md:text-5xl font-bold mb-4">Why Some People Get <span class="text-gradient">Amazing Answers</span></h2>
+                <p class="text-xl text-gray-300">Same AI + Better Prompt = Better Results</p>
+            </div>
+
+            <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Prompt A (Bad) -->
+                <div class="glass-panel rounded-2xl flex flex-col h-[400px] border border-red-500/30 overflow-hidden relative">
+                    <div class="bg-red-500/20 p-4 border-b border-red-500/30 flex items-center justify-between">
+                        <span class="font-bold text-red-200">Prompt A (Vague)</span>
+                        <i class="ph ph-thumbs-down text-red-400 text-xl"></i>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <div class="bg-gray-800 p-4 rounded-lg mb-6 border border-gray-700">
+                            <p class="font-mono text-gray-300">"Tell me about climate change."</p>
+                        </div>
+                        <div class="flex-1 space-y-3">
+                            <div class="text-xs text-gray-400 uppercase tracking-widest mb-2">AI Response</div>
+                            <div class="w-full h-4 bg-gray-700 rounded animate-pulse"></div>
+                            <div class="w-5/6 h-4 bg-gray-700 rounded animate-pulse"></div>
+                            <div class="w-full h-4 bg-gray-700 rounded animate-pulse"></div>
+                            <div class="w-4/6 h-4 bg-gray-700 rounded animate-pulse"></div>
+                            <div class="mt-4 p-3 bg-red-900/30 rounded text-red-300 text-sm flex items-start gap-2">
+                                <i class="ph ph-warning-circle text-lg"></i>
+                                Generic, dense, and not tailored to any specific reader.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt B (Good) -->
+                <div class="glass-panel rounded-2xl flex flex-col h-[400px] border border-green-500/30 overflow-hidden shadow-[0_0_30px_rgba(34,197,94,0.15)]">
+                    <div class="bg-green-500/20 p-4 border-b border-green-500/30 flex items-center justify-between">
+                        <span class="font-bold text-green-200">Prompt B (Engineered)</span>
+                        <i class="ph ph-thumbs-up text-green-400 text-xl"></i>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <div class="bg-gray-800 p-4 rounded-lg mb-6 border border-gray-700 relative">
+                            <p class="font-mono text-green-300">
+                                "<span class="text-yellow-300 font-bold" title="Role">You are an environmental scientist.</span> Explain climate change to a <span class="text-blue-300 font-bold" title="Audience">Class 10 student</span> using <span class="text-pink-300 font-bold" title="Style">simple language and examples.</span>"
+                            </p>
+                        </div>
+                        <div class="flex-1 flex flex-col gap-2">
+                            <div class="text-xs text-gray-400 uppercase tracking-widest mb-2">AI Response</div>
+                            <div class="flex items-center gap-2 text-green-300 text-sm"><i class="ph ph-check-circle"></i> Better explanations</div>
+                            <div class="flex items-center gap-2 text-green-300 text-sm"><i class="ph ph-check-circle"></i> Appropriate language</div>
+                            <div class="flex items-center gap-2 text-green-300 text-sm"><i class="ph ph-check-circle"></i> Useful examples</div>
+                            <div class="flex items-center gap-2 text-green-300 text-sm"><i class="ph ph-check-circle"></i> Engaging learning experience</div>
+                            
+                            <div class="mt-auto p-3 bg-green-900/30 rounded text-green-200 text-sm">
+                                <strong>Why?</strong> Provides Role, Audience, Context, and Style.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4 -->
+        <section class="slide flex flex-col items-center justify-center p-8" id="slide-4">
+            <div class="max-w-5xl w-full text-center mb-8">
+                <div class="inline-flex items-center justify-center gap-2 px-4 py-1 rounded-full border border-yellow-500/50 bg-yellow-500/10 text-yellow-400 text-sm font-semibold mb-4">
+                    <i class="ph ph-magic-wand"></i> Interactive Activity
+                </div>
+                <h2 class="font-heading text-4xl md:text-5xl font-bold mb-2">The <span class="text-yellow-400">Magic Genie</span> Challenge</h2>
+                <p class="text-xl text-gray-300">Prompt Engineering = Learning to Make Better Wishes</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center gap-12 max-w-5xl w-full">
+                <!-- Genie -->
+                <div class="flex-shrink-0 animate-float text-center">
+                    <div class="text-9xl filter drop-shadow-[0_0_30px_rgba(234,179,8,0.5)]">🧞‍♂️</div>
+                    <div class="mt-4 font-heading font-bold text-xl text-yellow-400">AI Genie</div>
+                </div>
+
+                <!-- Wishes -->
+                <div class="flex-1 grid grid-cols-1 gap-6 w-full relative">
+                    <!-- Wish 1 -->
+                    <div class="glass-panel p-6 rounded-2xl cursor-pointer hover:bg-white/10 transition-colors group" onclick="document.getElementById('result-1').classList.toggle('hidden')">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 text-red-400 font-bold">1</div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-xl mb-1">Vague Wish</h3>
+                                <p class="text-gray-300 italic">"I want food."</p>
+                                <div id="result-1" class="hidden mt-4 pt-4 border-t border-gray-700">
+                                    <p class="text-sm text-gray-400 mb-2">Possible Result (Unpredictable):</p>
+                                    <div class="flex gap-4 text-3xl">🍲 🍛 🥗 🍜</div>
+                                    <p class="text-red-400 text-sm mt-2">Not exactly what you wanted?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wish 2 -->
+                    <div class="glass-panel p-6 rounded-2xl cursor-pointer hover:bg-white/10 transition-colors group border-l-4 border-green-500" onclick="document.getElementById('result-2').classList.toggle('hidden')">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 text-green-400 font-bold">2</div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-xl mb-1">Specific Wish</h3>
+                                <p class="text-gray-300 italic">"I want a large cheese pizza with mushrooms and extra cheese."</p>
+                                <div id="result-2" class="hidden mt-4 pt-4 border-t border-gray-700">
+                                    <p class="text-sm text-gray-400 mb-2">Possible Result:</p>
+                                    <div class="text-6xl animate-bounce">🍕</div>
+                                    <p class="text-green-400 text-sm mt-2 font-bold">Exactly what you wanted!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5 -->
+        <section class="slide flex flex-col items-center justify-center p-8" id="slide-5">
+            <div class="max-w-5xl w-full text-center mb-12">
+                <h2 class="font-heading text-4xl md:text-5xl font-bold mb-4">AI is Like Learning a <span class="text-gradient">New Language</span></h2>
+                <p class="text-xl text-gray-300">Prompt Engineering is not programming. It is effective communication.</p>
+            </div>
+
+            <div class="max-w-5xl w-full flex flex-col md:flex-row items-center justify-between gap-8 relative">
+                
+                <!-- Human Box -->
+                <div class="glass-panel p-6 rounded-2xl w-full md:w-1/3 z-10 border-t-4 border-blue-500">
+                    <div class="text-center mb-4">
+                        <i class="ph ph-user text-5xl text-blue-400 mb-2"></i>
+                        <h3 class="font-bold text-xl">Humans Use</h3>
+                    </div>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-center gap-2"><i class="ph ph-check text-blue-400"></i> Implicit Context</li>
+                        <li class="flex items-center gap-2"><i class="ph ph-check text-blue-400"></i> Body Language</li>
+                        <li class="flex items-center gap-2"><i class="ph ph-check text-blue-400"></i> Tone of Voice</li>
+                        <li class="flex items-center gap-2"><i class="ph ph-check text-blue-400"></i> Shared History</li>
+                    </ul>
+                </div>
+
+                <!-- Translator Area -->
+                <div class="flex-1 flex flex-col items-center justify-center z-10 py-8">
+                    <div class="w-16 h-16 rounded-full bg-ai-primary/20 border-2 border-ai-primary flex items-center justify-center text-ai-primary text-2xl mb-2 shadow-[0_0_20px_rgba(99,102,241,0.4)] animate-pulse-slow">
+                        <i class="ph ph-arrows-left-right"></i>
+                    </div>
+                    <span class="font-bold text-ai-primary tracking-widest uppercase text-sm">The Prompt</span>
+                    <span class="text-xs text-gray-400">(The Translator)</span>
+                </div>
+
+                <!-- AI Box -->
+                <div class="glass-panel p-6 rounded-2xl w-full md:w-1/3 z-10 border-t-4 border-purple-500">
+                    <div class="text-center mb-4">
+                        <i class="ph ph-cpu text-5xl text-purple-400 mb-2"></i>
+                        <h3 class="font-bold text-xl">AI Needs</h3>
+                    </div>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-center gap-2"><i class="ph ph-check text-purple-400"></i> Explicit Instructions</li>
+                        <li class="flex items-center gap-2"><i class="ph ph-check text-purple-400"></i> Defined Context</li>
+                        <li class="flex items-center gap-2"><i class="ph ph-check text-purple-400"></i> Assigned Roles</li>
+                        <li class="flex items-center gap-2"><i class="ph ph-check text-purple-400"></i> Clear Constraints</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Example Box -->
+            <div class="max-w-3xl w-full mt-12 glass-panel p-6 rounded-xl border border-gray-700 bg-gray-900/80">
+                <p class="mb-4 text-center text-gray-400 font-semibold uppercase tracking-wider text-sm">Translation Example</p>
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-center text-sm md:text-base">
+                    <div class="text-red-300 italic">"Can you explain photosynthesis?"</div>
+                    <i class="ph ph-arrow-right text-gray-500 hidden md:block"></i>
+                    <i class="ph ph-arrow-down text-gray-500 md:hidden"></i>
+                    <div class="text-green-300 font-medium">"Explain photosynthesis to a Class IX student using a simple analogy."</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6 -->
+        <section class="slide flex flex-col items-center justify-center p-8" id="slide-6">
+            <div class="max-w-5xl w-full text-center mb-10">
+                <h2 class="font-heading text-4xl md:text-5xl font-bold mb-4">Today's <span class="text-gradient">Mission</span></h2>
+                <p class="text-xl text-gray-300">Your journey to becoming a smarter AI user.</p>
+            </div>
+
+            <div class="max-w-4xl w-full">
+                <!-- Roadmap UI -->
+                <div class="relative wrap overflow-hidden p-4 h-full">
+                    <div class="border-2-2 absolute border-opacity-20 border-white h-full border left-1/2 -ml-1"></div>
+                    
+                    <!-- Left Item -->
+                    <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-900 shadow-xl w-10 h-10 rounded-full border-2 border-ai-primary">
+                            <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
+                        </div>
+                        <div class="order-1 glass-panel rounded-lg shadow-xl w-5/12 px-6 py-4">
+                            <h3 class="mb-2 font-bold text-white text-xl">Understand</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300 text-opacity-100">What Prompt Engineering is & Why it matters.</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Item -->
+                    <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-900 shadow-xl w-10 h-10 rounded-full border-2 border-ai-secondary">
+                            <h1 class="mx-auto font-semibold text-lg text-white">2</h1>
+                        </div>
+                        <div class="order-1 glass-panel rounded-lg shadow-xl w-5/12 px-6 py-4 text-right">
+                            <h3 class="mb-2 font-bold text-white text-xl">Learn</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300 text-opacity-100">Types of prompts (Instruction, Role-Based, Few-Shot).</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Left Item -->
+                    <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-900 shadow-xl w-10 h-10 rounded-full border-2 border-pink-500">
+                            <h1 class="mx-auto font-semibold text-lg text-white">3</h1>
+                        </div>
+                        <div class="order-1 glass-panel rounded-lg shadow-xl w-5/12 px-6 py-4">
+                            <h3 class="mb-2 font-bold text-white text-xl">Practice & Explore</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300 text-opacity-100">Writing effective prompts and exploring real-world applications.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Goal -->
+                    <div class="flex justify-center w-full mt-4">
+                        <div class="z-20 glass-panel border-2 border-yellow-400 px-8 py-3 rounded-full text-center shadow-[0_0_20px_rgba(250,204,21,0.3)]">
+                            <h3 class="font-bold text-yellow-400 text-xl flex items-center gap-2"><i class="ph ph-target"></i> Final Goal: Master AI Communication</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Presenter Notes Toggle Button -->
+    <button onclick="toggleNotes()" class="fixed top-6 right-6 z-50 glass-panel p-3 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 shadow-lg border border-white/20">
+        <i class="ph ph-clipboard-text text-xl"></i>
+        <span class="text-sm font-medium hidden md:inline">Activities & Notes</span>
+    </button>
+
+    <!-- Slide Indicators & Controls -->
+    <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 glass-panel px-6 py-3 rounded-full flex items-center gap-6">
+        <button onclick="prevSlide()" class="hover:text-ai-primary transition-colors disabled:opacity-50" id="btn-prev">
+            <i class="ph ph-caret-left text-2xl"></i>
+        </button>
+        <div class="flex gap-2" id="slide-dots">
+            <!-- Dots generated by JS -->
+        </div>
+        <button onclick="nextSlide()" class="hover:text-ai-primary transition-colors disabled:opacity-50" id="btn-next">
+            <i class="ph ph-caret-right text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Notes & Activities Drawer -->
+    <aside id="notes-drawer" class="fixed top-0 right-0 w-full md:w-[400px] h-full glass-panel border-l border-white/10 z-40 p-6 flex flex-col bg-[#0B0F19]/95 shadow-2xl">
+        <div class="flex justify-between items-center mb-6 mt-16">
+            <h2 class="font-heading font-bold text-xl flex items-center gap-2 text-ai-primary"><i class="ph ph-chalkboard-teacher"></i> Presenter Dashboard</h2>
+            <button onclick="toggleNotes()" class="text-gray-400 hover:text-white"><i class="ph ph-x text-2xl"></i></button>
+        </div>
+        
+        <div class="overflow-y-auto flex-1 pr-2 space-y-6" id="notes-content">
+            <!-- Content injected via JS based on current slide -->
+        </div>
+    </aside>
+
+    <script>
+        // Slide Data for Speaker Notes & Activities
+        const slideData = [
+            {
+                title: "Slide 1: Welcome",
+                notes: `
+                    <p class="mb-2">• Ask students how many of them have heard of ChatGPT.</p>
+                    <p class="mb-2">• Explain that AI assistants are becoming as common as search engines.</p>
+                    <p class="mb-2">• Many people think AI automatically knows what they want.</p>
+                    <p class="mb-2">• In reality, AI depends heavily on instructions.</p>
+                    <p>• Think of this as learning a new language—the language of AI.</p>
+                `,
+                activity: `
+                    <h4 class="font-bold text-yellow-400 mb-2">Quick Show of Hands:</h4>
+                    <ul class="list-disc pl-5 mb-4 text-sm space-y-1">
+                        <li>Who has used ChatGPT?</li>
+                        <li>Who has used Gemini?</li>
+                        <li>Who has never used any AI tool?</li>
+                    </ul>
+                    <h4 class="font-bold text-yellow-400 mb-2">Discussion Questions:</h4>
+                    <ul class="list-disc pl-5 text-sm space-y-1">
+                        <li>What would you ask an AI assistant if you had unlimited access?</li>
+                        <li>What is the most interesting thing AI could help you do?</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Slide 2: AI Revolution",
+                notes: `
+                    <p class="mb-2">• Ask students to think about how often they interact with technology.</p>
+                    <p class="mb-2">• Many applications they use daily already contain AI (Google Maps, YouTube, Netflix).</p>
+                    <p>• Prompt Engineering helps people use advanced AI systems effectively.</p>
+                `,
+                activity: `
+                    <h4 class="font-bold text-yellow-400 mb-2">Live Poll:</h4>
+                    <p class="text-sm mb-2">How often do you use AI?</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-white/10 rounded-full text-xs">Daily</span>
+                        <span class="px-3 py-1 bg-white/10 rounded-full text-xs">Weekly</span>
+                        <span class="px-3 py-1 bg-white/10 rounded-full text-xs">Occasionally</span>
+                        <span class="px-3 py-1 bg-white/10 rounded-full text-xs">Never</span>
+                    </div>
+                    <h4 class="font-bold text-yellow-400 mb-2">Discussion Questions:</h4>
+                    <ul class="list-disc pl-5 text-sm space-y-1">
+                        <li>Which AI application do you use most often?</li>
+                        <li>Do you think AI will become more important in the next 5 years?</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Slide 3: Amazing Answers",
+                notes: `
+                    <p class="mb-2">• This is the central idea behind Prompt Engineering.</p>
+                    <p class="mb-2">• AI is not magic. It responds based on the information provided.</p>
+                    <p>• A skilled user can obtain dramatically better results from the same AI system.</p>
+                `,
+                activity: `
+                    <h4 class="font-bold text-yellow-400 mb-2">Class Vote:</h4>
+                    <p class="text-sm mb-4">Which prompt would you choose and why?</p>
+                    <h4 class="font-bold text-yellow-400 mb-2">Discussion Questions:</h4>
+                    <ul class="list-disc pl-5 text-sm space-y-1">
+                        <li>What additional information does Prompt B provide?</li>
+                        <li>How does context improve communication?</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Slide 4: Magic Genie",
+                notes: `
+                    <p class="mb-2">• This analogy works well because everyone understands wishes.</p>
+                    <p class="mb-2">• The genie is not wrong when it gives food. The instruction was simply incomplete.</p>
+                    <p>• Similarly, AI often gives poor answers because users provide incomplete instructions.</p>
+                `,
+                activity: `
+                    <h4 class="font-bold text-yellow-400 mb-2">Think-Pair-Share:</h4>
+                    <p class="text-sm mb-2">Create:</p>
+                    <ul class="list-disc pl-5 mb-4 text-sm space-y-1">
+                        <li>One vague wish</li>
+                        <li>One improved wish</li>
+                    </ul>
+                    <h4 class="font-bold text-yellow-400 mb-2">Discussion Questions:</h4>
+                    <ul class="list-disc pl-5 text-sm space-y-1">
+                        <li>Why was the second wish better?</li>
+                        <li>What details made the difference?</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Slide 5: New Language",
+                notes: `
+                    <p class="mb-2">• Many students assume Prompt Engineering requires coding.</p>
+                    <p class="mb-2">• In reality, it is closer to communication, writing, and problem solving.</p>
+                    <p>• People who can clearly express their thoughts often become effective AI users.</p>
+                `,
+                activity: `
+                    <h4 class="font-bold text-yellow-400 mb-2">Ask Students:</h4>
+                    <p class="text-sm mb-4 italic">"Can two people describe the same thing differently?"</p>
+                    <h4 class="font-bold text-yellow-400 mb-2">Discussion Questions:</h4>
+                    <ul class="list-disc pl-5 text-sm space-y-1">
+                        <li>Why do communication skills matter?</li>
+                        <li>Can misunderstandings happen even between humans?</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Slide 6: Today's Mission",
+                notes: `
+                    <p class="mb-2">• Give students a preview of the journey.</p>
+                    <p class="mb-2">• Explain that the session will include activities, polls, quizzes, demos, and real-world examples.</p>
+                    <p>• Encourage active participation because Prompt Engineering is learned by practice.</p>
+                `,
+                activity: `
+                    <h4 class="font-bold text-yellow-400 mb-2">One-Minute Reflection:</h4>
+                    <p class="text-sm mb-4 italic">Write down: "What is one thing you hope AI can help you do better?"</p>
+                    <h4 class="font-bold text-yellow-400 mb-2">Discussion Questions:</h4>
+                    <ul class="list-disc pl-5 text-sm space-y-1">
+                        <li>What are your expectations from today's session?</li>
+                        <li>Which topic sounds most interesting?</li>
+                    </ul>
+                `
+            }
+        ];
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dotsContainer = document.getElementById('slide-dots');
+        const notesContent = document.getElementById('notes-content');
+
+        // Initialize Slider
+        function init() {
+            // Create Dots
+            slides.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = `w-2.5 h-2.5 rounded-full cursor-pointer transition-colors ${i === 0 ? 'bg-ai-primary scale-125' : 'bg-gray-600 hover:bg-gray-400'}`;
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            });
+            updateUI();
+        }
+
+        function updateUI() {
+            // Update Slides
+            slides.forEach((slide, i) => {
+                if (i === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            // Update Dots
+            const dots = dotsContainer.children;
+            for (let i = 0; i < dots.length; i++) {
+                if (i === currentSlide) {
+                    dots[i].className = 'w-3 h-3 rounded-full cursor-pointer transition-colors bg-ai-primary scale-110';
+                } else {
+                    dots[i].className = 'w-2 h-2 rounded-full cursor-pointer transition-colors bg-gray-600 hover:bg-gray-400';
+                }
+            }
+
+            // Update Buttons
+            document.getElementById('btn-prev').disabled = currentSlide === 0;
+            document.getElementById('btn-next').disabled = currentSlide === slides.length - 1;
+
+            // Update Notes Drawer
+            const data = slideData[currentSlide];
+            notesContent.innerHTML = `
+                <div class="bg-blue-900/20 border border-blue-500/30 p-4 rounded-xl">
+                    <h3 class="font-bold text-blue-400 flex items-center gap-2 mb-3">
+                        <i class="ph ph-microphone-stage text-lg"></i> Speaker Notes
+                    </h3>
+                    <div class="text-sm text-gray-300">
+                        ${data.notes}
+                    </div>
+                </div>
+                <div class="bg-yellow-900/20 border border-yellow-500/30 p-4 rounded-xl mt-4">
+                    <h3 class="font-bold text-yellow-400 flex items-center gap-2 mb-3">
+                        <i class="ph ph-users-three text-lg"></i> Activity & Discussion
+                    </h3>
+                    <div class="text-sm text-gray-300">
+                        ${data.activity}
+                    </div>
+                </div>
+            `;
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateUI();
+        }
+
+        // Fullscreen API Helper
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            const activeEl = document.activeElement;
+            const capturesTextKeys = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.getAttribute('contenteditable') === 'true'
+            );
+            const capturesArrowKeys = activeEl && (
+                (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT'
+            );
+            const capturesSpacebar = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.tagName === 'BUTTON' ||
+                activeEl.getAttribute('role') === 'button'
+            );
+
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Space') {
+                if (!capturesSpacebar && !capturesArrowKeys) {
+                    nextSlide();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (!capturesArrowKeys) {
+                    prevSlide();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'f' || e.key === 'F') {
+                if (!capturesTextKeys) {
+                    toggleFullscreen();
+                    e.preventDefault();
+                }
+            }
+        });
+
+        document.addEventListener('dblclick', (e) => {
+            const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+            if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+                toggleFullscreen();
+            }
+        });
+
+        // Notes Toggle
+        function toggleNotes() {
+            document.getElementById('notes-drawer').classList.toggle('open');
+        }
+
+        // Specific Slide Interactions
+        function revealSecret() {
+            const el = document.getElementById('secret-text');
+            el.classList.add('revealed');
+            el.classList.remove('blur-secret');
+        }
+
+        // Touch Navigation (Swipe)
+        let touchstartX = 0;
+        let touchendX = 0;
+        
+        function checkDirection() {
+          if (touchendX < touchstartX - 50) nextSlide();
+          if (touchendX > touchstartX + 50) prevSlide();
+        }
+
+        document.addEventListener('touchstart', e => {
+          touchstartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+          touchendX = e.changedTouches[0].screenX;
+          checkDirection();
+        });
+
+        // Run setup
+        init();
+    </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Machine Learning Outreach Workshop Portal</title>
-    <meta name="description" content="Access the comprehensive 2-Day Machine Learning Outreach Workshop curriculum. Discover interactive presentations, Python data science libraries masterclasses, and hands-on coding labs.">
+    <meta name="description" content="Access the comprehensive 3-Day Machine Learning Outreach Workshop curriculum. Discover interactive presentations, Python data science libraries masterclasses, hands-on coding labs, and GenAI/Prompt Engineering deep dives.">
     
     <!-- Tailwind CSS for modern responsive layout -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -62,6 +62,14 @@
             box-shadow: 0 0 40px rgba(16, 185, 129, 0.15);
             border-color: rgba(16, 185, 129, 0.3);
         }
+        .hover-glow-violet:hover {
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+        .hover-glow-purple:hover {
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.15);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
     </style>
 </head>
 <body class="min-h-screen text-slate-300 flex flex-col justify-between selection:bg-indigo-500/30 selection:text-indigo-200 relative overflow-x-hidden">
@@ -80,7 +88,7 @@
             <span class="font-display font-bold text-white tracking-wide text-lg">Outreach Portal</span>
         </div>
         <div class="flex items-center gap-4 text-xs font-mono text-slate-500">
-            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Complete 2-Day Curriculum Active</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Complete 3-Day Curriculum Active</span>
         </div>
     </header>
 
@@ -103,12 +111,15 @@
 
             <!-- DYNAMIC DAY SELECTOR TABS -->
             <div class="flex justify-center pt-4">
-                <div class="inline-flex p-1.5 rounded-2xl bg-slate-950 border border-slate-900 gap-1">
+                <div class="inline-flex p-1.5 rounded-2xl bg-slate-950 border border-slate-900 gap-1 flex-wrap justify-center">
                     <button id="tab-day1" onclick="switchDay(1)" class="px-6 py-3.5 rounded-xl bg-indigo-600 border border-indigo-500 text-white font-semibold text-sm transition-all duration-300 shadow-lg shadow-indigo-600/20">
                         <i class="fa-solid fa-calendar-day mr-2"></i> Day 1: AI Foundations
                     </button>
                     <button id="tab-day2" onclick="switchDay(2)" class="px-6 py-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white font-semibold text-sm transition-all duration-300">
                         <i class="fa-solid fa-code mr-2"></i> Day 2: Python & Coding Labs
+                    </button>
+                    <button id="tab-day3" onclick="switchDay(3)" class="px-6 py-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white font-semibold text-sm transition-all duration-300">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Day 3: GenAI & Prompting
                     </button>
                 </div>
             </div>
@@ -547,6 +558,249 @@
                 </div>
             </div>
 
+            <!-- ==================== DAY 3 CONTENT SECTION ==================== -->
+            <div id="day3-content" class="space-y-16 pt-4 hidden">
+                <!-- Session 0: Data Science Mastery Assessment -->
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-900 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 border border-amber-500/20 text-sm">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold font-display text-white tracking-wide">Course Certification Assessment</h2>
+                                <p class="text-xs text-slate-500 font-light">Evaluate your comprehension of NumPy foundations, Pandas analysis pipelines, Matplotlib plots, and Scikit-Learn pipelines.</p>
+                            </div>
+                        </div>
+                        <span class="self-start sm:self-center px-3 py-1 rounded-full bg-amber-500/5 border border-amber-500/10 text-amber-400 text-[10px] font-mono uppercase tracking-wider font-semibold">Verification Exam</span>
+                    </div>
+
+                    <!-- mastery quiz card full width -->
+                    <div class="glass-panel hover-glow-amber p-8 rounded-3xl flex flex-col sm:flex-row justify-between items-center gap-6 transition-all duration-300 group hover:scale-[1.005]">
+                        <div class="space-y-4 max-w-3xl">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl group-hover:scale-105 transition-transform duration-300">
+                                    <i class="fa-solid fa-clipboard-question"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold font-display text-white group-hover:text-amber-300 transition-colors duration-300">Data Science Libraries Mastery Quiz</h3>
+                                    <p class="text-xs text-slate-550 font-mono mt-0.5">Assessment time: 30 minutes | 10 multiple-choice questions</p>
+                                </div>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-light">
+                                Test your engineering speed and library retention. Covers advanced Python syntax vectors, indexing masks, aggregation operations, KNN math, regression pipelines, and clustering metrics.
+                            </p>
+                        </div>
+                        <a href="day3_data_science_mastery_quiz.html" class="w-full sm:w-auto py-3.5 px-8 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-center text-sm transition-all duration-300 shadow-lg shadow-amber-600/10 flex items-center justify-center gap-2 whitespace-nowrap shrink-0 group-hover:translate-y-[-2px]">
+                            Start Mastery Quiz <i class="fa-solid fa-play text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Session 1: Generative AI & Creative Models -->
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-900 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center text-violet-400 border border-violet-500/20 text-sm">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold font-display text-white tracking-wide">Session 1: Generative AI & Creative Models</h2>
+                                <p class="text-xs text-slate-500 font-light">Unlock semantic weights, vocabulary encoding, token context buffers, and Responsible AI guidelines.</p>
+                            </div>
+                        </div>
+                        <span class="self-start sm:self-center px-3 py-1 rounded-full bg-violet-500/5 border border-violet-500/10 text-violet-400 text-[10px] font-mono uppercase tracking-wider font-semibold">Morning Session</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Module 1: Unlocking Generative AI -->
+                        <div class="glass-panel hover-glow-violet p-6 rounded-3xl flex flex-col justify-between space-y-4 transition-all duration-300 group hover:scale-[1.01]">
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center text-lg group-hover:scale-105 transition-transform duration-300">
+                                        <i class="fa-solid fa-shapes"></i>
+                                    </div>
+                                    <span class="px-2 py-0.5 bg-slate-900 border border-slate-850 text-slate-500 rounded-md text-[9px] font-mono uppercase font-bold tracking-wider">Part 1</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <h3 class="text-lg font-bold font-display text-white group-hover:text-violet-300 transition-colors duration-300">GenAI Paradigm</h3>
+                                    <p class="text-xs text-slate-400 leading-relaxed font-light">
+                                        Contrast GenAI with traditional ML pipelines. Dive into text-generation (LLMs), image-generation systems, and run interactive classroom polls.
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="day3_session1_1.html" class="w-full py-2.5 px-4 rounded-xl bg-violet-600 hover:bg-violet-550 text-white font-semibold text-center text-xs transition-all duration-300 shadow-md shadow-violet-600/10 flex items-center justify-center gap-1.5">
+                                Launch Part 1 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                            </a>
+                        </div>
+
+                        <!-- Module 2: Vocabulary & Embedding Journeys -->
+                        <div class="glass-panel hover-glow-violet p-6 rounded-3xl flex flex-col justify-between space-y-4 transition-all duration-300 group hover:scale-[1.01]">
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center text-lg group-hover:scale-105 transition-transform duration-300">
+                                        <i class="fa-solid fa-route"></i>
+                                    </div>
+                                    <span class="px-2 py-0.5 bg-slate-900 border border-slate-850 text-slate-500 rounded-md text-[9px] font-mono uppercase font-bold tracking-wider">Part 2</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <h3 class="text-lg font-bold font-display text-white group-hover:text-violet-300 transition-colors duration-300">The Model Journey</h3>
+                                    <p class="text-xs text-slate-400 leading-relaxed font-light">
+                                        Follow how a model maps raw words into token lists, vector spaces, semantic alignments, attention patterns, and outputs text.
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="day3_session1_2.html" class="w-full py-2.5 px-4 rounded-xl bg-violet-600 hover:bg-violet-550 text-white font-semibold text-center text-xs transition-all duration-300 shadow-md shadow-violet-600/10 flex items-center justify-center gap-1.5">
+                                Launch Part 2 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                            </a>
+                        </div>
+
+                        <!-- Module 3: Limitations & Responsible AI -->
+                        <div class="glass-panel hover-glow-violet p-6 rounded-3xl flex flex-col justify-between space-y-4 transition-all duration-300 group hover:scale-[1.01]">
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center text-lg group-hover:scale-105 transition-transform duration-300">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                    </div>
+                                    <span class="px-2 py-0.5 bg-slate-900 border border-slate-850 text-slate-500 rounded-md text-[9px] font-mono uppercase font-bold tracking-wider">Part 3</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <h3 class="text-lg font-bold font-display text-white group-hover:text-violet-300 transition-colors duration-300">Responsible AI</h3>
+                                    <p class="text-xs text-slate-400 leading-relaxed font-light">
+                                        Analyze model flaws, logical hallucinations, dataset training biases, ethical risk limits, and practical evaluation methods.
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="day3_session1_3.html" class="w-full py-2.5 px-4 rounded-xl bg-violet-600 hover:bg-violet-550 text-white font-semibold text-center text-xs transition-all duration-300 shadow-md shadow-violet-600/10 flex items-center justify-center gap-1.5">
+                                Launch Part 3 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session 2: Prompt Engineering suite -->
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-900 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/20 text-sm">
+                                <i class="fa-solid fa-terminal"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold font-display text-white tracking-wide">Session 2: Prompt Engineering Mastery</h2>
+                                <p class="text-xs text-slate-500 font-light">Wield systematic instructions, zero/few-shot context cues, temperature bounds, and real-world debugging workflows.</p>
+                            </div>
+                        </div>
+                        <span class="self-start sm:self-center px-3 py-1 rounded-full bg-purple-500/5 border border-purple-500/10 text-purple-400 text-[10px] font-mono uppercase tracking-wider font-semibold">Afternoon Lecture</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Card 1: Modules 1 & 2 -->
+                        <div class="glass-panel hover-glow-purple p-8 rounded-3xl flex flex-col justify-between space-y-6 transition-all duration-300 group hover:scale-[1.01]">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl group-hover:scale-105 transition-transform duration-300">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                    </div>
+                                    <span class="px-2.5 py-1 bg-slate-900 border border-slate-850 text-slate-500 rounded-lg text-[10px] font-mono uppercase font-bold tracking-wider font-semibold">Modules 1 & 2</span>
+                                </div>
+                                <div class="space-y-2">
+                                    <h3 class="text-xl font-bold font-display text-white group-hover:text-purple-300 transition-colors duration-300">AI Prompting & Interface Basics</h3>
+                                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-light">
+                                        Discover how natural language acts as a software interface. Learn the definition of a prompt, instructions, inputs, and context rules.
+                                    </p>
+                                </div>
+                                <div class="pt-4 border-t border-slate-850/40 flex flex-wrap gap-3">
+                                    <a href="day3_session2_1.html" class="flex-1 py-2 text-center text-xs font-semibold text-purple-400 bg-purple-500/5 hover:bg-purple-500/10 border border-purple-500/15 hover:border-purple-500/30 rounded-xl transition duration-300">
+                                        Module 1 Slides
+                                    </a>
+                                    <a href="day3_session2_2.html" class="flex-1 py-2 text-center text-xs font-semibold text-purple-400 bg-purple-500/5 hover:bg-purple-500/10 border border-purple-500/15 hover:border-purple-500/30 rounded-xl transition duration-300">
+                                        Module 2 Slides
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Modules 3 & 4 -->
+                        <div class="glass-panel hover-glow-purple p-8 rounded-3xl flex flex-col justify-between space-y-6 transition-all duration-300 group hover:scale-[1.01]">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl group-hover:scale-105 transition-transform duration-300">
+                                        <i class="fa-solid fa-sliders"></i>
+                                    </div>
+                                    <span class="px-2.5 py-1 bg-slate-900 border border-slate-850 text-slate-500 rounded-lg text-[10px] font-mono uppercase font-bold tracking-wider font-semibold">Modules 3 & 4</span>
+                                </div>
+                                <div class="space-y-2">
+                                    <h3 class="text-xl font-bold font-display text-white group-hover:text-purple-300 transition-colors duration-300">Prompt Roles & Techniques</h3>
+                                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-light">
+                                        Master systematic techniques: role delegation (persona prompting), structured output rules, delimiters, and zero-shot vs few-shot paradigms.
+                                    </p>
+                                </div>
+                                <div class="pt-4 border-t border-slate-850/40 flex flex-wrap gap-3">
+                                    <a href="day3_session2_3.html" class="flex-1 py-2 text-center text-xs font-semibold text-purple-400 bg-purple-500/5 hover:bg-purple-500/10 border border-purple-500/15 hover:border-purple-500/30 rounded-xl transition duration-300">
+                                        Module 3 Slides
+                                    </a>
+                                    <a href="day3_session2_4.html" class="flex-1 py-2 text-center text-xs font-semibold text-purple-400 bg-purple-500/5 hover:bg-purple-500/10 border border-purple-500/15 hover:border-purple-500/30 rounded-xl transition duration-300">
+                                        Module 4 Slides
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Modules 5 & 6 -->
+                        <div class="glass-panel hover-glow-purple p-8 rounded-3xl flex flex-col justify-between space-y-6 transition-all duration-300 group hover:scale-[1.01]">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl group-hover:scale-105 transition-transform duration-300">
+                                        <i class="fa-solid fa-microchip"></i>
+                                    </div>
+                                    <span class="px-2.5 py-1 bg-slate-900 border border-slate-850 text-slate-550 rounded-lg text-[10px] font-mono uppercase font-bold tracking-wider font-semibold">Modules 5 & 6</span>
+                                </div>
+                                <div class="space-y-2">
+                                    <h3 class="text-xl font-bold font-display text-white group-hover:text-purple-300 transition-colors duration-300">Anatomy & Advanced Optimization</h3>
+                                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-light">
+                                        Deconstruct the anatomy of a complete prompt. Apply Chain-of-Thought reasoning, temperature controls, context lengths, and stop sequences.
+                                    </p>
+                                </div>
+                                <div class="pt-4 border-t border-slate-850/40 flex flex-wrap gap-3">
+                                    <a href="day3_session2_5.html" class="flex-1 py-2 text-center text-xs font-semibold text-purple-400 bg-purple-500/5 hover:bg-purple-500/10 border border-purple-500/15 hover:border-purple-500/30 rounded-xl transition duration-300">
+                                        Module 5 Slides
+                                    </a>
+                                    <a href="day3_session2_6.html" class="flex-1 py-2 text-center text-xs font-semibold text-purple-400 bg-purple-500/5 hover:bg-purple-500/10 border border-purple-500/15 hover:border-purple-500/30 rounded-xl transition duration-300">
+                                        Module 6 Slides
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Modules 7 & 8 -->
+                        <div class="glass-panel hover-glow-purple p-8 rounded-3xl flex flex-col justify-between space-y-6 transition-all duration-300 group hover:scale-[1.01]">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl group-hover:scale-105 transition-transform duration-300">
+                                        <i class="fa-solid fa-briefcase"></i>
+                                    </div>
+                                    <span class="px-2.5 py-1 bg-slate-900 border border-slate-850 text-slate-500 rounded-lg text-[10px] font-mono uppercase font-bold tracking-wider font-semibold">Modules 7 & 8</span>
+                                </div>
+                                <div class="space-y-2">
+                                    <h3 class="text-xl font-bold font-display text-white group-hover:text-purple-300 transition-colors duration-300">Applications & Safe Future</h3>
+                                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-light">
+                                        Examine real-world case studies in code synthesis, debugging, document summary, and address jailbreaking risks and responsible design strategies.
+                                    </p>
+                                </div>
+                                <div class="pt-4 border-t border-slate-850/40 flex flex-wrap gap-3">
+                                    <a href="day3_session2_7.html" class="flex-1 py-2 text-center text-xs font-semibold text-purple-400 bg-purple-500/5 hover:bg-purple-500/10 border border-purple-500/15 hover:border-purple-500/30 rounded-xl transition duration-300">
+                                        Module 7 Slides
+                                    </a>
+                                    <a href="day3_session2_8.html" class="flex-1 py-2 text-center text-xs font-semibold text-purple-400 bg-purple-500/5 hover:bg-purple-500/10 border border-purple-500/15 hover:border-purple-500/30 rounded-xl transition duration-300">
+                                        Module 8 Slides
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Bottom Support / Resources Banner -->
             <div class="glass-panel p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
                 <div class="flex items-center gap-4">
@@ -576,29 +830,47 @@
         function switchDay(day) {
             const d1Content = document.getElementById('day1-content');
             const d2Content = document.getElementById('day2-content');
+            const d3Content = document.getElementById('day3-content');
             const d1Tab = document.getElementById('tab-day1');
             const d2Tab = document.getElementById('tab-day2');
+            const d3Tab = document.getElementById('tab-day3');
             
             if (day === 1) {
-                // Show Day 1, Hide Day 2
+                // Show Day 1, Hide Day 2 & Day 3
                 d1Content.classList.remove('hidden');
                 d2Content.classList.add('hidden');
+                d3Content.classList.add('hidden');
                 
                 // Style Tab 1 Active
                 d1Tab.className = "px-6 py-3.5 rounded-xl bg-indigo-600 border border-indigo-500 text-white font-semibold text-sm transition-all duration-300 shadow-lg shadow-indigo-600/20";
                 
-                // Style Tab 2 Inactive
+                // Style Tab 2 & 3 Inactive
                 d2Tab.className = "px-6 py-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white font-semibold text-sm transition-all duration-300";
-            } else {
-                // Show Day 2, Hide Day 1
+                d3Tab.className = "px-6 py-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white font-semibold text-sm transition-all duration-300";
+            } else if (day === 2) {
+                // Show Day 2, Hide Day 1 & Day 3
                 d1Content.classList.add('hidden');
                 d2Content.classList.remove('hidden');
+                d3Content.classList.add('hidden');
                 
                 // Style Tab 2 Active
                 d2Tab.className = "px-6 py-3.5 rounded-xl bg-pink-600 border border-pink-500 text-white font-semibold text-sm transition-all duration-300 shadow-lg shadow-pink-600/20";
                 
-                // Style Tab 1 Inactive
+                // Style Tab 1 & 3 Inactive
                 d1Tab.className = "px-6 py-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white font-semibold text-sm transition-all duration-300";
+                d3Tab.className = "px-6 py-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white font-semibold text-sm transition-all duration-300";
+            } else {
+                // Show Day 3, Hide Day 1 & Day 2
+                d1Content.classList.add('hidden');
+                d2Content.classList.add('hidden');
+                d3Content.classList.remove('hidden');
+                
+                // Style Tab 3 Active
+                d3Tab.className = "px-6 py-3.5 rounded-xl bg-violet-600 border border-violet-500 text-white font-semibold text-sm transition-all duration-300 shadow-lg shadow-violet-600/20";
+                
+                // Style Tab 1 & 2 Inactive
+                d1Tab.className = "px-6 py-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white font-semibold text-sm transition-all duration-300";
+                d2Tab.className = "px-6 py-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white font-semibold text-sm transition-all duration-300";
             }
         }
     </script>

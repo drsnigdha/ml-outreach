@@ -1,6 +1,6 @@
 # 🎓 Machine Learning Outreach Workshop Portal
 
-Welcome to the **Machine Learning Outreach Workshop** repository! This project serves as a comprehensive, highly engaging, and interactive 2-Day curriculum designed to introduce students to the core concepts of Machine Learning (ML), Natural Language Processing (NLP), Python data science, and career paths in Artificial Intelligence.
+Welcome to the **Machine Learning Outreach Workshop** repository! This project serves as a comprehensive, highly engaging, and interactive 3-Day curriculum designed to introduce students to the core concepts of Machine Learning (ML), Natural Language Processing (NLP), Python data science, Generative AI, and Prompt Engineering.
 
 This repository hosts both the **Student & Instructor Course Portal** and the individual presentation decks and interactive coding environments, fully optimized for modern classroom delivery and self-paced student learning.
 
@@ -10,7 +10,7 @@ This repository hosts both the **Student & Instructor Course Portal** and the in
 
 ## 🏫 Workshop Curriculum
 
-The workshop is a comprehensive **2-Day training program** divided into widescreen-optimized presentation sessions and interactive coding environments:
+The workshop is a comprehensive **3-Day training program** divided into widescreen-optimized presentation sessions and interactive coding environments:
 
 ### 📅 Day 1: AI Foundations & Deep Dive
 
@@ -62,6 +62,38 @@ The workshop is a comprehensive **2-Day training program** divided into widescre
     Code Gradient Descent linear regression from scratch, train logistic regressions, and evaluate classifications using Confusion Matrices.
 *   🧪 **[Lab 4: NLP & K-Means Clustering](https://drsnigdha.github.io/ml-outreach/day2_lab4.html)**
     Extract TF-IDF text features, build sentiment classifiers, run Elbow Method metrics, and visualize K-Means clustering.
+
+---
+
+### 📅 Day 3: Generative AI & Prompt Engineering
+
+#### 🌅 Assessment & Session 1: Generative AI & Creative Models
+*   📝 **[Assessment: Data Science Libraries Mastery Quiz](https://drsnigdha.github.io/ml-outreach/day3_data_science_mastery_quiz.html)**
+    Comprehensive MCQ certification exam evaluating array slicing, DataFrame masking, plotting subplots, and training ML estimators.
+*   🎨 **[Session 1 Part 1: Unlocking Generative AI](https://drsnigdha.github.io/ml-outreach/day3_session1_1.html)**
+    Introduction to generative cognitive models, ChatGPT vs traditional paradigms, and text/image generators.
+*   📐 **[Session 1 Part 2: Generative AI Learning Journey](https://drsnigdha.github.io/ml-outreach/day3_session1_2.html)**
+    Deep dive into how models encode vocabulary, calculate semantic dimensions, and apply context-aware attention weights.
+*   ⚖️ **[Session 1 Part 3: Limitations, Risks, and Responsible AI](https://drsnigdha.github.io/ml-outreach/day3_session1_3.html)**
+    Navigate logical hallucinations, training dataset biases, jailbreaking risk thresholds, and safe usage guardrails.
+
+#### 🌇 Session 2: Prompt Engineering Mastery Suite
+*   💡 **[Module 1: Welcome to the World of AI](https://drsnigdha.github.io/ml-outreach/day3_session2_1.html)**
+    Learn inputs, outputs, Natural Language interfaces, and how prompts act as compiler instructions.
+*   💬 **[Module 2: What is a Prompt?](https://drsnigdha.github.io/ml-outreach/day3_session2_2.html)**
+    Examine the structure of instruction queries, contextual settings, and task executions.
+*   ⚙️ **[Module 3: Role of Prompt Engineering](https://drsnigdha.github.io/ml-outreach/day3_session2_3.html)**
+    Explore Persona-based prompting, system instructions, and steering model behaviors.
+*   🔧 **[Module 4: Types of Prompts](https://drsnigdha.github.io/ml-outreach/day3_session2_4.html)**
+    Master zero-shot, single-shot, and few-shot classification prompts with custom delimiters.
+*   📊 **[Module 5: The Anatomy of a Great Prompt](https://drsnigdha.github.io/ml-outreach/day3_session2_5.html)**
+    Deconstruct contextual constraints, reference inputs, output formatting rules, and delimiters.
+*   ⚙️ **[Module 6: Advanced Prompt Engineering & Optimization](https://drsnigdha.github.io/ml-outreach/day3_session2_6.html)**
+    Tune model parameters: temperatures, tokens, top-P limits, Chain-of-Thought, and stop sequences.
+*   💼 **[Module 7: Real-World Applications & Case Studies](https://drsnigdha.github.io/ml-outreach/day3_session2_7.html)**
+    Apply prompting to code generation, syntax debugging, document summaries, and email drafts.
+*   🛡️ **[Module 8: Responsible AI & The Future](https://drsnigdha.github.io/ml-outreach/day3_session2_8.html)**
+    Explore safety guardrails, AI jailbreaks, prompt injection, and ethical design principles.
 
 ---
 
@@ -127,7 +159,7 @@ To activate these hooks on your local machine, run the following setup script:
 chmod +x setup_hooks.sh && ./setup_hooks.sh
 ```
 
-Once activated, Git will automatically run the structural and compilation validators on **all 12 presentations and laboratory workspaces** every time you run `git commit`. If there are any errors, the commit will be blocked and you will receive a detailed report, ensuring the live website is always 100% stable and correct!
+Once activated, Git will automatically run the structural and compilation validators on **all 24 presentations, assessments, and laboratory workspaces** every time you run `git commit`. If there are any errors, the commit will be blocked and you will receive a detailed report, ensuring the live website is always 100% stable and correct!
 
 ---
 

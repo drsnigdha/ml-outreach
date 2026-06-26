@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 2: What is a Prompt?</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#030712',      /* Gray 950 */
+                            card: '#111827',      /* Gray 900 */
+                            border: '#1f2937',    /* Gray 800 */
+                            accentCyan: '#06b6d4',/* Cyan 500 */
+                            accentGreen: '#10b981',/* Emerald 500 */
+                            accentPurple: '#8b5cf6'/* Violet 500 */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            overflow: hidden;
+            user-select: none;
+        }
+        .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
+        .font-code {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom scrollbar for speaker notes */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #374151;
+        }
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Custom slide transitions */
+        .slide-fade {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-hidden {
+            opacity: 0;
+            transform: translateX(50px) scale(0.98);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .slide-active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            pointer-events: auto;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        /* Pulsing dot for pipeline */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.33); opacity: 1; }
+            80%, 100% { opacity: 0; }
+        }
+        .pulse-active::before {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 300%;
+            height: 300%;
+            box-sizing: border-box;
+            margin-left: -100%;
+            margin-top: -100%;
+            border-radius: 45px;
+            background-color: #06b6d4;
+            animation: pulse-ring 1.25s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+        }
+    </style>
+</head>
+<body class="text-gray-100 flex h-screen w-screen overflow-hidden select-none">
+
+    <!-- MAIN PRESENTATION LAYER (LEFT SIDE / MAIN PORTION) -->
+    <div class="flex-grow flex flex-col justify-between h-full relative z-10 transition-all duration-300" id="deck-wrapper">
+        
+        <!-- HEADER / NAVIGATION BAR -->
+        <header class="glass-panel mx-6 mt-6 px-6 py-4 rounded-2xl flex justify-between items-center z-20">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-brand-accentCyan to-brand-accentGreen p-2.5 rounded-xl text-brand-dark flex items-center justify-center">
+                    <i class="fa-solid fa-graduation-cap text-lg font-bold"></i>
+                </div>
+                <div>
+                    <h1 class="font-display font-semibold text-sm tracking-wide text-gray-400 uppercase">Interactive Classroom Deck</h1>
+                    <p class="font-display text-lg font-bold bg-gradient-to-r from-brand-accentCyan to-brand-accentGreen bg-clip-text text-transparent">SECTION 2: WHAT IS A PROMPT?</p>
+                </div>
+            </div>
+            <!-- Quick status tracker -->
+            <div class="flex items-center gap-4">
+                <span class="text-xs bg-brand-border text-gray-400 px-3 py-1.5 rounded-full font-medium flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-brand-accentGreen animate-pulse"></span> Mode: Presenter View Available
+                </span>
+                <button onclick="togglePresenterMode()" class="px-4 py-2 bg-brand-card hover:bg-brand-border border border-brand-border text-xs rounded-xl font-semibold tracking-wide transition-all duration-200 flex items-center gap-2 text-brand-accentCyan">
+                    <i class="fa-solid fa-chalkboard-user"></i> Toggle Presenter Notes
+                </button>
+            </div>
+        </header>
+
+        <!-- SLIDES CONTAINER -->
+        <main class="flex-grow relative px-6 py-4 overflow-hidden flex items-center justify-center">
+            
+            <!-- SLIDE 1 (Renumbered Slide 1): WHAT IS A PROMPT? -->
+            <div id="slide-0" class="slide-fade slide-active flex flex-col justify-between h-full max-w-7xl mx-auto w-full">
+                <div class="grid grid-cols-12 gap-8 items-center my-auto w-full">
+                    <div class="col-span-7 space-y-6">
+                        <div class="inline-block px-3 py-1 bg-brand-accentCyan/10 border border-brand-accentCyan/20 text-brand-accentCyan text-xs rounded-full font-bold uppercase tracking-wider">Slide 1: Introduction</div>
+                        <h2 class="font-display text-5xl font-black tracking-tight leading-tight">Every conversation starts with an <span class="bg-gradient-to-r from-brand-accentCyan to-brand-accentGreen bg-clip-text text-transparent">Input</span>.</h2>
+                        <p class="text-lg text-gray-400 leading-relaxed max-w-xl">When interacting with Artificial Intelligence, we don't code anymore. We use natural language to communicate our intent. This instruction is a <strong class="text-brand-accentCyan">Prompt</strong>.</p>
+                        
+                        <!-- Interactive Selector -->
+                        <div class="space-y-3">
+                            <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Click to view Prompt Categories:</p>
+                            <div class="grid grid-cols-2 gap-3 max-w-xl">
+                                <button onclick="selectPromptCategory('question', this)" class="prompt-cat-btn flex items-center gap-3 p-3 bg-brand-card hover:bg-brand-border border border-brand-accentCyan/30 rounded-xl text-left transition-all duration-200 shadow-md">
+                                    <span class="w-8 h-8 rounded-lg bg-brand-accentCyan/15 flex items-center justify-center text-brand-accentCyan"><i class="fa-solid fa-circle-question"></i></span>
+                                    <div>
+                                        <p class="text-sm font-bold text-white mb-0">A Question</p>
+                                        <p class="text-xs text-gray-400">Seeking answers</p>
+                                    </div>
+                                </button>
+                                <button onclick="selectPromptCategory('instruction', this)" class="prompt-cat-btn flex items-center gap-3 p-3 bg-brand-card hover:bg-brand-border border border-brand-border rounded-xl text-left transition-all duration-200">
+                                    <span class="w-8 h-8 rounded-lg bg-brand-accentGreen/15 flex items-center justify-center text-brand-accentGreen"><i class="fa-solid fa-terminal"></i></span>
+                                    <div>
+                                        <p class="text-sm font-bold text-white mb-0">An Instruction</p>
+                                        <p class="text-xs text-gray-400">Ordering creations</p>
+                                    </div>
+                                </button>
+                                <button onclick="selectPromptCategory('request', this)" class="prompt-cat-btn flex items-center gap-3 p-3 bg-brand-card hover:bg-brand-border border border-brand-border rounded-xl text-left transition-all duration-200">
+                                    <span class="w-8 h-8 rounded-lg bg-brand-accentPurple/15 flex items-center justify-center text-brand-accentPurple"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                                    <div>
+                                        <p class="text-sm font-bold text-white mb-0">A Request</p>
+                                        <p class="text-xs text-gray-400">Compressing files</p>
+                                    </div>
+                                </button>
+                                <button onclick="selectPromptCategory('task', this)" class="prompt-cat-btn flex items-center gap-3 p-3 bg-brand-card hover:bg-brand-border border border-brand-border rounded-xl text-left transition-all duration-200">
+                                    <span class="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-500"><i class="fa-solid fa-calendar-check"></i></span>
+                                    <div>
+                                        <p class="text-sm font-bold text-white mb-0">A Task</p>
+                                        <p class="text-xs text-gray-400">Building structures</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Live Preview Box -->
+                    <div class="col-span-5 h-[420px] bg-brand-card border border-brand-border rounded-3xl p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-brand-accentCyan/5 via-transparent to-brand-accentGreen/5 pointer-events-none"></div>
+                        <div class="flex items-center justify-between border-b border-brand-border pb-4 z-10">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                            </div>
+                            <span class="text-xs font-code text-gray-500">PROMPT_ENGINEER_SIM.EXE</span>
+                        </div>
+
+                        <!-- Live simulation message box -->
+                        <div class="flex-grow flex flex-col justify-center py-6 gap-4 z-10">
+                            <div class="bg-brand-dark/80 border border-brand-border p-4 rounded-2xl relative">
+                                <span class="absolute -top-3 left-4 bg-brand-accentCyan/10 border border-brand-accentCyan/20 text-brand-accentCyan text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">Human Input</span>
+                                <p id="interactive-prompt" class="font-code text-sm text-gray-200 transition-all duration-300">"What is Artificial Intelligence?"</p>
+                            </div>
+                            <div class="bg-brand-dark/50 border border-brand-border p-4 rounded-2xl relative">
+                                <span class="absolute -top-3 left-4 bg-brand-accentGreen/10 border border-brand-accentGreen/20 text-brand-accentGreen text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">AI Output</span>
+                                <p id="interactive-response" class="font-code text-xs text-gray-400 leading-relaxed transition-all duration-300">Artificial Intelligence is a branch of computer science focused on building smart machines capable of performing tasks that typically require human intelligence, such as reasoning, problem-solving, and decision-making.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-brand-dark/40 border border-brand-border/60 p-3 rounded-xl flex items-center gap-3 z-10">
+                            <span class="text-xl">🗣️</span>
+                            <p class="text-xs text-gray-400 font-medium">Any instruction, request, or simple speech you send to an AI model is considered a prompt.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 2 (Renumbered Slide 2): PROMPTS ARE EVERYWHERE -->
+            <div id="slide-1" class="slide-fade slide-hidden flex flex-col justify-between h-full max-w-7xl mx-auto w-full">
+                <div class="grid grid-cols-12 gap-8 items-center my-auto w-full">
+                    <div class="col-span-5 space-y-6">
+                        <div class="inline-block px-3 py-1 bg-brand-accentGreen/10 border border-brand-accentGreen/20 text-brand-accentGreen text-xs rounded-full font-bold uppercase tracking-wider">Slide 2: Everyday Examples</div>
+                        <h2 class="font-display text-5xl font-black tracking-tight leading-tight">You are already a <span class="bg-gradient-to-r from-brand-accentGreen to-brand-accentCyan bg-clip-text text-transparent">Prompter</span>.</h2>
+                        <p class="text-lg text-gray-400 leading-relaxed">From seeking directions to asking questions, prompting is already the hidden steering wheel of your digital life. AI tools take this exact practice to a highly detailed, conversational scale.</p>
+                        
+                        <div class="bg-brand-card/60 border border-brand-border p-4 rounded-2xl space-y-2">
+                            <p class="text-sm font-semibold text-brand-accentCyan flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info"></i> The Core Shift:
+                            </p>
+                            <p class="text-sm text-gray-400">Traditional prompts are rigid and structured around keywords. Modern AI prompts understand context, emotion, and abstract relationships in natural language.</p>
+                        </div>
+                    </div>
+
+                    <!-- Collage of prompts in daily apps -->
+                    <div class="col-span-7 grid grid-cols-2 gap-4 h-[440px] items-stretch">
+                        <div class="bg-brand-card/40 border border-brand-border p-5 rounded-2xl hover:border-brand-accentCyan/30 transition-all duration-300 flex flex-col justify-between group">
+                            <div class="flex items-center justify-between">
+                                <span class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 text-lg"><i class="fa-brands fa-google"></i></span>
+                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Search Engine</span>
+                            </div>
+                            <div class="my-4">
+                                <p class="text-xs text-gray-500 mb-1">Traditional Search Query</p>
+                                <p class="font-code text-sm text-gray-300">"Best pizza near me"</p>
+                            </div>
+                            <div class="w-full bg-brand-dark/60 h-2 rounded-full overflow-hidden">
+                                <div class="bg-blue-500 h-full w-1/4 group-hover:w-full transition-all duration-1000"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-brand-card/40 border border-brand-border p-5 rounded-2xl hover:border-purple-500/30 transition-all duration-300 flex flex-col justify-between group">
+                            <div class="flex items-center justify-between">
+                                <span class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 text-lg"><i class="fa-solid fa-microphone-lines"></i></span>
+                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Voice Assistant</span>
+                            </div>
+                            <div class="my-4">
+                                <p class="text-xs text-gray-500 mb-1">Spoken Instruction</p>
+                                <p class="font-code text-sm text-gray-300">"Siri, set an alarm for 6 AM"</p>
+                            </div>
+                            <div class="w-full bg-brand-dark/60 h-2 rounded-full overflow-hidden">
+                                <div class="bg-purple-500 h-full w-2/5 group-hover:w-full transition-all duration-1000"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-brand-card/40 border border-brand-border p-5 rounded-2xl hover:border-rose-500/30 transition-all duration-300 flex flex-col justify-between group">
+                            <div class="flex items-center justify-between">
+                                <span class="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500 text-lg"><i class="fa-solid fa-location-arrow"></i></span>
+                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">GPS Navigation</span>
+                            </div>
+                            <div class="my-4">
+                                <p class="text-xs text-gray-500 mb-1">Destination Instruction</p>
+                                <p class="font-code text-sm text-gray-300">"Take me to Delhi Airport"</p>
+                            </div>
+                            <div class="w-full bg-brand-dark/60 h-2 rounded-full overflow-hidden">
+                                <div class="bg-rose-500 h-full w-1/2 group-hover:w-full transition-all duration-1000"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-brand-card/40 border border-brand-border p-5 rounded-2xl hover:border-brand-accentGreen/30 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-tr from-brand-accentGreen/5 to-transparent pointer-events-none"></div>
+                            <div class="flex items-center justify-between z-10">
+                                <span class="w-10 h-10 rounded-xl bg-brand-accentGreen/10 flex items-center justify-center text-brand-accentGreen text-lg"><i class="fa-solid fa-robot"></i></span>
+                                <span class="text-[10px] text-brand-accentGreen font-bold uppercase tracking-wider">AI Assistant</span>
+                            </div>
+                            <div class="my-4 z-10">
+                                <p class="text-xs text-gray-500 mb-1">Conversational AI Prompt</p>
+                                <p class="font-code text-sm text-gray-100">"Explain gravity using simple examples..."</p>
+                            </div>
+                            <div class="w-full bg-brand-dark/60 h-2 rounded-full overflow-hidden z-10">
+                                <div class="bg-brand-accentGreen h-full w-[85%] group-hover:w-full transition-all duration-1000"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 3 (Renumbered Slide 3): HOW DOES AI UNDERSTAND A PROMPT? -->
+            <div id="slide-2" class="slide-fade slide-hidden flex flex-col justify-between h-full max-w-7xl mx-auto w-full">
+                <div class="space-y-4 my-auto w-full">
+                    <div class="text-center space-y-2 mb-6">
+                        <div class="inline-block px-3 py-1 bg-brand-accentPurple/10 border border-brand-accentPurple/20 text-brand-accentPurple text-xs rounded-full font-bold uppercase tracking-wider">Slide 3: Under the Hood</div>
+                        <h2 class="font-display text-4xl font-black tracking-tight">How Does AI <span class="bg-gradient-to-r from-brand-accentPurple to-brand-accentCyan bg-clip-text text-transparent">Understand</span> Your Request?</h2>
+                        <p class="text-gray-400 max-w-xl mx-auto">AI models process and translate raw words into mathematical patterns to predict responses.</p>
+                    </div>
+
+                    <!-- Dynamic Pipeline Simulator -->
+                    <div class="grid grid-cols-4 gap-4 relative">
+                        <!-- Connecting arrows layer -->
+                        <div class="absolute top-[80px] left-0 w-full h-[2px] bg-brand-border z-0 hidden lg:block"></div>
+                        
+                        <!-- Step 1 Card -->
+                        <button onclick="activatePipelineStep(0)" class="pipeline-card z-10 p-5 rounded-2xl bg-brand-card border border-brand-accentPurple text-left relative flex flex-col justify-between h-[230px] transition-all duration-300">
+                            <span class="absolute top-4 right-4 w-8 h-8 rounded-full bg-brand-accentPurple/15 text-brand-accentPurple flex items-center justify-center font-bold text-sm">01</span>
+                            <div class="space-y-3 mt-4">
+                                <h3 class="font-display text-lg font-bold text-brand-accentPurple">Prompt Input</h3>
+                                <p class="text-xs text-gray-400">You send user queries or custom instructions directly to the context window.</p>
+                            </div>
+                            <div class="p-3 bg-brand-dark/60 border border-brand-border rounded-xl font-code text-[11px] text-gray-300 mt-2 truncate w-full">"Explain photosynthesis"</div>
+                        </button>
+
+                        <!-- Step 2 Card -->
+                        <button onclick="activatePipelineStep(1)" class="pipeline-card z-10 p-5 rounded-2xl bg-brand-card border border-brand-border text-left relative flex flex-col justify-between h-[230px] transition-all duration-300">
+                            <span class="absolute top-4 right-4 w-8 h-8 rounded-full bg-brand-border text-gray-400 flex items-center justify-center font-bold text-sm">02</span>
+                            <div class="space-y-3 mt-4">
+                                <h3 class="font-display text-lg font-bold text-white transition-all duration-300">Analyze Context</h3>
+                                <p class="text-xs text-gray-400">The model breaks text into numerical tokens and analyzes contextual weights.</p>
+                            </div>
+                            <div class="flex gap-1.5 mt-2 overflow-hidden flex-wrap">
+                                <span class="px-1.5 py-0.5 bg-brand-border rounded text-[9px] font-code text-gray-400">Ex</span>
+                                <span class="px-1.5 py-0.5 bg-brand-border rounded text-[9px] font-code text-gray-400">plain</span>
+                                <span class="px-1.5 py-0.5 bg-brand-border rounded text-[9px] font-code text-gray-400">photo</span>
+                                <span class="px-1.5 py-0.5 bg-brand-border rounded text-[9px] font-code text-gray-400">syn</span>
+                            </div>
+                        </button>
+
+                        <!-- Step 3 Card -->
+                        <button onclick="activatePipelineStep(2)" class="pipeline-card z-10 p-5 rounded-2xl bg-brand-card border border-brand-border text-left relative flex flex-col justify-between h-[230px] transition-all duration-300">
+                            <span class="absolute top-4 right-4 w-8 h-8 rounded-full bg-brand-border text-gray-400 flex items-center justify-center font-bold text-sm">03</span>
+                            <div class="space-y-3 mt-4">
+                                <h3 class="font-display text-lg font-bold text-white transition-all duration-300">Predict Response</h3>
+                                <p class="text-xs text-gray-400">The AI model calculates probabilities to determine the next logically useful tokens.</p>
+                            </div>
+                            <div class="p-3 bg-brand-dark/40 border border-brand-border rounded-xl flex items-center gap-1.5 mt-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-brand-accentCyan animate-pulse"></span>
+                                <span class="text-[10px] font-code text-gray-400">calculating weights...</span>
+                            </div>
+                        </button>
+
+                        <!-- Step 4 Card -->
+                        <button onclick="activatePipelineStep(3)" class="pipeline-card z-10 p-5 rounded-2xl bg-brand-card border border-brand-border text-left relative flex flex-col justify-between h-[230px] transition-all duration-300">
+                            <span class="absolute top-4 right-4 w-8 h-8 rounded-full bg-brand-border text-gray-400 flex items-center justify-center font-bold text-sm">04</span>
+                            <div class="space-y-3 mt-4">
+                                <h3 class="font-display text-lg font-bold text-white transition-all duration-300">Render Output</h3>
+                                <p class="text-xs text-gray-400">The decoded prediction stream is generated instantly on your UI screen.</p>
+                            </div>
+                            <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-xl text-[10px] font-code mt-2 flex items-center gap-1.5">
+                                <i class="fa-solid fa-check"></i> <span>Ready to view</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Explanatory note -->
+                    <div class="bg-brand-card/50 border border-brand-border p-4 rounded-2xl flex items-center justify-between gap-6 max-w-4xl mx-auto">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">🧠</span>
+                            <p id="pipeline-description" class="text-sm text-gray-400">AI does not possess conscious awareness or understand instructions in human format. Instead, it computes massive pattern statistics based on training data sets to provide responses.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 4 (Renumbered Slide 4): PROMPT VS GOOGLE SEARCH -->
+            <div id="slide-3" class="slide-fade slide-hidden flex flex-col justify-between h-full max-w-7xl mx-auto w-full">
+                <div class="grid grid-cols-12 gap-8 items-center my-auto w-full">
+                    <div class="col-span-4 space-y-6">
+                        <div class="inline-block px-3 py-1 bg-brand-accentCyan/10 border border-brand-accentCyan/20 text-brand-accentCyan text-xs rounded-full font-bold uppercase tracking-wider">Slide 4: Comparative Analysis</div>
+                        <h2 class="font-display text-4xl font-black tracking-tight leading-tight">Prompt vs. <span class="bg-gradient-to-r from-brand-accentCyan to-brand-accentPurple bg-clip-text text-transparent">Google Search</span></h2>
+                        <p class="text-base text-gray-400 leading-relaxed">Understanding the fundamental technological boundary between locating web resources and synthesizing creative knowledge representations.</p>
+                        
+                        <div class="border-l-4 border-brand-accentCyan pl-4 py-1 space-y-1">
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">The Golden Rule</p>
+                            <p class="text-sm text-gray-300 font-medium">"Google gives links. Generative AI gives synthesized answers."</p>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Dual Playground -->
+                    <div class="col-span-8 grid grid-cols-2 gap-6 h-[440px] items-stretch">
+                        <!-- Google Search Box Simulation -->
+                        <div class="bg-brand-card border border-brand-border rounded-3xl p-6 flex flex-col justify-between shadow-lg relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/5 to-transparent pointer-events-none"></div>
+                            
+                            <div class="flex items-center justify-between border-b border-brand-border pb-4">
+                                <span class="text-xs font-bold text-gray-400 flex items-center gap-2"><i class="fa-brands fa-google text-blue-500"></i> Google Index Mode</span>
+                                <span class="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[10px] rounded font-bold">RETRIEVAL</span>
+                            </div>
+
+                            <div class="my-auto space-y-4">
+                                <div class="bg-brand-dark border border-brand-border p-3 rounded-xl flex items-center justify-between">
+                                    <span class="font-code text-xs text-gray-400">"Climate Change"</span>
+                                    <i class="fa-solid fa-magnifying-glass text-xs text-gray-500"></i>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <p class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Indexed Page Links:</p>
+                                    <div class="bg-brand-dark/50 border border-brand-border p-3 rounded-xl space-y-1">
+                                        <p class="text-xs font-bold text-blue-400 hover:underline cursor-pointer">Climate Change: Causes, Effects, and Solutions</p>
+                                        <p class="text-[10px] text-gray-400">climate-change-org/basics.html</p>
+                                    </div>
+                                    <div class="bg-brand-dark/50 border border-brand-border p-3 rounded-xl space-y-1">
+                                        <p class="text-xs font-bold text-blue-400 hover:underline cursor-pointer">What Is Climate Change? | NASA Science</p>
+                                        <p class="text-[10px] text-gray-400">climate.nasa.gov/effects</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-brand-dark/40 border border-brand-border/60 p-3 rounded-xl flex items-center gap-2.5">
+                                <span class="text-xs text-gray-400 font-medium">Forces the user to open multiple websites, parse articles manually, and construct context.</span>
+                            </div>
+                        </div>
+
+                        <!-- Generative AI Simulation -->
+                        <div class="bg-brand-card border border-brand-border rounded-3xl p-6 flex flex-col justify-between shadow-lg relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-tr from-brand-accentCyan/5 to-transparent pointer-events-none"></div>
+
+                            <div class="flex items-center justify-between border-b border-brand-border pb-4">
+                                <span class="text-xs font-bold text-gray-400 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-brand-accentCyan"></i> Generative AI Mode</span>
+                                <span class="px-2 py-0.5 bg-brand-accentCyan/10 border border-brand-accentCyan/20 text-brand-accentCyan text-[10px] rounded font-bold">SYNTHESIS</span>
+                            </div>
+
+                            <div class="my-auto space-y-4">
+                                <div class="bg-brand-dark border border-brand-border p-3 rounded-xl flex items-center justify-between">
+                                    <span class="font-code text-xs text-gray-200">"Explain climate change to a 10yo..."</span>
+                                    <i class="fa-solid fa-magic text-xs text-brand-accentCyan"></i>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <p class="text-[10px] text-brand-accentCyan uppercase tracking-wider font-bold">Generated Custom Response:</p>
+                                    <div class="bg-brand-dark/50 border border-brand-border p-3 rounded-xl space-y-1">
+                                        <p class="text-xs text-gray-200 leading-relaxed font-sans">"Imagine the Earth is wearing a blanket. When we burn fossil fuels, it adds extra layers to that blanket, making the planet too warm..."</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-brand-dark/40 border border-brand-border/60 p-3 rounded-xl flex items-center gap-2.5">
+                                <span class="text-xs text-gray-400 font-medium font-sans">Leverages deep generation to build immediate, customized text explanations on demand.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 5 (Renumbered Slide 5): WHAT IS PROMPT ENGINEERING? -->
+            <div id="slide-4" class="slide-fade slide-hidden flex flex-col justify-between h-full max-w-7xl mx-auto w-full">
+                <div class="grid grid-cols-12 gap-8 items-center my-auto w-full">
+                    <div class="col-span-5 space-y-6">
+                        <div class="inline-block px-3 py-1 bg-brand-accentCyan/10 border border-brand-accentCyan/20 text-brand-accentCyan text-xs rounded-full font-bold uppercase tracking-wider">Slide 5: The Core Discipline</div>
+                        <h2 class="font-display text-4xl font-black tracking-tight leading-tight">The Art and Science of <span class="bg-gradient-to-r from-brand-accentCyan to-brand-accentGreen bg-clip-text text-transparent">Designing Prompts</span></h2>
+                        <p class="text-base text-gray-400 leading-relaxed">Prompt Engineering is not a traditional coding programming skill. It is an act of deep structured logical communication designed to extract maximum clarity from LLMs.</p>
+
+                        <div class="space-y-3">
+                            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Core Improvement Vectors:</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="p-3 bg-brand-card border border-brand-border rounded-xl flex items-center gap-3">
+                                    <span class="text-brand-accentCyan"><i class="fa-solid fa-circle-question"></i></span>
+                                    <span class="text-xs text-gray-300 font-semibold">Structured Queries</span>
+                                </div>
+                                <div class="p-3 bg-brand-card border border-brand-border rounded-xl flex items-center gap-3">
+                                    <span class="text-brand-accentGreen"><i class="fa-solid fa-scale-balanced"></i></span>
+                                    <span class="text-xs text-gray-300 font-semibold">Granular Context</span>
+                                </div>
+                                <div class="p-3 bg-brand-card border border-brand-border rounded-xl flex items-center gap-3">
+                                    <span class="text-brand-accentPurple"><i class="fa-solid fa-bullseye"></i></span>
+                                    <span class="text-xs text-gray-300 font-semibold">Target Output Role</span>
+                                </div>
+                                <div class="p-3 bg-brand-card border border-brand-border rounded-xl flex items-center gap-3">
+                                    <span class="text-amber-500"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                                    <span class="text-xs text-gray-300 font-semibold">Reduced Iterations</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Slider Engine Visualizer -->
+                    <div class="col-span-7 h-[440px] bg-brand-card border border-brand-border rounded-3xl p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-brand-accentCyan/5 to-transparent pointer-events-none"></div>
+
+                        <div class="flex items-center justify-between border-b border-brand-border pb-4">
+                            <span class="text-xs font-bold text-gray-400"><i class="fa-solid fa-sliders text-brand-accentCyan mr-2"></i> INSTRUCTION TUNING ENGINE</span>
+                            <span class="text-xs font-code text-brand-accentCyan" id="tuning-percentage">Vague Prompt (0%)</span>
+                        </div>
+
+                        <!-- Interactive Control Panel -->
+                        <div class="space-y-6 my-auto">
+                            <div class="bg-brand-dark border border-brand-border p-4 rounded-2xl relative">
+                                <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Prompt Input Quality Selector:</p>
+                                <input type="range" min="0" max="2" value="0" id="tuning-slider" oninput="updatePromptTuning(this.value)" class="w-full accent-brand-accentCyan bg-brand-border h-2 rounded-full appearance-none cursor-pointer">
+                                <div class="flex justify-between text-[10px] text-gray-400 mt-2 font-medium">
+                                    <span>Vague / Basic</span>
+                                    <span>Some Context</span>
+                                    <span>Engineered (Ideal)</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-brand-dark/50 border border-brand-border p-4 rounded-xl space-y-1.5">
+                                    <p class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Input Template:</p>
+                                    <p id="tuning-input-preview" class="font-code text-xs text-gray-300">"Explain physics."</p>
+                                </div>
+                                <div class="bg-brand-dark/50 border border-brand-border p-4 rounded-xl space-y-1.5">
+                                    <p class="text-[10px] text-brand-accentCyan uppercase tracking-wider font-bold">Output Quality Score:</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xl font-bold font-display" id="tuning-score">E</span>
+                                        <div class="flex-grow bg-brand-border h-2 rounded-full overflow-hidden">
+                                            <div id="tuning-progress-bar" class="bg-rose-500 h-full w-[20%] transition-all duration-300"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-brand-dark/50 border border-brand-border/60 p-3 rounded-xl flex items-center justify-between">
+                            <span class="text-xs text-gray-400 font-medium">Formula: Prompt + Context = Tailored Output</span>
+                            <span class="px-2.5 py-1 bg-brand-accentCyan/10 text-brand-accentCyan text-[10px] font-bold rounded-lg uppercase tracking-wide">Dynamic Demo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 6 (Renumbered Slide 6): INTERACTIVE ACTIVITY - PROMPT CHALLENGE -->
+            <div id="slide-5" class="slide-fade slide-hidden flex flex-col justify-between h-full max-w-7xl mx-auto w-full">
+                <div class="grid grid-cols-12 gap-8 items-center my-auto w-full">
+                    <div class="col-span-5 space-y-6">
+                        <div class="inline-block px-3 py-1 bg-brand-accentCyan/10 border border-brand-accentCyan/20 text-brand-accentCyan text-xs rounded-full font-bold uppercase tracking-wider">Slide 6: Hands-On Challenge</div>
+                        <h2 class="font-display text-4xl font-black tracking-tight leading-tight">Your First <span class="bg-gradient-to-r from-brand-accentCyan to-brand-accentGreen bg-clip-text text-transparent">Prompt Challenge</span></h2>
+                        <p class="text-base text-gray-400 leading-relaxed">Transform a generic request into a professional, production-ready instruction set. Observe how simple criteria directly affect generation quality.</p>
+                        
+                        <div class="bg-brand-card border border-brand-border p-4 rounded-2xl space-y-3">
+                            <p class="text-sm font-semibold text-brand-accentGreen flex items-center gap-2">
+                                <i class="fa-solid fa-award"></i> The Objective:
+                            </p>
+                            <p class="text-xs text-gray-400 leading-relaxed">Assume you need to learn Newton's Laws. Test both prompts to understand the massive leap in practical, educational output.</p>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Challenge Simulator Board -->
+                    <div class="col-span-7 grid grid-cols-2 gap-4 h-[440px] items-stretch">
+                        <!-- Basic Column -->
+                        <div class="bg-brand-card/40 border border-brand-border p-5 rounded-2xl flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="px-2.5 py-1 bg-brand-border text-gray-400 text-[10px] font-bold rounded-full">PROMPT 1</span>
+                                    <span class="text-xs font-bold text-gray-500">BASIC</span>
+                                </div>
+                                <div class="bg-brand-dark/60 border border-brand-border p-4 rounded-xl font-code text-xs text-gray-400 mb-4 h-[110px] overflow-hidden">
+                                    "Explain Newton's Laws."
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <p class="text-xs text-gray-500 uppercase tracking-wider font-bold">Predicted Output Style:</p>
+                                <div class="bg-brand-dark/40 border border-brand-border p-3 rounded-xl space-y-1">
+                                    <p class="text-xs font-bold text-gray-300">Textbook Copy-Paste</p>
+                                    <p class="text-[10px] text-gray-500">Unstructured bullet points, technical terms with zero educational custom styling.</p>
+                                </div>
+                                <button onclick="simulatePromptEvaluation('basic')" class="w-full py-2 bg-brand-border hover:bg-gray-800 text-xs text-gray-300 rounded-lg transition-all duration-200 uppercase tracking-wider font-bold">Simulate output</button>
+                            </div>
+                        </div>
+
+                        <!-- Engineered Column -->
+                        <div class="bg-brand-card/80 border border-brand-accentGreen/30 p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-tr from-brand-accentGreen/5 to-transparent pointer-events-none"></div>
+                            <div>
+                                <div class="flex items-center justify-between mb-3 z-10">
+                                    <span class="px-2.5 py-1 bg-brand-accentGreen/10 text-brand-accentGreen border border-brand-accentGreen/20 text-[10px] font-bold rounded-full">PROMPT 2</span>
+                                    <span class="text-xs font-bold text-brand-accentGreen">ENGINEERED</span>
+                                </div>
+                                <div class="bg-brand-dark/60 border border-brand-accentGreen/10 p-4 rounded-xl font-code text-xs text-white mb-4 h-[110px] overflow-y-auto">
+                                    "You are a science teacher. Explain Newton's Laws to a Class IX student using real-life examples."
+                                </div>
+                            </div>
+                            <div class="space-y-3 z-10">
+                                <p class="text-xs text-brand-accentGreen uppercase tracking-wider font-bold">Predicted Output Style:</p>
+                                <div class="bg-brand-dark/40 border border-brand-border p-3 rounded-xl space-y-1">
+                                    <p class="text-xs font-bold text-brand-accentGreen">Teacher Persona Mode</p>
+                                    <p class="text-[10px] text-gray-400">Incorporates analogies (cars stopping, pulling chairs) to make understanding simple.</p>
+                                </div>
+                                <button onclick="simulatePromptEvaluation('engineered')" class="w-full py-2 bg-brand-accentGreen hover:bg-brand-accentGreen/90 text-brand-dark text-xs rounded-lg transition-all duration-200 uppercase tracking-wider font-bold shadow-lg shadow-brand-accentGreen/10">Simulate output</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- DECK CONTROLLER / PROGRESS FOOTER -->
+        <footer class="glass-panel mx-6 mb-6 px-6 py-4 rounded-2xl flex justify-between items-center z-20">
+            <!-- Slide Indicators -->
+            <div class="flex items-center gap-2">
+                <button onclick="goToSlide(0)" class="w-8 h-8 rounded-lg flex items-center justify-center font-display text-sm font-semibold transition-all duration-200 bg-brand-accentCyan text-brand-dark" id="nav-dot-0">1</button>
+                <button onclick="goToSlide(1)" class="w-8 h-8 rounded-lg flex items-center justify-center font-display text-sm font-semibold transition-all duration-200 bg-brand-card text-gray-400 hover:bg-brand-border" id="nav-dot-1">2</button>
+                <button onclick="goToSlide(2)" class="w-8 h-8 rounded-lg flex items-center justify-center font-display text-sm font-semibold transition-all duration-200 bg-brand-card text-gray-400 hover:bg-brand-border" id="nav-dot-2">3</button>
+                <button onclick="goToSlide(3)" class="w-8 h-8 rounded-lg flex items-center justify-center font-display text-sm font-semibold transition-all duration-200 bg-brand-card text-gray-400 hover:bg-brand-border" id="nav-dot-3">4</button>
+                <button onclick="goToSlide(4)" class="w-8 h-8 rounded-lg flex items-center justify-center font-display text-sm font-semibold transition-all duration-200 bg-brand-card text-gray-400 hover:bg-brand-border" id="nav-dot-4">5</button>
+                <button onclick="goToSlide(5)" class="w-8 h-8 rounded-lg flex items-center justify-center font-display text-sm font-semibold transition-all duration-200 bg-brand-card text-gray-400 hover:bg-brand-border" id="nav-dot-5">6</button>
+            </div>
+
+            <!-- Global Action Controls -->
+            <div class="flex items-center gap-3">
+                <button onclick="prevSlide()" class="w-10 h-10 bg-brand-card hover:bg-brand-border border border-brand-border rounded-xl flex items-center justify-center text-gray-300 transition-all duration-200" title="Previous Slide (Left Arrow)">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button onclick="nextSlide()" class="w-10 h-10 bg-brand-card hover:bg-brand-border border border-brand-border rounded-xl flex items-center justify-center text-gray-300 transition-all duration-200" title="Next Slide (Right Arrow)">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- SPEAKER / PRESENTER DOCK PANEL (RIGHT DRAWER) -->
+    <div id="presenter-drawer" class="w-96 h-full bg-brand-card border-l border-brand-border flex flex-col justify-between p-6 z-20 transition-all duration-300 shadow-2xl hidden">
+        <div class="space-y-6 overflow-y-auto pr-2">
+            <!-- Presenter Status -->
+            <div class="flex items-center justify-between border-b border-brand-border pb-4">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                    <h3 class="font-display font-bold text-sm tracking-wide text-gray-300">SPEAKER NOTES</h3>
+                </div>
+                <button onclick="togglePresenterMode()" class="text-gray-500 hover:text-white transition-all duration-150 text-xs"><i class="fa-solid fa-xmark"></i> Hide</button>
+            </div>
+
+            <!-- Live slide meta -->
+            <div class="p-4 bg-brand-dark rounded-xl space-y-1">
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wide">Active Slide</p>
+                <p class="font-display text-base font-bold text-white" id="presenter-slide-title">Slide 1: What is a Prompt?</p>
+                <p class="text-xs text-brand-accentCyan" id="presenter-slide-duration">Duration Guidance: ~2 Minutes</p>
+            </div>
+
+            <!-- Notes content dynamic -->
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-comment-nodes text-brand-accentCyan"></i> Core Delivery Guidance
+                    </p>
+                    <div id="presenter-notes-box" class="text-sm text-gray-300 leading-relaxed space-y-3">
+                        <!-- Injected notes go here -->
+                    </div>
+                </div>
+
+                <div class="space-y-2 pt-4 border-t border-brand-border">
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-users-viewfinder text-brand-accentGreen"></i> Audience Interaction Focus
+                    </p>
+                    <div id="presenter-activity-box" class="text-sm text-gray-300 leading-relaxed bg-brand-dark/40 border border-brand-border p-4 rounded-xl space-y-2">
+                        <!-- Injected activities go here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructor quick utilities -->
+        <div class="mt-6 border-t border-brand-border pt-4">
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-3 font-medium">
+                <span>Lecture progression tracking:</span>
+                <span id="presenter-percent">16% Complete</span>
+            </div>
+            <div class="w-full bg-brand-dark h-2 rounded-full overflow-hidden">
+                <div id="presenter-progress" class="bg-gradient-to-r from-brand-accentCyan to-brand-accentGreen h-full w-[16%] transition-all duration-300"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN SIMULATION POPUP DIALOGUE -->
+    <div id="simulation-modal" class="fixed inset-0 bg-brand-dark/90 backdrop-blur-md z-50 flex items-center justify-center p-6 hidden">
+        <div class="bg-brand-card border border-brand-border rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col justify-between">
+            <div class="p-6 border-b border-brand-border flex items-center justify-between">
+                <h3 class="font-display font-bold text-lg text-white" id="modal-title">AI Prompt Response Simulation</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-lg bg-brand-border text-gray-400 hover:text-white flex items-center justify-center transition-all duration-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="bg-brand-dark/80 border border-brand-border p-4 rounded-xl relative">
+                    <span class="absolute -top-3 left-4 bg-brand-accentCyan/10 border border-brand-accentCyan/20 text-brand-accentCyan text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">Your Evaluated Prompt</span>
+                    <p id="modal-prompt-text" class="font-code text-xs text-gray-300 italic">"Prompt content placeholder"</p>
+                </div>
+                <div class="bg-brand-dark/80 border border-brand-border p-4 rounded-xl relative">
+                    <span class="absolute -top-3 left-4 bg-brand-accentGreen/10 border border-brand-accentGreen/20 text-brand-accentGreen text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">Simulated AI output</span>
+                    <div id="modal-ai-response" class="font-sans text-sm text-gray-300 leading-relaxed space-y-2 pt-1 h-[200px] overflow-y-auto">
+                        <!-- AI Response populated here -->
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-brand-border bg-brand-dark/50 flex justify-end">
+                <button onclick="closeModal()" class="px-5 py-2.5 bg-brand-border hover:bg-gray-800 text-xs font-bold rounded-xl transition-all duration-200 uppercase tracking-wider">Close Playground</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Presentation Application Engine Script -->
+    <script>
+        let currentSlideIdx = 0;
+        const totalSlides = 6;
+
+        // Custom Speaker Notes Matrix
+        const speakerNotesData = [
+            {
+                title: "Slide 1: What is a Prompt?",
+                duration: "Duration Guidance: ~2-3 Minutes",
+                percent: "16%",
+                notes: `
+                    <p>• Students often assume prompts must be extremely complicated. Demystify this immediately.</p>
+                    <p>• Actually, every single interaction with generative AI tools starts with a prompt.</p>
+                    <p>• Emphasize that even a simple query like <em>"What is the capital of India?"</em> is a prompt.</p>
+                    <p>• The AI reads the provided input parameters and attempts to calculate a viable statistical output.</p>
+                `,
+                activity: `
+                    <p><strong>Quick Challenge:</strong></p>
+                    <p class="text-xs text-gray-400">Ask the room to call out or think of one question they would ask ChatGPT right now. Collect 3-4 examples and verify if they are questions, requests, or instructions.</p>
+                `
+            },
+            {
+                title: "Slide 2: Prompts Are Everywhere",
+                duration: "Duration Guidance: ~2 Minutes",
+                percent: "33%",
+                notes: `
+                    <p>• Remind students that they aren't starting from scratch: they have been prompting systems for years.</p>
+                    <p>• Connect the modern concept of prompt engineering back to familiar daily touchpoints (Google, Siri, GPS).</p>
+                    <p>• Explain that the primary shift is conversational depth: AI handles complete context, while Google works on strict index keyword mapping.</p>
+                `,
+                activity: `
+                    <p><strong>Discussion Prompt:</strong></p>
+                    <p class="text-xs text-gray-400">Ask: "Which do you use more often: Google Search or AI chatbots? Could AI eventually replace traditional web search platforms entirely?"</p>
+                `
+            },
+            {
+                title: "Slide 3: How AI Understands Prompts",
+                duration: "Duration Guidance: ~3 Minutes",
+                percent: "50%",
+                notes: `
+                    <p>• Avoid deep technical jargon (like parameters, vectors, attention mechanisms) unless necessary.</p>
+                    <p>• Ensure students grasp the absolute high-level perspective: Input ➔ Break down ➔ Calculate patterns ➔ Predict word strings.</p>
+                    <p>• Reinforce: <strong>AI does not think, judge, or know facts in the human sense.</strong> It predicts mathematical sequences.</p>
+                `,
+                activity: `
+                    <p><strong>Think-Pair-Share:</strong></p>
+                    <p class="text-xs text-gray-400">Have pairs of students discuss: "What do you think actually happens inside ChatGPT the split-second after you press Enter?"</p>
+                `
+            },
+            {
+                title: "Slide 4: Prompt vs Google Search",
+                duration: "Duration Guidance: ~3 Minutes",
+                percent: "66%",
+                notes: `
+                    <p>• Focus heavily on the functional difference: retrieval of external links vs synthesis of novel customized content.</p>
+                    <p>• Use this comparison to show why Prompt Engineering became a sought-after discipline. It shifts the user from finding files to designing specific knowledge representations.</p>
+                `,
+                activity: `
+                    <p><strong>Quick Classroom Poll:</strong></p>
+                    <p class="text-xs text-gray-400">Ask for a show of hands: "When studying a brand new topic, do you prefer starting with a list of external links, or a highly tailored personal synthesis?"</p>
+                `
+            },
+            {
+                title: "Slide 5: What is Prompt Engineering?",
+                duration: "Duration Guidance: ~2-3 Minutes",
+                percent: "83%",
+                notes: `
+                    <p>• Define Prompt Engineering not as coding, but as a framework of precise communication.</p>
+                    <p>• Use the metaphor of instructing a new student or colleague: Vague instructions produce disorganized work; systematic context yields ideal results.</p>
+                    <p>• Walk through the core formula: Prompt + Context = Optimal response.</p>
+                `,
+                activity: `
+                    <p><strong>Discussion Topic:</strong></p>
+                    <p class="text-xs text-gray-400">"Why do you think better human-to-human instructions save time at work? How does this same social skill apply when commanding AI?"</p>
+                `
+            },
+            {
+                title: "Slide 6: Interactive Challenge",
+                duration: "Duration Guidance: ~3-4 Minutes",
+                percent: "100%",
+                notes: `
+                    <p>• This is the first practical, hands-on exercise of the section. Get students thinking about context components.</p>
+                    <p>• Highlight the exact components added to Prompt 2: Role definition (Science Teacher), target audience (Class IX student), and specific strategy instruction (Real-life examples).</p>
+                `,
+                activity: `
+                    <p><strong>Hands-on Prompt Workshop:</strong></p>
+                    <p class="text-xs text-gray-400">Ask each student to take 1 minute to draft an updated "Engineered Prompt" for a topic of their choice (e.g., historical events, video editing, baking recipes).</p>
+                `
+            }
+        ];
+
+        // Slide navigation controller
+        function goToSlide(slideIdx) {
+            if (slideIdx < 0 || slideIdx >= totalSlides) return;
+            
+            // Toggle active visual states on slides with absolute safely handled class methods
+            document.querySelectorAll('.slide-fade').forEach((slide, idx) => {
+                if (idx === slideIdx) {
+                    slide.classList.remove('slide-hidden');
+                    slide.classList.add('slide-active');
+                } else {
+                    slide.classList.remove('slide-active');
+                    slide.classList.add('slide-hidden');
+                }
+            });
+
+            // Update slide navigation dot indicators
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.getElementById(`nav-dot-${i}`);
+                if (i === slideIdx) {
+                    dot.classList.replace('bg-brand-card', 'bg-brand-accentCyan');
+                    dot.classList.replace('text-gray-400', 'text-brand-dark');
+                } else {
+                    dot.classList.replace('bg-brand-accentCyan', 'bg-brand-card');
+                    dot.classList.replace('text-brand-dark', 'text-gray-400');
+                }
+            }
+
+            currentSlideIdx = slideIdx;
+            updateSpeakerNotes();
+        }
+
+        function nextSlide() {
+            if (currentSlideIdx < totalSlides - 1) {
+                goToSlide(currentSlideIdx + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIdx > 0) {
+                goToSlide(currentSlideIdx - 1);
+            }
+        }
+
+        // Fullscreen API Helper
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Slide Keyboard Arrow Bindings
+        document.addEventListener('keydown', (e) => {
+            const activeEl = document.activeElement;
+            const capturesTextKeys = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.getAttribute('contenteditable') === 'true'
+            );
+            const capturesArrowKeys = activeEl && (
+                (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT'
+            );
+            const capturesSpacebar = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.tagName === 'BUTTON' ||
+                activeEl.getAttribute('role') === 'button'
+            );
+
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Space') {
+                if (!capturesSpacebar && !capturesArrowKeys) {
+                    nextSlide();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (!capturesArrowKeys) {
+                    prevSlide();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'f' || e.key === 'F') {
+                if (!capturesTextKeys) {
+                    toggleFullscreen();
+                    e.preventDefault();
+                }
+            }
+        });
+
+        document.addEventListener('dblclick', (e) => {
+            const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+            if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+                toggleFullscreen();
+            }
+        });
+
+        // Toggle Speaker Notes sidebar view
+        function togglePresenterMode() {
+            const drawer = document.getElementById('presenter-drawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        // Dynamically populate speaker notes panel
+        function updateSpeakerNotes() {
+            const currentData = speakerNotesData[currentSlideIdx];
+            document.getElementById('presenter-slide-title').innerText = currentData.title;
+            document.getElementById('presenter-slide-duration').innerText = currentData.duration;
+            document.getElementById('presenter-notes-box').innerHTML = currentData.notes;
+            document.getElementById('presenter-activity-box').innerHTML = currentData.activity;
+            document.getElementById('presenter-percent').innerText = `${currentData.percent} Complete`;
+            document.getElementById('presenter-progress').style.width = currentData.percent;
+        }
+
+        // Slide 1 (What is a Prompt?) category interactive logic
+        function selectPromptCategory(category, buttonEl) {
+            // Remove active style from all option buttons
+            document.querySelectorAll('.prompt-cat-btn').forEach(btn => {
+                btn.classList.remove('border-brand-accentCyan/30', 'border-brand-accentGreen/30', 'border-brand-accentPurple/30', 'border-amber-500/30');
+                btn.classList.add('border-brand-border');
+            });
+
+            const promptText = document.getElementById('interactive-prompt');
+            const responseText = document.getElementById('interactive-response');
+
+            if (category === 'question') {
+                buttonEl.classList.replace('border-brand-border', 'border-brand-accentCyan/30');
+                promptText.innerText = `"What is Artificial Intelligence?"`;
+                responseText.innerText = `Artificial Intelligence is a branch of computer science focused on building smart machines capable of performing tasks that typically require human intelligence, such as reasoning, problem-solving, and decision-making.`;
+            } else if (category === 'instruction') {
+                buttonEl.classList.replace('border-brand-border', 'border-brand-accentGreen/30');
+                promptText.innerText = `"Write a poem about friendship."`;
+                responseText.innerText = `Like a steady, guiding light in the darkest of nights,
+A loyal friend is there to keep your spirit bright.
+No oceans can separate, no storms can sever,
+The bond of two souls bound together forever.`;
+            } else if (category === 'request') {
+                buttonEl.classList.replace('border-brand-border', 'border-brand-accentPurple/30');
+                promptText.innerText = `"Summarize this article."`;
+                responseText.innerText = `Here is a bullet-point summary of the core thesis:
+• Primary Discovery: Photosynthesis rates increase exponentially with ideal blue-spectrum lighting.
+• Key Benefit: Enables higher crop yields in indoor vertical urban farms.`;
+            } else if (category === 'task') {
+                buttonEl.classList.replace('border-brand-border', 'border-amber-500/30');
+                promptText.innerText = `"Create a study timetable for my exams."`;
+                responseText.innerText = `Class Exam Prep Schedule (7 Days):
+• Mon-Wed: Core Concepts & Formula Sheets (90 min daily)
+• Thu-Fri: Reviewing previous year papers under real exam timing
+• Sat-Sun: Targeted rest and self-quizzes on weaker topics.`;
+            }
+        }
+
+        // Slide 3 (How AI Understands Prompts) dynamic step interactive logic
+        function activatePipelineStep(stepIdx) {
+            const pipelineCards = document.querySelectorAll('.pipeline-card');
+            const descriptionBox = document.getElementById('pipeline-description');
+
+            const pipelines = [
+                {
+                    title: "Prompt Input",
+                    border: "border-brand-accentPurple",
+                    badge: "bg-brand-accentPurple/15",
+                    badgeText: "text-brand-accentPurple",
+                    desc: "Step 1: The process kicks off as soon as you feed raw character inputs into the context window. Your prompt content defines the boundary constraints for output calculation."
+                },
+                {
+                    title: "Analyze Context",
+                    border: "border-brand-accentCyan",
+                    badge: "bg-brand-accentCyan/15",
+                    badgeText: "text-brand-accentCyan",
+                    desc: "Step 2: Words are parsed into micro-tokens. An AI model calculates mathematical relationships and weights between these chunks to infer semantic context and logical intent."
+                },
+                {
+                    title: "Predict Response",
+                    border: "border-brand-accentGreen",
+                    badge: "bg-brand-accentGreen/15",
+                    badgeText: "text-brand-accentGreen",
+                    desc: "Step 3: Utilizing parameters, the neural net predicts the single highest-probability next token to complete your request, repeating this predictive loop in milliseconds."
+                },
+                {
+                    title: "Render Output",
+                    border: "border-amber-500",
+                    badge: "bg-amber-500/15",
+                    badgeText: "text-amber-500",
+                    desc: "Step 4: Once predicted sequences are calculated, the decoder engine converts numerical tokens back into human language. The finished presentation renders seamlessly on screen."
+                }
+            ];
+
+            pipelineCards.forEach((card, idx) => {
+                const badge = card.querySelector('.absolute');
+                const title = card.querySelector('h3');
+                
+                if (idx === stepIdx) {
+                    card.className = `pipeline-card z-10 p-5 rounded-2xl bg-brand-card ${pipelines[idx].border} text-left relative flex flex-col justify-between h-[230px] scale-105 shadow-xl transition-all duration-300`;
+                    badge.className = `absolute top-4 right-4 w-8 h-8 rounded-full ${pipelines[idx].badge} ${pipelines[idx].badgeText} flex items-center justify-center font-bold text-sm`;
+                    title.className = `font-display text-lg font-bold ${pipelines[idx].badgeText}`;
+                    descriptionBox.innerHTML = `<strong>${pipelines[idx].title}:</strong> ${pipelines[idx].desc}`;
+                } else {
+                    card.className = "pipeline-card z-10 p-5 rounded-2xl bg-brand-card border border-brand-border text-left relative flex flex-col justify-between h-[230px] transition-all duration-300";
+                    badge.className = "absolute top-4 right-4 w-8 h-8 rounded-full bg-brand-border text-gray-400 flex items-center justify-center font-bold text-sm";
+                    title.className = "font-display text-lg font-bold text-white";
+                }
+            });
+        }
+
+        // Slide 5 (What is Prompt Engineering?) Interactive Slider Tuning Logic
+        function updatePromptTuning(val) {
+            const inputPreview = document.getElementById('tuning-input-preview');
+            const qualityScore = document.getElementById('tuning-score');
+            const progressBar = document.getElementById('tuning-progress-bar');
+            const tuningPercent = document.getElementById('tuning-percentage');
+
+            if (val == 0) {
+                inputPreview.innerText = `"Explain physics."`;
+                qualityScore.innerText = "E";
+                progressBar.className = "bg-rose-500 h-full w-[20%] transition-all duration-300";
+                tuningPercent.innerText = "Vague Prompt (0%)";
+            } else if (val == 1) {
+                inputPreview.innerText = `"Explain Newton's Laws of motion."`;
+                qualityScore.innerText = "C";
+                progressBar.className = "bg-amber-500 h-full w-[55%] transition-all duration-300";
+                tuningPercent.innerText = "Some Context (50%)";
+            } else if (val == 2) {
+                inputPreview.innerText = `"You are a physics professor. Explain Newton's First Law of motion to a 12-year-old student using an analogy of a spaceship."`;
+                qualityScore.innerText = "A+";
+                progressBar.className = "bg-brand-accentGreen h-full w-[100%] transition-all duration-300";
+                tuningPercent.innerText = "Engineered (100%)";
+            }
+        }
+
+        // Slide 6 (Challenge Playground) Simulators
+        function simulatePromptEvaluation(type) {
+            const modal = document.getElementById('simulation-modal');
+            const promptText = document.getElementById('modal-prompt-text');
+            const aiResponse = document.getElementById('modal-ai-response');
+            const modalTitle = document.getElementById('modal-title');
+
+            modal.classList.remove('hidden');
+
+            if (type === 'basic') {
+                modalTitle.innerText = "Evaluating Basic Prompt";
+                promptText.innerText = `"Explain Newton's Laws."`;
+                aiResponse.innerHTML = `
+                    <p class="font-bold text-brand-accentCyan">System Evaluation: Generic Response Generated</p>
+                    <p>Newton's laws of motion are three physical laws that, together, laid the foundation for classical mechanics. They describe the relationship between a body and the forces acting upon it, and its motion in response to those forces.</p>
+                    <p><strong>First Law:</strong> In an inertial frame of reference, an object either remains at rest or continues to move at a constant velocity, unless acted upon by a force.</p>
+                    <p><strong>Second Law:</strong> In an inertial frame of reference, the vector sum of the forces F on an object is equal to the mass m of that object multiplied by the acceleration a of the object: F = ma.</p>
+                    <p><strong>Third Law:</strong> When one body exerts a force on a second body, the second body simultaneously exerts a force equal in magnitude and opposite in direction on the first body.</p>
+                    <div class="mt-4 p-3 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-lg text-xs">
+                        ⚠️ <strong>Critique:</strong> High educational friction. Heavy use of academic jargon (inertial frame, vector sum) makes comprehension difficult for beginner students.
+                    </div>
+                `;
+            } else if (type === 'engineered') {
+                modalTitle.innerText = "Evaluating Engineered Prompt";
+                promptText.innerText = `"You are a science teacher. Explain Newton's Laws to a Class IX student using real-life examples."`;
+                aiResponse.innerHTML = `
+                    <p class="font-bold text-brand-accentGreen">✓ Teacher Persona Activated</p>
+                    <p>Hello! Let's explore how the physical universe moves using simple things you see every day.</p>
+                    
+                    <p><strong>1. The "Lazy Object" Law (First Law):</strong></p>
+                    <p class="text-xs text-gray-400 pl-4 border-l-2 border-brand-accentGreen">Think of your school backpack sitting on your desk. It won't walk away, right? It stays there forever unless you pull it. Similarly, if you roll a skateboard on flat ice, it would keep rolling forever if friction and air resistance didn't slowly stop it.</p>
+                    
+                    <p><strong>2. The "Push Harder" Law (Second Law):</strong></p>
+                    <p class="text-xs text-gray-400 pl-4 border-l-2 border-brand-accentGreen">Imagine pushing an empty shopping cart vs. pushing a cart packed full of heavy books. The empty cart accelerates forward instantly with a light push. The heavy cart requires much more force to achieve the exact same speed change.</p>
+                    
+                    <p><strong>3. The "Recoil & Action" Law (Third Law):</strong></p>
+                    <p class="text-xs text-gray-400 pl-4 border-l-2 border-brand-accentGreen">Blow up a toy balloon and let it go without tying it. As the air rushes downwards (action), the balloon shoots straight up into the air (equal and opposite reaction!).</p>
+                    
+                    <div class="mt-4 p-3 bg-brand-accentGreen/10 border border-brand-accentGreen/20 text-brand-accentGreen rounded-lg text-xs">
+                        ★ <strong>Success:</strong> Ideal comprehension score. Incorporates everyday scenarios, simplified definitions, and zero academic gatekeeping.
+                    </div>
+                `;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('simulation-modal').classList.add('hidden');
+        }
+
+        // Initialize first slide on load
+        window.onload = function() {
+            goToSlide(0);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 8 & 9: Limitations, Risks, and Responsible AI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter and Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for sleek icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            900: '#030712',
+                            800: '#0b0f19',
+                            700: '#111827',
+                            600: '#1f2937',
+                        },
+                        neonTeal: '#2dd4bf',
+                        neonPurple: '#a78bfa',
+                        neonAmber: '#fbbf24',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Modern Glassmorphic Styles & Slide Transitions */
+        body {
+            background-color: #030712;
+            overflow: hidden;
+        }
+        .slide {
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.98) translateY(10px);
+            overflow-y: auto; /* Enable inner-scrolling for shorter viewports */
+            scrollbar-width: none; /* Hide default thick Firefox scrollbar */
+            -ms-overflow-style: none; /* IE/Edge scrollbar hiding */
+            padding-bottom: 3.5rem; /* Ensure bottom text is never pressed against borders */
+        }
+        .slide::-webkit-scrollbar {
+            display: none; /* Hide Safari/Chrome scrollbar for slide aesthetic */
+        }
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) translateY(0);
+            z-index: 10;
+        }
+        /* Custom scrollbar for speaker notes */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(45, 212, 191, 0.3);
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(45, 212, 191, 0.6);
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- Interactive Top Bar: Progress and Tools -->
+    <header class="bg-navy-800/90 border-b border-slate-800 px-6 py-4 flex items-center justify-between z-50 backdrop-blur-md">
+        <div class="flex items-center gap-3">
+            <span class="bg-gradient-to-r from-teal-400 to-indigo-500 text-transparent bg-clip-text font-heading font-extrabold text-xl tracking-wider">AI LITERACY</span>
+            <span class="text-xs bg-slate-800 text-teal-400 border border-teal-500/20 px-2 py-0.5 rounded-full font-semibold">COHORT 2026</span>
+        </div>
+        
+        <!-- Live Progress Indicator bar -->
+        <div class="flex-1 max-w-xl mx-8">
+            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700/50">
+                <div id="progressBar" class="bg-gradient-to-r from-teal-400 to-indigo-500 h-full w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button onclick="toggleSpeakerNotes()" class="bg-slate-800 hover:bg-slate-700 hover:border-teal-500/50 border border-slate-700 px-4 py-2 rounded-lg text-sm font-semibold text-slate-200 transition flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-user text-teal-400"></i> Presenter Notes
+            </button>
+            <span id="slideCounter" class="text-sm font-bold text-slate-400">01 / 10</span>
+        </div>
+    </header>
+
+    <!-- Main Presentation Container -->
+    <main class="flex-1 relative overflow-hidden flex items-center justify-center p-4 md:p-6">
+        <div class="w-full max-w-7xl h-[calc(100vh-185px)] min-h-[480px] relative">
+            
+            <!-- SLIDE 1: Title & Section Opener -->
+            <div id="slide-0" class="slide active flex flex-col justify-center items-center text-center">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(45,212,191,0.12),transparent_60%)] pointer-events-none"></div>
+                <div class="bg-slate-900/60 border border-slate-800/80 p-10 md:p-14 rounded-3xl backdrop-blur-lg shadow-2xl max-w-4xl relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-teal-500/10 rounded-full blur-3xl"></div>
+                    <span class="text-teal-400 font-bold uppercase tracking-widest text-sm mb-4 block">Section 8 & 9</span>
+                    <h1 class="font-heading font-extrabold text-4xl md:text-6xl mb-6 leading-tight text-white">
+                        Limitations, Risks, and <br>
+                        <span class="bg-gradient-to-r from-teal-400 via-indigo-400 to-purple-500 text-transparent bg-clip-text">Responsible AI</span>
+                    </h1>
+                    <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-8 font-light">
+                        Discover when AI gets it wrong, explore the challenge of deepfakes, and transform from passive consumers to creative human-in-the-loop masters.
+                    </p>
+                    <div class="flex gap-4 justify-center">
+                        <button onclick="nextSlide()" class="bg-gradient-to-r from-teal-500 to-indigo-600 hover:scale-105 transform transition shadow-lg shadow-teal-500/20 px-8 py-3.5 rounded-xl font-bold flex items-center gap-2 text-white">
+                            Begin Exploration <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 2: Learning Goals -->
+            <div id="slide-1" class="slide flex flex-col justify-between">
+                <div>
+                    <span class="text-teal-400 text-xs font-semibold tracking-wider uppercase block mb-1">SECTION 8 & 9 GOALS</span>
+                    <h2 class="font-heading font-bold text-3xl md:text-4xl text-white">Learning Objectives</h2>
+                    <p class="text-slate-400 text-sm mt-1">What you'll master by the end of this journey:</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl backdrop-blur-sm hover:border-teal-500/40 transition">
+                        <div class="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-400 text-xl mb-4">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-lg mb-2 text-slate-100">AI Is Imperfect</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">Understand AI error parameters, hallucinations, and false trustworthiness signals.</p>
+                    </div>
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl backdrop-blur-sm hover:border-indigo-500/40 transition">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 text-xl mb-4">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-lg mb-2 text-slate-100">Responsible Design</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">Navigate deepfakes, secure critical thinking habits, and discover label standards.</p>
+                    </div>
+                    <div class="bg-slate-900/40 border border-slate-800/80 p-6 rounded-2xl backdrop-blur-sm hover:border-purple-500/40 transition">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-xl mb-4">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-lg mb-2 text-slate-100">Superhuman Human</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">Engaging rules of human-in-the-loop, future-proof professions, and launch first missions.</p>
+                    </div>
+                </div>
+                <div class="text-slate-500 text-xs italic text-center">Interactive components enabled below on subsequent slides.</div>
+            </div>
+
+            <!-- SLIDE 3: Slide 23 - When AI Gets It Wrong -->
+            <div id="slide-2" class="slide flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-amber-400 text-xs font-semibold tracking-wider uppercase block mb-1">SLIDE 23: CONCORDANCE CHECK</span>
+                        <h2 class="font-heading font-bold text-3xl text-white">When AI Gets It Wrong</h2>
+                    </div>
+                    <span class="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-xs font-semibold">AI Hallucinations</span>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
+                    <!-- Left: content & analogy -->
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="bg-slate-900/80 border border-slate-800/60 p-5 rounded-2xl">
+                            <h4 class="text-teal-400 font-bold text-sm uppercase mb-2"><i class="fa-solid fa-graduation-cap mr-2"></i>The AI Student Analogy</h4>
+                            <p class="text-slate-300 text-sm">Imagine a classmate who has read millions of books, answers instantly with 100% confidence, but occasionally:</p>
+                            <div class="grid grid-cols-3 gap-3 mt-3">
+                                <span class="bg-rose-500/10 border border-rose-500/20 text-rose-400 px-3 py-2 rounded-lg text-xs font-medium text-center"><i class="fa-solid fa-skull mr-1"></i> Invents facts</span>
+                                <span class="bg-rose-500/10 border border-rose-500/20 text-rose-400 px-3 py-2 rounded-lg text-xs font-medium text-center"><i class="fa-solid fa-brain mr-1"></i> Misremembers</span>
+                                <span class="bg-rose-500/10 border border-rose-500/20 text-rose-400 px-3 py-2 rounded-lg text-xs font-medium text-center"><i class="fa-solid fa-times-circle mr-1"></i> Gives errors</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-slate-900/80 border border-slate-800/60 p-5 rounded-2xl">
+                            <h4 class="text-amber-400 font-bold text-sm uppercase mb-1"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Hallucination Examples</h4>
+                            <p class="text-slate-300 text-xs italic">"Who won the Football World Cup in 2038?"</p>
+                            <p class="text-slate-400 text-xs mt-1">An AI will confidently invent detailed teams, matches, scores, and host nations for events that have not yet occurred.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Interactive Engagement widget -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+                        <div class="text-center mb-4">
+                            <span class="bg-teal-500/10 text-teal-400 px-3 py-1 rounded-full text-xs font-extrabold uppercase">Engagement Activity</span>
+                            <h3 class="font-heading font-bold text-lg mt-2 text-white">Spot the Mistake</h3>
+                            <p class="text-slate-400 text-xs">Which of these statements is absolutely false?</p>
+                        </div>
+                        <div class="space-y-3">
+                            <button onclick="checkMistakeAnswer(1)" class="w-full text-left p-3 rounded-xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/60 text-sm transition flex justify-between items-center group">
+                                <span>The Earth revolves around the Sun.</span>
+                                <i class="fa-solid fa-circle text-xs text-slate-600 group-hover:text-slate-400"></i>
+                            </button>
+                            <button onclick="checkMistakeAnswer(2)" class="w-full text-left p-3 rounded-xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/60 text-sm transition flex justify-between items-center group">
+                                <span>Water boils at approx. 100°C at sea level.</span>
+                                <i class="fa-solid fa-circle text-xs text-slate-600 group-hover:text-slate-400"></i>
+                            </button>
+                            <button onclick="checkMistakeAnswer(3)" class="w-full text-left p-3 rounded-xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/60 text-sm transition flex justify-between items-center group">
+                                <span class="font-semibold text-slate-200">The Moon is made entirely of cheese.</span>
+                                <i class="fa-solid fa-circle text-xs text-slate-600 group-hover:text-slate-400"></i>
+                            </button>
+                        </div>
+                        <div id="mistakeAnswerFeedback" class="mt-4 text-center text-xs h-6 font-semibold"></div>
+                    </div>
+                </div>
+
+                <!-- Footer Alert -->
+                <div class="bg-amber-500/10 border-l-4 border-amber-500 p-3 rounded-r-xl flex items-center justify-between">
+                    <span class="text-amber-400 text-xs font-bold uppercase"><i class="fa-solid fa-gavel mr-2"></i>Golden Rule:</span>
+                    <span class="text-slate-300 text-xs">Never assume AI is correct. Verify facts, cross-check sources, and think critically.</span>
+                </div>
+            </div>
+
+            <!-- SLIDE 4: Slide 24 - Deepfakes, Misinformation -->
+            <div id="slide-3" class="slide flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-indigo-400 text-xs font-semibold tracking-wider uppercase block mb-1">SLIDE 24: MEDIA INTEGRITY</span>
+                        <h2 class="font-heading font-bold text-3xl text-white">Deepfakes & Challenge of Trust</h2>
+                    </div>
+                    <span class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-semibold">Digital Literacy</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
+                    <!-- Left: Context explanations -->
+                    <div class="lg:col-span-6 space-y-4">
+                        <div class="bg-slate-900/50 border border-slate-800 p-5 rounded-xl">
+                            <span class="text-indigo-400 font-bold text-xs uppercase block mb-1">What is a Deepfake?</span>
+                            <p class="text-slate-300 text-sm">AI-generated hyper-realistic clones of faces, video sequences, and vocal identities designed to trick observers into believing the representation is authentic.</p>
+                        </div>
+                        <div class="bg-slate-900/50 border border-slate-800 p-5 rounded-xl">
+                            <span class="text-rose-400 font-bold text-xs uppercase block mb-1">The Critical Threat Grid</span>
+                            <div class="grid grid-cols-2 gap-3 mt-2 text-xs">
+                                <div class="bg-slate-950/60 p-2 rounded border border-rose-500/10 text-slate-300"><i class="fa-solid fa-ban text-rose-500 mr-1.5"></i> Impersonation Scams</div>
+                                <div class="bg-slate-950/60 p-2 rounded border border-rose-500/10 text-slate-300"><i class="fa-solid fa-triangle-exclamation text-rose-500 mr-1.5"></i> Fake News Spread</div>
+                                <div class="bg-slate-950/60 p-2 rounded border border-rose-500/10 text-slate-300"><i class="fa-solid fa-circle-nodes text-rose-500 mr-1.5"></i> Distrusted Evidence</div>
+                                <div class="bg-slate-950/60 p-2 rounded border border-rose-500/10 text-slate-300"><i class="fa-solid fa-user-slash text-rose-500 mr-1.5"></i> Consent Violation</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right interactive: Critical thinking simulator -->
+                    <div class="lg:col-span-6 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                        <h4 class="text-teal-400 font-bold text-sm uppercase mb-3 text-center"><i class="fa-solid fa-shield-halved mr-1"></i> Interactive Verification Game</h4>
+                        <p class="text-slate-300 text-xs text-center mb-4">Click through the Critical Thinking Formula to authenticate a suspicious video!</p>
+                        
+                        <div class="flex items-center justify-between gap-2 text-center text-xs font-semibold relative z-10">
+                            <button id="step-btn-1" onclick="progressFormula(1)" class="w-1/4 p-2 rounded bg-indigo-600 text-white border border-indigo-500 transition shadow">1. SEE IT</button>
+                            <i class="fa-solid fa-angle-right text-slate-600"></i>
+                            <button id="step-btn-2" onclick="progressFormula(2)" class="w-1/4 p-2 rounded bg-slate-800 text-slate-400 border border-transparent transition">2. QUESTION</button>
+                            <i class="fa-solid fa-angle-right text-slate-600"></i>
+                            <button id="step-btn-3" onclick="progressFormula(3)" class="w-1/4 p-2 rounded bg-slate-800 text-slate-400 border border-transparent transition">3. VERIFY</button>
+                            <i class="fa-solid fa-angle-right text-slate-600"></i>
+                            <button id="step-btn-4" onclick="progressFormula(4)" class="w-1/4 p-2 rounded bg-slate-800 text-slate-400 border border-transparent transition">4. TRUST IT</button>
+                        </div>
+
+                        <!-- Changing card depending on user step clicks -->
+                        <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl mt-4 min-h-[120px] flex flex-col justify-center items-center text-center">
+                            <div id="formulaText" class="text-slate-300 text-sm">
+                                <p class="font-bold text-teal-400 mb-1">Step 1: Visual Intake</p>
+                                A shocking video of a famous athlete announcing retirement pops up. It looks completely real. Should you share it?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer warning flags checklist -->
+                <div class="grid grid-cols-4 gap-2 text-center text-[10px] text-slate-400 border-t border-slate-800 pt-3">
+                    <div><i class="fa-solid fa-circle-check text-indigo-400 mr-1"></i> Check original publisher</div>
+                    <div><i class="fa-solid fa-circle-check text-indigo-400 mr-1"></i> Verify reliable sources</div>
+                    <div><i class="fa-solid fa-circle-check text-indigo-400 mr-1"></i> Check audio-to-video lipsync</div>
+                    <div><i class="fa-solid fa-circle-check text-indigo-400 mr-1"></i> Audit secondary outlets</div>
+                </div>
+            </div>
+
+            <!-- SLIDE 5: Slide 25 - Responsible AI: Human-in-the-Loop -->
+            <div id="slide-4" class="slide flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-teal-400 text-xs font-semibold tracking-wider uppercase block mb-1">SLIDE 25: ETHICAL USAGE</span>
+                        <h2 class="font-heading font-bold text-3xl text-white">The Human in the Loop</h2>
+                    </div>
+                    <span class="bg-teal-500/10 border border-teal-500/20 text-teal-400 px-3 py-1 rounded-full text-xs font-semibold">User Ethics</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
+                    <!-- Left: Collaborative diagram elements -->
+                    <div class="lg:col-span-6 space-y-4">
+                        <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-xl">
+                            <h3 class="text-slate-200 font-bold text-sm mb-3 text-center uppercase tracking-wider">The Collaboration Loop</h3>
+                            <div class="flex items-center justify-between text-center max-w-md mx-auto">
+                                <div class="bg-teal-500/10 border border-teal-500/30 p-2 rounded-lg text-xs w-24">
+                                    <span class="font-bold block text-teal-400">Human</span>
+                                    Prompt Ideas
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-teal-500/40"></i>
+                                <div class="bg-indigo-500/10 border border-indigo-500/30 p-2 rounded-lg text-xs w-24">
+                                    <span class="font-bold block text-indigo-400">AI Tool</span>
+                                    Generate Draft
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-indigo-500/40"></i>
+                                <div class="bg-teal-500/10 border border-teal-500/30 p-2 rounded-lg text-xs w-24">
+                                    <span class="font-bold block text-teal-400">Human</span>
+                                    Audit & Edit
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5 Rules -->
+                        <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-xl">
+                            <h3 class="text-slate-200 font-bold text-sm mb-2 uppercase">5 Rules for AI Responsibility</h3>
+                            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-4">
+                                <li>Verify critical claims using authoritative, verified primary directories.</li>
+                                <li>Never input sensitive personal information, credentials, or private keys.</li>
+                                <li>Disclose AI involvement in creative assignments; don't plagiarize.</li>
+                                <li>Reference creators and give credit when building from source concepts.</li>
+                                <li>Leverage generative technology to enhance your learning scope, not skip it.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Right: Interactive Human Pledge Generator -->
+                    <div class="lg:col-span-6 bg-gradient-to-br from-indigo-950/60 to-slate-900 border border-indigo-500/20 p-6 rounded-2xl shadow-2xl relative overflow-hidden">
+                        <div class="absolute -top-10 -left-10 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl"></div>
+                        <h4 class="text-indigo-400 font-bold text-xs uppercase mb-1 text-center">Interactive Classroom Activity</h4>
+                        <h3 class="font-heading font-bold text-lg mb-4 text-center text-white">Create Your Digital Citizen Pledge</h3>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Your Name</label>
+                                <input id="pledgerName" type="text" placeholder="Enter student name..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-teal-400 transition">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Responsible AI Action Promise</label>
+                                <select id="pledgePromise" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-teal-400 transition">
+                                    <option value="Verify facts from original articles instead of blindly copying output.">Verify facts from original articles instead of blindly copying output.</option>
+                                    <option value="Never feed personal data or family privacy credentials into GenAI modules.">Never feed personal data or family privacy credentials into GenAI modules.</option>
+                                    <option value="Disclose transparently where AI was used for secondary school reports.">Disclose transparently where AI was used for secondary school reports.</option>
+                                    <option value="Use AI models specifically to explain complex study guides to learn faster.">Use AI models specifically to explain complex study guides to learn faster.</option>
+                                </select>
+                            </div>
+                            <button onclick="generatePledgeBadge()" class="w-full py-2.5 rounded-xl bg-teal-500 text-slate-950 font-bold text-xs tracking-wider uppercase hover:scale-[1.02] transform transition">Generate Pledge Badge</button>
+                        </div>
+
+                        <!-- Generated Badge visual output modal area -->
+                        <div id="pledgeBadgeDisplay" class="hidden mt-4 border border-dashed border-teal-500/30 p-4 rounded-xl text-center bg-teal-500/[0.02]">
+                            <p class="text-[10px] text-teal-400 font-bold uppercase tracking-widest"><i class="fa-solid fa-shield-halved mr-1"></i> AI Citizen Pledge</p>
+                            <p id="badgeText" class="text-slate-200 text-xs mt-2 italic font-serif">"I, [Name], promise to [Promise]"</p>
+                            <span class="inline-block mt-3 bg-teal-400/10 text-teal-400 border border-teal-400/20 rounded-full px-2 py-0.5 text-[9px] font-bold"><i class="fa-solid fa-circle-check mr-1"></i> SIGNED SECURELY</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center text-xs text-slate-400">
+                    "The future doesn't belong to people who compete with AI, but to <strong class="text-teal-400">humans who work effectively alongside AI</strong>."
+                </div>
+            </div>
+
+            <!-- SLIDE 6: Slide 26 - Connecting the Dots -->
+            <div id="slide-5" class="slide flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-purple-400 text-xs font-semibold tracking-wider uppercase block mb-1">SLIDE 26: CORE SYNTHESIS</span>
+                        <h2 class="font-heading font-bold text-3xl text-white">The Generative AI Journey</h2>
+                    </div>
+                    <span class="bg-purple-500/10 border border-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-xs font-semibold">Consolidating Roadmap</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
+                    <!-- Left Roadmap Flow -->
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+                            <h3 class="text-slate-300 font-bold text-xs uppercase mb-3"><i class="fa-solid fa-map-location-dot mr-1 text-purple-400"></i> The Unified Creator Paradigm</h3>
+                            <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-lg text-xs justify-center max-w-sm mx-auto border border-slate-800">
+                                <span class="bg-purple-500/10 border border-purple-500/20 text-purple-400 px-2 py-1 rounded font-bold">PROMPT</span>
+                                <i class="fa-solid fa-arrow-right text-slate-600"></i>
+                                <span class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 px-2 py-1 rounded font-bold">AI CHASSIS</span>
+                                <i class="fa-solid fa-arrow-right text-slate-600"></i>
+                                <span class="bg-teal-500/10 border border-teal-500/20 text-teal-400 px-2 py-1 rounded font-bold">OUTPUT</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+                            <h3 class="text-slate-300 font-bold text-xs uppercase mb-2">The Quality Engine</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">The determining differentiator in modern production isn't the machine—it is the exactitude and analytical rigor of your instructions.</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Reflection Cloud Box -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-indigo-950/40 to-purple-950/40 border border-purple-500/20 p-5 rounded-2xl shadow-xl">
+                        <div class="text-center mb-4">
+                            <span class="bg-purple-500/10 text-purple-400 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase">Classroom Reflection</span>
+                            <h3 class="font-heading font-bold text-base mt-1.5 text-white">Interactive Response Board</h3>
+                            <p class="text-slate-400 text-xs">How are you feeling about GenAI right now?</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="addCloudReflection('Excited')" class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 text-xs text-slate-300 hover:text-white transition text-center">🎉 Excited</button>
+                            <button onclick="addCloudReflection('Cautious')" class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 text-xs text-slate-300 hover:text-white transition text-center">🕵️‍♂️ Cautious</button>
+                            <button onclick="addCloudReflection('Inspired')" class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 text-xs text-slate-300 hover:text-white transition text-center">💡 Inspired</button>
+                            <button onclick="addCloudReflection('Curious')" class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 text-xs text-slate-300 hover:text-white transition text-center">🔍 Curious</button>
+                        </div>
+                        
+                        <!-- Word cloud visualization area -->
+                        <div id="cloudDisplay" class="mt-4 bg-slate-950/80 border border-slate-850 p-4 rounded-xl min-h-[100px] flex flex-wrap justify-center items-center gap-2 relative">
+                            <p id="cloudPlaceholder" class="text-slate-600 text-xs text-center italic">Click tags above to populate the shared Class Cloud board!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center bg-purple-500/5 p-3 rounded-lg border border-purple-500/10">
+                    <span class="text-[10px] text-purple-400 font-bold uppercase"><i class="fa-solid fa-bolt mr-1"></i> Key Formula:</span>
+                    <span class="text-slate-300 text-[11px]">Clear Prompts + Critical Verification + Iterative Refining = True AI Craftsmanship</span>
+                </div>
+            </div>
+
+            <!-- SLIDE 7: Slide 27 - Your First AI Mission -->
+            <div id="slide-6" class="slide flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-teal-400 text-xs font-semibold tracking-wider uppercase block mb-1">SLIDE 27: WORKSHOP ROADMAP</span>
+                        <h2 class="font-heading font-bold text-3xl text-white">Your First AI Mission</h2>
+                    </div>
+                    <span class="bg-teal-500/10 border border-teal-500/20 text-teal-400 px-3 py-1 rounded-full text-xs font-semibold">Take-Home Challenges</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-auto">
+                    <!-- Quest Card A -->
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-xl hover:border-teal-500/40 transition group relative overflow-hidden flex flex-col justify-between min-h-[240px] lg:h-[300px]">
+                        <div>
+                            <span class="text-[10px] bg-teal-500/10 text-teal-400 px-2 py-0.5 rounded font-extrabold uppercase mb-3 inline-block">QUEST A</span>
+                            <h3 class="font-heading font-bold text-base text-slate-100 group-hover:text-teal-400 transition">Story Creator</h3>
+                            <p class="text-slate-400 text-xs mt-2 leading-relaxed">Draft a short story of 150-300 words with deep genre variation (Space, Mystery, or school life style prompt).</p>
+                        </div>
+                        <button onclick="viewQuestDetails('A')" class="mt-4 py-2 w-full text-center rounded bg-slate-850 hover:bg-slate-800 text-[11px] font-bold text-slate-300">View Quest details</button>
+                    </div>
+
+                    <!-- Quest Card B -->
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-xl hover:border-indigo-500/40 transition group relative overflow-hidden flex flex-col justify-between min-h-[240px] lg:h-[300px]">
+                        <div>
+                            <span class="text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded font-extrabold uppercase mb-3 inline-block">QUEST B</span>
+                            <h3 class="font-heading font-bold text-base text-slate-100 group-hover:text-indigo-400 transition">AI Artist</h3>
+                            <p class="text-slate-400 text-xs mt-2 leading-relaxed">Conceptualize 3 environment assets: Futuristic School Campus, Mars Research Facility, or Sustainable Urban Capital.</p>
+                        </div>
+                        <button onclick="viewQuestDetails('B')" class="mt-4 py-2 w-full text-center rounded bg-slate-850 hover:bg-slate-800 text-[11px] font-bold text-slate-300">View Quest details</button>
+                    </div>
+
+                    <!-- Quest Card C -->
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-xl hover:border-purple-500/40 transition group relative overflow-hidden flex flex-col justify-between min-h-[240px] lg:h-[300px]">
+                        <div>
+                            <span class="text-[10px] bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded font-extrabold uppercase mb-3 inline-block">QUEST C</span>
+                            <h3 class="font-heading font-bold text-base text-slate-100 group-hover:text-purple-400 transition">Assistant Tutor</h3>
+                            <p class="text-slate-400 text-xs mt-2 leading-relaxed">Ask AI model configurations to explain a complex thesis (Photosynthesis or Kinetic Physics) through everyday analogies.</p>
+                        </div>
+                        <button onclick="viewQuestDetails('C')" class="mt-4 py-2 w-full text-center rounded bg-slate-850 hover:bg-slate-800 text-[11px] font-bold text-slate-300">View Quest details</button>
+                    </div>
+
+                    <!-- Quest Card D -->
+                    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-xl hover:border-amber-500/40 transition group relative overflow-hidden flex flex-col justify-between min-h-[240px] lg:h-[300px]">
+                        <div>
+                            <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-extrabold uppercase mb-3 inline-block">QUEST D</span>
+                            <h3 class="font-heading font-bold text-base text-slate-100 group-hover:text-amber-400 transition">AI Entrepreneur</h3>
+                            <p class="text-slate-400 text-xs mt-2 leading-relaxed">Launch a fictional brand. Prompt AI templates for visual logo layouts, advertising taglines, and marketing strategy plans.</p>
+                        </div>
+                        <button onclick="viewQuestDetails('D')" class="mt-4 py-2 w-full text-center rounded bg-slate-850 hover:bg-slate-800 text-[11px] font-bold text-slate-300">View Quest details</button>
+                    </div>
+                </div>
+
+                <!-- Interactive overlay info box -->
+                <div id="questOverlay" class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-list-check text-teal-400"></i>
+                        <span id="questText" class="text-xs text-slate-350">Submission Requirements for tomorrow: Bring your prompt, original output draft, and one iteration step showing human edits.</span>
+                    </div>
+                    <button onclick="closeQuestDetails()" class="text-slate-500 hover:text-slate-300 text-xs"><i class="fa-solid fa-circle-xmark"></i></button>
+                </div>
+            </div>
+
+            <!-- SLIDE 8: Slide 28 - The Ultimate Generative AI Quiz -->
+            <div id="slide-7" class="slide flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-indigo-400 text-xs font-semibold tracking-wider uppercase block mb-1">SLIDE 28: KNOWLEDGE CHALLENGE</span>
+                        <h2 class="font-heading font-bold text-3xl text-white">Ultimate Generative AI Quiz</h2>
+                    </div>
+                    <span class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-semibold">Score: <span id="quizScore">0</span>/5</span>
+                </div>
+
+                <!-- Interactive Game Show Dashboard inside the slide -->
+                <div id="quizDashboard" class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl max-w-2xl mx-auto w-full my-auto shadow-2xl">
+                    <div id="quizContent">
+                        <!-- Dynamic Question Header -->
+                        <div class="mb-4">
+                            <span id="qNumber" class="text-teal-400 text-xs font-bold uppercase">Question 1 of 5</span>
+                            <h3 id="qText" class="font-heading font-bold text-lg mt-1 text-slate-100">What does Generative AI primarily do?</h3>
+                        </div>
+                        <!-- Dynamic Options Grid -->
+                        <div id="qOptions" class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                            <button onclick="answerQuiz(0)" class="text-left p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 text-sm transition">A. Store large databases</button>
+                            <button onclick="answerQuiz(1)" class="text-left p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 text-sm transition">B. Create new content drafts</button>
+                            <button onclick="answerQuiz(2)" class="text-left p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 text-sm transition">C. Increase local network latency</button>
+                            <button onclick="answerQuiz(3)" class="text-left p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 text-sm transition">D. Fabricate computer memory parts</button>
+                        </div>
+                    </div>
+
+                    <!-- Finish Screen (Initially Hidden) -->
+                    <div id="quizFinishScreen" class="hidden text-center py-6">
+                        <i class="fa-solid fa-trophy text-amber-400 text-5xl mb-4"></i>
+                        <h3 class="font-heading font-bold text-xl text-white">Quiz Completed Successfully!</h3>
+                        <p class="text-slate-400 text-sm mt-1 max-w-md mx-auto">Awesome performance. You've verified your AI literacy core foundations.</p>
+                        <button onclick="restartQuiz()" class="mt-4 px-6 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs tracking-wider uppercase transition">Restart Quiz</button>
+                    </div>
+                </div>
+
+                <div class="text-center text-xs text-slate-500 italic">Score points for correct answers and track progress above.</div>
+            </div>
+
+            <!-- SLIDE 9: Slide 29 - Careers in AI -->
+            <div id="slide-8" class="slide flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-teal-400 text-xs font-semibold tracking-wider uppercase block mb-1">SLIDE 29: FUTURE PROJECTION</span>
+                        <h2 class="font-heading font-bold text-3xl text-white">Careers in the Age of AI</h2>
+                    </div>
+                    <span class="bg-teal-500/10 border border-teal-500/20 text-teal-400 px-3 py-1 rounded-full text-xs font-semibold">Economic Advantage</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
+                    <!-- Left: Pathway Cards -->
+                    <div class="lg:col-span-8 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button onclick="selectCareerPath('technical')" class="text-left bg-slate-900/60 border border-slate-850 p-4 rounded-xl hover:border-teal-400/40 transition hover:scale-[1.01] transform duration-200">
+                                <span class="text-xs bg-teal-500/10 text-teal-400 px-2 py-0.5 rounded font-bold uppercase mb-2 inline-block">TECHNICAL</span>
+                                <h3 class="font-heading font-bold text-sm text-slate-100">AI Architects</h3>
+                                <p class="text-slate-400 text-[11px] mt-1">Deep engineers, machine learning operations professionals, and cloud scaling masters.</p>
+                            </button>
+                            <button onclick="selectCareerPath('creative')" class="text-left bg-slate-900/60 border border-slate-850 p-4 rounded-xl hover:border-indigo-400/40 transition hover:scale-[1.01] transform duration-200">
+                                <span class="text-xs bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded font-bold uppercase mb-2 inline-block">CREATIVE</span>
+                                <h3 class="font-heading font-bold text-sm text-slate-100">Media Operators</h3>
+                                <p class="text-slate-400 text-[11px] mt-1">AI-assisted filmmakers, vector design layout directors, and content strategists.</p>
+                            </button>
+                            <button onclick="selectCareerPath('business')" class="text-left bg-slate-900/60 border border-slate-850 p-4 rounded-xl hover:border-purple-400/40 transition hover:scale-[1.01] transform duration-200">
+                                <span class="text-xs bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded font-bold uppercase mb-2 inline-block">BUSINESS</span>
+                                <h3 class="font-heading font-bold text-sm text-slate-100">Product Leads</h3>
+                                <p class="text-slate-400 text-[11px] mt-1">Innovation project directors, startup builders, and policy integration advisors.</p>
+                            </button>
+                        </div>
+
+                        <!-- Changing career details showcase box -->
+                        <div id="careerDetailsBox" class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl min-h-[90px] flex flex-col justify-center">
+                            <p class="text-teal-400 font-bold text-xs uppercase mb-1">Click a Career Path above to explore specific job opportunities!</p>
+                            <p class="text-slate-400 text-xs">Learn how human elements connect with specific systems roles.</p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Immutable Human Skillsets tracker -->
+                    <div class="lg:col-span-4 bg-slate-900/80 border border-slate-800 p-5 rounded-xl shadow-xl">
+                        <h4 class="text-indigo-400 font-bold text-xs uppercase mb-3 text-center"><i class="fa-solid fa-anchor mr-1"></i> Future-Proof Human Strengths</h4>
+                        <div class="space-y-2">
+                            <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between text-xs">
+                                <span class="text-slate-200 font-bold">1. Critical Thinking</span>
+                                <span class="bg-teal-500/15 text-teal-400 px-2 py-0.5 rounded text-[10px] uppercase">Verify and Audit</span>
+                            </div>
+                            <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between text-xs">
+                                <span class="text-slate-200 font-bold">2. Original Creativity</span>
+                                <span class="bg-indigo-500/15 text-indigo-400 px-2 py-0.5 rounded text-[10px] uppercase">Unique Ideas</span>
+                            </div>
+                            <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between text-xs">
+                                <span class="text-slate-200 font-bold">3. Ethical Judgment</span>
+                                <span class="bg-purple-500/15 text-purple-400 px-2 py-0.5 rounded text-[10px] uppercase">Safety Limits</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-indigo-500/10 border border-indigo-500/20 p-3 rounded-lg text-center text-xs">
+                    "The Formula: <strong class="text-indigo-400">Human Intuition</strong> + <strong class="text-teal-400">AI Supercomputing Execution</strong> = <span class="text-white font-extrabold">Superhuman Production Scale</span>."
+                </div>
+            </div>
+
+            <!-- SLIDE 10: Slide 30 - Closing & Exit Ticket -->
+            <div id="slide-9" class="slide flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-indigo-400 text-xs font-semibold tracking-wider uppercase block mb-1">SLIDE 30: SYNCHRONIZATION</span>
+                        <h2 class="font-heading font-bold text-3xl text-white">Your AI Journey Starts Now</h2>
+                    </div>
+                    <span class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-semibold">Exit Ticket Activity</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
+                    <!-- Left exit ticket info -->
+                    <div class="lg:col-span-6 space-y-4">
+                        <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-xl">
+                            <h3 class="text-slate-200 font-bold text-sm mb-3 uppercase">Session Key Learnings</h3>
+                            <div class="space-y-2 text-xs text-slate-350">
+                                <div class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-teal-400 mt-0.5"></i>
+                                    <span>AI models generate content dynamically, but can hallucinate detailed falsehoods.</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-teal-400 mt-0.5"></i>
+                                    <span>Deepfakes threaten informational trust; verification checklists are mandatory.</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-teal-400 mt-0.5"></i>
+                                    <span>Responsible use means verifying inputs and ensuring clear credit transparency.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Historical Analogy Quote -->
+                        <div class="bg-slate-900/30 border border-slate-800 p-4 rounded-xl text-xs text-slate-400 leading-relaxed italic">
+                            When calculators arrived, people feared the end of mathematics. When computers and internet modules arrived, scholars feared information loss. Today, we step forward securely with AI.
+                        </div>
+                    </div>
+
+                    <!-- Right exit ticket form interactive -->
+                    <div class="lg:col-span-6 bg-gradient-to-br from-indigo-950/40 to-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+                        <h4 class="text-teal-400 font-bold text-xs uppercase mb-3 text-center"><i class="fa-solid fa-ticket-simple mr-1"></i> Interactive Exit Ticket</h4>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">One thing I learned today:</label>
+                                <input id="exitLearned" type="text" placeholder="e.g., AI can generate false references confidently..." class="w-full bg-slate-950 border border-slate-850 rounded-lg p-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-teal-400 transition">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">One thing I want to test tomorrow:</label>
+                                <input id="exitTry" type="text" placeholder="e.g., Quest B: Designing Mars habitat artworks..." class="w-full bg-slate-950 border border-slate-850 rounded-lg p-2 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-teal-400 transition">
+                            </div>
+                            <button onclick="submitExitTicket()" class="w-full py-2 rounded-xl bg-indigo-500 text-white font-bold text-xs tracking-wider uppercase hover:scale-[1.02] transform transition shadow-lg shadow-indigo-500/20">Submit Exit Ticket</button>
+                        </div>
+
+                        <!-- Ticket success state feedback -->
+                        <div id="exitSuccessState" class="hidden mt-3 text-center p-3 border border-teal-500/20 bg-teal-500/5 rounded-xl">
+                            <span class="text-xs text-teal-400 font-bold"><i class="fa-solid fa-circle-check mr-1.5"></i> Exit Ticket Recorded successfully! See you tomorrow.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-slate-500 text-[10px] text-center">Open Q&A active. Click on "Presenter Notes" at the top-right to view detailed timing parameters.</div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Slide Navigation Footer controls -->
+    <footer class="bg-navy-800/80 border-t border-slate-800 px-6 py-4 flex items-center justify-between z-40 backdrop-blur-md">
+        <div class="flex items-center gap-2">
+            <button onclick="prevSlide()" class="p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 transition flex items-center justify-center">
+                <i class="fa-solid fa-angle-left"></i>
+            </button>
+            <button onclick="nextSlide()" class="p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 transition flex items-center justify-center">
+                <i class="fa-solid fa-angle-right"></i>
+            </button>
+        </div>
+
+        <!-- Slide Selector Dots -->
+        <div class="flex gap-2">
+            <span class="dot w-2 h-2 rounded-full bg-teal-400 transition-all duration-300" onclick="goToSlide(0)"></span>
+            <span class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" onclick="goToSlide(1)"></span>
+            <span class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" onclick="goToSlide(2)"></span>
+            <span class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" onclick="goToSlide(3)"></span>
+            <span class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" onclick="goToSlide(4)"></span>
+            <span class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" onclick="goToSlide(5)"></span>
+            <span class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" onclick="goToSlide(6)"></span>
+            <span class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" onclick="goToSlide(7)"></span>
+            <span class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" onclick="goToSlide(8)"></span>
+            <span class="dot w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" onclick="goToSlide(9)"></span>
+        </div>
+
+        <div class="text-xs text-slate-500 flex items-center gap-2">
+            <span>Use Arrow keys or swipes to browse</span>
+            <i class="fa-solid fa-keyboard text-slate-400"></i>
+        </div>
+    </footer>
+
+    <!-- Toggleable Presenter/Speaker Notes Panel (Sleek overlay drawer) -->
+    <div id="speakerNotesDrawer" class="fixed right-0 top-0 bottom-0 w-80 md:w-96 bg-navy-900 border-l border-slate-800 z-50 transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col justify-between">
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-navy-850">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-file-invoice text-teal-400"></i>
+                <h3 class="font-heading font-bold text-sm uppercase text-slate-100">Presenter Notes</h3>
+            </div>
+            <button onclick="toggleSpeakerNotes()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Scrollable Notes Content -->
+        <div class="flex-1 overflow-y-auto p-6 custom-scroll space-y-4 bg-navy-900">
+            <!-- Dynamically populated via JS depending on current slide index -->
+            <div id="notesPlaceholder" class="space-y-4">
+                <!-- Content goes here -->
+            </div>
+        </div>
+
+        <div class="p-6 border-t border-slate-850 bg-navy-950 text-center">
+            <span class="text-[10px] text-slate-500 uppercase tracking-widest block mb-1">Time management guideline</span>
+            <p class="text-xs text-teal-400 font-semibold"><i class="fa-solid fa-clock mr-1"></i> Session Target: 15-20 mins total</p>
+        </div>
+    </div>
+
+
+    <!-- Slideshow Core JavaScript Logic -->
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const slideCounter = document.getElementById('slideCounter');
+        const progressBar = document.getElementById('progressBar');
+        const notesPlaceholder = document.getElementById('notesPlaceholder');
+        const speakerNotesDrawer = document.getElementById('speakerNotesDrawer');
+        
+        let currentSlideIdx = 0;
+
+        // Speaker Notes Registry mapping each slide index to its specific speech parameters
+        const speakerNotesRegistry = {
+            0: `
+                <h4 class="text-teal-400 font-bold text-xs uppercase mb-1">Title Opener / Setup</h4>
+                <p class="text-slate-300 text-xs leading-relaxed">Welcome the students back. This session handles highly critical risks, mistakes, security policies, and creative missions.</p>
+                <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-400 mt-2">
+                    <strong>Tip:</strong> Position AI as an incredibly powerful accelerator, but clarify that it requires professional human piloting.
+                </div>
+            `,
+            1: `
+                <h4 class="text-teal-400 font-bold text-xs uppercase mb-1">Objectives Review</h4>
+                <p class="text-slate-300 text-xs leading-relaxed">Clearly establish the three core objectives before diving in. Focus on AI limitations, recognizing structural fakes, and mastering interactive human frameworks.</p>
+            `,
+            2: `
+                <h4 class="text-teal-400 font-bold text-xs uppercase mb-1">Slide 23 Notes: AI Hallucinations</h4>
+                <p class="text-slate-300 text-xs leading-relaxed">One of the greatest misconceptions is that fluid language equals correctness. Emphasize that because large language models are predicting words probabilistically, they will formulate highly convincing arguments that have no basis in fact.</p>
+                <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-400 mt-2">
+                    <strong>Engagement Trigger:</strong> Direct students' attention to the "Spot the Mistake" quiz widget on the right side of the screen.
+                </div>
+            `,
+            3: `
+                <h4 class="text-teal-400 font-bold text-xs uppercase mb-1">Slide 24 Notes: Deepfakes</h4>
+                <p class="text-slate-300 text-xs leading-relaxed">Emphasize the cultural paradigm shift: seeing or hearing digital video is no longer evidence of truth. Discuss the structural danger of malicious impersonation and fake news networks.</p>
+                <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-400 mt-2">
+                    <strong>Formula Walkthrough:</strong> Show them the interactive 4-step "Critical Thinking Formula". Encourage them to click each step.
+                </div>
+            `,
+            4: `
+                <h4 class="text-indigo-400 font-bold text-xs uppercase mb-1">Slide 25 Notes: Human-In-The-Loop</h4>
+                <p class="text-slate-300 text-xs leading-relaxed">Introduce the 5 key ethical usage parameters. Note that privacy and factual integrity are non-negotiable foundations.</p>
+                <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-400 mt-2">
+                    <strong>Interactive Activity:</strong> Have students input their name on screen and select an AI pledge. Click "Generate Badge" to visualize their secure digital certificate card.
+                </div>
+            `,
+            5: `
+                <h4 class="text-purple-400 font-bold text-xs uppercase mb-1">Slide 26 Notes: Synthesizing Concepts</h4>
+                <p class="text-slate-300 text-xs leading-relaxed">Review the universal workflow: Idea -> Prompt -> AI Chassis -> Dynamic Output -> Iteration. Clarify that professional results come entirely from prompt iteration and audit.</p>
+                <div class="bg-slate-950 p-2.5 rounded-lg border border-purple-500/10 text-[11px] text-slate-400 mt-2">
+                    <strong>Interactive Element:</strong> Encourage students to vote on their current emotional alignment with the technology (Excited, Cautious, etc.) to dynamically populate the interactive Class Cloud.
+                </div>
+            `,
+            6: `
+                <h4 class="text-teal-400 font-bold text-xs uppercase mb-1">Slide 27 Notes: Challenges Setup</h4>
+                <p class="text-slate-300 text-xs leading-relaxed">Outline the four mission options. Students must select at least one module for tomorrow's hand-on workshop.</p>
+                <p class="text-slate-300 text-xs mt-1">Clarify the submission parameters: Bring both the prompt sequences used and details of one physical adjustment made by the human pilot.</p>
+            `,
+            7: `
+                <h4 class="text-indigo-400 font-bold text-xs uppercase mb-1">Slide 28 Notes: Recapitulation Quiz</h4>
+                <p class="text-slate-300 text-xs leading-relaxed">Use this rapid quiz slide to reinforce concepts. Challenge teams or invite individual students to call out answers.</p>
+                <p class="text-slate-300 text-xs mt-1">The dashboard operates interactively. Click answers on screen to instantly track correctness metrics.</p>
+            `,
+            8: `
+                <h4 class="text-teal-400 font-bold text-xs uppercase mb-1">Slide 29 Notes: Career Opportunities</h4>
+                <p class="text-slate-300 text-xs leading-relaxed">Dismantle the fear that AI replaces human workers. Instead, prove that the marketplace empowers professionals who leverage AI systems. Explore Technical, Creative, and Business segments.</p>
+            `,
+            9: `
+                <h4 class="text-indigo-400 font-bold text-xs uppercase mb-1">Slide 30 Notes: Exit Ticket / Q&A</h4>
+                <p class="text-slate-300 text-xs leading-relaxed">Conclude the theoretical lecture portion here. Have students write down their personal Exit Ticket answers and submit them on screen.</p>
+                <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-400 mt-2">
+                    <strong>End Statement:</strong> "Our goal is not simply to ask 'Can AI do this?' but rather 'What can I create alongside AI?'" Open the floor to final student Q&A.
+                </div>
+            `
+        };
+
+        // Navigation Controllers
+        function updatePresentationUI() {
+            slides.forEach((slide, idx) => {
+                if (idx === currentSlideIdx) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            dots.forEach((dot, idx) => {
+                if (idx === currentSlideIdx) {
+                    dot.classList.add('bg-teal-400', 'w-4');
+                    dot.classList.remove('bg-slate-700', 'w-2');
+                } else {
+                    dot.classList.remove('bg-teal-400', 'w-4');
+                    dot.classList.add('bg-slate-700', 'w-2');
+                }
+            });
+
+            // Update Header counts
+            slideCounter.innerText = `${String(currentSlideIdx + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+            
+            // Adjust progress percentage
+            const percentage = ((currentSlideIdx) / (slides.length - 1)) * 100;
+            progressBar.style.width = `${percentage}%`;
+
+            // Populate current speaker notes
+            notesPlaceholder.innerHTML = speakerNotesRegistry[currentSlideIdx] || '<p class="text-slate-400 text-xs">No specific presentation directives logged for this slide.</p>';
+        }
+
+        function nextSlide() {
+            if (currentSlideIdx < slides.length - 1) {
+                currentSlideIdx++;
+                updatePresentationUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIdx > 0) {
+                currentSlideIdx--;
+                updatePresentationUI();
+            }
+        }
+
+        function goToSlide(idx) {
+            currentSlideIdx = idx;
+            updatePresentationUI();
+        }
+
+        function toggleSpeakerNotes() {
+            speakerNotesDrawer.classList.toggle('translate-x-full');
+        }
+
+        // Fullscreen API Helper
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Keyboard navigation setup
+        document.addEventListener('keydown', (e) => {
+            const activeEl = document.activeElement;
+            const capturesTextKeys = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.getAttribute('contenteditable') === 'true'
+            );
+            const capturesArrowKeys = activeEl && (
+                (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT'
+            );
+            const capturesSpacebar = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.tagName === 'BUTTON' ||
+                activeEl.getAttribute('role') === 'button'
+            );
+
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Space') {
+                if (!capturesSpacebar && !capturesArrowKeys) {
+                    nextSlide();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (!capturesArrowKeys) {
+                    prevSlide();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'f' || e.key === 'F') {
+                if (!capturesTextKeys) {
+                    toggleFullscreen();
+                    e.preventDefault();
+                }
+            }
+        });
+
+        document.addEventListener('dblclick', (e) => {
+            const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+            if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+                toggleFullscreen();
+            }
+        });
+
+        // --- INTERACTIVE ELEMENTS JS HANDLERS ---
+
+        // Slide 23: Spot the Mistake
+        function checkMistakeAnswer(num) {
+            const feedback = document.getElementById('mistakeAnswerFeedback');
+            if (num === 3) {
+                feedback.className = "mt-4 text-center text-xs font-bold text-teal-400 h-6";
+                feedback.innerText = "Correct! Obvious human errors are easy to spot. AI errors are far more subtle!";
+            } else {
+                feedback.className = "mt-4 text-center text-xs font-bold text-rose-400 h-6";
+                feedback.innerText = "Incorrect. That statement is scientifically accurate. Try again!";
+            }
+        }
+
+        // Slide 24: Critical thinking simulator
+        const formulaSteps = {
+            1: {
+                title: "Step 1: See It",
+                text: "A shocking video of a famous athlete announcing retirement pops up. It looks completely real. Should you share it immediately?"
+            },
+            2: {
+                title: "Step 2: Question It",
+                text: "Ask critical baseline questions: Who published this? Does the lip-syncing perfectly align? Is the account holding a verified badge?"
+            },
+            3: {
+                title: "Step 3: Verify It",
+                text: "Cross check with primary directories. Are other trusted media outlets and networks covering this news? If no one else is, it is likely false."
+            },
+            4: {
+                title: "Step 4: Trust It",
+                text: "Only trust media once secondary credentials, official confirmation, and lip sync alignment checks clear successfully."
+            }
+        };
+
+        function progressFormula(step) {
+            // Update active states on buttons
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`step-btn-${i}`);
+                if (i <= step) {
+                    btn.className = "w-1/4 p-2 rounded bg-indigo-600 text-white border border-indigo-500 text-xs transition font-semibold shadow";
+                } else {
+                    btn.className = "w-1/4 p-2 rounded bg-slate-800 text-slate-400 border border-transparent text-xs transition";
+                }
+            }
+
+            const feedbackText = document.getElementById('formulaText');
+            feedbackText.innerHTML = `
+                <p class="font-bold text-teal-400 mb-1">${formulaSteps[step].title}</p>
+                ${formulaSteps[step].text}
+            `;
+        }
+
+        // Slide 25: Citizen Pledge Badge Creator
+        function generatePledgeBadge() {
+            const name = document.getElementById('pledgerName').value.trim();
+            const promise = document.getElementById('pledgePromise').value;
+            const badgeDisplay = document.getElementById('pledgeBadgeDisplay');
+            const badgeText = document.getElementById('badgeText');
+
+            if (!name) {
+                alert("Please enter your name first!");
+                return;
+            }
+
+            badgeText.innerHTML = `
+                "I, <span class="text-teal-400 font-bold">${name}</span>, promise to ${promise.charAt(0).toLowerCase() + promise.slice(1)}"
+            `;
+            badgeDisplay.classList.remove('hidden');
+        }
+
+        // Slide 26: Word Cloud Board Simulator
+        function addCloudReflection(word) {
+            const cloud = document.getElementById('cloudDisplay');
+            const placeholder = document.getElementById('cloudPlaceholder');
+            
+            if (placeholder) {
+                placeholder.remove();
+            }
+
+            // Create tag element with varying visual sizes
+            const sizes = ['text-xs', 'text-sm', 'text-base', 'text-lg', 'text-xl'];
+            const colors = ['text-teal-400', 'text-indigo-400', 'text-purple-400', 'text-pink-400', 'text-amber-400'];
+            
+            const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+            const span = document.createElement('span');
+            span.className = `font-bold ${randomSize} ${randomColor} bg-slate-900 border border-slate-850 px-2.5 py-1 rounded-full shadow-sm animate-pulse`;
+            span.innerText = word;
+            
+            cloud.appendChild(span);
+        }
+
+        // Slide 27: Take home Quest Details Drawer
+        const questData = {
+            'A': "QUEST A DETAILS: Generate a creative short narrative based on space or mysteries. Introduce 3 distinctive prompt variants asking the model to rewrite the content in humorous, dramatic, and academic styles.",
+            'B': "QUEST B DETAILS: Construct visual prompt inputs specifying architectural styles, light orientations, and volumetric assets for a high-concept future school campus. Save your best output.",
+            'C': "QUEST C DETAILS: Select a difficult science or physics topic. Ask AI model queries to explain it simply using concrete physical analogies, and draft a 5-question recap test.",
+            'D': "QUEST D DETAILS: Formulate a modern branding kit. Write prompt commands to discover business names, design color palettes, and social media advertising taglines."
+        };
+
+        function viewQuestDetails(questLetter) {
+            const questOverlay = document.getElementById('questOverlay');
+            const questText = document.getElementById('questText');
+            questText.innerText = questData[questLetter];
+        }
+
+        function closeQuestDetails() {
+            const questText = document.getElementById('questText');
+            questText.innerText = "Submission Requirements for tomorrow: Bring your prompt, original output draft, and one iteration step showing human edits.";
+        }
+
+        // Slide 28: Fully Playable Quiz Game
+        const quizDatabase = [
+            {
+                q: "What does Generative AI primarily do?",
+                options: ["A. Store large databases", "B. Create new content drafts", "C. Increase local network speed", "D. Fabricate computer memory parts"],
+                correct: 1
+            },
+            {
+                q: "What is a prompt?",
+                options: ["A. A security firewall credential", "B. A diagnostic diagnostic script", "C. An instruction given to an AI model", "D. A localized file system format"],
+                correct: 2
+            },
+            {
+                q: "Which application module generates graphic images?",
+                options: ["A. Microsoft Excel", "B. Midjourney or DALL-E", "C. Scientific Math Calculator", "D. Local File Directory Explorer"],
+                correct: 1
+            },
+            {
+                q: "What is a deepfake?",
+                options: ["A. A localized system backup", "B. AI-generated deceptive media", "C. A web indexing search engine", "D. A physical backend script compile"],
+                correct: 1
+            },
+            {
+                q: "Is Generative AI always accurate?",
+                options: ["True", "False"],
+                correct: 1
+            }
+        ];
+
+        let quizIndex = 0;
+        let score = 0;
+
+        function answerQuiz(optionIdx) {
+            const currentQ = quizDatabase[quizIndex];
+            if (optionIdx === currentQ.correct) {
+                score++;
+                document.getElementById('quizScore').innerText = score;
+            }
+
+            // Move forward
+            quizIndex++;
+            if (quizIndex < quizDatabase.length) {
+                loadQuizQuestion();
+            } else {
+                // Show completion
+                document.getElementById('quizContent').classList.add('hidden');
+                document.getElementById('quizFinishScreen').classList.remove('hidden');
+            }
+        }
+
+        function loadQuizQuestion() {
+            const currentQ = quizDatabase[quizIndex];
+            document.getElementById('qNumber').innerText = `Question ${quizIndex + 1} of 5`;
+            document.getElementById('qText').innerText = currentQ.q;
+            
+            const optionsContainer = document.getElementById('qOptions');
+            optionsContainer.innerHTML = '';
+            
+            currentQ.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => answerQuiz(idx);
+                btn.className = "text-left p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 text-sm transition";
+                btn.innerText = opt;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function restartQuiz() {
+            quizIndex = 0;
+            score = 0;
+            document.getElementById('quizScore').innerText = score;
+            document.getElementById('quizContent').classList.remove('hidden');
+            document.getElementById('quizFinishScreen').classList.add('hidden');
+            loadQuizQuestion();
+        }
+
+        // Slide 29: Career Path Explorer details
+        const careerDescriptions = {
+            technical: {
+                title: "Technical Pathway Opportunities",
+                text: "Requires coding expertise: AI Infrastructure Engineer, Database Compliance Auditor, Machine Learning Operations Lead. Focuses on system scale and safety constraints."
+            },
+            creative: {
+                title: "Creative Pathway Opportunities",
+                text: "Focuses on design: Virtual Production Director, AI Graphic Editor, Asset Ideator. Integrates system output with human art standards."
+            },
+            business: {
+                title: "Business Pathway Opportunities",
+                text: "Operational planning: Enterprise Innovation Consultant, AI Compliance Director, Product Integration Lead. Handles market validation and strategy alignment."
+            }
+        };
+
+        function selectCareerPath(pathType) {
+            const detailsBox = document.getElementById('careerDetailsBox');
+            detailsBox.innerHTML = `
+                <p class="text-teal-400 font-bold text-xs uppercase mb-1">${careerDescriptions[pathType].title}</p>
+                <p class="text-slate-300 text-xs">${careerDescriptions[pathType].text}</p>
+            `;
+        }
+
+        // Slide 30: Interactive exit ticket submission
+        function submitExitTicket() {
+            const learned = document.getElementById('exitLearned').value.trim();
+            const tryThis = document.getElementById('exitTry').value.trim();
+            const successState = document.getElementById('exitSuccessState');
+
+            if (!learned || !tryThis) {
+                alert("Please complete the interactive fields first!");
+                return;
+            }
+
+            successState.classList.remove('hidden');
+        }
+
+        // Initialization
+        window.onload = function() {
+            updatePresentationUI();
+            loadQuizQuestion();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsible AI & The Future - Interactive Slideshow</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            glow: '#deff9a',
+                            dark: '#090a0f',
+                            card: '#14161f',
+                            border: 'rgba(222, 255, 154, 0.15)',
+                            text: '#daffde',
+                            danger: '#ff6464',
+                            success: '#64ff64',
+                            warning: '#ffb364'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Urbanist', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Urbanist', sans-serif;
+            background-color: #090a0f;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(222, 255, 154, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(100, 255, 100, 0.03) 0px, transparent 50%);
+        }
+        .font-header {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .slide-transition {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel {
+            background: rgba(20, 22, 31, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(222, 255, 154, 0.1);
+        }
+        /* Card Flip styles for the quiz board */
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        /* Custom scrollbar adjustments */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(20, 22, 31, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(222, 255, 154, 0.25);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(222, 255, 154, 0.45);
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
+
+    <!-- Presentation Header -->
+    <header class="glass-panel sticky top-0 z-50 px-6 py-4 flex items-center justify-between border-b border-brand-border">
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-glow to-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                <i class="fa-solid fa-brain text-brand-dark text-xl"></i>
+            </div>
+            <div>
+                <span class="text-[10px] uppercase tracking-widest text-brand-glow font-bold">Curriculum Roadmap</span>
+                <h1 class="text-sm font-semibold text-slate-200">Responsible AI & The Future</h1>
+            </div>
+        </div>
+
+        <!-- Navigation Progress Tracker bar -->
+        <div class="hidden md:flex items-center gap-4 flex-1 max-w-xl mx-8">
+            <span class="text-xs text-slate-400 font-medium">Progress</span>
+            <div class="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-gradient-to-r from-brand-glow to-emerald-400 transition-all duration-300" style="width: 12.5%;"></div>
+            </div>
+            <span id="progress-text" class="text-xs font-mono text-brand-glow font-semibold">Slide 1/8</span>
+        </div>
+
+        <!-- Jump to Slide Quick Dropdown -->
+        <div class="flex items-center gap-3">
+            <select id="slide-jump" class="bg-brand-card border border-brand-border text-brand-text rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-glow cursor-pointer">
+                <option value="1">Slide 1: Overview & Intro</option>
+                <option value="2">Slide 2: Can AI Be Wrong?</option>
+                <option value="3">Slide 3: Responsible Prompting</option>
+                <option value="4">Slide 4: Future Career Paths</option>
+                <option value="5">Slide 5: Prompt Detective Quiz</option>
+                <option value="6">Slide 6: Reflection Activity</option>
+                <option value="7">Slide 7: Take-Home Lab prep</option>
+                <option value="8">Slide 8: Key Takeaways & Q&A</option>
+            </select>
+            <button id="fullscreen-btn" class="p-2 rounded-lg bg-brand-card hover:bg-slate-800 border border-brand-border text-slate-300 transition-colors" title="Toggle Fullscreen">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Slide Workspace -->
+    <main class="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 flex flex-col justify-center items-center">
+        
+        <!-- Slide 1: Title Slide (Section 8 & 9 Overview) -->
+        <section id="slide-1" class="slide-transition w-full h-full min-h-[600px] flex flex-col justify-center items-center text-center p-8 glass-panel rounded-2xl relative overflow-hidden">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(222,255,154,0.06)_0%,transparent_70%)] pointer-events-none"></div>
+            <div class="space-y-6 max-w-4xl">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/80 border border-brand-glow/20 text-brand-glow text-xs font-semibold tracking-wider uppercase">
+                    <i class="fa-solid fa-circle-nodes animate-pulse"></i> Combined Modules: Sections 8 & 9
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold font-header tracking-tight text-white leading-tight">
+                    Responsible <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-glow to-emerald-400">AI</span> & <br>The Future
+                </h1>
+                <p class="text-base md:text-lg text-brand-text max-w-2xl mx-auto leading-relaxed">
+                    Expose AI constraints, model ethical prompt systems, map future-ready careers, reflect, and gear up with tailored parameters for tomorrow's experimental lab!
+                </p>
+                
+                <div class="pt-8 flex flex-wrap justify-center gap-4">
+                    <div class="glass-panel bg-slate-900/60 px-6 py-4 rounded-xl flex items-center gap-3 border border-brand-border/40">
+                        <i class="fa-solid fa-triangle-exclamation text-brand-danger text-2xl"></i>
+                        <div class="text-left">
+                            <h4 class="font-bold text-slate-100 text-sm">AI Hallucinations</h4>
+                            <p class="text-[11px] text-slate-400">Witness confident errors live</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel bg-slate-900/60 px-6 py-4 rounded-xl flex items-center gap-3 border border-brand-border/40">
+                        <i class="fa-solid fa-graduation-cap text-brand-glow text-2xl"></i>
+                        <div class="text-left">
+                            <h4 class="font-bold text-slate-100 text-sm">Guided Reflections</h4>
+                            <p class="text-[11px] text-slate-400">Dropdown-driven study journals</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-8">
+                    <button onclick="changeSlide(1)" class="px-8 py-3 bg-gradient-to-r from-brand-glow to-emerald-400 text-brand-dark rounded-xl font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand-glow/20">
+                        Start Presentation <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Can AI Be Wrong? Understanding AI Limitations -->
+        <section id="slide-2" class="slide-transition hidden w-full h-full min-h-[600px] grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <!-- Info Block -->
+            <div class="lg:col-span-5 flex flex-col justify-between p-6 glass-panel rounded-2xl">
+                <div class="space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-danger/10 border border-brand-danger/30 text-brand-danger text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Slide 56: Limitations
+                    </div>
+                    <h2 class="text-3xl font-bold text-white font-header">Can AI Be <span class="text-brand-danger">Wrong</span>?</h2>
+                    
+                    <div class="space-y-3">
+                        <div class="p-4 bg-red-950/20 border border-red-500/20 rounded-xl">
+                            <span class="text-brand-danger font-bold text-xs uppercase tracking-wider block mb-1">
+                                <i class="fa-solid fa-skull-crossbones mr-1"></i> The Myth
+                            </span>
+                            <p class="text-slate-300 italic text-sm">"AI always knows the absolute correct answer."</p>
+                        </div>
+                        <div class="p-4 bg-emerald-950/20 border border-emerald-500/20 rounded-xl">
+                            <span class="text-brand-success font-bold text-xs uppercase tracking-wider block mb-1">
+                                <i class="fa-solid fa-circle-check mr-1"></i> The Reality
+                            </span>
+                            <ul class="text-slate-300 text-xs space-y-2 leading-relaxed">
+                                <li>❌ Gives incorrect facts dynamically</li>
+                                <li>❌ Invents plausible but non-existent details</li>
+                                <li>❌ Sounds extremely confident even when wrong</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-brand-border space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 bg-brand-warning/20 border border-brand-warning/30 text-brand-warning text-[10px] font-bold rounded uppercase">Key Concept</span>
+                        <strong class="text-white text-xs">Hallucination</strong>
+                    </div>
+                    <p class="text-xs text-slate-400">Never trust AI blindly. Always verify critical metrics, dates, and historical occurrences.</p>
+                </div>
+            </div>
+
+            <!-- Interactive Hallucination simulator -->
+            <div class="lg:col-span-7 glass-panel rounded-2xl p-6 flex flex-col justify-between gap-4">
+                <div>
+                    <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">Interactive Classroom Demo</span>
+                    <h3 class="text-xl font-bold text-white mt-1">Prompt Verification Simulator</h3>
+                    <p class="text-xs text-slate-400">Trigger a prompt query requesting records about a future year to witness an automated fake outcome generation.</p>
+                </div>
+
+                <div class="flex-1 bg-slate-950/90 rounded-xl border border-brand-border/40 p-4 flex flex-col justify-between min-h-[220px] relative overflow-hidden">
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-xs text-slate-300">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div class="bg-slate-900 px-3 py-2 rounded-r-lg rounded-bl-lg text-xs max-w-[85%] border border-slate-800">
+                                <p class="text-slate-300">"Who won the Cricket World Cup in <strong class="text-brand-glow">2050</strong>?"</p>
+                            </div>
+                        </div>
+
+                        <!-- AI Output Window -->
+                        <div id="simulation-output" class="flex items-start gap-3 opacity-0 transition-opacity duration-300">
+                            <div class="h-8 w-8 rounded-full bg-brand-glow/10 flex items-center justify-center text-xs text-brand-glow border border-brand-glow/20">
+                                    <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div class="bg-brand-card/90 px-3 py-2 rounded-r-lg rounded-bl-lg text-xs max-w-[85%] border border-brand-border relative">
+                                <p id="hallucinated-text" class="text-slate-300 leading-relaxed"></p>
+                                
+                                <!-- Hallucination Detected Warning Overlay stamp -->
+                                <div id="warning-stamp" class="absolute -inset-1 flex items-center justify-center bg-brand-dark/95 border-2 border-brand-danger rounded-lg scale-0 transition-all duration-500 z-10">
+                                    <div class="text-center p-3">
+                                        <i class="fa-solid fa-triangle-exclamation text-brand-danger text-3xl mb-1 animate-bounce"></i>
+                                        <h4 class="text-brand-danger font-extrabold text-sm uppercase tracking-widest font-header">⚠️ HALLUCINATION DETECTED</h4>
+                                        <p class="text-[10px] text-slate-300 mt-1">The system confidently detailed an event that has not happened yet!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end mt-4 pt-3 border-t border-slate-900">
+                        <button id="simulate-btn" onclick="startHallucinationSimulation()" class="px-4 py-2 bg-brand-glow text-brand-dark hover:bg-emerald-400 font-bold rounded-lg text-xs transition-all flex items-center gap-1.5 shadow-md shadow-brand-glow/10">
+                            <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> Generate AI Answer
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-brand-card/50 p-4 border border-brand-border/40 rounded-xl">
+                    <span class="text-[10px] uppercase font-bold text-brand-glow/60 block mb-1">Debate Prompt:</span>
+                    <p class="text-xs text-slate-300 italic">"Why are LLMs built to invent continuous facts rather than simply stating 'I do not know'?"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Responsible Prompt Engineering -->
+        <section id="slide-3" class="slide-transition hidden w-full h-full min-h-[600px] grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <!-- Left Info column -->
+            <div class="lg:col-span-5 flex flex-col justify-between p-6 glass-panel rounded-2xl">
+                <div class="space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-glow/10 border border-brand-glow/30 text-brand-glow text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-heart-shield"></i> Slide 57: Ethical Practice
+                    </div>
+                    <h2 class="text-3xl font-bold text-white font-header">Responsible <br><span class="text-brand-glow">Prompt Engineering</span></h2>
+                    
+                    <p class="text-sm text-brand-text leading-relaxed">
+                        With extreme technology capability comes equal ethical obligation. Our core objective is teaching AI to act as an intelligence magnifier, not a replacement for your analytical voice.
+                    </p>
+
+                    <div class="p-4 bg-slate-900/60 border border-brand-border/30 rounded-xl space-y-1.5">
+                        <h4 class="text-xs font-bold text-slate-200">The Golden Standard:</h4>
+                        <p class="text-xs text-slate-400 leading-normal">
+                            Generate, optimize, audit, and inspect. Treat models as your dedicated intellectual co-pilot, not an autopilot machine.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-brand-border">
+                    <p class="text-xs text-slate-500">Ethics must govern your prompting techniques as we transition to professional assignments.</p>
+                </div>
+            </div>
+
+            <!-- Right Interactive Traffic Light panel -->
+            <div class="lg:col-span-7 glass-panel rounded-2xl p-6 flex flex-col justify-between gap-4">
+                <div>
+                    <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">Ethical Decision Framework</span>
+                    <h3 class="text-xl font-bold text-white mt-1">The Traffic Light Checklist</h3>
+                </div>
+
+                <!-- Green / Red Visual Matrix -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Green: Good habits -->
+                    <div class="p-4 rounded-xl border border-emerald-500/20 bg-emerald-950/10 space-y-2">
+                        <div class="flex items-center gap-2 text-brand-success font-semibold text-xs">
+                            <span class="h-3.5 w-3.5 rounded-full bg-brand-success animate-pulse"></span>
+                            <span>GREEN (Good Practices)</span>
+                        </div>
+                        <ul class="text-[11px] text-slate-300 space-y-1.5">
+                            <li><i class="fa-solid fa-check text-brand-success mr-1"></i> Constant independent fact-checking</li>
+                            <li><i class="fa-solid fa-check text-brand-success mr-1"></i> Strict preservation of target privacy</li>
+                            <li><i class="fa-solid fa-check text-brand-success mr-1"></i> Apply high critical evaluations</li>
+                            <li><i class="fa-solid fa-check text-brand-success mr-1"></i> Use AI as an acceleration helper</li>
+                        </ul>
+                    </div>
+
+                    <!-- Red: Bad habits -->
+                    <div class="p-4 rounded-xl border border-red-500/20 bg-red-950/10 space-y-2">
+                        <div class="flex items-center gap-2 text-brand-danger font-semibold text-xs">
+                            <span class="h-3.5 w-3.5 rounded-full bg-brand-danger animate-pulse"></span>
+                            <span>RED (Avoid Practices)</span>
+                        </div>
+                        <ul class="text-[11px] text-slate-300 space-y-1.5">
+                            <li><i class="fa-solid fa-xmark text-brand-danger mr-1"></i> Inputting personal, secure user details</li>
+                            <li><i class="fa-solid fa-xmark text-brand-danger mr-1"></i> Directly submitting raw, unchecked results</li>
+                            <li><i class="fa-solid fa-xmark text-brand-danger mr-1"></i> Cheating by replacing original research</li>
+                            <li><i class="fa-solid fa-xmark text-brand-danger mr-1"></i> Generating unverified viral content</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Interactive Vote Component -->
+                <div class="bg-slate-950/90 border border-brand-border rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-bold uppercase text-slate-200">Interactive Case Poll</h4>
+                        <span id="vote-status" class="text-[10px] bg-slate-900 border border-slate-800 text-brand-glow px-2 py-0.5 rounded-full font-mono">Live Session Vote</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-normal">
+                        "A student utilizes an AI LLM to draft an entire assignment paper and submits it completely unchanged without personal research."
+                    </p>
+
+                    <div class="flex items-center gap-2 pt-1" id="ethics-vote-actions">
+                        <button onclick="castEthicsVote('responsible')" class="flex-1 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-xs text-brand-success font-bold transition-all">
+                            ✅ Responsible Aid
+                        </button>
+                        <button onclick="castEthicsVote('unethical')" class="flex-1 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-xs text-brand-danger font-bold transition-all">
+                            ❌ Unethical Practice
+                        </button>
+                    </div>
+
+                    <!-- Chart Feedback -->
+                    <div id="ethics-vote-chart" class="hidden space-y-2">
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[10px] text-slate-400">
+                                <span>Responsible Helper</span>
+                                <span id="pct-resp">12%</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
+                                <div id="bar-resp" class="h-full bg-brand-success" style="width: 12%;"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[10px] text-slate-400">
+                                <span>Unethical Replacement</span>
+                                <span id="pct-uneth">88%</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
+                                <div id="bar-uneth" class="h-full bg-brand-danger" style="width: 88%;"></div>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-brand-glow font-semibold italic text-center">Class Consensus: AI is the catalyst, but human effort remains non-negotiable!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: The Future of Prompt Engineering -->
+        <section id="slide-4" class="slide-transition hidden w-full h-full min-h-[600px] grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <!-- Left Info Panel -->
+            <div class="lg:col-span-5 flex flex-col justify-between p-6 glass-panel rounded-2xl">
+                <div class="space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Slide 58: Future Career Paths
+                    </div>
+                    <h2 class="text-3xl font-bold text-white font-header">The Future of <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-glow to-purple-400">Prompt Work</span></h2>
+                    
+                    <p class="text-sm text-brand-text leading-relaxed">
+                        The interface paradigm between mankind and computing machines is witnessing a historical transition.
+                    </p>
+
+                    <!-- Transition Visual flowchart -->
+                    <div class="p-3 bg-slate-950/80 border border-slate-800 rounded-xl space-y-2">
+                        <div class="flex items-center justify-between text-[10px] font-mono text-slate-500">
+                            <span>Evolutionary Phases</span>
+                            <span class="text-brand-glow"><i class="fa-solid fa-arrow-trend-up"></i> Acceleration</span>
+                        </div>
+                        <div class="flex flex-col gap-1 text-[11px] leading-relaxed">
+                            <div class="flex items-center gap-2 text-slate-500">
+                                <i class="fa-solid fa-terminal text-xs"></i>
+                                <span>Past: Rigid Terminal Command Syntax</span>
+                            </div>
+                            <div class="text-slate-600 ml-3">↓</div>
+                            <div class="flex items-center gap-2 text-slate-300">
+                                <i class="fa-solid fa-computer-mouse text-xs"></i>
+                                <span>Present: Navigating Point-and-Click GUI Portals</span>
+                            </div>
+                            <div class="text-brand-glow ml-3">↓</div>
+                            <div class="flex items-center gap-2 text-brand-glow font-bold">
+                                <i class="fa-solid fa-comments text-xs"></i>
+                                <span>Future: Guided Collaborative AI Conversations</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-brand-border">
+                    <p class="text-xs text-slate-400">Regardless of specialized industries, communicating objectives with precision represents a universal asset.</p>
+                </div>
+            </div>
+
+            <!-- Right Interactive Career Grid -->
+            <div class="lg:col-span-7 glass-panel rounded-2xl p-6 flex flex-col justify-between gap-4">
+                <div>
+                    <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">Interactive Sector Blueprint</span>
+                    <h3 class="text-xl font-bold text-white mt-1">Tap Careers to View Opportunities</h3>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button onclick="inspectCareer('designer')" class="p-3 rounded-xl border border-brand-border bg-brand-card hover:border-brand-glow hover:bg-brand-card/80 text-left transition-all flex items-center justify-between group">
+                        <div>
+                            <span class="text-slate-200 text-xs font-bold block">AI Product Designer</span>
+                            <span class="text-[9px] text-purple-400">Interaction & Experience Architect</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-brand-glow transition-colors text-xs"></i>
+                    </button>
+
+                    <button onclick="inspectCareer('engineer')" class="p-3 rounded-xl border border-brand-border bg-brand-card hover:border-brand-glow hover:bg-brand-card/80 text-left transition-all flex items-center justify-between group">
+                        <div>
+                            <span class="text-slate-200 text-xs font-bold block">Prompt Engineer</span>
+                            <span class="text-[9px] text-brand-glow">Linguistic System Specialist</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-brand-glow transition-colors text-xs"></i>
+                    </button>
+
+                    <button onclick="inspectCareer('educator')" class="p-3 rounded-xl border border-brand-border bg-brand-card hover:border-brand-glow hover:bg-brand-card/80 text-left transition-all flex items-center justify-between group">
+                        <div>
+                            <span class="text-slate-200 text-xs font-bold block">AI Educator / Coach</span>
+                            <span class="text-[9px] text-emerald-400">Workforce Competency Specialist</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-brand-glow transition-colors text-xs"></i>
+                    </button>
+
+                    <button onclick="inspectCareer('consultant')" class="p-3 rounded-xl border border-brand-border bg-brand-card hover:border-brand-glow hover:bg-brand-card/80 text-left transition-all flex items-center justify-between group">
+                        <div>
+                            <span class="text-slate-200 text-xs font-bold block">AI Operations Consultant</span>
+                            <span class="text-[9px] text-blue-400">Enterprise Process Integration</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-brand-glow transition-colors text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Live Description Box -->
+                <div id="career-description-box" class="bg-slate-950/90 border border-brand-border rounded-xl p-4 min-h-[160px] flex flex-col justify-center">
+                    <div class="text-center text-slate-500 text-xs py-4">
+                        <i class="fa-solid fa-hand-pointer text-2xl mb-2 text-slate-700 animate-bounce"></i>
+                        <p>Click any emerging job sector card above to inspect real-world competencies and domain outlooks.</p>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-purple-950/10 border border-purple-500/20 rounded-xl">
+                    <p class="text-[11px] text-purple-300 italic font-medium">
+                        "Your ability to prompt effectively is equivalent to having an unlimited, highly-skilled junior assistant in every field."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Prompt Detective – Grand Quiz Challenge (All 10 Questions) -->
+        <section id="slide-5" class="slide-transition hidden w-full h-full min-h-[600px] flex flex-col justify-between gap-4 glass-panel rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-glow/10 border border-brand-glow/30 text-brand-glow text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-crown"></i> Slide 59: Game Board
+                    </div>
+                    <h2 class="text-2xl font-bold text-white font-header mt-1">Prompt Detective – Grand Quiz Challenge</h2>
+                    <p class="text-xs text-slate-400">Tap cards to flip them and confirm answers. Review your understanding as a class!</p>
+                </div>
+
+                <!-- Visited Counter badge -->
+                <div class="bg-slate-900 border border-brand-border px-4 py-2 rounded-xl flex items-center gap-3 self-start md:self-auto">
+                    <div class="text-left">
+                        <span class="text-[8px] text-slate-500 uppercase tracking-widest block font-bold">Investigated</span>
+                        <span id="quiz-visited" class="text-sm font-bold font-mono text-brand-glow">0 / 10 Completed</span>
+                    </div>
+                    <div class="h-6 w-[1px] bg-slate-800"></div>
+                    <button onclick="resetQuiz()" class="text-[10px] text-slate-400 hover:text-white transition-all">
+                        <i class="fa-solid fa-rotate-left mr-0.5"></i> Reset Board
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Grid Layout (10 questions as cards) -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 flex-1 items-stretch">
+                <!-- Card 1 -->
+                <div class="flip-card min-h-[105px]" onclick="flipCard(this, 1)">
+                    <div class="flip-card-inner h-full w-full">
+                        <div class="flip-card-front bg-slate-900 border border-brand-border hover:border-brand-glow rounded-xl flex flex-col justify-center p-3 transition-colors">
+                            <span class="text-brand-glow text-xs font-extrabold font-header block mb-1">01</span>
+                            <p class="text-[10px] text-slate-300 font-bold leading-tight">What is a prompt?</p>
+                        </div>
+                        <div class="flip-card-back bg-brand-card border border-brand-glow/50 rounded-xl flex flex-col justify-center p-2">
+                            <p class="text-[9px] text-brand-glow font-medium leading-normal">Inputs or instructions directed to an AI to generate specific responses.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="flip-card min-h-[105px]" onclick="flipCard(this, 2)">
+                    <div class="flip-card-inner h-full w-full">
+                        <div class="flip-card-front bg-slate-900 border border-brand-border hover:border-brand-glow rounded-xl flex flex-col justify-center p-3 transition-colors">
+                            <span class="text-brand-glow text-xs font-extrabold font-header block mb-1">02</span>
+                            <p class="text-[10px] text-slate-300 font-bold leading-tight">Which technique uses examples?</p>
+                        </div>
+                        <div class="flip-card-back bg-brand-card border border-brand-glow/50 rounded-xl flex flex-col justify-center p-2">
+                            <p class="text-[9px] text-brand-glow font-medium leading-normal"><strong>Few-Shot Prompting</strong> (showing clear sample inputs/outputs).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="flip-card min-h-[105px]" onclick="flipCard(this, 3)">
+                    <div class="flip-card-inner h-full w-full">
+                        <div class="flip-card-front bg-slate-900 border border-brand-border hover:border-brand-glow rounded-xl flex flex-col justify-center p-3 transition-colors">
+                            <span class="text-brand-glow text-xs font-extrabold font-header block mb-1">03</span>
+                            <p class="text-[10px] text-slate-300 font-bold leading-tight">What does 'R' mean in CRAFT?</p>
+                        </div>
+                        <div class="flip-card-back bg-brand-card border border-brand-glow/50 rounded-xl flex flex-col justify-center p-2">
+                            <p class="text-[9px] text-brand-glow font-medium leading-normal"><strong>Role</strong> (Persona or expert perspective/stance specified).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="flip-card min-h-[105px]" onclick="flipCard(this, 4)">
+                    <div class="flip-card-inner h-full w-full">
+                        <div class="flip-card-front bg-slate-900 border border-brand-border hover:border-brand-glow rounded-xl flex flex-col justify-center p-3 transition-colors">
+                            <span class="text-brand-glow text-xs font-extrabold font-header block mb-1">04</span>
+                            <p class="text-[10px] text-slate-300 font-bold leading-tight">What is Chain-of-Thought?</p>
+                        </div>
+                        <div class="flip-card-back bg-brand-card border border-brand-glow/50 rounded-xl flex flex-col justify-center p-2">
+                            <p class="text-[9px] text-brand-glow font-medium leading-normal">Instructing the model to output logical, <strong>step-by-step</strong> reasoning.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="flip-card min-h-[105px]" onclick="flipCard(this, 5)">
+                    <div class="flip-card-inner h-full w-full">
+                        <div class="flip-card-front bg-slate-900 border border-brand-border hover:border-brand-glow rounded-xl flex flex-col justify-center p-3 transition-colors">
+                            <span class="text-brand-glow text-xs font-extrabold font-header block mb-1">05</span>
+                            <p class="text-[10px] text-slate-300 font-bold leading-tight">What is a hallucination?</p>
+                        </div>
+                        <div class="flip-card-back bg-brand-card border border-brand-glow/50 rounded-xl flex flex-col justify-center p-2">
+                            <p class="text-[9px] text-brand-glow font-medium leading-normal">When AI confidently fabricates false data or references.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="flip-card min-h-[105px]" onclick="flipCard(this, 6)">
+                    <div class="flip-card-inner h-full w-full">
+                        <div class="flip-card-front bg-slate-900 border border-brand-border hover:border-brand-glow rounded-xl flex flex-col justify-center p-3 transition-colors">
+                            <span class="text-brand-glow text-xs font-extrabold font-header block mb-1">06</span>
+                            <p class="text-[10px] text-slate-300 font-bold leading-tight">Better: A ("Explain AI") or B ("You are a teacher...")?</p>
+                        </div>
+                        <div class="flip-card-back bg-brand-card border border-brand-glow/50 rounded-xl flex flex-col justify-center p-2">
+                            <p class="text-[9px] text-brand-glow font-medium leading-normal"><strong>B!</strong> Adding specific role and audience scope improves relevance vastly.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 7 -->
+                <div class="flip-card min-h-[105px]" onclick="flipCard(this, 7)">
+                    <div class="flip-card-inner h-full w-full">
+                        <div class="flip-card-front bg-slate-900 border border-brand-border hover:border-brand-glow rounded-xl flex flex-col justify-center p-3 transition-colors">
+                            <span class="text-brand-glow text-xs font-extrabold font-header block mb-1">07</span>
+                            <p class="text-[10px] text-slate-300 font-bold leading-tight">Name one real-world application.</p>
+                        </div>
+                        <div class="flip-card-back bg-brand-card border border-brand-glow/50 rounded-xl flex flex-col justify-center p-2">
+                            <p class="text-[9px] text-brand-glow font-medium leading-normal">Code optimization, copy drafting, legal summaries, or curriculum design.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 8 -->
+                <div class="flip-card min-h-[105px]" onclick="flipCard(this, 8)">
+                    <div class="flip-card-inner h-full w-full">
+                        <div class="flip-card-front bg-slate-900 border border-brand-border hover:border-brand-glow rounded-xl flex flex-col justify-center p-3 transition-colors">
+                            <span class="text-brand-glow text-xs font-extrabold font-header block mb-1">08</span>
+                            <p class="text-[10px] text-slate-300 font-bold leading-tight">Why is context important?</p>
+                        </div>
+                        <div class="flip-card-back bg-brand-card border border-brand-glow/50 rounded-xl flex flex-col justify-center p-2">
+                            <p class="text-[9px] text-brand-glow font-medium leading-normal">It limits probabilities, guiding output relevance to your situation.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 9 -->
+                <div class="flip-card min-h-[105px]" onclick="flipCard(this, 9)">
+                    <div class="flip-card-inner h-full w-full">
+                        <div class="flip-card-front bg-slate-900 border border-brand-border hover:border-brand-glow rounded-xl flex flex-col justify-center p-3 transition-colors">
+                            <span class="text-brand-glow text-xs font-extrabold font-header block mb-1">09</span>
+                            <p class="text-[10px] text-slate-300 font-bold leading-tight">What is Prompt Iteration?</p>
+                        </div>
+                        <div class="flip-card-back bg-brand-card border border-brand-glow/50 rounded-xl flex flex-col justify-center p-2">
+                            <p class="text-[9px] text-brand-glow font-medium leading-normal">Refining prompts in stages based on intermediate output flaws.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 10 -->
+                <div class="flip-card min-h-[105px]" onclick="flipCard(this, 10)">
+                    <div class="flip-card-inner h-full w-full">
+                        <div class="flip-card-front bg-slate-900 border border-brand-border hover:border-brand-glow rounded-xl flex flex-col justify-center p-3 transition-colors">
+                            <span class="text-brand-glow text-xs font-extrabold font-header block mb-1">10</span>
+                            <p class="text-[10px] text-slate-300 font-bold leading-tight">What is one ethical rule?</p>
+                        </div>
+                        <div class="flip-card-back bg-brand-card border border-brand-glow/50 rounded-xl flex flex-col justify-center p-2">
+                            <p class="text-[9px] text-brand-glow font-medium leading-normal">Do not share sensitive, identifying user coordinates or organizational data.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Footer notification -->
+            <div class="p-3 bg-brand-glow/5 border border-brand-glow/20 rounded-xl text-center text-xs">
+                <p class="text-slate-300 font-medium"><i class="fa-solid fa-gift text-brand-glow mr-1 animate-pulse"></i> Classroom Reward: Reveal all 10 cards to unlock the speaker deck achievement badge!</p>
+            </div>
+        </section>
+
+        <!-- Slide 6: Reflection Activity – My Biggest Takeaway (Dropdown Edition) -->
+        <section id="slide-6" class="slide-transition hidden w-full h-full min-h-[600px] grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <!-- Left Info Panel -->
+            <div class="lg:col-span-5 flex flex-col justify-between p-6 glass-panel rounded-2xl">
+                <div class="space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-bookmark"></i> Slide 60: Reflection Activity
+                    </div>
+                    <h2 class="text-3xl font-bold text-white font-header">My Biggest <br><span class="text-brand-glow">Takeaway</span></h2>
+                    
+                    <p class="text-sm text-brand-text leading-relaxed">
+                        Reflective practice converts short-term knowledge patterns into permanent, actionable competence. Use the interactive drop-down matrices on the right to compile your field log.
+                    </p>
+
+                    <div class="p-4 bg-slate-900/60 border-l-4 border-brand-glow rounded-r-xl space-y-1">
+                        <p class="text-xs text-slate-300 italic">
+                            "Before today, I assumed models were perfect, fact-containing vaults. I now realize they are conversational probabilistic engines that need guided steering."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-brand-border">
+                    <span class="text-xs text-slate-400">Locked insights will copy straight onto your system clipboard.</span>
+                </div>
+            </div>
+
+            <!-- Right Interactive Dropdown Journal Panel -->
+            <div class="lg:col-span-7 glass-panel rounded-2xl p-6 flex flex-col justify-between gap-4">
+                <div>
+                    <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">Guided Digital Field Journal</span>
+                    <h3 class="text-xl font-bold text-white mt-1">Select and Lock Reflections</h3>
+                </div>
+
+                <div class="space-y-3 flex-1 overflow-y-auto pr-1">
+                    <!-- Dropdown 1 -->
+                    <div class="space-y-1">
+                        <label class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block">1. Before today, I thought AI was:</label>
+                        <select id="journal-before" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-3 py-2 cursor-pointer focus:border-brand-glow outline-none">
+                            <option value="A pure magic box that knew everything perfectly">A magic box that always knows everything perfectly</option>
+                            <option value="A basic search engine similar to Google">A basic search engine built with simple indexing</option>
+                            <option value="A tool primarily intended for high-end coders">A high-tech tool reserved strictly for software engineers</option>
+                            <option value="An unstoppable artificial superintelligence">An unstoppable thinking entity with genuine awareness</option>
+                        </select>
+                    </div>
+
+                    <!-- Dropdown 2 -->
+                    <div class="space-y-1">
+                        <label class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block">2. After today, I now understand that:</label>
+                        <select id="journal-after" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-3 py-2 cursor-pointer focus:border-brand-glow outline-none">
+                            <option value="AI is a collaborative co-pilot that can hallucinate errors">AI is a collaborative partner prone to confident hallucination errors</option>
+                            <option value="AI outputs are highly dependent on human input context">AI output accuracy is governed completely by the quality of our prompt scope</option>
+                            <option value="AI does not have conceptual 'knowing' in human terms">AI calculates statistical likelihood of patterns rather than knowing facts</option>
+                            <option value="Generative tools are intended to boost human efforts, not replace them">Generative tools are meant to augment creative loops, not bypass human thinking</option>
+                        </select>
+                    </div>
+
+                    <!-- Dropdown 3 -->
+                    <div class="space-y-1">
+                        <label class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block">3. One prompting technique I find most valuable:</label>
+                        <select id="journal-favorite" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-3 py-2 cursor-pointer focus:border-brand-glow outline-none">
+                            <option value="Constructing CRAFT roleplay structures for custom scopes">Building CRAFT roleplay parameters to lock in context and persona</option>
+                            <option value="Adding direct visual format directives like Markdown Tables">Directing output formatting specifically (such as Markdown tables and lists)</option>
+                            <option value="Applying step-by-step logic through Chain-of-Thought directives">Directing Chain-of-Thought prompting to guide logical, step-by-step math or reasoning</option>
+                            <option value="Using Few-Shot Prompting to demonstrate clear target patterns">Injecting Few-Shot parameters with precise training examples</option>
+                        </select>
+                    </div>
+
+                    <!-- Dropdown 4 -->
+                    <div class="space-y-1">
+                        <label class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block">4. One thing I want to explore deeper:</label>
+                        <select id="journal-deeper" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-3 py-2 cursor-pointer focus:border-brand-glow outline-none">
+                            <option value="How to combine CRAFT personas with Chain-of-Thought step-by-step pathways">Combining CRAFT framework layers with detailed Chain-of-Thought pathways</option>
+                            <option value="Techniques to systematically detect and avoid AI hallucinations">Systematic methods to cross-examine and completely filter out AI hallucinations</option>
+                            <option value="Structuring automated multi-agent custom LLM workflows">Designing responsive multi-agent customized workflows for specific industries</option>
+                            <option value="Earning credentials for high-tier Prompt Engineering roles">Securing credentials and domain certifications for Prompt Engineering career tracks</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between border-t border-slate-900 pt-3">
+                    <span id="journal-copied-badge" class="text-[10px] text-slate-400 italic">Journal awaiting save</span>
+                    <button onclick="lockInReflection()" class="px-5 py-2.5 bg-brand-glow text-brand-dark hover:bg-emerald-400 font-extrabold rounded-lg text-xs transition-all flex items-center gap-1.5 shadow shadow-brand-glow/10">
+                        <i class="fa-solid fa-lock"></i> Lock In Reflection
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Take-Home Challenge (CRAFT Blueprint Builder Dropdowns) -->
+        <section id="slide-7" class="slide-transition hidden w-full h-full min-h-[600px] grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <!-- Left Info Panel -->
+            <div class="lg:col-span-5 flex flex-col justify-between p-6 glass-panel rounded-2xl">
+                <div class="space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-glow/10 border border-brand-glow/30 text-brand-glow text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-rocket"></i> Slide 61: Lab Mission Prep
+                    </div>
+                    <h2 class="text-3xl font-bold text-white font-header">Mission: <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-glow to-emerald-400">AI Innovator</span></h2>
+                    
+                    <p class="text-sm text-brand-text leading-relaxed font-semibold">
+                        Arrive at tomorrow's lab session fully prepared with optimized prompts.
+                    </p>
+
+                    <div class="p-4 bg-slate-900/60 border border-brand-border/30 rounded-xl space-y-2">
+                        <span class="text-[9px] uppercase tracking-wider font-extrabold text-brand-glow block">The Mission Objective:</span>
+                        <p class="text-[11px] text-slate-400 leading-normal">
+                            Choose an interest scope, compile a high-tier structured CRAFT prompt using our generator, and copy it to compare outputs (Zero-Shot vs Role-Based vs Few-Shot) on lab computers!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-brand-border flex items-center gap-3">
+                    <div class="h-8 w-8 rounded-full bg-slate-900 flex items-center justify-center text-xs text-brand-glow">
+                        <i class="fa-solid fa-flask"></i>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-tight">Tomorrow, we jump straight into benchmarking outputs without any theoretical delays!</p>
+                </div>
+            </div>
+
+            <!-- Right Interactive CRAFT Builder Panel -->
+            <div class="lg:col-span-7 glass-panel rounded-2xl p-6 flex flex-col justify-between gap-4">
+                <div>
+                    <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">CRAFT Blueprint Selector</span>
+                    <h3 class="text-xl font-bold text-white mt-1">Configure Tomorrow's Assignment</h3>
+                </div>
+
+                <!-- Dropdown Field Matrices -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block">Context (Topic Core)</label>
+                        <select id="craft-context-select" onchange="compileCraftPrompt()" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 cursor-pointer focus:border-brand-glow outline-none">
+                            <option value="Learning a Subject">📚 Learning a Subject</option>
+                            <option value="Coding & Software Development">💻 Coding / Software Dev</option>
+                            <option value="Creative Storytelling">🎨 Writing & Creative Output</option>
+                            <option value="Fitness & Health Protocols">🏋 Personal Fitness Protocols</option>
+                            <option value="Budget-Friendly Travel Planning">✈ Travel & Trip Itinerary</option>
+                            <option value="Constructing a Lean Business Plan">📈 Business & Entrepreneurship</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block">Role (Expert Persona)</label>
+                        <select id="craft-role-select" onchange="compileCraftPrompt()" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 cursor-pointer focus:border-brand-glow outline-none">
+                            <option value="Senior University Professor">Elite Academic Professor</option>
+                            <option value="Lead Software Architect">Lead Software Architect</option>
+                            <option value="Award-Winning Creative Director">Award-Winning Creative Novelist</option>
+                            <option value="Certified Medical Nutritionist">Certified Nutritionist & Coach</option>
+                            <option value="Senior Travel Guide Advisor">Veteran Travel Planner</option>
+                            <option value="Silicon Valley Venture Strategist">Startup Advisor & Strategist</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block">Action (Detailed Task)</label>
+                        <select id="craft-action-select" onchange="compileCraftPrompt()" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 cursor-pointer focus:border-brand-glow outline-none">
+                            <option value="Explain complex concepts using analogies">Explain difficult, core concepts with clear analogies</option>
+                            <option value="Identify logic bugs and optimize code blocks">Analyze a block of code, locate errors, and optimize</option>
+                            <option value="Draft an engaging, immersive narrative hook">Formulate an immersive narrative opening or story hook</option>
+                            <option value="Construct a balanced weekly high-intensity training regimen">Create a high-performance weekly target training chart</option>
+                            <option value="Design a customized 3-day travel routing schedule">Outline a customized, hidden-gem budget itinerary</option>
+                            <option value="Formulate a systematic market validation roadmap">Develop a step-by-step growth and validation roadmap</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block">Format (Visual Structure)</label>
+                        <select id="craft-format-select" onchange="compileCraftPrompt()" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 cursor-pointer focus:border-brand-glow outline-none">
+                            <option value="a beautifully organized Markdown comparison table">a detailed Markdown comparison table</option>
+                            <option value="a clean, step-by-step numbered roadmap">a step-by-step numbered roadmap</option>
+                            <option value="a structured multi-paragraph narrative essay">a structured multi-paragraph descriptive report</option>
+                            <option value="a comprehensive bulleted check-list with timelines">a clean, bulleted checklist with estimations</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block">Target Audience (Focus Group)</label>
+                    <select id="craft-target-select" onchange="compileCraftPrompt()" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 cursor-pointer focus:border-brand-glow outline-none">
+                        <option value="a total beginner starting from absolute scratch">A complete beginner starting from scratch</option>
+                        <option value="a high-performing industry professional aiming for optimization">A high-performance expert aiming to optimize speed</option>
+                        <option value="someone working on a highly constrained budget limitation">Someone managing a highly-constrained budget limit</option>
+                        <option value="a target team focused on extreme creative novelty and exploration">A creative project team looking for conceptual exploration</option>
+                    </select>
+                </div>
+
+                <!-- Compiled Prompt output window -->
+                <div class="p-3 bg-slate-950 border border-brand-border/60 rounded-xl space-y-1">
+                    <span class="text-[9px] font-mono text-brand-glow uppercase block tracking-widest font-bold">Generated CRAFT Blueprint</span>
+                    <p id="compiled-craft-prompt-preview" class="text-xs text-slate-300 italic line-clamp-3 leading-relaxed"></p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="resetCraftValues()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-brand-border text-slate-200 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-arrows-rotate"></i> Reset Values
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Final Takeaways & Q&A (Dropdown Q&A Selector) -->
+        <section id="slide-8" class="slide-transition hidden w-full h-full min-h-[600px] grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <!-- Left Info Panel -->
+            <div class="lg:col-span-5 flex flex-col justify-between p-6 glass-panel rounded-2xl">
+                <div class="space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-glow/10 border border-brand-glow/30 text-brand-glow text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-flag-checkered"></i> Slide 62: Wrap-Up
+                    </div>
+                    <h2 class="text-3xl font-bold text-white font-header">Your Journey <br>Starts <span class="text-brand-glow">Today</span></h2>
+                    
+                    <div class="space-y-3">
+                        <p class="text-sm text-brand-text leading-relaxed">
+                            You are no longer passive consumer-grade users navigating simple text platforms. You are becoming specialized system directors and elite collaborators.
+                        </p>
+                        
+                        <!-- Mini visual journey pathway -->
+                        <div class="flex items-center gap-3 bg-slate-950/80 p-3 rounded-xl border border-brand-border/30">
+                            <div class="flex -space-x-2">
+                                <div class="h-7 w-7 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">👩‍🎓</div>
+                                <div class="h-7 w-7 rounded-full bg-indigo-950 border border-indigo-800 flex items-center justify-center text-[10px]">💡</div>
+                                <div class="h-7 w-7 rounded-full bg-emerald-950 border border-emerald-800 flex items-center justify-center text-[10px]">🚀</div>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-200 leading-none">Mindset Shift:</h4>
+                                <p class="text-[9px] text-slate-400 mt-1">Curious Learner → Prompt Director → AI Innovator</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discussion triggering block -->
+                <div class="mt-6 pt-4 border-t border-brand-border">
+                    <span class="text-[10px] uppercase font-bold text-brand-glow/60 block mb-1">Speaker Tip:</span>
+                    <p class="text-xs text-slate-300 italic">Open up physical floors to individual, live Q&A queries. Start the dialogue using the selectors on the right!</p>
+                </div>
+            </div>
+
+            <!-- Right Interactive Discussion Sticky Notes Board with Question Selector -->
+            <div class="lg:col-span-7 glass-panel rounded-2xl p-6 flex flex-col justify-between gap-4">
+                <div>
+                    <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">Interactive Classroom Q&A Wall</span>
+                    <h3 class="text-xl font-bold text-white mt-1">Select and Post Core Concept Queries</h3>
+                </div>
+
+                <!-- Selection Post Row -->
+                <div class="flex gap-2.5 items-end">
+                    <div class="flex-1 space-y-1">
+                        <label class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block">Select a Takeaway Question to post:</label>
+                        <select id="sticky-qa-selector" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg px-3 py-2 cursor-pointer focus:border-brand-glow outline-none">
+                            <option value="How can we systematically detect and filter out hallucinations?">🔍 How can we systematically detect and filter out hallucinations?</option>
+                            <option value="Will Prompt Engineering remain vital as systems evolve further?">⚡ Will Prompt Engineering remain vital as systems evolve further?</option>
+                            <option value="Can we construct nested CRAFT roles inside a single model workspace?">🧩 Can we construct nested CRAFT roles inside a single workspace?</option>
+                            <option value="What is the ultimate strategy to safely handle student AI usage?">🎓 What is the ultimate strategy to safely handle student AI usage?</option>
+                            <option value="Where does human effort remain completely essential and irreplaceable?">🧠 Where does human effort remain completely essential and irreplaceable?</option>
+                        </select>
+                    </div>
+                    <button onclick="postClassroomNote()" class="px-5 py-2.5 bg-brand-glow text-brand-dark hover:bg-emerald-400 font-extrabold rounded-lg text-xs transition-all flex items-center gap-1.5 shadow shadow-brand-glow/10 h-max">
+                        <i class="fa-solid fa-plus"></i> Post Note
+                    </button>
+                </div>
+
+                <!-- Interactive sticky notes container -->
+                <div id="sticky-board" class="grid grid-cols-2 gap-3 flex-1 max-h-[220px] overflow-y-auto p-2 bg-slate-950 border border-brand-border/40 rounded-xl">
+                    <!-- Standard prefilled stickies -->
+                    <div class="p-3 bg-indigo-950/40 border border-indigo-500/20 rounded-xl space-y-1 relative group">
+                        <span class="text-[8px] uppercase tracking-wider font-extrabold text-indigo-400">Student Q1</span>
+                        <p class="text-[11px] text-slate-300">"Does context length directly degrade model accuracy?"</p>
+                    </div>
+                    <div class="p-3 bg-purple-950/40 border border-purple-500/20 rounded-xl space-y-1 relative group">
+                        <span class="text-[8px] uppercase tracking-wider font-extrabold text-purple-400">Student Q2</span>
+                        <p class="text-[11px] text-slate-300">"Can we apply Chain-of-Thought within roleplay?"</p>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-brand-glow/5 border border-brand-glow/20 rounded-xl text-center">
+                    <p class="text-[11px] text-brand-glow font-bold italic">
+                        "Your prompts decide the limits of your output. Speak purposefully."
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Presentation controls footer & Speaker drawer -->
+    <footer class="glass-panel border-t border-brand-border px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-auto">
+        <!-- Next & Prev Slide controls -->
+        <div class="flex items-center gap-3">
+            <button onclick="changeSlide(-1)" class="px-5 py-2 rounded-lg bg-brand-card hover:bg-slate-800 border border-brand-border text-slate-300 transition-colors text-xs font-semibold flex items-center gap-1.5">
+                <i class="fa-solid fa-chevron-left text-[10px]"></i> Prev
+            </button>
+            <button onclick="changeSlide(1)" class="px-5 py-2 rounded-lg bg-gradient-to-r from-brand-glow to-emerald-400 text-brand-dark font-bold hover:opacity-95 transition-all text-xs flex items-center gap-1.5">
+                Next <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+        </div>
+
+        <!-- Speaker drawer trigger action -->
+        <div class="w-full md:w-auto flex items-center justify-end gap-3">
+            <button onclick="toggleSpeakerDrawer()" class="w-full md:w-auto px-4 py-2 rounded-lg bg-brand-card border border-brand-border hover:bg-slate-800 text-slate-300 transition-colors text-xs flex items-center justify-center gap-2">
+                <i class="fa-solid fa-chalkboard-user text-brand-glow animate-pulse"></i>
+                <span>Speaker Script Panel</span>
+                <i id="drawer-chevron" class="fa-solid fa-chevron-up text-[10px]"></i>
+            </button>
+        </div>
+
+        <!-- Speaker drawer content layout popover -->
+        <div id="speaker-drawer-panel" class="hidden absolute bottom-[72px] right-6 left-6 max-w-4xl mx-auto glass-panel p-4 rounded-xl z-45 space-y-2 border border-brand-glow/30">
+            <div class="flex items-center justify-between border-b border-brand-border pb-1.5">
+                <span class="text-xs uppercase text-brand-glow font-bold tracking-widest"><i class="fa-solid fa-comment-dots mr-1"></i> Lecture Script & Slide Goals</span>
+                <button onclick="toggleSpeakerDrawer()" class="text-slate-400 hover:text-slate-200 text-xs">
+                    <i class="fa-solid fa-circle-xmark"></i> Close
+                </button>
+            </div>
+            <p id="speaker-deck-script-text" class="text-xs text-slate-300 leading-relaxed italic">
+                Active speaker scripts are not ready for this slide scope.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script Engine -->
+    <script>
+        let currentSlideIndex = 1;
+        const totalSlides = 8;
+
+        // Structured Lecture Scripts and Speaker goals for each slide page
+        const slideSpeakerScripts = {
+            1: "Core Objective: Inspire and hook the students on the combined value of ethics (Section 8) and hands-on preparation (Section 9). Remind them: 'Today we stop being simple button pushers and become system directors.'",
+            2: "Core Objective: Show students how a confident AI robot presents wrong answers. Remind them: LLMs are probabilistic word calculators, not factual search engines. Prompt them to check critical details, using tomorrow's lab to compare outputs.",
+            3: "Core Objective: Outline parameters for safety. Highlight the Traffic-Light system. Open discussion: How can we ensure we use AI responsibly without losing our own critical reasoning capacity?",
+            4: "Core Objective: Showcase high-end prospective career roadmap trajectories. Make sure students realize prompt articulation isn't just for software developers; it's a critical universal competency across every emerging domain.",
+            5: "Core Objective: High-energy review environment. Let them click and flip each detective card. Celebrate correct answers and reward students showing quick concepts validation.",
+            6: "Core Objective: Solidify long-term recall. Give them exactly 1 minute to lock in their reflection coordinates using the digital dropdown panels. Encourage copying of reflections for lab startup checklist.",
+            7: "Core Objective: Bridge theoretical lessons to tomorrow's practical execution. Have them configure their custom CRAFT prompt using the dropdown selectors. Task them to copy the prompt output so they enter the lab ready to compare zero-shot vs few-shot details.",
+            8: "Core Objective: Conclude the visual session with memorable take-home messages and open discussion. Motivate them on their learning trajectory from curious student to system innovator."
+        };
+
+        // Initialize slideshow elements
+        window.onload = function() {
+            goToSlide(1);
+            compileCraftPrompt();
+        };
+
+        // Jump to any targeted slide index
+        function goToSlide(index) {
+            if (index < 1 || index > totalSlides) return;
+
+            // Loop to hide all blocks
+            for (let i = 1; i <= totalSlides; i++) {
+                const el = document.getElementById(`slide-${i}`);
+                if (el) el.classList.add('hidden');
+            }
+
+            // Expose current block
+            const currentBlock = document.getElementById(`slide-${index}`);
+            if (currentBlock) currentBlock.classList.remove('hidden');
+
+            currentSlideIndex = index;
+
+            // Refresh slide navigators
+            document.getElementById('progress-text').innerText = `Slide ${index}/${totalSlides}`;
+            document.getElementById('progress-bar').style.width = `${(index / totalSlides) * 100}%`;
+            document.getElementById('slide-jump').value = index.toString();
+
+            // Load specific Speaker Script
+            document.getElementById('speaker-deck-script-text').innerText = slideSpeakerScripts[index] || "Notes unavailable.";
+
+            // Celebrate on the final Slide
+            if (index === totalSlides) {
+                celebrateMilestone();
+            }
+        }
+
+        // Increment slide index
+        function changeSlide(direction) {
+            const nextIndex = currentSlideIndex + direction;
+            if (nextIndex >= 1 && nextIndex <= totalSlides) {
+                goToSlide(nextIndex);
+            }
+        }
+
+        // Jump Selector listener
+        document.getElementById('slide-jump').addEventListener('change', function(e) {
+            goToSlide(parseInt(e.target.value));
+        });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error enabling fullscreen Mode: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Add keyboard hotkey support
+        window.addEventListener('keydown', function(e) {
+            const activeEl = document.activeElement;
+            const capturesTextKeys = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.getAttribute('contenteditable') === 'true'
+            );
+            const capturesArrowKeys = activeEl && (
+                (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT'
+            );
+            const capturesSpacebar = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.tagName === 'BUTTON' ||
+                activeEl.getAttribute('role') === 'button'
+            );
+
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                if (!capturesSpacebar && !capturesArrowKeys) {
+                    changeSlide(1);
+                    e.preventDefault();
+                }
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                if (!capturesArrowKeys) {
+                    changeSlide(-1);
+                    e.preventDefault();
+                }
+            } else if (e.key === 'f' || e.key === 'F') {
+                if (!capturesTextKeys) {
+                    toggleFullscreen();
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Handle Fullscreen Requests
+        document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
+
+        // Double-click to toggle fullscreen
+        document.addEventListener('dblclick', (e) => {
+            const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+            if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+                toggleFullscreen();
+            }
+        });
+
+        // Toggle Speaker Notes panel drawer
+        function toggleSpeakerDrawer() {
+            const panel = document.getElementById('speaker-drawer-panel');
+            const icon = document.getElementById('drawer-chevron');
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            } else {
+                panel.classList.add('hidden');
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            }
+        }
+
+        // Celebrate using Canvas Confetti fireworks
+        function celebrateMilestone() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.8 },
+                colors: ['#deff9a', '#64ff64', '#14161f']
+            });
+        }
+
+        // Slide 2: Simulated Live AI Hallucination
+        function startHallucinationSimulation() {
+            const block = document.getElementById('simulation-output');
+            const targetText = document.getElementById('hallucinated-text');
+            const stamp = document.getElementById('warning-stamp');
+            const btn = document.getElementById('simulate-btn');
+
+            btn.disabled = true;
+            btn.innerText = "Simulating LLM Output...";
+            block.classList.remove('opacity-0');
+            stamp.classList.add('scale-0');
+            targetText.innerText = "";
+
+            const sampleOutput = "In 2050, the highly-anticipated Cricket World Cup was played in Bangalore. The game concluded with an unbelievable victory by the Bengaluru CyberRiders, defeating competitors with a massive margin...";
+            let i = 0;
+
+            function processTypeEffect() {
+                if (i < sampleOutput.length) {
+                    targetText.innerHTML += sampleOutput.charAt(i);
+                    i++;
+                    setTimeout(processTypeEffect, 20);
+                } else {
+                    // Reveal the warning overlay stamp
+                    setTimeout(() => {
+                        stamp.classList.replace('scale-0', 'scale-100');
+                        btn.disabled = false;
+                        btn.innerText = "Generate AI Answer";
+                    }, 500);
+                }
+            }
+            processTypeEffect();
+        }
+
+        // Slide 3: Interactive Ethics Voting
+        function castEthicsVote(choice) {
+            document.getElementById('ethics-vote-actions').classList.add('hidden');
+            document.getElementById('ethics-vote-chart').classList.remove('hidden');
+            document.getElementById('vote-status').innerText = "Voted Successfully";
+
+            const rPct = document.getElementById('pct-resp');
+            const uPct = document.getElementById('pct-uneth');
+            const rBar = document.getElementById('bar-resp');
+            const uBar = document.getElementById('bar-uneth');
+
+            if (choice === 'responsible') {
+                rPct.innerText = "18%";
+                uPct.innerText = "82%";
+                rBar.style.width = "18%";
+                uBar.style.width = "82%";
+            } else {
+                rPct.innerText = "4%";
+                uPct.innerText = "96%";
+                rBar.style.width = "4%";
+                uBar.style.width = "96%";
+            }
+            celebrateMilestone();
+        }
+
+        // Slide 4: Interactive Careers Explorer
+        const emergingJobDetails = {
+            designer: {
+                title: "AI Product Designer",
+                growth: "Extremely High (+140% Sector Expansion predicted)",
+                skills: "User journey orchestration, cognitive modeling, interface logic",
+                desc: "Focuses on designing prompt workflows and visual agent interactions. Decides exactly when automated models process tasks and when to hand controls back to humans."
+            },
+            engineer: {
+                title: "Prompt Engineer",
+                growth: "Significant demand (+120% growth predicted)",
+                skills: "Semantic control structure, token budgeting, multi-shot templates",
+                desc: "Specializes in constructing robust, reliable prompts. Guides API model responses to hit target format schemas without exceeding computational token limits."
+            },
+            educator: {
+                title: "AI Educator & Coach",
+                growth: "Very high expansion (+165% growth predicted)",
+                skills: "Cognitive science, pedagogical lesson planning, custom workflows",
+                desc: "Accelerates employee transition by crafting interactive prompt bootcamps, training teams to seamlessly partner with AI, eliminating technological anxiety."
+            },
+            consultant: {
+                title: "AI Operations Consultant",
+                growth: "Extreme Expansion (+180% growth predicted)",
+                skills: "Security auditing, enterprise business architecture, cost estimation",
+                desc: "Audits traditional paper-heavy and digital workflows, securely integrating custom open-source models to decrease processing latency while protecting user data."
+            }
+        };
+
+        function inspectCareer(jobKey) {
+            const data = emergingJobDetails[jobKey];
+            const box = document.getElementById('career-description-box');
+            if (data) {
+                box.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between border-b border-slate-900 pb-1.5">
+                            <h4 class="text-xs font-bold text-brand-glow font-header uppercase">${data.title}</h4>
+                            <span class="text-[9px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full"><i class="fa-solid fa-chart-line mr-0.5"></i> Demand: ${data.growth}</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-normal">${data.desc}</p>
+                        <div class="pt-1.5">
+                            <span class="text-[9px] font-bold text-slate-500 uppercase block mb-0.5">Primary Skill Requirements:</span>
+                            <span class="text-[10px] text-brand-text font-medium">${data.skills}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Slide 5: Quiz State logic
+        let investigatedCards = new Set();
+        function flipCard(cardEl, qId) {
+            cardEl.classList.toggle('flipped');
+            if (!investigatedCards.has(qId)) {
+                investigatedCards.add(qId);
+                document.getElementById('quiz-visited').innerText = `${investigatedCards.size} / 10 Completed`;
+                if (investigatedCards.size === 10) {
+                    celebrateMilestone();
+                }
+            }
+        }
+
+        function resetQuiz() {
+            investigatedCards.clear();
+            document.getElementById('quiz-visited').innerText = `0 / 10 Completed`;
+            const allCards = document.querySelectorAll('.flip-card');
+            allCards.forEach(card => card.classList.remove('flipped'));
+        }
+
+        // Slide 6: Guided Field Journal Save logic
+        function lockInReflection() {
+            const badge = document.getElementById('journal-copied-badge');
+            badge.innerText = "Reflection locked in successfully!";
+            badge.classList.replace('text-slate-400', 'text-brand-success');
+
+            setTimeout(() => {
+                badge.innerText = "Reflection saved successfully";
+                badge.classList.replace('text-brand-success', 'text-slate-400');
+            }, 3000);
+        }
+
+        // Slide 7: CRAFT Builder Compiler
+        function compileCraftPrompt() {
+            const context = document.getElementById('craft-context-select').value;
+            const role = document.getElementById('craft-role-select').value;
+            const action = document.getElementById('craft-action-select').value;
+            const format = document.getElementById('craft-format-select').value;
+            const target = document.getElementById('craft-target-select').value;
+
+            const compiledText = `\"You are a ${role}. Context: ${context}. Please ${action}. Structure your final response as ${format}, keeping it specifically tailored for ${target}."`;
+            document.getElementById('compiled-craft-prompt-preview').innerText = compiledText;
+        }
+
+        // Slide 7: Reset Craft Builder Dropdowns
+        function resetCraftValues() {
+            document.getElementById('craft-context-select').selectedIndex = 0;
+            document.getElementById('craft-role-select').selectedIndex = 0;
+            document.getElementById('craft-action-select').selectedIndex = 0;
+            document.getElementById('craft-format-select').selectedIndex = 0;
+            document.getElementById('craft-target-select').selectedIndex = 0;
+            compileCraftPrompt();
+        }
+
+        // Slide 8: Q&A sticky board engine
+        const colors = [
+            { bg: 'bg-rose-950/40', border: 'border-rose-500/20', text: 'text-rose-400' },
+            { bg: 'bg-emerald-950/40', border: 'border-emerald-500/20', text: 'text-emerald-400' },
+            { bg: 'bg-blue-950/40', border: 'border-blue-500/20', text: 'text-blue-400' },
+            { bg: 'bg-purple-950/40', border: 'border-purple-500/20', text: 'text-purple-400' }
+        ];
+
+        function postClassroomNote() {
+            const selector = document.getElementById('sticky-qa-selector');
+            const textToPost = selector.value;
+            const board = document.getElementById('sticky-board');
+            const style = colors[Math.floor(Math.random() * colors.length)];
+
+            const stickyNode = document.createElement('div');
+            stickyNode.className = `p-3 ${style.bg} ${style.border} border rounded-xl space-y-1 relative transition-all animate-pulse`;
+            stickyNode.innerHTML = `
+                <span class="text-[8px] uppercase tracking-wider font-extrabold ${style.text}">Anonymous Question</span>
+                <p class="text-[11px] text-slate-300 leading-normal">"${textToPost}"</p>
+            `;
+
+            board.appendChild(stickyNode);
+            board.scrollTop = board.scrollHeight;
+
+            celebrateMilestone();
+        }
+    </script>
+</body>
+</html>

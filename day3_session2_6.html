@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Prompt Engineering & Optimization</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter & Urbanist Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #030712;
+            overflow: hidden;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Urbanist', sans-serif;
+        }
+        .slide-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Neumorphic/Glow presets */
+        .neon-glow-indigo {
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+        }
+        .neon-glow-emerald {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+        .text-neon-lime {
+            color: #deff9a;
+            text-shadow: 0 0 8px rgba(222, 255, 154, 0.4);
+        }
+        .text-neon-indigo {
+            color: #a5b4fc;
+            text-shadow: 0 0 8px rgba(165, 180, 252, 0.4);
+        }
+
+        /* 3D Flip Card settings for Slide 7 */
+        .perspective-container {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card-flipped {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Custom Scrollbar for sidebar notes */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+
+        /* Doctor ECG Graph animations */
+        @keyframes ecgPulse {
+            0% { stroke-dashoffset: 1000; }
+            100% { stroke-dashoffset: 0; }
+        }
+        .ecg-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: ecgPulse 6s linear infinite;
+        }
+
+        /* Pulse and liquid drip keyframes for Slide 8 medical SVGs */
+        @keyframes syringeDrip {
+            0%, 100% { transform: translateY(0); opacity: 0.3; }
+            50% { transform: translateY(4px); opacity: 1; }
+        }
+        .drip-anim {
+            animation: syringeDrip 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between">
+
+<div class="flex-grow flex flex-col lg:flex-row relative w-full max-w-[1600px] mx-auto p-4 lg:p-6 gap-6 h-[calc(100vh-64px)] min-h-[650px] overflow-hidden">
+    
+    <!-- LEFT PANEL: Slide view container -->
+    <main class="flex-grow lg:w-3/4 flex flex-col justify-between bg-slate-950 rounded-2xl border border-slate-800 shadow-2xl relative overflow-hidden h-full">
+        <!-- Creative back-glow blobs -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-full filter blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-lime-500/5 to-transparent rounded-full filter blur-3xl pointer-events-none"></div>
+        
+        <!-- Interactive Slide Deck Header -->
+        <header class="flex justify-between items-center px-6 py-4 border-b border-slate-900 bg-slate-950/90 backdrop-blur z-10">
+            <div class="flex items-center gap-3">
+                <span class="px-3 py-1 bg-indigo-500/10 text-indigo-400 text-xs font-bold uppercase rounded-full tracking-wider border border-indigo-500/20">
+                    Section 6
+                </span>
+                <h4 class="text-xs text-slate-400 font-medium hidden sm:inline-block">Advanced Prompt Engineering & Prompt Optimization</h4>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="togglePresenterNotes()" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 flex items-center gap-2 border border-slate-800 transition">
+                    <i class="fa-solid fa-chalkboard-user text-indigo-400"></i>
+                    <span id="guide-toggle-text">Hide Guide</span>
+                </button>
+                <div class="text-xs text-slate-500 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Interactive Workspace</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Slide Frame Container -->
+        <div class="flex-grow relative overflow-y-auto px-8 py-6 flex items-center justify-center">
+
+            <!-- Slide 1 (Slide 43): Great Prompts Are Rarely Created on the First Try -->
+            <div id="slide-1" class="slide-transition w-full max-w-5xl space-y-6">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-900 pb-4">
+                    <div>
+                        <p class="text-xs text-lime-400 tracking-wider uppercase font-semibold">Slide 1 / 8 (Slide 43)</p>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Great Prompts Are <span class="text-neon-lime">Rarely</span> Created on the First Try</h2>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
+                    <div class="lg:col-span-6 space-y-4">
+                        <p class="text-slate-300 text-base leading-relaxed">
+                            Think of prompt writing like composing an essay. AI practitioners rarely get perfect outputs on their first draft. True capability is unlocked through progressive, structured iterations:
+                        </p>
+                        
+                        <!-- Visual Iteration Metrics grid -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center gap-3 hover:border-indigo-500/30 transition-all duration-300 group">
+                                <span class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 font-bold group-hover:bg-indigo-500 group-hover:text-white transition-all">R</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-200">Review</h4>
+                                    <p class="text-[10px] text-slate-500">Analyze raw response weaknesses</p>
+                                </div>
+                            </div>
+                            <div class="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center gap-3 hover:border-indigo-500/30 transition-all duration-300 group">
+                                <span class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 font-bold group-hover:bg-indigo-500 group-hover:text-white transition-all">E</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-200">Edit</h4>
+                                    <p class="text-[10px] text-slate-500">Inject parameters & persona</p>
+                                </div>
+                            </div>
+                            <div class="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center gap-3 hover:border-indigo-500/30 transition-all duration-300 group">
+                                <span class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 font-bold group-hover:bg-indigo-500 group-hover:text-white transition-all">I</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-200">Improve</h4>
+                                    <p class="text-[10px] text-slate-500">Eliminate language ambiguities</p>
+                                </div>
+                            </div>
+                            <div class="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center gap-3 hover:border-indigo-500/30 transition-all duration-300 group">
+                                <span class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 font-bold group-hover:bg-indigo-500 group-hover:text-white transition-all">R</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-200">Refine</h4>
+                                    <p class="text-[10px] text-slate-500">Format strictly with schemas</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-indigo-500/5 rounded-xl border border-indigo-500/10">
+                            <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-1">Key Principle</span>
+                            <p class="text-xs text-slate-300 italic">"Prompt Engineering isn't a static incantation; it is a clinical and scientific iteration cycle of continuous improvement."</p>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Loop Simulator Block (Removed Step Next button for Direct Nodes) -->
+                    <div class="lg:col-span-6 p-6 bg-slate-900/30 rounded-2xl border border-slate-800 flex flex-col items-center justify-center relative min-h-[340px]">
+                        <span class="absolute top-4 left-4 text-[9px] font-bold text-slate-500 uppercase tracking-wider">Visual Interactive Loop (Click Steps)</span>
+                        
+                        <!-- Real-time loop layout with interactive clickable outer nodes -->
+                        <div class="relative w-64 h-64 flex items-center justify-center mt-6">
+                            <!-- SVG Loop Track -->
+                            <svg class="absolute inset-0 w-full h-full animate-[spin_40s_linear_infinite]" viewBox="0 0 200 200">
+                                <circle cx="100" cy="100" r="65" fill="none" stroke="#1e293b" stroke-width="2" stroke-dasharray="6,6" />
+                            </svg>
+                            
+                            <!-- Static Glowing Center Core (z-10 layer) -->
+                            <div class="w-24 h-24 rounded-full bg-slate-950/80 flex flex-col items-center justify-center border border-slate-800/80 z-10 shadow-2xl relative overflow-hidden backdrop-blur-sm">
+                                <div class="absolute inset-0 bg-indigo-500/5 animate-pulse"></div>
+                                <i class="fa-solid fa-arrows-spin text-indigo-400/80 text-xl animate-[spin_8s_linear_infinite] z-10"></i>
+                                <span class="text-[8px] font-bold mt-2 text-slate-500 uppercase tracking-widest z-10">Optimization</span>
+                            </div>
+
+                            <!-- Outer Floating Clickable Nodes (Z-20 & whitespace-nowrap protection) -->
+                            <div id="loop-node-1" onclick="setLoopStep(1)" class="absolute -top-4 px-3 py-1 bg-indigo-500 text-xs font-bold rounded-full cursor-pointer shadow-lg transition-all scale-110 z-20 whitespace-nowrap hover:scale-105 active:scale-95 border border-indigo-400/30">1. Prompt</div>
+                            <div id="loop-node-2" onclick="setLoopStep(2)" class="absolute -right-8 top-1/2 -translate-y-1/2 px-3 py-1 bg-slate-900 text-slate-500 text-xs font-bold rounded-full cursor-pointer shadow-md transition-all z-20 whitespace-nowrap hover:scale-105 active:scale-95 border border-slate-800/60">2. Output</div>
+                            <div id="loop-node-3" onclick="setLoopStep(3)" class="absolute -bottom-4 px-3 py-1 bg-slate-900 text-slate-500 text-xs font-bold rounded-full cursor-pointer shadow-md transition-all z-20 whitespace-nowrap hover:scale-105 active:scale-95 border border-slate-800/60">3. Refine</div>
+                            <div id="loop-node-4" onclick="setLoopStep(4)" class="absolute -left-8 top-1/2 -translate-y-1/2 px-3 py-1 bg-slate-900 text-slate-500 text-xs font-bold rounded-full cursor-pointer shadow-md transition-all z-20 whitespace-nowrap hover:scale-105 active:scale-95 border border-slate-800/60">4. Better Output</div>
+                        </div>
+
+                        <!-- Info Box -->
+                        <div class="mt-6 text-center w-full bg-slate-950/60 p-3 rounded-xl border border-slate-900/60">
+                            <p id="loop-step-desc" class="text-xs font-semibold text-indigo-400">Step 1: Write an initial prompt based on prompt requirements.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 (Slide 44): Prompt Iteration in Action -->
+            <div id="slide-2" class="slide-transition w-full max-w-5xl space-y-6 hidden">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-900 pb-4">
+                    <div>
+                        <p class="text-xs text-indigo-400 tracking-wider uppercase font-semibold">Slide 2 / 8 (Slide 44)</p>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Prompt Iteration in Action</h2>
+                    </div>
+                </div>
+
+                <p class="text-slate-300 text-sm">
+                    Watch how adding clear contextual vectors upgrades response precision from generic filler to highly structured outputs:
+                </p>
+
+                <!-- Comparative Interface Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+                    <!-- Version 1 card -->
+                    <div class="bg-slate-900/30 rounded-xl p-5 border border-slate-800 hover:border-red-500/20 transition-all flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="px-2 py-0.5 bg-red-500/10 text-red-400 text-[10px] font-bold rounded border border-red-500/20">Version 1</span>
+                                <span class="text-[10px] text-slate-500">Raw Idea</span>
+                            </div>
+                            <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Input Prompt</h4>
+                            <div class="bg-slate-950 p-3 rounded-lg border border-slate-300 font-mono text-xs text-slate-300">
+                                "Teach me Python."
+                            </div>
+                        </div>
+                        <div class="space-y-2 border-t border-slate-900/80 pt-3">
+                            <h4 class="text-[10px] font-bold text-red-400 uppercase tracking-widest">Output Quality: Ineffective</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Too broad. Generates static dictionary definitions, exhaustive library indexes, and pages of unguided raw text.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Version 2 card -->
+                    <div class="bg-slate-900/30 rounded-xl p-5 border border-slate-800 hover:border-yellow-500/20 transition-all flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="px-2 py-0.5 bg-yellow-500/10 text-yellow-400 text-[10px] font-bold rounded border border-yellow-500/20">Version 2</span>
+                                <span class="text-[10px] text-slate-500">Clarified</span>
+                            </div>
+                            <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Input Prompt</h4>
+                            <div class="bg-slate-950 p-3 rounded-lg border border-slate-300 font-mono text-xs text-slate-300">
+                                "Teach me Python for beginners."
+                            </div>
+                        </div>
+                        <div class="space-y-2 border-t border-slate-900/80 pt-3">
+                            <h4 class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest">Output Quality: Average</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Better. Scopes the content to variables and installation, but lacks formatting, tests, or interactive pedagogical progression.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Version 3 card -->
+                    <div class="bg-indigo-950/10 rounded-xl p-5 border border-indigo-500/20 neon-glow-indigo flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="px-2 py-0.5 bg-lime-500/10 text-lime-400 text-[10px] font-bold rounded border border-lime-500/20">Version 3</span>
+                                <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider">Pro-Grade</span>
+                            </div>
+                            <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Input Prompt</h4>
+                            <div class="bg-slate-950 p-3 rounded-lg border border-indigo-500/20 font-mono text-xs text-slate-100">
+                                "You are a coding teacher. Teach Python to beginners using simple examples and exercises."
+                            </div>
+                        </div>
+                        <div class="space-y-2 border-t border-slate-900/80 pt-3">
+                            <h4 class="text-[10px] font-bold text-lime-400 uppercase tracking-widest">Output Quality: High Precision</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Stellar results. Provides code blocks with annotated comments, practical setup instructions, and custom, targeted exercises.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Playground Widget: Dynamic Version 4 Builder -->
+                <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
+                            <i class="fa-solid fa-cubes text-lime-400"></i> Interactive Prompt Customizer (Build Version 4)
+                        </h4>
+                        <span class="text-[10px] text-slate-400 italic">Toggle components to construct the optimal instruction set</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        <button id="v4-persona" onclick="toggleV4Component('persona')" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-950 text-slate-400 text-xs font-semibold hover:border-slate-500 transition-all flex items-center gap-1.5">
+                            <span id="v4-persona-indicator" class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
+                            <span>+ Teacher Persona</span>
+                        </button>
+                        <button id="v4-context" onclick="toggleV4Component('context')" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-950 text-slate-400 text-xs font-semibold hover:border-slate-500 transition-all flex items-center gap-1.5">
+                            <span id="v4-context-indicator" class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
+                            <span>+ Context (No Math)</span>
+                        </button>
+                        <button id="v4-format" onclick="toggleV4Component('format')" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-950 text-slate-400 text-xs font-semibold hover:border-slate-500 transition-all flex items-center gap-1.5">
+                            <span id="v4-format-indicator" class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
+                            <span>+ Markdown Output</span>
+                        </button>
+                    </div>
+
+                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-900 font-mono text-xs text-slate-400 min-h-[36px] flex items-center" id="v4-output-prompt">
+                        "Teach me Python."
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 (Slide 45): Chain-of-Thought (CoT) Prompting -->
+            <div id="slide-3" class="slide-transition w-full max-w-5xl space-y-6 hidden">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-900 pb-4">
+                    <div>
+                        <p class="text-xs text-lime-400 tracking-wider uppercase font-semibold">Slide 3 / 8 (Slide 45)</p>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Chain-of-Thought (CoT) Prompting</h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pt-2">
+                    <div class="lg:col-span-6 space-y-4 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+                                AI models generate results token-by-token. Asking the model to <span class="text-indigo-400 font-bold text-neon-indigo">think step-by-step</span> before arriving at a final answer prevents logical collapse and halts hallucinations.
+                            </p>
+                            
+                            <!-- Math Context layout -->
+                            <div class="p-4 bg-slate-900 rounded-xl border border-slate-800 space-y-3 shadow-md">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Standard Challenge Question</span>
+                                <p class="text-sm text-slate-200 font-semibold italic">"If a train travels 60 km/hr for 3 hours, how far does it travel?"</p>
+                                <div class="flex items-center gap-2 bg-indigo-500/10 p-2.5 rounded-lg border border-indigo-500/20">
+                                    <span class="px-2 py-0.5 bg-indigo-500 text-[10px] font-bold rounded uppercase">Prompt Modifier</span>
+                                    <span class="text-xs text-indigo-300 font-mono font-bold">"Think step-by-step before answering."</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-lime-500/5 rounded-xl border border-lime-500/10 text-xs text-slate-300">
+                            💡 **Why it works**: Instructing the model to elaborate logic pathways establishes sequential memory states, giving it space to calculate parameters correctly.
+                        </div>
+                    </div>
+
+                    <!-- Interactive Staircase of thought layout -->
+                    <div class="lg:col-span-6 p-6 bg-slate-900/30 rounded-2xl border border-slate-800 flex flex-col justify-between min-h-[350px]">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Reasoning Staircase (Click Steps)</span>
+                            <button onclick="resetStaircase()" class="text-xs text-slate-500 hover:text-indigo-400 flex items-center gap-1 transition-all">
+                                <i class="fa-solid fa-arrows-rotate"></i> Reset Steps
+                            </button>
+                        </div>
+
+                        <!-- 4 Step Staircase Grid -->
+                        <div class="space-y-2 flex-grow flex flex-col justify-end">
+                            <!-- Stair 4 -->
+                            <div id="stair-4" onclick="stepStair(4)" class="p-3 bg-slate-950 border border-slate-900 hover:border-slate-800 rounded-xl cursor-pointer transition-all duration-300 flex justify-between items-center text-slate-500 select-none">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded bg-slate-900 border border-slate-800 flex items-center justify-center font-bold text-xs text-slate-400">4</span>
+                                    <span class="text-xs font-semibold">Step 4: Output Synthesis</span>
+                                </div>
+                                <span class="font-mono text-[11px] bg-slate-900 px-2 py-0.5 rounded text-slate-600" id="stair-val-4">Hidden</span>
+                            </div>
+                            
+                            <!-- Stair 3 -->
+                            <div id="stair-3" onclick="stepStair(3)" class="p-3 bg-slate-950 border border-slate-900 hover:border-slate-800 rounded-xl cursor-pointer transition-all duration-300 flex justify-between items-center text-slate-500 select-none">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded bg-slate-900 border border-slate-800 flex items-center justify-center font-bold text-xs text-slate-400">3</span>
+                                    <span class="text-xs font-semibold">Step 3: Distance Formulation</span>
+                                </div>
+                                <span class="font-mono text-[11px] bg-slate-900 px-2 py-0.5 rounded text-slate-600" id="stair-val-3">Hidden</span>
+                            </div>
+
+                            <!-- Stair 2 -->
+                            <div id="stair-2" onclick="stepStair(2)" class="p-3 bg-slate-950 border border-slate-900 hover:border-slate-800 rounded-xl cursor-pointer transition-all duration-300 flex justify-between items-center text-slate-500 select-none">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded bg-slate-900 border border-slate-800 flex items-center justify-center font-bold text-xs text-slate-400">2</span>
+                                    <span class="text-xs font-semibold">Step 2: Identify Time</span>
+                                </div>
+                                <span class="font-mono text-[11px] bg-slate-900 px-2 py-0.5 rounded text-slate-600" id="stair-val-2">Hidden</span>
+                            </div>
+
+                            <!-- Stair 1 -->
+                            <div id="stair-1" onclick="stepStair(1)" class="p-3 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-xl cursor-pointer transition-all duration-300 flex justify-between items-center select-none font-bold">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center font-bold text-xs text-indigo-300">1</span>
+                                    <span class="text-xs font-bold text-indigo-200">Step 1: Identify Speed</span>
+                                </div>
+                                <span class="font-mono text-[11px] bg-indigo-950 px-2 py-0.5 rounded text-indigo-300" id="stair-val-1">60 km/hr</span>
+                            </div>
+                        </div>
+
+                        <p id="staircase-tip" class="text-[10px] text-slate-400 text-center mt-3 bg-slate-950/60 py-1.5 rounded-lg">
+                            Click Stair Step 2 to continue ascending the reasoning ladder...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4 (Slide 46): Step-Back Prompting -->
+            <div id="slide-4" class="slide-transition w-full max-w-5xl space-y-6 hidden">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-900 pb-4">
+                    <div>
+                        <p class="text-xs text-indigo-400 tracking-wider uppercase font-semibold">Slide 4 / 8 (Slide 46)</p>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Step-Back Prompting</h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pt-2">
+                    <div class="lg:col-span-6 space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <p class="text-slate-300 text-sm md:text-base leading-relaxed font-normal">
+                                Instead of tackling a narrow, complex problem raw, <strong class="text-indigo-400 font-bold">Step-Back Prompting</strong> forces the AI model to zoom out, identify the overarching rules/principles, and use them as guides.
+                            </p>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                This prevents the model from generating shortsighted symptoms-based content and promotes strategic systems thinking.
+                            </p>
+                        </div>
+
+                        <!-- System sequence layout -->
+                        <div class="p-4 bg-slate-900 rounded-xl border border-slate-800 space-y-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Structural Workflow Sequence</span>
+                            <div class="flex items-center justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-900">
+                                <span class="text-xs font-semibold text-lime-400">1. Broad Principles</span>
+                                <i class="fa-solid fa-circle-arrow-right text-slate-700"></i>
+                                <span class="text-xs font-semibold text-indigo-400">2. Specific Solution</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Zooming Widget -->
+                    <div class="lg:col-span-6 p-6 bg-slate-900/30 rounded-2xl border border-slate-800 flex flex-col justify-between min-h-[350px]">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Interactive Strategy Lens</span>
+                            <div class="flex gap-1 p-1 bg-slate-950 rounded-lg border border-slate-800">
+                                <button id="lens-direct" onclick="toggleLens(false)" class="px-2.5 py-1 bg-slate-800 text-[10px] font-bold rounded text-slate-100 transition-all uppercase">Direct</button>
+                                <button id="lens-stepback" onclick="toggleLens(true)" class="px-2.5 py-1 text-[10px] font-bold rounded text-slate-500 hover:text-slate-300 transition-all uppercase">Step-Back</button>
+                            </div>
+                        </div>
+
+                        <!-- SVG Perspective Visualization -->
+                        <div class="h-28 bg-slate-950 rounded-xl border border-slate-900 flex items-center justify-center relative overflow-hidden my-3">
+                            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="200" cy="50" r="45" stroke="#4f46e5" stroke-width="1.5" stroke-dasharray="4 4" class="opacity-40" />
+                                <circle cx="200" cy="50" r="30" stroke="#818cf8" stroke-width="1.5" class="opacity-60" />
+                                <circle id="lens-focus-ring" cx="200" cy="50" r="15" stroke="#10b981" stroke-width="2" />
+                                <path d="M190 50H210M200 40V60" stroke="#10b981" stroke-width="1.5" />
+                            </svg>
+                            <div id="lens-graphic-text" class="text-center z-10 transition-all duration-300 scale-100 pointer-events-none">
+                                <p class="text-xs font-bold text-slate-300 uppercase tracking-wider">Solving Symptom Directly</p>
+                                <p class="text-[10px] text-slate-500">Focuses strictly on surface parameters</p>
+                            </div>
+                        </div>
+
+                        <!-- Terminal outputs -->
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 font-mono text-xs min-h-[140px] flex flex-col justify-between">
+                            <div>
+                                <span id="lens-badge" class="text-red-400 text-[10px] font-bold uppercase tracking-wider">[❌ Direct Prompt]</span>
+                                <p id="lens-prompt" class="text-slate-300 mt-1 font-semibold">"How do we reduce plastic pollution?"</p>
+                            </div>
+                            <div class="border-t border-slate-900/80 pt-2 mt-2">
+                                <p id="lens-response" class="text-slate-400 leading-relaxed text-[11px]">
+                                    Yields generic surface ideas: "Use paper straws, pick up litter." Targets localized symptoms rather than core system causes.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5 (Slide 47): Prompt Chaining -->
+            <div id="slide-5" class="slide-transition w-full max-w-5xl space-y-6 hidden">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-900 pb-4">
+                    <div>
+                        <p class="text-xs text-lime-400 tracking-wider uppercase font-semibold">Slide 5 / 8 (Slide 47)</p>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Prompt Chaining</h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
+                    <div class="lg:col-span-5 space-y-4">
+                        <p class="text-slate-300 text-sm md:text-base leading-relaxed font-normal">
+                            Complex procedures suffer when forced into a single execution prompt. 
+                            <strong class="text-indigo-400">Prompt Chaining</strong> resolves this by splitting the scope into sequential links. The output of Prompt A directly feeds the parameters of Prompt B:
+                        </p>
+                        
+                        <div class="space-y-2 text-xs">
+                            <div class="flex items-center gap-2 text-slate-400">
+                                <i class="fa-solid fa-circle-check text-lime-400 text-[10px]"></i>
+                                <span>Maintains highly optimal token window spaces</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-400">
+                                <i class="fa-solid fa-circle-check text-lime-400 text-[10px]"></i>
+                                <span>Permits strict QA verification boundaries</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-400">
+                                <i class="fa-solid fa-circle-check text-lime-400 text-[10px]"></i>
+                                <span>Dramatically decreases cumulative reasoning drift</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Chain Flow Display -->
+                    <div class="lg:col-span-7 p-6 bg-slate-900/30 rounded-2xl border border-slate-800 flex flex-col justify-between min-h-[350px] relative">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pipeline Node Operations</span>
+                            <button onclick="executeChainedPipeline()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 shadow-md shadow-indigo-950/40">
+                                <i class="fa-solid fa-play"></i> Run Chain
+                            </button>
+                        </div>
+
+                        <!-- 4 Step Flow Visualizer -->
+                        <div class="space-y-3 relative z-10">
+                            <!-- Link 1 -->
+                            <div id="node-chain-1" class="p-3 bg-slate-950 border border-slate-900 rounded-xl flex items-center justify-between text-xs transition-all duration-300">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-5 h-5 rounded bg-slate-900 border border-slate-800 flex items-center justify-center font-bold text-[10px] text-slate-400">P1</span>
+                                    <span class="font-medium text-slate-300">Generate Startup Ideas</span>
+                                </div>
+                                <span id="tag-chain-1" class="px-2 py-0.5 bg-slate-900 text-slate-500 rounded text-[9px] font-bold uppercase">Idle</span>
+                            </div>
+                            <!-- Link 2 -->
+                            <div id="node-chain-2" class="p-3 bg-slate-950 border border-slate-900 rounded-xl flex items-center justify-between text-xs transition-all duration-300">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-5 h-5 rounded bg-slate-900 border border-slate-800 flex items-center justify-center font-bold text-[10px] text-slate-400">P2</span>
+                                    <span class="font-medium text-slate-300">Select & Validate Best Concept</span>
+                                </div>
+                                <span id="tag-chain-2" class="px-2 py-0.5 bg-slate-900 text-slate-500 rounded text-[9px] font-bold uppercase">Idle</span>
+                            </div>
+                            <!-- Link 3 -->
+                            <div id="node-chain-3" class="p-3 bg-slate-950 border border-slate-900 rounded-xl flex items-center justify-between text-xs transition-all duration-300">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-5 h-5 rounded bg-slate-900 border border-slate-800 flex items-center justify-center font-bold text-[10px] text-slate-400">P3</span>
+                                    <span class="font-medium text-slate-300">Compile Strategic Business Plan Outline</span>
+                                </div>
+                                <span id="tag-chain-3" class="px-2 py-0.5 bg-slate-900 text-slate-500 rounded text-[9px] font-bold uppercase">Idle</span>
+                            </div>
+                            <!-- Link 4 -->
+                            <div id="node-chain-4" class="p-3 bg-slate-950 border border-slate-900 rounded-xl flex items-center justify-between text-xs transition-all duration-300">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-5 h-5 rounded bg-slate-900 border border-slate-800 flex items-center justify-center font-bold text-[10px] text-slate-400">P4</span>
+                                    <span class="font-medium text-slate-300">Formulate Go-To-Market Plan</span>
+                                </div>
+                                <span id="tag-chain-4" class="px-2 py-0.5 bg-slate-900 text-slate-500 rounded text-[9px] font-bold uppercase">Idle</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6 (Slide 48): Prompt Optimization Workflow -->
+            <div id="slide-6" class="slide-transition w-full max-w-5xl space-y-6 hidden">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-900 pb-4">
+                    <div>
+                        <p class="text-xs text-indigo-400 tracking-wider uppercase font-semibold">Slide 6 / 8 (Slide 48)</p>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Prompt Optimization Workflow</h2>
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-2">
+                    <p class="text-slate-300 text-sm">
+                        Enterprise engineering demands dynamic frameworks. Click on any step in our standardized 6-step cycle to reveal practical operations:
+                    </p>
+
+                    <!-- Interactive Wheel/Timeline grid structure -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pb-2">
+                        <button onclick="revealWorkflow(1)" id="workflow-tab-1" class="p-3 bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 rounded-xl transition-all duration-300 flex flex-col items-center justify-center text-center gap-1.5 shadow-sm">
+                            <span class="w-6 h-6 rounded-full bg-indigo-500 text-white font-bold text-[10px] flex items-center justify-center">01</span>
+                            <span class="text-xs font-bold">Define Goal</span>
+                        </button>
+                        <button onclick="revealWorkflow(2)" id="workflow-tab-2" class="p-3 bg-slate-950 hover:bg-slate-900 text-slate-400 border border-slate-900 rounded-xl transition-all duration-300 flex flex-col items-center justify-center text-center gap-1.5">
+                            <span class="w-6 h-6 rounded-full bg-slate-900 text-slate-400 font-bold text-[10px] flex items-center justify-center border border-slate-800">02</span>
+                            <span class="text-xs font-bold">Write Prompt</span>
+                        </button>
+                        <button onclick="revealWorkflow(3)" id="workflow-tab-3" class="p-3 bg-slate-950 hover:bg-slate-900 text-slate-400 border border-slate-900 rounded-xl transition-all duration-300 flex flex-col items-center justify-center text-center gap-1.5">
+                            <span class="w-6 h-6 rounded-full bg-slate-900 text-slate-400 font-bold text-[10px] flex items-center justify-center border border-slate-800">03</span>
+                            <span class="text-xs font-bold">Generate</span>
+                        </button>
+                        <button onclick="revealWorkflow(4)" id="workflow-tab-4" class="p-3 bg-slate-950 hover:bg-slate-900 text-slate-400 border border-slate-900 rounded-xl transition-all duration-300 flex flex-col items-center justify-center text-center gap-1.5">
+                            <span class="w-6 h-6 rounded-full bg-slate-900 text-slate-400 font-bold text-[10px] flex items-center justify-center border border-slate-800">04</span>
+                            <span class="text-xs font-bold">Evaluate</span>
+                        </button>
+                        <button onclick="revealWorkflow(5)" id="workflow-tab-5" class="p-3 bg-slate-950 hover:bg-slate-900 text-slate-400 border border-slate-900 rounded-xl transition-all duration-300 flex flex-col items-center justify-center text-center gap-1.5">
+                            <span class="w-6 h-6 rounded-full bg-slate-900 text-slate-400 font-bold text-[10px] flex items-center justify-center border border-slate-800">05</span>
+                            <span class="text-xs font-bold">Refine</span>
+                        </button>
+                        <button onclick="revealWorkflow(6)" id="workflow-tab-6" class="p-3 bg-slate-950 hover:bg-slate-900 text-slate-400 border border-slate-900 rounded-xl transition-all duration-300 flex flex-col items-center justify-center text-center gap-1.5">
+                            <span class="w-6 h-6 rounded-full bg-slate-900 text-slate-400 font-bold text-[10px] flex items-center justify-center border border-slate-800">06</span>
+                            <span class="text-xs font-bold">Repeat Loop</span>
+                        </button>
+                    </div>
+
+                    <!-- Big Details Panel -->
+                    <div class="p-5 bg-indigo-950/5 rounded-2xl border border-indigo-500/20 text-slate-300 text-sm space-y-2 mt-4 shadow-inner">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                            <h4 class="text-base font-bold text-indigo-300" id="workflow-title">Step 1: Define Goal</h4>
+                        </div>
+                        <p id="workflow-desc" class="leading-relaxed text-slate-300 text-xs sm:text-sm">
+                            Clearly establish targeted outcome parameters, constraints, specific schemas, and audience limits before outputting formatting blueprints.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7 (Slide 49): Common Prompt Mistakes -->
+            <div id="slide-7" class="slide-transition w-full max-w-5xl space-y-6 hidden">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-900 pb-4">
+                    <div>
+                        <p class="text-xs text-lime-400 tracking-wider uppercase font-semibold">Slide 7 / 8 (Slide 49)</p>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Common Prompt Mistakes</h2>
+                    </div>
+                </div>
+
+                <p class="text-slate-300 text-sm">
+                    Most generation mistakes are systematic. Hover or click on each card to flip and discover the corrective actions:
+                </p>
+
+                <!-- Mistake Flipping Card Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 pt-2">
+                    <!-- Mistake 1 -->
+                    <div class="perspective-container h-44 w-full cursor-pointer group" onclick="toggleFlip(1)">
+                        <div id="flip-inner-1" class="flip-card-inner relative w-full h-full duration-500">
+                            <!-- Front Side -->
+                            <div class="flip-card-front bg-slate-900/40 p-4 rounded-xl border border-slate-800 flex flex-col justify-between hover:border-red-500/30 transition-all">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-red-500/10 text-red-400 text-[9px] font-bold rounded uppercase tracking-wider">Mistake 1</span>
+                                    <h4 class="text-xs font-bold text-slate-200 mt-2">Too Vague</h4>
+                                </div>
+                                <p class="text-[10px] text-red-300 italic font-mono">"Tell me about tech."</p>
+                                <span class="text-[9px] text-slate-500 text-right uppercase font-bold">Tap to Flip <i class="fa-solid fa-arrow-rotate-right"></i></span>
+                            </div>
+                            <!-- Back Side -->
+                            <div class="flip-card-back bg-indigo-950/20 p-4 rounded-xl border border-indigo-500/30 flex flex-col justify-between">
+                                <span class="text-[9px] font-bold text-lime-400 uppercase tracking-widest">Correction</span>
+                                <p class="text-[11px] text-slate-200 leading-relaxed">Scope down! Specify a sub-sector, target year, domain length, and specific output format.</p>
+                                <span class="text-[9px] text-slate-500 text-right uppercase">Tap to Return</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mistake 2 -->
+                    <div class="perspective-container h-44 w-full cursor-pointer group" onclick="toggleFlip(2)">
+                        <div id="flip-inner-2" class="flip-card-inner relative w-full h-full duration-500">
+                            <!-- Front -->
+                            <div class="flip-card-front bg-slate-900/40 p-4 rounded-xl border border-slate-800 flex flex-col justify-between hover:border-red-500/30 transition-all">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-red-500/10 text-red-400 text-[9px] font-bold rounded uppercase tracking-wider">Mistake 2</span>
+                                    <h4 class="text-xs font-bold text-slate-200 mt-2">No Audience</h4>
+                                </div>
+                                <p class="text-[10px] text-red-300 italic font-mono">"Explain gravity."</p>
+                                <span class="text-[9px] text-slate-500 text-right uppercase font-bold">Tap to Flip <i class="fa-solid fa-arrow-rotate-right"></i></span>
+                            </div>
+                            <!-- Back -->
+                            <div class="flip-card-back bg-indigo-950/20 p-4 rounded-xl border border-indigo-500/30 flex flex-col justify-between">
+                                <span class="text-[9px] font-bold text-lime-400 uppercase tracking-widest">Correction</span>
+                                <p class="text-[11px] text-slate-200 leading-relaxed">Specify user level: "Explain to 5-year-old child" vs "Astrophysicist student."</p>
+                                <span class="text-[9px] text-slate-500 text-right uppercase">Tap to Return</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mistake 3 -->
+                    <div class="perspective-container h-44 w-full cursor-pointer group" onclick="toggleFlip(3)">
+                        <div id="flip-inner-3" class="flip-card-inner relative w-full h-full duration-500">
+                            <!-- Front -->
+                            <div class="flip-card-front bg-slate-900/40 p-4 rounded-xl border border-slate-800 flex flex-col justify-between hover:border-red-500/30 transition-all">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-red-500/10 text-red-400 text-[9px] font-bold rounded uppercase tracking-wider">Mistake 3</span>
+                                    <h4 class="text-xs font-bold text-slate-200 mt-2">No Format</h4>
+                                </div>
+                                <p class="text-[10px] text-red-300 italic font-mono">"Summarize this."</p>
+                                <span class="text-[9px] text-slate-500 text-right uppercase font-bold">Tap to Flip <i class="fa-solid fa-arrow-rotate-right"></i></span>
+                            </div>
+                            <!-- Back -->
+                            <div class="flip-card-back bg-indigo-950/20 p-4 rounded-xl border border-indigo-500/30 flex flex-col justify-between">
+                                <span class="text-[9px] font-bold text-lime-400 uppercase tracking-widest">Correction</span>
+                                <p class="text-[11px] text-slate-200 leading-relaxed">Request strict structural outputs: "Output as a bullet list, markdown matrix table, or raw JSON."</p>
+                                <span class="text-[9px] text-slate-500 text-right uppercase">Tap to Return</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mistake 4 -->
+                    <div class="perspective-container h-44 w-full cursor-pointer group" onclick="toggleFlip(4)">
+                        <div id="flip-inner-4" class="flip-card-inner relative w-full h-full duration-500">
+                            <!-- Front -->
+                            <div class="flip-card-front bg-slate-900/40 p-4 rounded-xl border border-slate-800 flex flex-col justify-between hover:border-red-500/30 transition-all">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-red-500/10 text-red-400 text-[9px] font-bold rounded uppercase tracking-wider">Mistake 4</span>
+                                    <h4 class="text-xs font-bold text-slate-200 mt-2">Task Overload</h4>
+                                </div>
+                                <p class="text-[10px] text-red-300 italic font-mono">"Write code & draw design."</p>
+                                <span class="text-[9px] text-slate-500 text-right uppercase font-bold">Tap to Flip <i class="fa-solid fa-arrow-rotate-right"></i></span>
+                            </div>
+                            <!-- Back -->
+                            <div class="flip-card-back bg-indigo-950/20 p-4 rounded-xl border border-indigo-500/30 flex flex-col justify-between">
+                                <span class="text-[9px] font-bold text-lime-400 uppercase tracking-widest">Correction</span>
+                                <p class="text-[11px] text-slate-200 leading-relaxed">Break into steps. Use Prompt Chaining to handle complex operations incrementally.</p>
+                                <span class="text-[9px] text-slate-500 text-right uppercase">Tap to Return</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mistake 5 -->
+                    <div class="perspective-container h-44 w-full cursor-pointer group" onclick="toggleFlip(5)">
+                        <div id="flip-inner-5" class="flip-card-inner relative w-full h-full duration-500">
+                            <!-- Front -->
+                            <div class="flip-card-front bg-slate-900/40 p-4 rounded-xl border border-slate-800 flex flex-col justify-between hover:border-red-500/30 transition-all">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-red-500/10 text-red-400 text-[9px] font-bold rounded uppercase tracking-wider">Mistake 5</span>
+                                    <h4 class="text-xs font-bold text-slate-200 mt-2">No Context</h4>
+                                </div>
+                                <p class="text-[10px] text-red-300 italic font-mono">"Analyze this."</p>
+                                <span class="text-[9px] text-slate-500 text-right uppercase font-bold">Tap to Flip <i class="fa-solid fa-arrow-rotate-right"></i></span>
+                            </div>
+                            <!-- Back -->
+                            <div class="flip-card-back bg-indigo-950/20 p-4 rounded-xl border border-indigo-500/30 flex flex-col justify-between">
+                                <span class="text-[9px] font-bold text-lime-400 uppercase tracking-widest">Correction</span>
+                                <p class="text-[11px] text-slate-200 leading-relaxed">Feed explicit domain boundaries, source reports, or structural background documents.</p>
+                                <span class="text-[9px] text-slate-500 text-right uppercase">Tap to Return</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8 (Slide 50): Prompt Doctor Challenge -->
+            <div id="slide-8" class="slide-transition w-full max-w-5xl space-y-6 hidden">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-900 pb-4">
+                    <div>
+                        <p class="text-xs text-indigo-400 tracking-wider uppercase font-semibold">Slide 8 / 8 (Slide 50)</p>
+                        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Interactive Prompt Doctor</h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch pt-2">
+                    <div class="lg:col-span-5 space-y-3 flex flex-col justify-between">
+                        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                            Diagnose a "sick" prompt and stabilize its structural parameters. Toggle the target treatment syringe injections to construct the healthy cure:
+                        </p>
+
+                        <!-- Sickness Dashboard with ECG monitor -->
+                        <div class="bg-slate-950 rounded-2xl border border-slate-900 p-4 space-y-3 relative overflow-hidden">
+                            <!-- Visual Animated ECG Monitor -->
+                            <div class="flex justify-between items-center text-[10px] text-slate-500 border-b border-slate-900/80 pb-2">
+                                <span class="font-bold tracking-widest">PATIENT TELEMETRY</span>
+                                <span id="ecg-status-text" class="text-red-500 font-bold flex items-center gap-1.5 animate-pulse">
+                                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> SICK (CRITICAL)
+                                </span>
+                            </div>
+
+                            <div class="h-16 flex items-center justify-center bg-slate-900/30 rounded-xl relative overflow-hidden">
+                                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
+                                    <!-- Sick erratic line -->
+                                    <path id="ecg-graph-sick" class="ecg-line" d="M0,50 L50,50 L60,10 L70,90 L80,50 L150,50 L160,20 L170,80 L180,50 L250,50 L260,10 L270,90 L280,50 L400,50" fill="none" stroke="#ef4444" stroke-width="2.5" />
+                                    <!-- Healthy regular line -->
+                                    <path id="ecg-graph-healthy" class="ecg-line hidden" d="M0,50 L100,50 L110,30 L115,70 L120,20 L125,80 L130,50 L230,50 L240,30 L245,70 L250,20 L255,80 L260,50 L400,50" fill="none" stroke="#10b981" stroke-width="2.5" />
+                                </svg>
+                            </div>
+
+                            <div>
+                                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Raw Prompt Patient</span>
+                                <p class="text-red-400 font-bold mt-0.5 font-mono text-xs">"Teach me science."</p>
+                            </div>
+                        </div>
+
+                        <!-- Diagnosis Matrix -->
+                        <div class="grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
+                            <span class="p-2 bg-red-500/10 border border-red-500/25 text-red-400 rounded-lg flex items-center gap-1.5 font-bold">
+                                <i class="fa-solid fa-ban text-[10px]"></i> Too Broad
+                            </span>
+                            <span class="p-2 bg-red-500/10 border border-red-500/25 text-red-400 rounded-lg flex items-center gap-1.5 font-bold">
+                                <i class="fa-solid fa-ban text-[10px]"></i> No Audience
+                            </span>
+                            <span class="p-2 bg-red-500/10 border border-red-500/25 text-red-400 rounded-lg flex items-center gap-1.5 font-bold">
+                                <i class="fa-solid fa-ban text-[10px]"></i> No Format
+                            </span>
+                            <span class="p-2 bg-red-500/10 border border-red-500/25 text-red-400 rounded-lg flex items-center gap-1.5 font-bold">
+                                <i class="fa-solid fa-ban text-[10px]"></i> No Context
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Treatment Formulation with Inline Science Visual -->
+                    <div class="lg:col-span-7 p-5 bg-slate-900/30 rounded-2xl border border-slate-800 flex flex-col justify-between min-h-[350px] relative">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Treatment Syringe Protocol</span>
+                            <button id="cure-apply-btn" onclick="applyCureInjections()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-950/40">
+                                <i class="fa-solid fa-prescription-bottle-medical"></i> Inject Treatment
+                            </button>
+                        </div>
+
+                        <!-- Clinical Checklist + Interactive SVG Visual Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center my-2">
+                            
+                            <!-- Syringe Treatment Controls (7 cols) -->
+                            <div class="md:col-span-8 space-y-2">
+                                <label class="flex items-center justify-between p-2 bg-slate-950/60 border border-slate-900 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-user-doctor text-indigo-400 text-xs"></i>
+                                        <div class="text-[11px] sm:text-xs">
+                                            <span class="font-bold text-slate-200 block">Inject Physics Expert Persona</span>
+                                            <span class="text-[9px] text-slate-500">Binds science tutor role to logic engine</span>
+                                        </div>
+                                    </div>
+                                    <input type="checkbox" id="syringe-persona" class="rounded border-slate-800 bg-slate-900 text-indigo-500 focus:ring-0">
+                                </label>
+
+                                <label class="flex items-center justify-between p-2 bg-slate-950/60 border border-slate-900 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-microscope text-indigo-400 text-xs"></i>
+                                        <div class="text-[11px] sm:text-xs">
+                                            <span class="font-bold text-slate-200 block">Isolate Class IX Academic Audience</span>
+                                            <span class="text-[9px] text-slate-500">Calibrates vocabulary & learning rate</span>
+                                        </div>
+                                    </div>
+                                    <input type="checkbox" id="syringe-audience" class="rounded border-slate-800 bg-slate-900 text-indigo-500 focus:ring-0">
+                                </label>
+
+                                <label class="flex items-center justify-between p-2 bg-slate-950/60 border border-slate-900 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-vial text-indigo-400 text-xs"></i>
+                                        <div class="text-[11px] sm:text-xs">
+                                            <span class="font-bold text-slate-200 block">Incorporate Practical Examples & Quizzes</span>
+                                            <span class="text-[9px] text-slate-500">Triggers custom testing scenarios</span>
+                                        </div>
+                                    </div>
+                                    <input type="checkbox" id="syringe-format" class="rounded border-slate-800 bg-slate-900 text-indigo-500 focus:ring-0">
+                                </label>
+                            </div>
+
+                            <!-- Interactive Medical/Syringe SVG Graphic (4 cols) -->
+                            <div class="md:col-span-4 flex flex-col items-center justify-center p-3 bg-slate-950/60 rounded-xl border border-slate-900 h-full relative group">
+                                <svg class="w-16 h-28 text-slate-700 transition-all duration-300" id="syringe-svg" viewBox="0 0 100 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Syringe Plunger -->
+                                    <rect x="45" y="5" width="10" height="40" rx="2" fill="currentColor" />
+                                    <rect x="35" y="45" width="30" height="6" rx="1" fill="currentColor" />
+                                    <!-- Syringe Body -->
+                                    <rect x="30" y="51" width="40" height="100" rx="3" stroke="currentColor" stroke-width="4" />
+                                    <!-- Liquid inside Syringe -->
+                                    <rect id="syringe-liquid" x="34" y="80" width="32" height="67" fill="#ef4444" class="transition-all duration-700 opacity-60" />
+                                    <!-- Measurement Ticks -->
+                                    <line x1="38" y1="70" x2="48" y2="70" stroke="currentColor" stroke-width="2" />
+                                    <line x1="38" y1="90" x2="48" y2="90" stroke="currentColor" stroke-width="2" />
+                                    <line x1="38" y1="110" x2="48" y2="110" stroke="currentColor" stroke-width="2" />
+                                    <line x1="38" y1="130" x2="48" y2="130" stroke="currentColor" stroke-width="2" />
+                                    <!-- Needle & Tip -->
+                                    <path d="M47 151 L53 151 L50 170 Z" fill="currentColor" />
+                                    <line x1="50" y1="170" x2="50" y2="195" stroke="currentColor" stroke-width="2" />
+                                    <!-- Medicine Drop -->
+                                    <circle id="syringe-drop" cx="50" cy="198" r="3" fill="#ef4444" class="drip-anim transition-all duration-300" />
+                                </svg>
+                                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1.5" id="syringe-svg-label">Dose: Inactive</span>
+                            </div>
+
+                        </div>
+
+                        <!-- Cured stable output terminal -->
+                        <div class="bg-slate-950 p-3 rounded-xl font-mono text-xs border border-slate-900 min-h-[90px] flex flex-col justify-between">
+                            <div class="space-y-1">
+                                <div class="flex justify-between items-center text-[9px] text-slate-500">
+                                    <span>TREATMENT LOG & SYNTHESIS</span>
+                                    <span id="treatment-tag-status" class="text-slate-500 uppercase tracking-widest font-bold">Inactive</span>
+                                </div>
+                                <div id="doctor-terminal-result" class="text-slate-500 leading-relaxed italic text-[11px] pt-1">
+                                    Configure checkboxes above and click "Inject Treatment" to heal.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Presentation Bottom Control Footer -->
+        <footer class="px-6 py-4 border-t border-slate-900 bg-slate-950/80 backdrop-blur flex flex-col sm:flex-row justify-between items-center gap-4 z-10">
+            <div class="flex items-center gap-2">
+                <button onclick="prevSlide()" class="p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 transition-all text-sm group">
+                    <i class="fa-solid fa-chevron-left text-indigo-400 group-hover:-translate-x-0.5 transition-transform"></i>
+                </button>
+                <div class="text-xs text-slate-400 font-medium px-4 py-2 bg-slate-900 border border-slate-800 rounded-lg">
+                    Slide <span id="current-slide-val" class="text-slate-100 font-bold">1</span> of <span class="text-slate-400 font-bold">8</span>
+                </div>
+                <button onclick="nextSlide()" class="p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 transition-all text-sm group">
+                    <i class="fa-solid fa-chevron-right text-indigo-400 group-hover:translate-x-0.5 transition-transform"></i>
+                </button>
+            </div>
+
+            <!-- Dot progress indicators -->
+            <div class="flex items-center gap-2">
+                <span onclick="goToSlide(1)" id="dot-indicator-1" class="w-2.5 h-2.5 rounded-full bg-indigo-500 cursor-pointer transition-all duration-300"></span>
+                <span onclick="goToSlide(2)" id="dot-indicator-2" class="w-2.5 h-2.5 rounded-full bg-slate-800 cursor-pointer transition-all duration-300"></span>
+                <span onclick="goToSlide(3)" id="dot-indicator-3" class="w-2.5 h-2.5 rounded-full bg-slate-800 cursor-pointer transition-all duration-300"></span>
+                <span onclick="goToSlide(4)" id="dot-indicator-4" class="w-2.5 h-2.5 rounded-full bg-slate-800 cursor-pointer transition-all duration-300"></span>
+                <span onclick="goToSlide(5)" id="dot-indicator-5" class="w-2.5 h-2.5 rounded-full bg-slate-800 cursor-pointer transition-all duration-300"></span>
+                <span onclick="goToSlide(6)" id="dot-indicator-6" class="w-2.5 h-2.5 rounded-full bg-slate-800 cursor-pointer transition-all duration-300"></span>
+                <span onclick="goToSlide(7)" id="dot-indicator-7" class="w-2.5 h-2.5 rounded-full bg-slate-800 cursor-pointer transition-all duration-300"></span>
+                <span onclick="goToSlide(8)" id="dot-indicator-8" class="w-2.5 h-2.5 rounded-full bg-slate-800 cursor-pointer transition-all duration-300"></span>
+            </div>
+        </footer>
+    </main>
+
+    <!-- RIGHT PANEL: Collapsible Slide companion dashboard -->
+    <aside id="notes-sidebar" class="w-full lg:w-[380px] flex flex-col bg-slate-950 rounded-2xl border border-slate-800 shadow-2xl overflow-hidden h-full lg:h-auto lg:max-h-full transition-all duration-300">
+        <!-- Sidebar Header -->
+        <div class="px-5 py-4 border-b border-slate-900 flex justify-between items-center bg-slate-950/80">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-chalkboard-user text-lime-400 text-sm"></i>
+                <h3 class="text-sm font-bold tracking-tight">Presenter Companion Guide</h3>
+            </div>
+            <button onclick="togglePresenterNotes()" class="text-slate-500 hover:text-slate-300 text-xs">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Synchronized Data panel inside Sidebar -->
+        <div class="flex-grow overflow-y-auto p-5 space-y-5">
+            <!-- Learning Outcomes Target Badge -->
+            <div class="p-3 bg-indigo-500/5 rounded-xl border border-indigo-500/10 space-y-1">
+                <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">Active Educational Level</span>
+                <div class="flex items-center gap-2">
+                    <span id="companion-tier-level" class="px-2 py-0.5 bg-indigo-500/15 text-indigo-300 text-[10px] rounded font-bold uppercase tracking-wider border border-indigo-500/10">Beginner Level</span>
+                    <p class="text-[10px] text-slate-400">Target basic structure definitions.</p>
+                </div>
+            </div>
+
+            <!-- Synced Speaker scripts -->
+            <div class="space-y-2">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <i class="fa-solid fa-microphone text-indigo-400 text-[10px]"></i> Speaker Scripts
+                </span>
+                <div id="companion-speaker-notes" class="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-3.5 rounded-xl border border-slate-900 italic">
+                    Students often think good prompts appear magically. In reality, prompt writing is very similar to writing an essay or solving a difficult problem. Improvement happens through iteration.
+                </div>
+            </div>
+
+            <!-- Active Class activities -->
+            <div class="space-y-2">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <i class="fa-solid fa-users text-lime-400 text-[10px]"></i> Active Class Action
+                </span>
+                <div id="companion-activity" class="text-xs text-slate-300 leading-relaxed bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+                    <strong>Ask students:</strong> "How many times do you revise a school assignment before submission?"
+                </div>
+            </div>
+
+            <!-- Dynamic discussion checks -->
+            <div class="space-y-2">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <i class="fa-solid fa-comments text-indigo-400 text-[10px]"></i> Discussion Checks
+                </span>
+                <ul id="companion-discussion-list" class="space-y-1.5 text-xs text-slate-400 leading-relaxed bg-slate-900/30 p-3.5 rounded-xl border border-slate-900 list-disc list-inside">
+                    <li>Why is revision important?</li>
+                    <li>Why might prompts also require revision?</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Targeted Learning Outcomes Metrics footer in side panel -->
+        <div class="p-4 bg-slate-900/40 border-t border-slate-900 space-y-2">
+            <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest block">Active Outcomes Target</span>
+            <div class="flex flex-wrap gap-1.5" id="companion-outcomes-badges">
+                <span class="px-2 py-0.5 bg-slate-950 border border-slate-800 text-[9px] rounded text-slate-400">First draft iteration logic</span>
+                <span class="px-2 py-0.5 bg-slate-950 border border-slate-800 text-[9px] rounded text-slate-400">Refining output expectations</span>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!-- Footer branding metadata bar -->
+<div class="w-full text-center py-3 bg-slate-950 border-t border-slate-900 flex justify-center items-center text-[11px] text-slate-500 gap-2 mt-auto">
+    <span>Interactive Professional Lecture Assistant System</span>
+    <span>•</span>
+    <span>Use Arrow Keys to navigate slides easily</span>
+</div>
+
+<script>
+    let activeSlideIndex = 1;
+    const maxSlideCount = 8;
+    let visualLoopStep = 1;
+
+    // Advanced dynamic data matrix syncing presentation parameters
+    const presentationContentMatrix = {
+        1: {
+            speaker: "Students often think good prompts appear magically. In reality, prompt writing is very similar to writing an essay or solving a difficult problem. Improvement happens through iteration.",
+            activity: "<strong>Interactive Warmup:</strong> Prompt the class. Ask how many draft reviews they typically undergo for critical school assignments. Transition that idea directly into prompt optimization workflows.",
+            discussion: [
+                "Why is academic draft revision critical before finalized work submission?",
+                "Why might AI prompts also require extensive iteration cycles and evaluations?"
+            ],
+            level: "Beginner Level",
+            outcomes: ["First draft iteration logic", "Refining output expectations"]
+        },
+        2: {
+            speaker: "This represents a standardized workflow adopted by prompt engineering professionals. Each iteration adds precise: Clarity, Context, and Structure to make the AI perform robustly under diverse contexts.",
+            activity: "<strong>Playground Customization:</strong> Use the live builder below. Have students observe how version 3 prompt behaves when adding persona tags.",
+            discussion: [
+                "What would you add to Version 3 to make it even more specific?",
+                "How does forcing structured formats (like Markdown) improve predictability?"
+            ],
+            level: "Beginner Level",
+            outcomes: ["Prompt refinement workflow", "Contextual layering"]
+        },
+        3: {
+            speaker: "Humans solve complicated problems step-by-step. Large language models benefit from this exact sequential structure because it spaces calculation tokens along reasonable nodes.",
+            activity: "<strong>Staircase climb:</strong> Guide students through the reasoning staircase. Demonstrate how step-by-step logic yields the distance math step by step.",
+            discussion: [
+                "Why is making logical reasoning transparent highly valuable to verification checks?",
+                "In what complex educational subjects does Chain-of-Thought prompting work best?"
+            ],
+            level: "Intermediate Level",
+            outcomes: ["Chain-of-Thought reasoning", "Step-by-step logic flow"]
+        },
+        4: {
+            speaker: "Experts zoom out before applying targeted, specialized actions. Underlying structural systems supply the perfect logical contextual boundary for finding localized answers.",
+            activity: "<strong>Step-Back Practice:</strong> Read out a specific issue like 'Exam Anxiety'. Ask the classroom to step back and identify the absolute root cause patterns first.",
+            discussion: [
+                "Why must we analyze underlying root causes before proposing direct solutions?",
+                "How does this step-back visual formatting prevent AI hallucination issues?"
+            ],
+            level: "Intermediate Level",
+            outcomes: ["Step-Back Prompting", "Analyzing root causes first"]
+        },
+        5: {
+            speaker: "Complex operational pipelines require isolation of tasks. Just like factory assembly lines, each linked sub-prompt solves one precise problem and passes structured variables forward.",
+            activity: "<strong>Chain Design:</strong> Challenge the students to design a 3-step prompt chain layout to coordinate and orchestrate a full school travel itinerary.",
+            discussion: [
+                "Why avoid packing multiple distinct tasks into a single giant prompt?",
+                "In what software systems do you see step-by-step chaining workflows used?"
+            ],
+            level: "Intermediate Level",
+            outcomes: ["Prompt Chaining strategies", "Decomposing complex goals"]
+        },
+        6: {
+            speaker: "This slide outlines the professional development pipeline. Industry research scientists run this evaluation loop dozens of times to scale mission-critical code structures.",
+            activity: "<strong>Self-Evaluation:</strong> Direct students to review the 6-step loop. Ask them to identify which specific step they usually skip in their normal use.",
+            discussion: [
+                "Why is systematic evaluation often the most skipped step?",
+                "When is an optimized prompt considered safe enough to lock down?"
+            ],
+            level: "Advanced Level",
+            outcomes: ["Prompt optimization cycle", "Professional design frameworks"]
+        },
+        7: {
+            speaker: "Almost all typical prompting failures can be linked back to one of these five mistakes. Removing linguistic ambiguities solves 90% of model output discrepancies.",
+            activity: "<strong>Mistake Flip Card Game:</strong> Call out a bad prompt. Let students click the interactive warning cards to reveal the appropriate CRAFT cure.",
+            discussion: [
+                "Which formatting mistake do you think is most common for beginners?",
+                "Which mistake have you made most often in your day-to-day operations?"
+            ],
+            level: "Advanced Level",
+            outcomes: ["Avoiding prompt errors", "Error correction pathways"]
+        },
+        8: {
+            speaker: "This clinic challenge combines all parameters: Personas, CRAFT strategies, and optimized formatting. Students should walk away feeling like true prompt doctors.",
+            activity: "<strong>Challenger Arena:</strong> Divide the classroom into teams. Challenge each team to generate the absolute strongest optimized prompt they can compile.",
+            discussion: [
+                "What was the single biggest structural change made during treatment?",
+                "Which concept from today's lecture helped optimize this prompt best?"
+            ],
+            level: "Advanced Level",
+            outcomes: ["Consolidated optimization skills", "Interactive diagnostic capability"]
+        }
+    };
+
+    window.onload = function() {
+        goToSlide(1);
+        
+        // Fullscreen API Helper
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Native keyboard control listener
+        document.addEventListener('keydown', function(evt) {
+            const activeEl = document.activeElement;
+            const capturesTextKeys = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.getAttribute('contenteditable') === 'true'
+            );
+            const capturesArrowKeys = activeEl && (
+                (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT'
+            );
+            const capturesSpacebar = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.tagName === 'BUTTON' ||
+                activeEl.getAttribute('role') === 'button'
+            );
+
+            if (evt.key === 'ArrowRight' || evt.key === ' ' || evt.key === 'Space') {
+                if (!capturesSpacebar && !capturesArrowKeys) {
+                    nextSlide();
+                    evt.preventDefault();
+                }
+            } else if (evt.key === 'ArrowLeft') {
+                if (!capturesArrowKeys) {
+                    prevSlide();
+                    evt.preventDefault();
+                }
+            } else if (evt.key === 'f' || evt.key === 'F') {
+                if (!capturesTextKeys) {
+                    toggleFullscreen();
+                    evt.preventDefault();
+                }
+            }
+        });
+
+        document.addEventListener('dblclick', (e) => {
+            const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+            if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+                toggleFullscreen();
+            }
+        });
+    }
+
+    // Toggle notes sidebar dashboard view
+    function togglePresenterNotes() {
+        const sidebar = document.getElementById('notes-sidebar');
+        const text = document.getElementById('guide-toggle-text');
+        
+        if (sidebar.classList.contains('hidden') || sidebar.style.display === 'none') {
+            sidebar.classList.remove('hidden');
+            sidebar.style.display = 'flex';
+            text.innerText = "Hide Guide";
+        } else {
+            sidebar.classList.add('hidden');
+            sidebar.style.display = 'none';
+            text.innerText = "Show Guide";
+        }
+    }
+
+    // Slide navigation dispatcher
+    function goToSlide(slideNum) {
+        if (slideNum < 1 || slideNum > maxSlideCount) return;
+        
+        // Hide all slides
+        for (let idx = 1; idx <= maxSlideCount; idx++) {
+            const el = document.getElementById(`slide-${idx}`);
+            if (el) el.classList.add('hidden');
+            
+            // Sync indicators
+            const dot = document.getElementById(`dot-indicator-${idx}`);
+            if (dot) {
+                if (idx === slideNum) {
+                    dot.className = "w-3 h-3 rounded-full bg-indigo-500 cursor-pointer scale-125 transition-all duration-300";
+                } else {
+                    dot.className = "w-2.5 h-2.5 rounded-full bg-slate-800 cursor-pointer hover:bg-slate-700 transition-all duration-300";
+                }
+            }
+        }
+
+        // Activate slide index
+        const currentActiveEl = document.getElementById(`slide-${slideNum}`);
+        if (currentActiveEl) currentActiveEl.classList.remove('hidden');
+
+        activeSlideIndex = slideNum;
+        document.getElementById('current-slide-val').innerText = activeSlideIndex;
+
+        // Sync presenter companion values
+        syncPresenterCompanion(slideNum);
+    }
+
+    // Manual slide navigation
+    function nextSlide() {
+        if (activeSlideIndex < maxSlideCount) {
+            goToSlide(activeSlideIndex + 1);
+        } else {
+            goToSlide(1); // wrap-around loop
+        }
+    }
+
+    function prevSlide() {
+        if (activeSlideIndex > 1) {
+            goToSlide(activeSlideIndex - 1);
+        } else {
+            goToSlide(maxSlideCount); // wrap back
+        }
+    }
+
+    // Presenter companion dynamic values engine
+    function syncPresenterCompanion(slideNo) {
+        const meta = presentationContentMatrix[slideNo];
+        if (!meta) return;
+
+        document.getElementById('companion-tier-level').innerText = meta.level;
+        document.getElementById('companion-speaker-notes').innerHTML = meta.speaker;
+        document.getElementById('companion-activity').innerHTML = meta.activity;
+
+        // Sync discussion bullet blocks
+        const discussionUl = document.getElementById('companion-discussion-list');
+        discussionUl.innerHTML = '';
+        meta.discussion.forEach(item => {
+            const li = document.createElement('li');
+            li.className = "hover:text-slate-200 transition-colors duration-200";
+            li.innerHTML = item;
+            discussionUl.appendChild(li);
+        });
+
+        // Sync outcomes targets badges
+        const outcomeContainer = document.getElementById('companion-outcomes-badges');
+        outcomeContainer.innerHTML = '';
+        meta.outcomes.forEach(badge => {
+            const span = document.createElement('span');
+            span.className = "px-2.5 py-0.5 bg-slate-950 border border-slate-800 text-[9px] rounded-lg text-slate-400 font-semibold";
+            span.innerText = badge;
+            outcomeContainer.appendChild(span);
+        });
+    }
+
+    // Slide 1 direct node select handler (Replaces Step Next cyclic trigger)
+    function setLoopStep(stepNum) {
+        visualLoopStep = stepNum;
+        const stateDescriptions = {
+            1: "Step 1: Write an initial prompt based on raw context requirements.",
+            2: "Step 2: Collect model output. Analyze formatting limitations and errors.",
+            3: "Step 3: Refine instructions. Append strict constraints or persona rules.",
+            4: "Step 4: Execute polished optimized instructions. Yield flawless outputs."
+        };
+
+        // Reset all nodes to inactive style
+        for (let nodeIdx = 1; nodeIdx <= 4; nodeIdx++) {
+            const node = document.getElementById(`loop-node-${nodeIdx}`);
+            if (node) {
+                node.className = "absolute text-xs font-bold rounded-full cursor-pointer shadow-md transition-all px-3 py-1 bg-slate-900 text-slate-500 z-20 whitespace-nowrap hover:scale-105 active:scale-95 border border-slate-800/60";
+            }
+        }
+
+        // Highlight selected state node
+        const activeNode = document.getElementById(`loop-node-${stepNum}`);
+        if (activeNode) {
+            activeNode.className = "absolute text-xs font-bold rounded-full cursor-pointer shadow-lg transition-all px-3 py-1 bg-indigo-500 text-white scale-110 z-20 whitespace-nowrap border border-indigo-400/30";
+        }
+
+        document.getElementById('loop-step-desc').innerText = stateDescriptions[stepNum];
+    }
+
+    // Slide 2 Live Builder Variables
+    const promptStates = {
+        persona: false,
+        context: false,
+        format: false
+    };
+
+    function toggleV4Component(key) {
+        promptStates[key] = !promptStates[key];
+        
+        // Update Indicator Style
+        const indicator = document.getElementById(`v4-${key}-indicator`);
+        const btn = document.getElementById(`v4-${key}`);
+        if (promptStates[key]) {
+            indicator.className = "w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse";
+            btn.className = "px-3 py-1.5 rounded-lg border border-lime-500/40 bg-slate-950 text-lime-400 text-xs font-semibold hover:border-lime-400 transition-all flex items-center gap-1.5";
+        } else {
+            indicator.className = "w-1.5 h-1.5 rounded-full bg-slate-600";
+            btn.className = "px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-950 text-slate-400 text-xs font-semibold hover:border-slate-500 transition-all flex items-center gap-1.5";
+        }
+
+        // Compile prompt text output
+        let basePrompt = "Teach me Python.";
+        if (promptStates.persona) {
+            basePrompt = "You are a senior coding tutor. " + basePrompt;
+        }
+        if (promptStates.context) {
+            basePrompt = basePrompt + " Focus strictly on core logic variables (do not use complex math examples).";
+        }
+        if (promptStates.format) {
+            basePrompt = basePrompt + " Format your complete guide using bold markdown lists with short code snippets.";
+        }
+
+        document.getElementById('v4-output-prompt').innerText = `"${basePrompt}"`;
+    }
+
+    // Slide 3 Staircase thinking logic
+    function stepStair(stepIndex) {
+        const stairData = {
+            1: { val: "60 km/hr", tip: "Climb step 2: Extract travel duration metrics next..." },
+            2: { val: "3 hours", tip: "Climb step 3: Apply distance physics formulation next..." },
+            3: { val: "Speed x Time", tip: "Climb step 4: Synthesize calculation variables..." },
+            4: { val: "180 km", tip: "Process Finished! Chain of Thought is complete." }
+        };
+
+        // Re-align stair classes
+        for (let sIdx = 1; sIdx <= 4; sIdx++) {
+            const stair = document.getElementById(`stair-${sIdx}`);
+            const textSpan = document.getElementById(`stair-val-${sIdx}`);
+            
+            if (sIdx <= stepIndex) {
+                // Highlight active step
+                stair.className = "p-3 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-xl cursor-pointer transition-all duration-300 flex justify-between items-center select-none font-bold";
+                if (textSpan) {
+                    textSpan.innerText = stairData[sIdx].val;
+                    textSpan.className = "font-mono text-[11px] bg-indigo-950/60 px-2 py-0.5 rounded text-indigo-300";
+                }
+            } else {
+                // Dim unreached steps
+                stair.className = "p-3 bg-slate-950 border border-slate-900 hover:border-slate-800 rounded-xl cursor-pointer transition-all duration-300 flex justify-between items-center text-slate-500 select-none";
+                if (textSpan) {
+                    textSpan.innerText = "Hidden";
+                    textSpan.className = "font-mono text-[11px] bg-slate-900 px-2 py-0.5 rounded text-slate-600";
+                }
+            }
+        }
+
+        document.getElementById('staircase-tip').innerText = stairData[stepIndex].tip;
+    }
+
+    function resetStaircase() {
+        stepStair(1);
+    }
+
+    // Slide 4 Stepback zoom simulation strategy
+    function toggleLens(isStepBack) {
+        const directBtn = document.getElementById('lens-direct');
+        const stepbackBtn = document.getElementById('lens-stepback');
+        const badge = document.getElementById('lens-badge');
+        const textPrompt = document.getElementById('lens-prompt');
+        const textResponse = document.getElementById('lens-response');
+        const graphicText = document.getElementById('lens-graphic-text');
+        const focusRing = document.getElementById('lens-focus-ring');
+
+        if (isStepBack) {
+            directBtn.className = "px-2.5 py-1 text-[10px] font-bold rounded text-slate-500 hover:text-slate-300 transition-all uppercase";
+            stepbackBtn.className = "px-2.5 py-1 bg-indigo-600 text-[10px] font-bold rounded text-slate-100 transition-all uppercase";
+            badge.className = "text-emerald-400 text-[10px] font-bold uppercase tracking-wider";
+            badge.innerText = "[✅ Zoomed Step-Back]";
+            textPrompt.innerText = "Step-Back Question: 'What physical laws dictate plastics decomposition?' Then: 'How do we solve plastic pollution based on these laws?'";
+            textResponse.innerText = "Analyzes root causes: Sourced via chemical composition errors. Proposes structural solutions: Municipal bio-recycling regulations and packaging taxes.";
+            graphicText.innerHTML = `<p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Zoomed Out: Analyzing Root Causes</p><p class="text-[10px] text-slate-500">Targets the structural physics of the system</p>`;
+            if (focusRing) focusRing.setAttribute('r', '45');
+        } else {
+            directBtn.className = "px-2.5 py-1 bg-slate-800 text-[10px] font-bold rounded text-slate-100 transition-all uppercase";
+            stepbackBtn.className = "px-2.5 py-1 text-[10px] font-bold rounded text-slate-500 hover:text-slate-300 transition-all uppercase";
+            badge.className = "text-red-400 text-[10px] font-bold uppercase tracking-wider";
+            badge.innerText = "[❌ Direct Prompt]";
+            textPrompt.innerText = '"How do we reduce plastic pollution?"';
+            textResponse.innerText = 'Yields generic surface ideas: "Use paper straws, pick up litter." Targets localized symptoms rather than core system causes.';
+            graphicText.innerHTML = `<p class="text-xs font-bold text-slate-300 uppercase tracking-wider">Solving Symptom Directly</p><p class="text-[10px] text-slate-500">Focuses strictly on surface parameters</p>`;
+            if (focusRing) focusRing.setAttribute('r', '15');
+        }
+    }
+
+    // Slide 5 Prompt Chaining execution simulation
+    function executeChainedPipeline() {
+        const workflowStates = [
+            { node: 'node-chain-1', tag: 'tag-chain-1', text: 'Processing...', css: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-400' },
+            { node: 'node-chain-1', tag: 'tag-chain-1', text: 'Complete', css: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400' },
+            { node: 'node-chain-2', tag: 'tag-chain-2', text: 'Processing...', css: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-400' },
+            { node: 'node-chain-2', tag: 'tag-chain-2', text: 'Complete', css: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400' },
+            { node: 'node-chain-3', tag: 'tag-chain-3', text: 'Processing...', css: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-400' },
+            { node: 'node-chain-3', tag: 'tag-chain-3', text: 'Complete', css: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400' },
+            { node: 'node-chain-4', tag: 'tag-chain-4', text: 'Processing...', css: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-400' },
+            { node: 'node-chain-4', tag: 'tag-chain-4', text: 'Complete', css: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400' }
+        ];
+
+        // Reset nodes to idle
+        for (let chIdx = 1; chIdx <= 4; chIdx++) {
+            const node = document.getElementById(`node-chain-${chIdx}`);
+            const tag = document.getElementById(`tag-chain-${chIdx}`);
+            node.className = "p-3 bg-slate-950 border border-slate-900 rounded-xl flex items-center justify-between text-xs transition-all duration-300";
+            tag.className = "px-2 py-0.5 bg-slate-900 text-slate-500 rounded text-[9px] font-bold uppercase";
+            tag.innerText = "Idle";
+        }
+
+        // Chain trigger delays
+        workflowStates.forEach((state, orderIdx) => {
+            setTimeout(() => {
+                const nodeEl = document.getElementById(state.node);
+                const tagEl = document.getElementById(state.tag);
+                if (nodeEl && tagEl) {
+                    nodeEl.className = `p-3 border rounded-xl flex items-center justify-between text-xs transition-all duration-300 ${state.css}`;
+                    tagEl.className = `px-2 py-0.5 rounded text-[9px] font-bold uppercase ${state.css}`;
+                    tagEl.innerText = state.text;
+                }
+            }, orderIdx * 700);
+        });
+    }
+
+    // Slide 6 Optimization workflow text displayer
+    function revealWorkflow(stepNo) {
+        const stepTitles = {
+            1: "Step 1: Define Goal",
+            2: "Step 2: Write Prompt",
+            3: "Step 3: Generate Response",
+            4: "Step 4: Evaluate Response",
+            5: "Step 5: Refine Prompt",
+            6: "Step 6: Repeat Loop"
+        };
+        const stepDescriptions = {
+            1: "Clearly establish targeted outcome parameters, constraints, specific schemas, and audience limits before outputting formatting blueprints.",
+            2: "Write the initial instruction matrix including precise Roles, Context limits, Clear instructions, and structural outputs.",
+            3: "Run target test configurations through the selected model under stable configurations to establish performance parameters.",
+            4: "Evaluate standard responses: Did it collapse on edge cases? Were any formatting limits broken? Did reasoning fail?",
+            5: "Re-edit prompt directives based on evaluation flaws. Adjust phrasing and add strict edge-case guidelines.",
+            6: "Iterate the full cycle continuously until error rates drop to acceptable thresholds (aim for 95%+ success metrics)."
+        };
+
+        // Reset workflow tabs styling
+        for (let idx = 1; idx <= 6; idx++) {
+            const tab = document.getElementById(`workflow-tab-${idx}`);
+            if (tab) {
+                tab.className = "p-3 bg-slate-950 hover:bg-slate-900 text-slate-400 border border-slate-900 rounded-xl transition-all duration-300 flex flex-col items-center justify-center text-center gap-1.5";
+                const numBubble = tab.querySelector('span:first-child');
+                numBubble.className = "w-6 h-6 rounded-full bg-slate-900 text-slate-400 font-bold text-[10px] flex items-center justify-center border border-slate-800";
+            }
+        }
+
+        // Highlight selected tab
+        const activeTab = document.getElementById(`workflow-tab-${stepNo}`);
+        if (activeTab) {
+            activeTab.className = "p-3 bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 rounded-xl transition-all duration-300 flex flex-col items-center justify-center text-center gap-1.5 shadow-sm";
+            const activeNum = activeTab.querySelector('span:first-child');
+            activeNum.className = "w-6 h-6 rounded-full bg-indigo-500 text-white font-bold text-[10px] flex items-center justify-center";
+        }
+
+        document.getElementById('workflow-title').innerText = stepTitles[stepNo];
+        document.getElementById('workflow-desc').innerText = stepDescriptions[stepNo];
+    }
+
+    // Slide 7 flip card controller
+    function toggleFlip(idx) {
+        const inner = document.getElementById(`flip-inner-${idx}`);
+        inner.classList.toggle('flip-card-flipped');
+    }
+
+    // Slide 8 Prompt Doctor Treatment dispatcher (Science & Context Specific)
+    function applyCureInjections() {
+        const terminal = document.getElementById('doctor-terminal-result');
+        const tag = document.getElementById('treatment-tag-status');
+        const statusText = document.getElementById('ecg-status-text');
+        
+        const sickGraph = document.getElementById('ecg-graph-sick');
+        const healthyGraph = document.getElementById('ecg-graph-healthy');
+
+        const syringeSvg = document.getElementById('syringe-svg');
+        const syringeDrop = document.getElementById('syringe-drop');
+        const syringeLiquid = document.getElementById('syringe-liquid');
+        const syringeLabel = document.getElementById('syringe-svg-label');
+
+        // Check syringe input checkboxes
+        const hasPersona = document.getElementById('syringe-persona').checked;
+        const hasAudience = document.getElementById('syringe-audience').checked;
+        const hasFormat = document.getElementById('syringe-format').checked;
+
+        tag.innerText = "Synthesizing Formula...";
+        tag.className = "text-yellow-400 font-bold tracking-widest uppercase animate-pulse text-[9px]";
+        terminal.innerText = "Calibrating physics expert nodes...\nApplying Class IX targeted baseline parameters...\nInjecting real-life scenario algorithms and custom quizzes...";
+        terminal.className = "text-slate-400 font-mono text-[11px] leading-relaxed pt-1";
+
+        // Syringe dynamic animation visual trigger
+        syringeSvg.classList.add('scale-110', 'text-indigo-400');
+        syringeDrop.setAttribute('fill', '#10b981');
+
+        setTimeout(() => {
+            syringeSvg.classList.remove('scale-110', 'text-indigo-400');
+            if (hasPersona && hasAudience && hasFormat) {
+                // Complete recovery
+                tag.innerText = "CURED (HEALTHY)";
+                tag.className = "text-emerald-400 font-bold tracking-widest uppercase text-[9px]";
+                
+                statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> STABLE (OPTIMIZED)`;
+                statusText.className = "text-emerald-400 font-bold flex items-center gap-1.5";
+
+                sickGraph.classList.add('hidden');
+                healthyGraph.classList.remove('hidden');
+
+                // Visual medical feedback update
+                syringeLiquid.setAttribute('fill', '#10b981');
+                syringeLiquid.setAttribute('height', '10'); // emptied syringe look
+                syringeLiquid.setAttribute('y', '135');
+                syringeLabel.innerText = "Dose: Injected";
+                syringeLabel.className = "text-[9px] font-bold text-emerald-400 uppercase tracking-widest mt-1.5";
+
+                terminal.className = "text-emerald-400 font-mono font-bold text-[11px] leading-relaxed pt-1 bg-emerald-950/20 p-2.5 rounded-lg border border-emerald-500/10";
+                terminal.innerText = '"You are a science teacher. Teach basic physics concepts to Class IX students using real-life examples and short quizzes."';
+            } else {
+                // Partial recovery warnings
+                tag.innerText = "SICK (INCOMPLETE)";
+                tag.className = "text-yellow-500 font-bold tracking-widest uppercase text-[9px]";
+                
+                statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span> UNSTABLE (MISSING DIRECTIVES)`;
+                statusText.className = "text-yellow-500 font-bold flex items-center gap-1.5";
+
+                sickGraph.classList.remove('hidden');
+                healthyGraph.classList.add('hidden');
+
+                // Visual medical feedback warning state
+                syringeLiquid.setAttribute('fill', '#ef4444');
+                syringeLiquid.setAttribute('height', '67');
+                syringeLiquid.setAttribute('y', '80');
+                syringeDrop.setAttribute('fill', '#ef4444');
+                syringeLabel.innerText = "Dose: Critical";
+                syringeLabel.className = "text-[9px] font-bold text-red-400 uppercase tracking-widest mt-1.5";
+
+                terminal.className = "text-yellow-500 font-mono text-[11px] leading-relaxed pt-1";
+                terminal.innerText = "Warning: Prompt patient remains unstable. Ensure all 3 Treatment vectors (Persona, Audience, and Format) are checked before injecting cure.";
+            }
+        }, 1200);
+    }
+</script>
+</body>
+</html>

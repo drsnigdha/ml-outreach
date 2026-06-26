@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 3: Role of Prompt Engineering in Generative AI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Plus Jakarta Sans & Space Grotesk) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .header-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        /* Custom slide transition animation container */
+        .slide-container {
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* Hide scrollbars but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Custom Glowing Card Backgrounds */
+        .glow-card {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glow-card-active {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col justify-between overflow-hidden">
+
+    <!-- Top Navigation Bar -->
+    <header class="w-full bg-[#0d1321] border-b border-gray-800 px-6 py-4 flex items-center justify-between z-10">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-indigo-500 to-purple-500 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
+                <i data-lucide="sparkles" class="w-6 h-6 text-white animate-pulse"></i>
+            </div>
+            <div>
+                <span class="text-xs font-semibold uppercase tracking-widest text-indigo-400">Section 3 Presentation</span>
+                <h1 class="text-lg font-bold text-white header-font">Role of Prompt Engineering in GenAI</h1>
+            </div>
+        </div>
+
+        <!-- Middle Quick-Stats (Progress) -->
+        <div class="hidden md:flex items-center space-x-6 text-sm">
+            <div class="flex items-center space-x-2 bg-gray-800/40 px-3 py-1.5 rounded-full border border-gray-700/50">
+                <i data-lucide="clock" class="w-4 h-4 text-emerald-400"></i>
+                <span class="text-gray-300">Duration: <strong class="text-emerald-400">12-15 Min</strong></span>
+            </div>
+            <div class="flex items-center space-x-2 bg-gray-800/40 px-3 py-1.5 rounded-full border border-gray-700/50">
+                <i data-lucide="graduation-cap" class="w-4 h-4 text-purple-400"></i>
+                <span class="text-gray-300">Goal: <strong class="text-purple-400">Understand Prompts & Context</strong></span>
+            </div>
+        </div>
+
+        <!-- Utility Action Buttons -->
+        <div class="flex items-center space-x-3">
+            <button onclick="toggleSpeakerDrawer()" class="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition border border-gray-700 text-sm shadow-md">
+                <i data-lucide="presentation" class="w-4 h-4 text-indigo-400"></i>
+                <span class="hidden sm:inline">Teacher Notes & Activities</span>
+            </button>
+            <button onclick="openLearningGoalsModal()" class="p-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-700 transition" title="View Learning Goals">
+                <i data-lucide="help-circle" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN SLIDE CONTENT CONTAINER -->
+    <main class="flex-1 relative overflow-hidden bg-[#070b13] flex items-center justify-center p-4 md:p-8">
+        
+        <!-- Interactive Background Mesh Lines -->
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#1f293710_1px,transparent_1px),linear-gradient(to_bottom,#1f293710_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+
+        <!-- SLIDE 1: What is Generative AI? -->
+        <section id="slide-1" class="slide-container absolute inset-0 flex flex-col justify-center items-center opacity-0 pointer-events-none p-4 md:p-12 transform translate-y-4">
+            <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Left Details Info (5 cols) -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full">
+                        <span class="w-2.5 h-2.5 bg-indigo-500 rounded-full animate-ping"></span>
+                        <span class="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Slide 1: Introduction</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight header-font">What is <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500 bg-clip-text text-transparent">Generative AI?</span></h2>
+                    
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed">
+                        Instead of just matching or finding existing data (like traditional software), Generative AI can <strong>invent, synthesize, and construct completely brand new content</strong> out of learned patterns.
+                    </p>
+
+                    <div class="space-y-3 bg-gray-900/50 p-4 rounded-xl border border-gray-800">
+                        <div class="flex items-start space-x-2 text-xs md:text-sm text-gray-400">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-indigo-400 shrink-0 mt-0.5"></i>
+                            <span><strong>Traditional Software:</strong> Follows rigid, pre-programmed paths with mathematical precision (same input always gives same output).</span>
+                        </div>
+                        <div class="flex items-start space-x-2 text-xs md:text-sm text-gray-400">
+                            <i data-lucide="sparkles" class="w-5 h-5 text-purple-400 shrink-0 mt-0.5"></i>
+                            <span><strong>Generative AI:</strong> Creates brand new, dynamic assets dynamically (requires intentional guidance & rules).</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Interactive Visual Tool (7 cols) -->
+                <div class="lg:col-span-7 bg-gray-900/30 p-6 rounded-2xl border border-gray-800 relative overflow-hidden flex flex-col justify-between min-h-[420px]">
+                    <div class="mb-4">
+                        <h4 class="text-sm font-semibold uppercase tracking-wider text-gray-400">Interactive Generative Capabilities Map</h4>
+                        <p class="text-xs text-gray-500">Click on each capability branch below to see real-world tools and output examples!</p>
+                    </div>
+
+                    <!-- Interactive Mind Map Grid (Responsive fallback to avoid absolute overlap glitches) -->
+                    <div class="relative flex-1 flex flex-col items-center justify-center py-4">
+                        <!-- Central Mind Map Hub -->
+                        <div class="z-10 bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-bold p-4 md:p-5 rounded-2xl shadow-xl shadow-indigo-950/50 text-center flex flex-col items-center mb-6 lg:mb-0 transition-transform duration-300 hover:scale-105">
+                            <i data-lucide="brain-circuit" class="w-8 h-8 mb-2"></i>
+                            <span class="text-xs md:text-sm uppercase tracking-wider header-font">Generative AI</span>
+                        </div>
+
+                        <!-- Branches layout structured responsively -->
+                        <div class="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mt-4">
+                            <!-- Text Branch -->
+                            <button onclick="highlightBranch('text')" id="btn-branch-text" class="px-3 py-2 rounded-xl bg-gray-800 hover:bg-indigo-900/40 border border-gray-700 hover:border-indigo-500 flex items-center justify-center space-x-2 text-xs text-gray-300 transition-all duration-300 shadow-md">
+                                <i data-lucide="file-text" class="text-indigo-400 w-4 h-4"></i>
+                                <span>📝 Text</span>
+                            </button>
+                            <!-- Image Branch -->
+                            <button onclick="highlightBranch('image')" id="btn-branch-image" class="px-3 py-2 rounded-xl bg-gray-800 hover:bg-indigo-900/40 border border-gray-700 hover:border-indigo-500 flex items-center justify-center space-x-2 text-xs text-gray-300 transition-all duration-300 shadow-md">
+                                <i data-lucide="image" class="text-pink-400 w-4 h-4"></i>
+                                <span>🎨 Images</span>
+                            </button>
+                            <!-- Code Branch -->
+                            <button onclick="highlightBranch('code')" id="btn-branch-code" class="px-3 py-2 rounded-xl bg-gray-800 hover:bg-indigo-900/40 border border-gray-700 hover:border-indigo-500 flex items-center justify-center space-x-2 text-xs text-gray-300 transition-all duration-300 shadow-md">
+                                <i data-lucide="code" class="text-emerald-400 w-4 h-4"></i>
+                                <span>💻 Code</span>
+                            </button>
+                            <!-- Music/Audio Branch -->
+                            <button onclick="highlightBranch('music')" id="btn-branch-music" class="px-3 py-2 rounded-xl bg-gray-800 hover:bg-indigo-900/40 border border-gray-700 hover:border-indigo-500 flex items-center justify-center space-x-2 text-xs text-gray-300 transition-all duration-300 shadow-md">
+                                <i data-lucide="music" class="text-yellow-400 w-4 h-4"></i>
+                                <span>🎵 Music</span>
+                            </button>
+                            <!-- Video Branch -->
+                            <button onclick="highlightBranch('video')" id="btn-branch-video" class="col-span-2 sm:col-span-1 px-3 py-2 rounded-xl bg-gray-800 hover:bg-indigo-900/40 border border-gray-700 hover:border-indigo-500 flex items-center justify-center space-x-2 text-xs text-gray-300 transition-all duration-300 shadow-md">
+                                <i data-lucide="film" class="text-rose-400 w-4 h-4"></i>
+                                <span>🎥 Video</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Selected Capability Information Window -->
+                    <div id="branch-display-box" class="bg-indigo-950/30 border border-indigo-500/30 rounded-xl p-4 mt-4 transition-all duration-500 min-h-[100px]">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <i data-lucide="info" class="w-4 h-4 text-indigo-400"></i>
+                            <span class="text-xs uppercase font-semibold text-indigo-400" id="branch-title">Active Preview</span>
+                        </div>
+                        <h5 class="text-white font-bold text-sm md:text-base" id="branch-headline">Click any category branch node above!</h5>
+                        <p class="text-gray-300 text-xs md:text-sm mt-1" id="branch-desc">Understand what AI creates and explore typical tools associated with it.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SLIDE 2: Extremely Knowledgeable Intern -->
+        <section id="slide-2" class="slide-container absolute inset-0 flex flex-col justify-center items-center opacity-0 pointer-events-none p-4 md:p-12 transform translate-y-4">
+            <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Left Hand Details (5 cols) -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-pink-500/10 border border-pink-500/20 px-3 py-1 rounded-full">
+                        <span class="w-2.5 h-2.5 bg-pink-500 rounded-full animate-pulse"></span>
+                        <span class="text-pink-400 text-xs font-semibold tracking-wider uppercase">Slide 2: Direct Analogy</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight header-font">Extremely Knowledgeable <span class="text-pink-400">Intern</span></h2>
+                    
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed">
+                        Imagine hiring a highly capable intern who has memorized every book ever written—yet holds zero telepathic contextual mind-reading powers.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-3 text-xs md:text-sm">
+                        <div class="bg-emerald-950/20 border border-emerald-500/20 p-3 rounded-xl">
+                            <span class="text-emerald-400 font-bold block mb-1">✅ Intern Superpowers</span>
+                            <span class="text-[11px] text-gray-400">Has read millions of pages, executes lightning fast, learns instantly.</span>
+                        </div>
+                        <div class="bg-rose-950/20 border border-rose-500/20 p-3 rounded-xl">
+                            <span class="text-rose-400 font-bold block mb-1">❌ Intern Weakness</span>
+                            <span class="text-[11px] text-gray-400">Cannot read minds, demands clean instructions, can misunderstand simple tasks.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hand Sandbox Tool (7 cols) -->
+                <div class="lg:col-span-7 bg-gray-900/30 p-6 rounded-2xl border border-gray-800 flex flex-col justify-between min-h-[420px]">
+                    <div>
+                        <h4 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-1">Analogy Sandbox: Testing the Intern</h4>
+                        <p class="text-xs text-gray-500">Toggle between poor instruction and crisp instruction to witness the intern's output quality transform.</p>
+                    </div>
+
+                    <!-- Interactive Selector Switch -->
+                    <div class="flex bg-gray-950 p-1 rounded-xl border border-gray-800 my-4">
+                        <button onclick="toggleInternState('bad')" id="btn-intern-bad" class="flex-1 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all text-center flex items-center justify-center space-x-2 bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                            <i data-lucide="thumbs-down" class="w-4 h-4 text-rose-400"></i>
+                            <span>Vague Command (Bad)</span>
+                        </button>
+                        <button onclick="toggleInternState('good')" id="btn-intern-good" class="flex-1 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all text-center flex items-center justify-center space-x-2 text-gray-400">
+                            <i data-lucide="thumbs-up" class="w-4 h-4 text-gray-500"></i>
+                            <span>Detailed Brief (Good)</span>
+                        </button>
+                    </div>
+
+                    <!-- Simulated Dialogue Box -->
+                    <div class="bg-gray-950/60 rounded-xl p-5 border border-gray-800 space-y-4 flex-1 flex flex-col justify-center">
+                        <div class="space-y-1">
+                            <span class="text-xs uppercase font-extrabold tracking-widest text-indigo-400 block" id="label-role-sender">Manager Prompt:</span>
+                            <p class="text-white text-sm md:text-base font-semibold" id="intern-manager-text">"Write a report."</p>
+                        </div>
+                        <div class="border-t border-gray-850 my-2"></div>
+                        <div class="space-y-1">
+                            <span class="text-xs uppercase font-extrabold tracking-widest text-yellow-400 block" id="label-role-rec">Intern Action & Output:</span>
+                            <p class="text-gray-300 text-xs md:text-sm italic" id="intern-action-text">The intern looks puzzled. Which layout? How long? Who is the audience? He guesses and writes a messy, generic 10-page document.</p>
+                        </div>
+                    </div>
+
+                    <!-- Core Lesson Subcard -->
+                    <div class="mt-4 bg-indigo-950/20 p-3 rounded-lg border border-indigo-500/20 text-center">
+                        <span class="text-xs text-indigo-300">💡 <strong>Core Lesson:</strong> The quality of your instructions directly controls the quality of their work!</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SLIDE 3: Why AI Needs Prompts -->
+        <section id="slide-3" class="slide-container absolute inset-0 flex flex-col justify-center items-center opacity-0 pointer-events-none p-4 md:p-12 transform translate-y-4">
+            <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Left Hand Text Content (5 cols) -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1 rounded-full">
+                        <span class="w-2.5 h-2.5 bg-yellow-500 rounded-full animate-pulse"></span>
+                        <span class="text-yellow-400 text-xs font-semibold tracking-wider uppercase">Slide 3: Essential Needs</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight header-font">Why AI Needs <span class="text-yellow-400">Prompts</span></h2>
+                    
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed">
+                        Imagine opening a chat box and entering: <em>"Write something."</em> What does the AI do? It has to blindly guess your thoughts!
+                    </p>
+
+                    <div class="space-y-3">
+                        <p class="text-xs md:text-sm text-gray-400">Without structured guidance, AI has no baseline context. Prompts act as a <strong>navigational map</strong> providing four key directions:</p>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <span class="bg-gray-800/60 p-2.5 rounded border border-gray-700/50 text-gray-300">🎯 Goal Definition</span>
+                            <span class="bg-gray-800/60 p-2.5 rounded border border-gray-700/50 text-gray-300">🗺️ Clear Context</span>
+                            <span class="bg-gray-800/60 p-2.5 rounded border border-gray-700/50 text-gray-300">👥 Specific Audience</span>
+                            <span class="bg-gray-800/60 p-2.5 rounded border border-gray-700/50 text-gray-300">📐 Formatting Structure</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hand Compass Visualizer (7 cols) -->
+                <div class="lg:col-span-7 bg-gray-900/30 p-6 rounded-2xl border border-gray-800 flex flex-col justify-between min-h-[420px]">
+                    <div>
+                        <h4 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-1">Interactive Guiding Compass</h4>
+                        <p class="text-xs text-gray-500">Click each quadrant on the AI compass block to build structure and avoid generic responses.</p>
+                    </div>
+
+                    <!-- Grid Layout for Compass Quads -->
+                    <div class="grid grid-cols-2 gap-4 my-6">
+                        <!-- Direction Quad -->
+                        <button onclick="activateCompass('direction')" id="quad-direction" class="p-3.5 md:p-4 rounded-xl border border-gray-800 bg-gray-950 text-left hover:border-indigo-500 transition-all duration-300">
+                            <div class="flex items-center space-x-2 text-indigo-400 mb-1">
+                                <i data-lucide="compass" class="w-5 h-5"></i>
+                                <span class="font-bold text-xs md:text-sm">1. Direction</span>
+                            </div>
+                            <p class="text-[11px] text-gray-400">Specifies what literal task is being ordered.</p>
+                        </button>
+
+                        <!-- Context Quad -->
+                        <button onclick="activateCompass('context')" id="quad-context" class="p-3.5 md:p-4 rounded-xl border border-gray-800 bg-gray-950 text-left hover:border-emerald-500 transition-all duration-300">
+                            <div class="flex items-center space-x-2 text-emerald-400 mb-1">
+                                <i data-lucide="info" class="w-5 h-5"></i>
+                                <span class="font-bold text-xs md:text-sm">2. Context</span>
+                            </div>
+                            <p class="text-[11px] text-gray-400">Sets the boundaries, details, and limitations.</p>
+                        </button>
+
+                        <!-- Audience Quad -->
+                        <button onclick="activateCompass('audience')" id="quad-audience" class="p-3.5 md:p-4 rounded-xl border border-gray-800 bg-gray-950 text-left hover:border-purple-500 transition-all duration-300">
+                            <div class="flex items-center space-x-2 text-purple-400 mb-1">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                                <span class="font-bold text-xs md:text-sm">3. Audience</span>
+                            </div>
+                            <p class="text-[11px] text-gray-400">Explains who is consuming the generated content.</p>
+                        </button>
+
+                        <!-- Goal Quad -->
+                        <button onclick="activateCompass('goal')" id="quad-goal" class="p-3.5 md:p-4 rounded-xl border border-gray-800 bg-gray-950 text-left hover:border-pink-500 transition-all duration-300">
+                            <div class="flex items-center space-x-2 text-pink-400 mb-1">
+                                <i data-lucide="target" class="w-5 h-5"></i>
+                                <span class="font-bold text-xs md:text-sm">4. Goal</span>
+                            </div>
+                            <p class="text-[11px] text-gray-400">Explains why we need this, altering the style.</p>
+                        </button>
+                    </div>
+
+                    <!-- Compass Output Explanation Panel -->
+                    <div id="compass-output-panel" class="bg-gray-950 p-4 rounded-xl border border-gray-850">
+                        <span class="text-xs uppercase font-extrabold tracking-widest text-indigo-400 block mb-1" id="compass-status-label">Tip</span>
+                        <p class="text-gray-300 text-xs md:text-sm" id="compass-status-desc">Click any of the four quadrants above to discover why structured guidance prevents confusion!</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SLIDE 4: Same AI, Different Prompt, Different Result -->
+        <section id="slide-4" class="slide-container absolute inset-0 flex flex-col justify-center items-center opacity-0 pointer-events-none p-4 md:p-12 transform translate-y-4">
+            <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Left Hand Text Content (5 cols) -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
+                        <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <span class="text-emerald-400 text-xs font-semibold tracking-wider uppercase">Slide 4: Practical Evidence</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight header-font">Same AI, Different <span class="text-emerald-400">Results</span></h2>
+                    
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed">
+                        You don't need a completely different AI engine to get better results. You just need to change the way you define your prompt instruction paths.
+                    </p>
+
+                    <div class="p-4 bg-gray-950/60 rounded-xl border border-gray-800">
+                        <p class="text-xs text-gray-400 italic">
+                            "Prompt engineering is not about programming computer chips. It is about aligning the intelligence's output boundaries to match yours."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Hand Sandbox Tool (7 cols) -->
+                <div class="lg:col-span-7 bg-gray-900/30 p-6 rounded-2xl border border-gray-800 flex flex-col justify-between min-h-[440px]">
+                    <div>
+                        <h4 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-1">Interactive Topic Sandbox: The Solar System</h4>
+                        <p class="text-xs text-gray-500">Pick Prompt A, B, or C below to instantly view how the EXACT same artificial engine adapts.</p>
+                    </div>
+
+                    <!-- Prompt Selector Buttons -->
+                    <div class="space-y-2.5 my-4">
+                        <button onclick="switchSolarPrompt('a')" id="btn-solar-a" class="w-full text-left p-3 rounded-lg border border-indigo-500/30 bg-indigo-950/20 text-gray-200 text-xs flex items-center justify-between transition-all">
+                            <span class="font-medium"><strong>Prompt A:</strong> "Tell me about the solar system."</span>
+                            <i data-lucide="check" class="w-4 h-4 text-indigo-400"></i>
+                        </button>
+                        <button onclick="switchSolarPrompt('b')" id="btn-solar-b" class="w-full text-left p-3 rounded-lg border border-gray-850 hover:border-emerald-500/30 bg-gray-950 text-gray-400 text-xs flex items-center justify-between transition-all">
+                            <span class="font-medium"><strong>Prompt B:</strong> "Explain the solar system to Class VI using simple analogies."</span>
+                            <i data-lucide="circle" class="w-4 h-4 text-gray-600"></i>
+                        </button>
+                        <button onclick="switchSolarPrompt('c')" id="btn-solar-c" class="w-full text-left p-3 rounded-lg border border-gray-850 hover:border-purple-500/30 bg-gray-950 text-gray-400 text-xs flex items-center justify-between transition-all">
+                            <span class="font-medium"><strong>Prompt C:</strong> "Act as an Astronomer. Display facts & details in a structured table."</span>
+                            <i data-lucide="circle" class="w-4 h-4 text-gray-600"></i>
+                        </button>
+                    </div>
+
+                    <!-- Simulated Solar Output -->
+                    <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 min-h-[140px] flex flex-col justify-center">
+                        <span class="text-[10px] uppercase font-bold tracking-wider text-indigo-400 mb-1">Simulated Model Output:</span>
+                        <div id="solar-output-text" class="text-xs text-gray-300 leading-relaxed space-y-1">
+                            The Solar System consists of our Sun and everything bound to it by gravity, including the 8 major planets, dwarf planets, moons, asteroids, and comets. It was formed 4.6 billion years ago from a giant interstellar molecular cloud...
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SLIDE 5: Recall Activity – What Makes a Good Prompt? -->
+        <section id="slide-5" class="slide-container absolute inset-0 flex flex-col justify-center items-center opacity-0 pointer-events-none p-4 md:p-12 transform translate-y-4">
+            <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Left Hand Text Content (5 cols) -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-purple-500/10 border border-purple-500/20 px-3 py-1 rounded-full">
+                        <span class="w-2.5 h-2.5 bg-purple-500 rounded-full animate-pulse"></span>
+                        <span class="text-purple-400 text-xs font-semibold tracking-wider uppercase">Slide 5: Memory Challenge</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight header-font">Recall: What Makes a <span class="text-purple-400">Good Prompt?</span></h2>
+                    
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed">
+                        Let's connect our concepts. A highly successful, actionable prompt is like a complete puzzle built from four fundamental structural ingredients.
+                    </p>
+
+                    <!-- Structural List -->
+                    <div class="space-y-2 text-xs md:text-sm text-gray-300">
+                        <div class="flex items-center space-x-2"><span class="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">W</span> <span><strong>What:</strong> The core task itself</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">Y</span> <span><strong>Why:</strong> The specific contextual reason</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs font-bold">U</span> <span><strong>Who:</strong> The intended audience</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-6 h-6 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center text-xs font-bold">H</span> <span><strong>How:</strong> The structural format target</span></div>
+                    </div>
+                </div>
+
+                <!-- Right Hand Puzzle Game Visualizer (7 cols) -->
+                <div class="lg:col-span-7 bg-gray-900/30 p-6 rounded-2xl border border-gray-800 flex flex-col justify-between min-h-[420px]">
+                    <div>
+                        <h4 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-1">Interactive Prompt Builder Puzzle</h4>
+                        <p class="text-xs text-gray-500">Construct a high-quality Gravity prompt. Select the correct puzzle block in order: Task → Audience → Detail.</p>
+                    </div>
+
+                    <!-- Interactive Puzzle Construction Container -->
+                    <div class="my-4 space-y-4">
+                        <!-- Step Tracker Indicator -->
+                        <div class="flex items-center justify-between text-xs text-gray-400">
+                            <span>Step Progress: <strong id="puzzle-step-indicator" class="text-indigo-400">Select Task (1/3)</strong></span>
+                            <button onclick="resetPuzzle()" class="text-gray-500 hover:text-white flex items-center space-x-1 transition">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                                <span>Reset</span>
+                            </button>
+                        </div>
+
+                        <!-- Grid Options (Populated dynamically) -->
+                        <div id="puzzle-options-grid" class="grid grid-cols-2 gap-3">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+
+                        <!-- Live Constructed Result Block -->
+                        <div class="bg-gray-950 p-4 rounded-xl border border-gray-850 min-h-[100px] flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-purple-400">Constructed Live Prompt:</span>
+                                <p id="puzzle-live-prompt" class="text-xs text-gray-500 italic mt-1">"Select your first block to start engineering..."</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-900">
+                                <span class="text-xs text-gray-500" id="puzzle-status-text">Ready to construct...</span>
+                                <span id="puzzle-badge" class="hidden px-2 py-0.5 rounded-full text-[9px] font-bold tracking-widest uppercase"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SLIDE 6: Mystery Challenge – Which Prompt Will Win? -->
+        <section id="slide-6" class="slide-container absolute inset-0 flex flex-col justify-center items-center opacity-0 pointer-events-none p-4 md:p-12 transform translate-y-4">
+            <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Left Hand Text Content (5 cols) -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-pink-500/10 border border-pink-500/20 px-3 py-1 rounded-full">
+                        <span class="w-2.5 h-2.5 bg-pink-500 rounded-full animate-bounce"></span>
+                        <span class="text-pink-400 text-xs font-semibold tracking-wider uppercase">Slide 6: Mystery Challenge</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight header-font">Which Prompt <span class="text-pink-400">Wins?</span></h2>
+                    
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed">
+                        Three students are trying to learn Python programming using an AI model. They each design their instruction completely differently.
+                    </p>
+
+                    <div class="p-4 bg-yellow-950/20 border border-yellow-500/20 rounded-xl">
+                        <span class="text-yellow-400 text-xs font-bold uppercase tracking-wider block mb-1">❓ Challenge Question:</span>
+                        <p class="text-xs text-gray-300">
+                            Which prompt design strategy will unlock the ultimate, highly-personalized learning experience? Cast your vote on the right!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Hand Sandbox Voting & Poll Tool (7 cols) -->
+                <div class="lg:col-span-7 bg-gray-900/30 p-6 rounded-2xl border border-gray-800 flex flex-col justify-between min-h-[420px]">
+                    <div>
+                        <h4 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-1">Classroom Voting & Prediction Poll</h4>
+                        <p class="text-xs text-gray-500">Pick a student strategy to see real-time distribution charts and learn why that strategy is engineered.</p>
+                    </div>
+
+                    <!-- Voting Cards Grid -->
+                    <div class="space-y-3 my-4">
+                        <!-- Student A -->
+                        <div onclick="castVote('A')" id="vote-card-A" class="group cursor-pointer p-3.5 rounded-xl border border-gray-800 hover:border-gray-700 bg-gray-950 flex items-center justify-between transition-all">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center font-bold text-xs">A</div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-white">Student A (Basic Instruction)</h5>
+                                    <p class="text-[10px] text-gray-400">"Teach me Python."</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span id="vote-pct-A" class="text-xs font-semibold text-gray-400">0%</span>
+                                <div class="w-16 bg-gray-800 h-1.5 rounded-full overflow-hidden mt-1">
+                                    <div id="vote-bar-A" class="bg-red-500 h-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Student B -->
+                        <div onclick="castVote('B')" id="vote-card-B" class="group cursor-pointer p-3.5 rounded-xl border border-gray-800 hover:border-gray-700 bg-gray-950 flex items-center justify-between transition-all">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold text-xs">B</div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-white">Student B (Role Assignment)</h5>
+                                    <p class="text-[10px] text-gray-400">"You are an expert coder. Teach using simple loops..."</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span id="vote-pct-B" class="text-xs font-semibold text-gray-400">0%</span>
+                                <div class="w-16 bg-gray-800 h-1.5 rounded-full overflow-hidden mt-1">
+                                    <div id="vote-bar-B" class="bg-indigo-500 h-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Student C -->
+                        <div onclick="castVote('C')" id="vote-card-C" class="group cursor-pointer p-3.5 rounded-xl border border-gray-800 hover:border-gray-700 bg-gray-950 flex items-center justify-between transition-all">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-xs">C</div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-white">Student C (Few-Shot Examples)</h5>
+                                    <p class="text-[10px] text-gray-400">Shows examples first, then asks model to explain.</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span id="vote-pct-C" class="text-xs font-semibold text-gray-400">0%</span>
+                                <div class="w-16 bg-gray-800 h-1.5 rounded-full overflow-hidden mt-1">
+                                    <div id="vote-bar-C" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Reveal Block -->
+                    <div id="vote-reveal-card" class="bg-indigo-950/20 p-3 rounded-lg border border-indigo-500/20 text-center min-h-[50px] flex items-center justify-center">
+                        <p class="text-xs text-indigo-300 italic">👉 Select a Student choice above to see details & class distribution details.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Slide Navigation Footer Controller -->
+    <footer class="w-full bg-[#0d1321] border-t border-gray-800 px-6 py-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 z-10">
+        <!-- Slide Count Indicators / Clickable Dots -->
+        <div class="flex items-center space-x-4">
+            <span class="text-xs text-gray-400 tracking-wider">Slide <strong class="text-indigo-400" id="footer-slide-num">1</strong> of 6</span>
+            <div class="flex items-center space-x-2">
+                <button onclick="goToSlide(1)" id="dot-1" class="w-3.5 h-3.5 rounded-full bg-indigo-500 transition-all" title="Slide 1"></button>
+                <button onclick="goToSlide(2)" id="dot-2" class="w-2.5 h-2.5 rounded-full bg-gray-700 hover:bg-gray-500 transition-all" title="Slide 2"></button>
+                <button onclick="goToSlide(3)" id="dot-3" class="w-2.5 h-2.5 rounded-full bg-gray-700 hover:bg-gray-500 transition-all" title="Slide 3"></button>
+                <button onclick="goToSlide(4)" id="dot-4" class="w-2.5 h-2.5 rounded-full bg-gray-700 hover:bg-gray-500 transition-all" title="Slide 4"></button>
+                <button onclick="goToSlide(5)" id="dot-5" class="w-2.5 h-2.5 rounded-full bg-gray-700 hover:bg-gray-500 transition-all" title="Slide 5"></button>
+                <button onclick="goToSlide(6)" id="dot-6" class="w-2.5 h-2.5 rounded-full bg-gray-700 hover:bg-gray-500 transition-all" title="Slide 6"></button>
+            </div>
+        </div>
+
+        <!-- Left/Right Buttons -->
+        <div class="flex items-center space-x-3">
+            <button onclick="prevSlide()" class="flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition border border-gray-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed" id="btn-prev">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Previous</span>
+            </button>
+            <button onclick="nextSlide()" class="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white px-5 py-2 rounded-lg transition shadow-lg shadow-indigo-950/50 text-sm" id="btn-next">
+                <span>Next</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- TEACHER SPEAKER NOTES & CLASS ACTIVITIES DRAWER (Collapsible Right/Bottom sidebar) -->
+    <div id="speaker-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[450px] bg-[#0c101a] border-l border-gray-800 shadow-2xl z-20 flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+        <!-- Header -->
+        <div class="p-4 border-b border-gray-800 bg-[#0d1321] flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i data-lucide="book-open" class="text-indigo-400 w-5 h-5"></i>
+                <h3 class="text-sm font-bold text-white header-font">Class Companion & Activity Guide</h3>
+            </div>
+            <button onclick="toggleSpeakerDrawer()" class="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Notes Content -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
+            
+            <!-- Context Slide Specific Speaker Notes -->
+            <div class="space-y-3">
+                <span class="text-[10px] uppercase font-bold tracking-widest text-indigo-400 block">Active Slide Notes</span>
+                <div class="bg-gray-900/60 p-4 rounded-xl border border-indigo-500/10 space-y-3">
+                    <h4 class="text-sm font-bold text-white" id="drawer-slide-title">Slide 1: What is Generative AI?</h4>
+                    <p class="text-xs text-gray-300 leading-relaxed" id="drawer-slide-desc">
+                        Traditional software is like a rigid math calculator. The same input always guarantees the exact same output. Generative AI is dynamic and creative; it creates brand new configurations. Therefore, prompt guidance is essential.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Context Classroom Activity Panel -->
+            <div class="space-y-3">
+                <span class="text-[10px] uppercase font-bold tracking-widest text-emerald-400 block">Classroom Interactive Activity</span>
+                <div class="bg-emerald-950/25 p-4 rounded-xl border border-emerald-500/10 space-y-3">
+                    <div class="flex items-center space-x-2 text-emerald-400 text-xs font-semibold">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>Engagement Strategy</span>
+                    </div>
+                    <p class="text-xs text-gray-300 leading-relaxed font-medium" id="drawer-activity-desc">
+                        Ask students: "Which type of content would you most like AI to generate for you? Studying aids, or artistic design tools?" Let them point and debate.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Universal Discussion Prompts -->
+            <div class="space-y-3">
+                <span class="text-[10px] uppercase font-bold tracking-widest text-purple-400 block">Discussion Questions</span>
+                <div class="space-y-2" id="drawer-discussion-box">
+                    <!-- Dynamic updates based on selected slide -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- LEARNING GOALS MODAL DIALOG -->
+    <div id="goals-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-[#0e1424] max-w-lg w-full rounded-2xl border border-gray-800 p-6 shadow-2xl relative">
+            <button onclick="closeLearningGoalsModal()" class="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-xl">
+                    <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 block">Section 3 Outline</span>
+                    <h3 class="text-lg font-bold text-white header-font">Your Core Learning Goals</h3>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+                By the end of this module, students will be fully equipped with complete practical conceptual comprehension covering the following objectives:
+            </p>
+
+            <div class="space-y-2.5">
+                <div class="flex items-center space-x-3 text-xs text-gray-300">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+                    <span>What Generative AI is and how it differs from traditional programs</span>
+                </div>
+                <div class="flex items-center space-x-3 text-xs text-gray-300">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+                    <span>Why artificial models depend strictly on prompt definitions</span>
+                </div>
+                <div class="flex items-center space-x-3 text-xs text-gray-300">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+                    <span>Why AI responses vary depending on contextual inputs</span>
+                </div>
+                <div class="flex items-center space-x-3 text-xs text-gray-300">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+                    <span>Why Prompt Engineering serves as a bridge of communication</span>
+                </div>
+                <div class="flex items-center space-x-3 text-xs text-gray-300">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+                    <span>Why various structural prompting formulas exist</span>
+                </div>
+            </div>
+
+            <button onclick="closeLearningGoalsModal()" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold py-2.5 rounded-xl transition">
+                Got it, Let's Learn!
+            </button>
+        </div>
+    </div>
+
+    <!-- Presentation Engine Script -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = [1, 2, 3, 4, 5, 6];
+
+        // Speaker Drawer Notes and Discussion Questions Repository
+        const presentationData = {
+            1: {
+                title: "Slide 1: What is Generative AI?",
+                notes: "Traditional software works like a static calculator where the same input always yields the exact same calculated answer. Generative AI is highly creative, dynamically composing responses based on patterns. Highlighting different fields helps illustrate how prompt rules govern different mediums.",
+                activity: "Engage the class with a vote: Ask, 'Which AI media generation type (Text, Art, Audio) would you most like to utilize in your studies and creativity?' Let them explain why.",
+                questions: [
+                    "Would you use AI for creative projects, or strictly for summarizing/studying details?",
+                    "What are typical real-world apps you already know (e.g. ChatGPT, Gemini, Claude)?"
+                ]
+            },
+            2: {
+                title: "Slide 2: Knowledgeable Intern",
+                notes: "The intern is highly educated (having read millions of academic documents) but possesses absolutely zero telepathic powers. Highlighting this concept forces students to view Prompting as simple communication. The quality of a task description governs the outcome of the job.",
+                activity: "Ask a student to give an extremely vague command (like 'Create food'). Ask another student to represent the intern and explain how they might completely get the task wrong.",
+                questions: [
+                    "Why do people typically assume AI understands their intentions automatically?",
+                    "How can we minimize simple human-to-human communication misunderstandings?"
+                ]
+            },
+            3: {
+                title: "Slide 3: Why AI Needs Prompts",
+                notes: "The compass represents core ingredients of prompt alignment. Without direction, goals, context, and defined audience, the model is blindfolded and makes arbitrary generic choices. Providing a structured compass structure prevents guess-work.",
+                activity: "Show the screen showing 'Write something.' Have students volunteer to add exactly one keyword (e.g. 'about space', 'for a toddler') to showcase how the map shrinks the guess space.",
+                questions: [
+                    "What specific elements are completely missing when we just write 'Tell me something'?",
+                    "How does formatting constraints (like a table, checklist) change the user-experience?"
+                ]
+            },
+            4: {
+                title: "Slide 4: Same AI, Different Prompt",
+                notes: "This interactive solar system comparison is crucial. Show that the actual underlying algorithm/model does NOT alter. Only the structural formatting and targeting prompt modifies the dynamic response layout.",
+                activity: "Pick Prompt A, B, and C in front of the classroom. Let students read the simulated answers aloud and vote on which of the three answers represents the strongest communication.",
+                questions: [
+                    "Which prompt would you personally use to prepare for an upcoming science quiz?",
+                    "Why does assigning a specific persona (Astronomer vs Friend) change the vocabulary used?"
+                ]
+            },
+            5: {
+                title: "Slide 5: Recall & Puzzle Matching",
+                notes: "This puzzle helps consolidate the physical anatomy of high-quality instructions. Aligning Task, Audience, and Format together ensures perfect output. Prompting is a multi-step design discipline.",
+                activity: "Run the live puzzle game with the students. Let them shout out the correct ingredients (Task → Audience → Detail) to assemble a perfect gravity description prompt.",
+                questions: [
+                    "Are all four structural parts (Who, What, Why, How) strictly necessary in every basic prompt?",
+                    "Which structural portion usually improves a generic response the most?"
+                ]
+            },
+            6: {
+                title: "Slide 6: Mystery Voting Challenge",
+                notes: "Do not reveal the final answers entirely yet! This challenge naturally acts as a bridge to the upcoming section where we discuss Instruction Prompting, Role Prompting, and Few-shot learning styles.",
+                activity: "Run a class hands-on vote: Student A, B, or C? Once the class chooses, click on each vote card to preview their strategic value.",
+                questions: [
+                    "Why might showing examples to AI (Student C) work better than just describing them?",
+                    "What advantages does assigning a professional Persona (Student B) offer over basic prompts?"
+                ]
+            }
+        };
+
+        // Slide navigation controller
+        function goToSlide(slideNum) {
+            currentSlide = slideNum;
+            
+            // Hide all slides
+            totalSlides.forEach(num => {
+                const s = document.getElementById(`slide-${num}`);
+                if (s) {
+                    s.style.opacity = '0';
+                    s.style.transform = 'translateY(16px)';
+                    s.style.pointerEvents = 'none';
+                }
+                
+                // Update dots
+                const dot = document.getElementById(`dot-${num}`);
+                if (dot) {
+                    if (num === slideNum) {
+                        dot.className = "w-3.5 h-3.5 rounded-full bg-indigo-500 transition-all";
+                    } else {
+                        dot.className = "w-2.5 h-2.5 rounded-full bg-gray-700 hover:bg-gray-500 transition-all";
+                    }
+                }
+            });
+
+            // Show active slide
+            const activeSlide = document.getElementById(`slide-${slideNum}`);
+            if (activeSlide) {
+                activeSlide.style.opacity = '1';
+                activeSlide.style.transform = 'translateY(0)';
+                activeSlide.style.pointerEvents = 'auto';
+            }
+
+            // Update footer labels & states
+            document.getElementById('footer-slide-num').innerText = slideNum;
+            document.getElementById('btn-prev').disabled = (slideNum === 1);
+            
+            // If on last slide, change Next button to "Explore Next Section" styling
+            const btnNext = document.getElementById('btn-next');
+            if (slideNum === 6) {
+                btnNext.innerHTML = `<span>Begin Section 4!</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+            } else {
+                btnNext.innerHTML = `<span>Next</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+            }
+            lucide.createIcons();
+
+            // Auto-update Speaker notes
+            updateSpeakerNotes(slideNum);
+        }
+
+        function nextSlide() {
+            if (currentSlide < 6) {
+                goToSlide(currentSlide + 1);
+            } else {
+                // Next Section Alert
+                alert("Section 3 complete! Prepare to enter Section 4: Prompting Techniques!");
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        // Fullscreen API Helper
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Keyboard Navigation Support
+        document.addEventListener('keydown', (e) => {
+            const activeEl = document.activeElement;
+            const capturesTextKeys = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.getAttribute('contenteditable') === 'true'
+            );
+            const capturesArrowKeys = activeEl && (
+                (activeEl.tagName === 'INPUT' && activeEl.type !== 'button' && activeEl.type !== 'submit' && activeEl.type !== 'checkbox' && activeEl.type !== 'radio') ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT'
+            );
+            const capturesSpacebar = activeEl && (
+                activeEl.tagName === 'INPUT' ||
+                activeEl.tagName === 'TEXTAREA' ||
+                activeEl.tagName === 'SELECT' ||
+                activeEl.tagName === 'BUTTON' ||
+                activeEl.getAttribute('role') === 'button'
+            );
+
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Space') {
+                if (!capturesSpacebar && !capturesArrowKeys) {
+                    nextSlide();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (!capturesArrowKeys) {
+                    prevSlide();
+                    e.preventDefault();
+                }
+            } else if (e.key === 'f' || e.key === 'F') {
+                if (!capturesTextKeys) {
+                    toggleFullscreen();
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Double-click to toggle fullscreen
+        document.addEventListener('dblclick', (e) => {
+            const interactiveTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'A', 'SELECT', 'LABEL', 'I', 'SPAN'];
+            if (!interactiveTags.includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+                toggleFullscreen();
+            }
+        });
+
+        // Draw and update the speaker notes panel content dynamically
+        function updateSpeakerNotes(slideNum) {
+            const data = presentationData[slideNum];
+            if (!data) return;
+
+            document.getElementById('drawer-slide-title').innerText = data.title;
+            document.getElementById('drawer-slide-desc').innerText = data.notes;
+            document.getElementById('drawer-activity-desc').innerText = data.activity;
+
+            const discussionBox = document.getElementById('drawer-discussion-box');
+            discussionBox.innerHTML = '';
+            data.questions.forEach((q, index) => {
+                discussionBox.innerHTML += `
+                    <div class="flex items-start space-x-2 text-xs bg-gray-900/40 p-2.5 rounded-lg border border-gray-800">
+                        <span class="text-purple-400 font-bold">${index + 1}.</span>
+                        <p class="text-gray-300">${q}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // Modal/Speaker Drawer toggling controllers
+        function toggleSpeakerDrawer() {
+            const drawer = document.getElementById('speaker-drawer');
+            if (drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full');
+            } else {
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        function openLearningGoalsModal() {
+            const m = document.getElementById('goals-modal');
+            m.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeLearningGoalsModal() {
+            const m = document.getElementById('goals-modal');
+            m.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        /* SLIDE 1: INTERACTIVE BRANCH SELECTION 
+        */
+        const branches = {
+            text: {
+                title: "📝 Text Generation Node",
+                headline: "Synthesize essays, story drafts, & coding scripts",
+                desc: "Tools like ChatGPT, Gemini, and Claude analyze input parameters to output essays, clean formatting, letters, and outline materials dynamically."
+            },
+            image: {
+                title: "🎨 Image Generation Node",
+                headline: "Paint complex scenes & artistic photography",
+                desc: "Tools like Midjourney, DALL-E, and Stable Diffusion transform natural human prompts into digital artwork and detailed illustrations."
+            },
+            code: {
+                title: "💻 Code Engineering Node",
+                headline: "Translate logical English into active functional code",
+                desc: "Tools like Github Copilot and Gemini compile web applications, script algorithms, and solve logical software bugs instantly."
+            },
+            music: {
+                title: "🎵 Music Synthesis Node",
+                headline: "Compose rich backing instrumentals & complete songs",
+                desc: "Models like Udio and Suno write fully-featured lyrics, create melodies, and master complete audio tracks within seconds."
+            },
+            video: {
+                title: "🎥 Video Motion Node",
+                headline: "Generate Cinematic scenes from pure text descriptions",
+                desc: "Platforms like Sora and Runway synthesize high-definition physics, fluid environments, and lifelike human expressions from a text cue."
+            }
+        };
+
+        function highlightBranch(type) {
+            // Un-highlight all branch buttons
+            ['text', 'image', 'code', 'music', 'video'].forEach(t => {
+                const btn = document.getElementById(`btn-branch-${t}`);
+                if (btn) {
+                    btn.className = "px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-xs text-gray-300 transition-all duration-300 shadow-md flex items-center justify-center space-x-2";
+                    if (t === 'video') btn.className += " col-span-2 sm:col-span-1";
+                }
+            });
+
+            // Highlight selected button
+            const activeBtn = document.getElementById(`btn-branch-${type}`);
+            if (activeBtn) {
+                activeBtn.className = "px-3 py-2 rounded-xl bg-indigo-600 border border-indigo-400 text-xs text-white font-bold transition-all duration-300 shadow-lg shadow-indigo-500/20 flex items-center justify-center space-x-2 scale-[1.05]";
+                if (type === 'video') activeBtn.className += " col-span-2 sm:col-span-1";
+            }
+
+            // Update content display card
+            const activeData = branches[type];
+            document.getElementById('branch-title').innerText = activeData.title;
+            document.getElementById('branch-headline').innerText = activeData.headline;
+            document.getElementById('branch-desc').innerText = activeData.desc;
+        }
+
+        /* SLIDE 2: INTERACTIVE INTERN SIMULATOR
+        */
+        function toggleInternState(state) {
+            const badBtn = document.getElementById('btn-intern-bad');
+            const goodBtn = document.getElementById('btn-intern-good');
+            const managerTxt = document.getElementById('intern-manager-text');
+            const actionTxt = document.getElementById('intern-action-text');
+
+            if (state === 'bad') {
+                badBtn.className = "flex-1 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all text-center flex items-center justify-center space-x-2 bg-rose-500/20 text-rose-300 border border-rose-500/30";
+                goodBtn.className = "flex-1 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all text-center flex items-center justify-center space-x-2 text-gray-400";
+                
+                managerTxt.innerHTML = `"Prepare a report."`;
+                actionTxt.innerHTML = `<strong>Intern result:</strong> The intern looks puzzled and anxious. What is the context? He spends 6 hours guessing, producing a highly generic, uselessly long report.`;
+            } else {
+                goodBtn.className = "flex-1 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all text-center flex items-center justify-center space-x-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                badBtn.className = "flex-1 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all text-center flex items-center justify-center space-x-2 text-gray-400";
+
+                managerTxt.innerHTML = `"Prepare a crisp 2-page report on renewable energy for school students."`;
+                actionTxt.innerHTML = `<strong>Intern result:</strong> Perfect! The intern drafts a highly visually engaging, short, structured paper filled with analogies that middle schoolers immediately grasp.`;
+            }
+        }
+
+        /* SLIDE 3: COMPASS CONTEXT BUILDER 
+        */
+        const compassInsights = {
+            direction: {
+                tag: "Compass Direction Element",
+                desc: "Tells the AI the literal deliverable action required (e.g., 'Draft', 'Evaluate', 'Summarize'). It prevents the model from choosing the wrong creative direction."
+            },
+            context: {
+                tag: "Compass Context Element",
+                desc: "Offers relevant background info, constraints, or limitations. It narrows down the AI's search database to focus on your specific area."
+            },
+            audience: {
+                tag: "Compass Audience Element",
+                desc: "Explains precisely who is reading this content (e.g. 'Class VI', 'Senior Developer'). This dramatically shifts vocabulary complexity and formatting tone."
+            },
+            goal: {
+                tag: "Compass Goal Element",
+                desc: "Explains the ultimate motive. Knowing the purpose allows AI to suggest creative metaphors or optimize content structure appropriately."
+            }
+        };
+
+        function activateCompass(type) {
+            // Reset all buttons
+            ['direction', 'context', 'audience', 'goal'].forEach(q => {
+                const el = document.getElementById(`quad-${q}`);
+                el.className = "p-3.5 md:p-4 rounded-xl border border-gray-800 bg-gray-950 text-left hover:border-indigo-500 transition-all duration-300";
+            });
+
+            // Highlight selected button
+            const activeEl = document.getElementById(`quad-${type}`);
+            let colorClass = "border-indigo-500 bg-indigo-950/20";
+            if (type === 'context') colorClass = "border-emerald-500 bg-emerald-950/20";
+            if (type === 'audience') colorClass = "border-purple-500 bg-purple-950/20";
+            if (type === 'goal') colorClass = "border-pink-500 bg-pink-950/20";
+            
+            activeEl.className = `p-3.5 md:p-4 rounded-xl border ${colorClass} text-left transition-all duration-300 scale-[1.02]`;
+
+            // Display panel info
+            document.getElementById('compass-status-label').innerText = compassInsights[type].tag;
+            document.getElementById('compass-status-desc').innerText = compassInsights[type].desc;
+        }
+
+        /* SLIDE 4: SOLAR SYSTEM OUTPUT SWITCHER 
+        */
+        const solarOutputs = {
+            a: "The Solar System consists of our Sun and everything bound to it by gravity, including the 8 major planets, dwarf planets, moons, asteroids, and comets. It was formed 4.6 billion years ago from a giant interstellar molecular cloud...",
+            b: "Think of our solar system like a massive carousel spinning around the Sun, our ultimate warm energetic lighthouse! Around this light, 8 cool planetary neighbors spin continuously at different speeds so they don't fall off into dark empty space...",
+            c: `Astronomer Response:\n
+• SUN: High-density active star | Core heat provider
+• PLANETS: 8 gravity-aligned orbs split into Terrestrial (rocky) & Jovian (gas giants)
+• KEY DETAIL: The Kuiper Belt borders the outer system.`
+        };
+
+        function switchSolarPrompt(type) {
+            // Reset all prompt card styles
+            ['a', 'b', 'c'].forEach(t => {
+                const btn = document.getElementById(`btn-solar-${t}`);
+                btn.className = "w-full text-left p-3 rounded-lg border border-gray-850 bg-gray-950 text-gray-400 text-xs flex items-center justify-between transition-all";
+                btn.innerHTML = btn.innerHTML.replace('check', 'circle').replace('text-indigo-400', 'text-gray-600').replace('text-emerald-400', 'text-gray-600').replace('text-purple-400', 'text-gray-600');
+            });
+
+            const activeBtn = document.getElementById(`btn-solar-${type}`);
+            let themeColor = "indigo";
+            if (type === 'b') themeColor = "emerald";
+            if (type === 'c') themeColor = "purple";
+
+            activeBtn.className = `w-full text-left p-3 rounded-lg border border-${themeColor}-500/30 bg-${themeColor}-950/20 text-gray-200 text-xs flex items-center justify-between transition-all scale-[1.01]`;
+            
+            // Set Output text
+            document.getElementById('solar-output-text').innerText = solarOutputs[type];
+            lucide.createIcons();
+        }
+
+        /* SLIDE 5: PROMPT PUZZLE CHALLENGE GAME 
+        */
+        const puzzleData = {
+            1: {
+                question: "Select the Task (What)",
+                options: [
+                    { label: "Explain gravity concept", correct: true },
+                    { label: "Build rocket calculation", correct: false }
+                ]
+            },
+            2: {
+                question: "Select Target Audience (Who)",
+                options: [
+                    { label: "To a Class IX school student", correct: true },
+                    { label: "To an astrophysicist engineer", correct: false }
+                ]
+            },
+            3: {
+                question: "Select Format/Style (How)",
+                options: [
+                    { label: "Using simple everyday analogies", correct: true },
+                    { label: "Using advanced calculus formulas", correct: false }
+                ]
+            }
+        };
+
+        let currentPuzzleStep = 1;
+        let constructedPromptParts = [];
+
+        function renderPuzzleStep() {
+            const stepObj = puzzleData[currentPuzzleStep];
+            if (!stepObj) {
+                // Completed State
+                document.getElementById('puzzle-step-indicator').innerText = "Construction Finished! 🎉";
+                document.getElementById('puzzle-options-grid').innerHTML = `
+                    <div class="col-span-2 text-center p-4 bg-emerald-950/20 border border-emerald-500/20 rounded-xl">
+                        <span class="text-xs text-emerald-400 font-bold block mb-1">Excellent Engineering!</span>
+                        <p class="text-[11px] text-gray-400">You built a highly specific instructional prompt with Task, Audience, and Format elements.</p>
+                    </div>
+                `;
+                document.getElementById('puzzle-badge').className = "px-2.5 py-0.5 rounded-full text-[9px] font-bold tracking-widest uppercase bg-emerald-500/20 text-emerald-400 block";
+                document.getElementById('puzzle-badge').innerText = "Excellent";
+                document.getElementById('puzzle-status-text').innerText = "Perfect Alignment Achieved.";
+                return;
+            }
+
+            // Update Indicator
+            document.getElementById('puzzle-step-indicator').innerText = `${stepObj.question} (${currentPuzzleStep}/3)`;
+
+            // Render buttons
+            const grid = document.getElementById('puzzle-options-grid');
+            grid.innerHTML = '';
+            stepObj.options.forEach((opt, idx) => {
+                grid.innerHTML += `
+                    <button onclick="choosePuzzleOption(${opt.correct}, '${opt.label}')" class="p-4 rounded-xl border border-gray-800 bg-gray-950 hover:border-indigo-500 text-left text-xs text-gray-300 transition-all">
+                        <span class="font-bold text-indigo-400 block mb-1">Option ${idx + 1}:</span>
+                        <span>${opt.label}</span>
+                    </button>
+                `;
+            });
+        }
+
+        function choosePuzzleOption(isCorrect, valueText) {
+            if (!isCorrect) {
+                // Too complex warning
+                document.getElementById('puzzle-status-text').innerText = "Oops! That option is too complicated for a school student's introduction.";
+                document.getElementById('puzzle-status-text').className = "text-xs text-rose-400";
+                return;
+            }
+
+            // Add value to live construction array
+            constructedPromptParts.push(valueText);
+            document.getElementById('puzzle-live-prompt').innerText = `"${constructedPromptParts.join(', ')}."`;
+            
+            // Advance step
+            currentPuzzleStep++;
+            document.getElementById('puzzle-status-text').innerText = "Perfect segment matched!";
+            document.getElementById('puzzle-status-text').className = "text-xs text-emerald-400";
+            
+            renderPuzzleStep();
+        }
+
+        function resetPuzzle() {
+            currentPuzzleStep = 1;
+            constructedPromptParts = [];
+            document.getElementById('puzzle-live-prompt').innerText = "Select your first block to start engineering...";
+            document.getElementById('puzzle-status-text').innerText = "Ready to construct...";
+            document.getElementById('puzzle-status-text').className = "text-xs text-gray-500";
+            document.getElementById('puzzle-badge').className = "hidden";
+            renderPuzzleStep();
+        }
+
+        /* SLIDE 6: VOTING & POLL RESULTS CONTROLLER
+        */
+        const voteDistribution = {
+            A: { pct: 15, text: "🔴 Student A (Basic): Only gives instructions with zero context. Result will likely be messy, boring, and generic.", color: "text-red-400 bg-red-950/20 border border-red-500/20" },
+            B: { pct: 40, text: "🔵 Student B (Role-play): Assigning a specific expert role forces the AI to output creative pedagogical methods, but lacks concrete examples.", color: "text-indigo-400 bg-indigo-950/20 border border-indigo-500/20" },
+            C: { pct: 45, text: "🟢 Student C (Few-Shot Examples): The absolute strongest method. Providing clear examples establishes structural bounds that prevent the AI from guessing layout styles.", color: "text-emerald-400 bg-emerald-950/20 border border-emerald-500/20" }
+        };
+
+        function castVote(studentChoice) {
+            // Update UI bars with standard simulated polling data
+            ['A', 'B', 'C'].forEach(ch => {
+                const card = document.getElementById(`vote-card-${ch}`);
+                const bar = document.getElementById(`vote-bar-${ch}`);
+                const label = document.getElementById(`vote-pct-${ch}`);
+
+                // Update visual widths
+                bar.style.width = `${voteDistribution[ch].pct}%`;
+                label.innerText = `${voteDistribution[ch].pct}%`;
+
+                // Dim non-selected cards slightly
+                if (ch === studentChoice) {
+                    card.className = "p-3.5 rounded-xl border border-indigo-500/50 bg-indigo-950/20 flex items-center justify-between transition-all scale-[1.01]";
+                } else {
+                    card.className = "p-3.5 rounded-xl border border-gray-800 bg-gray-950/40 opacity-60 flex items-center justify-between transition-all";
+                }
+            });
+
+            // Reveal explanation
+            const revealCard = document.getElementById('vote-reveal-card');
+            revealCard.className = `p-4 rounded-xl border text-xs leading-relaxed text-center transition-all ${voteDistribution[studentChoice].color}`;
+            revealCard.innerHTML = `<p>${voteDistribution[studentChoice].text}</p>`;
+        }
+
+        // Initialize App on Window Load
+        window.onload = function() {
+            lucide.createIcons();
+            goToSlide(1);
+            highlightBranch('text');
+            resetPuzzle();
+        }
+    </script>
+</body>
+</html>
